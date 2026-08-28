@@ -36,7 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let sessionStreak  = 0;
   let sessionRounds  = 0;
   let sessionCorrect = 0;
-  let leaderboard = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+  let leaderboard      = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+  let loginsHistory    = JSON.parse(localStorage.getItem('vex_logins_history') || '[]');
+  let responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
 
   // ── ROUND STATE ──────────────────────────────────────────
   let activeRound = null;          // { category, questions[], index, correctCount, times[], perQ[] }
@@ -145,6 +147,19 @@ document.addEventListener('DOMContentLoaded', () => {
     playerEmail = email;
     localStorage.setItem('vex_player_name',  playerName);
     localStorage.setItem('vex_player_email', playerEmail);
+
+    // Record login entry
+    const timestamp = new Date().toLocaleString('es-AR');
+    const loginPayload = { name: playerName, email: playerEmail, timestamp };
+    loginsHistory.push(loginPayload);
+    localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+
+    // Send to local server log endpoint if running locally
+    fetch('/api/log-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginPayload)
+    }).catch(() => {});
 
     updateHeaderDisplay();
     updateStatsBar();
@@ -361,16 +376,40 @@ document.addEventListener('DOMContentLoaded', () => {
     activeRound.perQ.push({ correct: isCorrect, time: finalTime });
 
     // Update stats
+    const pointsGained = isCorrect ? (100 + Math.max(0, Math.round((10 - finalTime) * 8))) : 0;
+
+    // Log answer to history
+    const timestamp = new Date().toLocaleString('es-AR');
+    const responsePayload = {
+      timestamp,
+      name: playerName,
+      email: playerEmail,
+      category: activeRound.category.name,
+      questionId: q.id,
+      question: q.question,
+      selectedAnswer: q.options[selectedIdx] || '',
+      correctAnswer: q.options[q.correctAnswer] || '',
+      isCorrect: isCorrect ? 'CORRECTO' : 'INCORRECTO',
+      timeSeconds: finalTime,
+      pointsGained
+    };
+    responsesHistory.push(responsePayload);
+    localStorage.setItem('vex_responses_history', JSON.stringify(responsesHistory));
+
+    // Send to local server log endpoint if available
+    fetch('/api/log-answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(responsePayload)
+    }).catch(() => {});
+
     if (isCorrect) {
       activeRound.correctCount++;
       sessionStreak++;
       sessionCorrect++;
+      sessionScore += pointsGained;
 
-      // Points: base 100 + speed bonus
-      const speedBonus = Math.max(0, Math.round((10 - finalTime) * 8));
-      sessionScore += 100 + speedBonus;
-
-      saveToLeaderboard(100 + speedBonus, activeRound.category.name, finalTime);
+      saveToLeaderboard(pointsGained, activeRound.category.name, finalTime);
 
       if (typeof audioSystem !== 'undefined') audioSystem.playCorrect();
     } else {
@@ -682,6 +721,22 @@ document.addEventListener('DOMContentLoaded', () => {
         `}
       </div>
 
+      <!-- Export to Excel / CSV Section -->
+      <p class="page-section-title">📥 Reportes y Descargas Excel (CSV)</p>
+      <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;padding:16px;margin-bottom:24px;display:flex;flex-direction:column;gap:10px;">
+        <p style="font-size:12px;color:var(--text-secondary);line-height:1.4;">
+          Descargá todos los datos registrados (participantes y respuestas) formateados para abrir directamente en Microsoft Excel.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button id="btn-export-logins" style="padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            📄 Descargar Ingresos de Personas (.csv)
+          </button>
+          <button id="btn-export-responses" style="padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-cyan),#0099B8);color:#000;font-family:var(--font-display);font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+            📝 Descargar Detalle de Respuestas (.csv)
+          </button>
+        </div>
+      </div>
+
       <p style="text-align:center;font-size:11px;color:var(--text-muted);line-height:1.6;">
         Gerencia de Educación y Convivencia Vial<br>
         Dirección General de Seguridad Vial
@@ -689,12 +744,60 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     document.getElementById('btn-clear-ranking')?.addEventListener('click', () => {
-      if (confirm('¿Reiniciar el ranking?')) {
+      if (confirm('¿Reiniciar el ranking y borrar datos locales?')) {
         leaderboard = [];
+        loginsHistory = [];
+        responsesHistory = [];
         localStorage.removeItem('vex_leaderboard');
+        localStorage.removeItem('vex_logins_history');
+        localStorage.removeItem('vex_responses_history');
         renderStatsScreen();
       }
     });
+
+    document.getElementById('btn-export-logins')?.addEventListener('click', exportLoginsCSV);
+    document.getElementById('btn-export-responses')?.addEventListener('click', exportResponsesCSV);
+  }
+
+  // ── CSV EXPORT HELPERS ──────────────────────────────────────
+  function downloadCSV(filename, csvContent) {
+    // Add UTF-8 BOM so Excel opens special characters and accents correctly
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function exportLoginsCSV() {
+    if (loginsHistory.length === 0) {
+      alert('Aún no hay registros de ingresos.');
+      return;
+    }
+    let csv = '"Fecha y Hora";"Nombre";"Email"\r\n';
+    loginsHistory.forEach(item => {
+      csv += `"${item.timestamp}";"${item.name}";"${item.email}"\r\n`;
+    });
+    downloadCSV(`Registros_Ingresos_${new Date().toISOString().slice(0,10)}.csv`, csv);
+  }
+
+  function exportResponsesCSV() {
+    if (responsesHistory.length === 0) {
+      alert('Aún no hay respuestas registradas.');
+      return;
+    }
+    let csv = '"Fecha y Hora";"Nombre";"Email";"Categoría";"Pregunta";"Respuesta Elegida";"Respuesta Correcta";"Resultado";"Tiempo (s)";"Puntos"\r\n';
+    responsesHistory.forEach(item => {
+      const qClean = (item.question || '').replace(/"/g, '""');
+      const aClean = (item.selectedAnswer || '').replace(/"/g, '""');
+      const cClean = (item.correctAnswer || '').replace(/"/g, '""');
+      csv += `"${item.timestamp}";"${item.name}";"${item.email}";"${item.category}";"${qClean}";"${aClean}";"${cClean}";"${item.isCorrect}";"${item.timeSeconds}";"${item.pointsGained}"\r\n`;
+    });
+    downloadCSV(`Detalle_Respuestas_${new Date().toISOString().slice(0,10)}.csv`, csv);
   }
 
   // ── CONFETTI ──────────────────────────────────────────────
