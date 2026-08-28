@@ -507,8 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionCorrect++;
       sessionScore += pointsGained;
 
-      saveToLeaderboard(pointsGained, activeRound.category.name, finalTime);
-
       if (typeof audioSystem !== 'undefined') audioSystem.playCorrect();
     } else {
       sessionStreak = 0;
@@ -592,9 +590,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { category, correctCount, times } = activeRound;
     const total = 5;
-    const avgTime = times.length > 0
-      ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(2)
-      : '0.00';
+    const totalTime = times.length > 0 ? times.reduce((a, b) => a + b, 0) : 0;
+    const avgTime = times.length > 0 ? (totalTime / times.length).toFixed(2) : '0.00';
+
+    // Save single round entry to leaderboard for this participant
+    saveToLeaderboard(sessionScore, category.name, parseFloat(avgTime));
     const pct = Math.round((correctCount / total) * 100);
 
     let emoji = '💪';
@@ -731,14 +731,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── LEADERBOARD ───────────────────────────────────────────
   function saveToLeaderboard(points, catName, time) {
-    leaderboard.push({
+    const cleanEmail = (playerEmail || '').toLowerCase().trim();
+    const cleanName = (playerName || '').toLowerCase().trim();
+    
+    // Check if player already exists in leaderboard
+    const existingIdx = leaderboard.findIndex(e => {
+      const eEmail = (e.email || '').toLowerCase().trim();
+      const eName  = (e.name || '').toLowerCase().trim();
+      return (cleanEmail && eEmail === cleanEmail) || (cleanName && eName === cleanName);
+    });
+
+    const entry = {
       name:     playerName,
       email:    playerEmail,
       score:    points,
       category: catName,
       time:     time,
       date:     new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })
-    });
+    };
+
+    if (existingIdx >= 0) {
+      leaderboard[existingIdx] = entry;
+    } else {
+      leaderboard.push(entry);
+    }
+
     leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
     leaderboard = leaderboard.slice(0, 30);
     localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
