@@ -811,22 +811,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ${getLeaderboardHTML()}
       </div>
 
-      <!-- Export to Excel / CSV Section -->
-      <p class="page-section-title">📥 Reportes y Descargas Excel (CSV)</p>
-      <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;padding:16px;margin-bottom:24px;display:flex;flex-direction:column;gap:10px;">
-        <p style="font-size:12px;color:var(--text-secondary);line-height:1.4;">
-          Descargá todos los datos registrados (participantes y respuestas) formateados para abrir directamente en Microsoft Excel.
-        </p>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <button id="btn-export-logins" style="padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-            📄 Descargar Ingresos de Personas (.csv)
-          </button>
-          <button id="btn-export-responses" style="padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-cyan),#0099B8);color:#000;font-family:var(--font-display);font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
-            📝 Descargar Detalle de Respuestas (.csv)
-          </button>
-        </div>
-      </div>
-
       <p style="text-align:center;font-size:11px;color:var(--text-muted);line-height:1.6;">
         Gerencia de Educación y Convivencia Vial<br>
         Dirección General de Seguridad Vial
