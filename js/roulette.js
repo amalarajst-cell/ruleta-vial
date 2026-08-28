@@ -8,9 +8,11 @@ class RouletteWheel {
     this.categories = [
       { id: 'bicicleta', label: 'BICICLETA', icon: '🚲', color: '#059669' },
       { id: 'peatones', label: 'PEATONES', icon: '🚶', color: '#0284C7' },
-      { id: 'todos', label: 'TODOS', icon: '🚗', color: '#D97706' },
-      { id: 'escolares', label: 'ESCOLARES', icon: '🚸', color: '#DC2626' },
-      { id: 'buses', label: 'BUSES', icon: '🚌', color: '#7C3AED' }
+      { id: 'auto', label: 'AUTO', icon: '🚗', color: '#D97706' },
+      { id: 'colectivo', label: 'COLECTIVO', icon: '🚌', color: '#7C3AED' },
+      { id: 'senales', label: 'SEÑALES', icon: '🚸', color: '#DC2626' },
+      { id: 'micromovilidad', label: 'MICROMOV.', icon: '🛴', color: '#06B6D4' },
+      { id: 'moto', label: 'MOTO', icon: '🏍️', color: '#EC4899' }
     ];
 
     this.numSegments = this.categories.length;

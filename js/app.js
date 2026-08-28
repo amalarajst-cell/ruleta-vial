@@ -135,6 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Permite girar haciendo clic directo en el canvas de la ruleta
+  if (roulette.canvas) {
+    roulette.canvas.addEventListener('click', () => {
+      if (!currentPlayer) {
+        loginOverlay.classList.remove('hidden');
+        return;
+      }
+      if (!roulette.isSpinning) {
+        roulette.spin();
+      }
+    });
+  }
+
   // Sound toggle button
   if (soundToggleBtn) {
     soundToggleBtn.addEventListener('click', () => {
@@ -274,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </h3>
 
       ${currentQuestion.imageSvg ? `<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 mb-3 flex justify-center">${currentQuestion.imageSvg}</div>` : ''}
+      ${currentQuestion.imageSrc ? `<div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50 mb-3 flex justify-center"><img src="${currentQuestion.imageSrc}" class="w-32 h-32 object-contain filter drop-shadow-lg" alt="Señal de tránsito"></div>` : ''}
 
       <!-- Options -->
       <div class="space-y-2.5 mb-3" id="modal-options-container">
