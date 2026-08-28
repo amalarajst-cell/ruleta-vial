@@ -782,9 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="page-section-title">📊 Sesión Actual</p>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
         <div class="stat-card"><div class="sc-label">Puntos Totales</div><div class="sc-value" style="color:var(--brand-gold)">${sessionScore}</div></div>
-        <div class="stat-card"><div class="sc-label">Rondas Jugadas</div><div class="sc-value" style="color:var(--brand-cyan)">${sessionRounds}</div></div>
         <div class="stat-card"><div class="sc-label">Resp. Correctas</div><div class="sc-value" style="color:var(--brand-green)">${sessionCorrect}</div></div>
-        <div class="stat-card"><div class="sc-label">Racha Máx.</div><div class="sc-value" style="color:#EC4899">${sessionStreak}</div></div>
       </div>
 
       <!-- Leaderboard -->
