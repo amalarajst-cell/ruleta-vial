@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let loginsHistory    = JSON.parse(localStorage.getItem('vex_logins_history') || '[]');
   let responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
   let completedPlayers = JSON.parse(localStorage.getItem('vex_completed_players') || '[]');
+  let statsRefreshInterval = null;
 
   function hasPlayerCompleted(email) {
     if (!email) return false;
@@ -744,8 +745,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── STATS SCREEN & LIVE LEADERBOARD SYNC ─────────────────
-  let statsRefreshInterval = null;
-
   function renderStatsScreen() {
     if (!statsContent) return;
 
