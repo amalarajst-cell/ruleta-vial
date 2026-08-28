@@ -180,16 +180,17 @@ body {
 
 .login-tagline .extreme-badge {
   display: inline-block;
-  background: linear-gradient(135deg, var(--brand-red), #FF6B35);
-  color: #fff;
+  background: linear-gradient(135deg, #00E58A 0%, #00B36B 100%);
+  color: #FFFFFF;
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  padding: 5px 16px;
-  border-radius: 4px;
+  padding: 6px 18px;
+  border-radius: 6px;
   margin-bottom: 10px;
+  box-shadow: 0 4px 14px rgba(0, 229, 138, 0.35);
 }
 
 .login-tagline h3 {
