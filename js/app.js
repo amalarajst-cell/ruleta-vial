@@ -20,6 +20,27 @@ document.addEventListener('DOMContentLoaded', () => {
       screens[name].classList.add('active');
       screens[name].scrollTop = 0;
     }
+    // Auto-refresh leaderboard when stats screen is open
+    if (name === 'stats') {
+      clearInterval(statsRefreshInterval);
+      statsRefreshInterval = setInterval(() => {
+        if (screens.stats.classList.contains('active')) {
+          fetch('/api/leaderboard')
+            .then(res => res.json())
+            .then(data => {
+              if (Array.isArray(data) && data.length > 0) {
+                leaderboard = data;
+                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+                updateLeaderboardTableUI();
+              }
+            })
+            .catch(() => {});
+        }
+      }, 4000);
+    } else {
+      clearInterval(statsRefreshInterval);
+    }
+
     // Redraw roulette after screen is shown so canvas gets correct dimensions
     if (name === 'roulette' && typeof roulette !== 'undefined') {
       requestAnimationFrame(() => {
@@ -722,9 +743,23 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
   }
 
-  // ── STATS SCREEN ──────────────────────────────────────────
+  // ── STATS SCREEN & LIVE LEADERBOARD SYNC ─────────────────
+  let statsRefreshInterval = null;
+
   function renderStatsScreen() {
     if (!statsContent) return;
+
+    // Fetch live leaderboard from server endpoint if available
+    fetch('/api/leaderboard')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          leaderboard = data;
+          localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+          updateLeaderboardTableUI();
+        }
+      })
+      .catch(() => {});
 
     const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
 
@@ -758,42 +793,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <button id="btn-clear-ranking" style="font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;text-decoration:underline;">Reiniciar</button>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;overflow:hidden;margin-bottom:24px;">
-        ${leaderboard.length === 0 ? `
-          <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">
-            Aún no hay registros. ¡Jugá una ronda para aparecer aquí!
-          </div>
-        ` : `
-          <table class="leaderboard-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Participante</th>
-                <th>Categoría</th>
-                <th style="text-align:right">Pts</th>
-                <th style="text-align:right">Tiempo</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${leaderboard.slice(0, 10).map((e, i) => {
-                const isMe = e.name.toLowerCase() === playerName.toLowerCase();
-                return `
-                  <tr class="${isMe ? 'is-current' : ''}">
-                    <td style="font-family:var(--font-display);font-weight:800;font-size:17px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
-                      ${rankBadge(i)}
-                    </td>
-                    <td style="font-weight:${isMe?'800':'500'};color:${isMe?'var(--brand-gold)':'var(--text-primary)'}">
-                      ${e.name}${isMe?' <span style="font-size:9px;background:var(--brand-gold);color:#000;padding:2px 5px;border-radius:4px;font-weight:900;margin-left:4px;">TÚ</span>':''}
-                    </td>
-                    <td style="font-size:12px;color:var(--text-secondary)">${e.category}</td>
-                    <td style="text-align:right;font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--brand-gold)">${e.score}</td>
-                    <td style="text-align:right;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--brand-cyan)">${e.time}s</td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        `}
+      <div id="leaderboard-table-container" style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;overflow:hidden;margin-bottom:24px;">
+        ${getLeaderboardHTML()}
       </div>
 
       <!-- Export to Excel / CSV Section -->
@@ -834,6 +835,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-export-logins')?.addEventListener('click', exportLoginsCSV);
     document.getElementById('btn-export-responses')?.addEventListener('click', exportResponsesCSV);
+  }
+
+  function getLeaderboardHTML() {
+    const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+    if (!leaderboard || leaderboard.length === 0) {
+      return `
+        <div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">
+          Aún no hay registros. ¡Jugá una ronda para aparecer aquí!
+        </div>
+      `;
+    }
+    return `
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Participante</th>
+            <th>Categoría</th>
+            <th style="text-align:right">Pts</th>
+            <th style="text-align:right">Tiempo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${leaderboard.slice(0, 10).map((e, i) => {
+            const isMe = (e.name || '').toLowerCase() === (playerName || '').toLowerCase();
+            return `
+              <tr class="${isMe ? 'is-current' : ''}">
+                <td style="font-family:var(--font-display);font-weight:800;font-size:17px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
+                  ${rankBadge(i)}
+                </td>
+                <td style="font-weight:${isMe?'800':'500'};color:${isMe?'var(--brand-gold)':'var(--text-primary)'}">
+                  ${e.name}${isMe?' <span style="font-size:9px;background:var(--brand-gold);color:#000;padding:2px 5px;border-radius:4px;font-weight:900;margin-left:4px;">TÚ</span>':''}
+                </td>
+                <td style="font-size:12px;color:var(--text-secondary)">${e.category}</td>
+                <td style="text-align:right;font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--brand-gold)">${e.score}</td>
+                <td style="text-align:right;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function updateLeaderboardTableUI() {
+    const container = document.getElementById('leaderboard-table-container');
+    if (container) {
+      container.innerHTML = getLeaderboardHTML();
+    }
   }
 
   // ── CSV EXPORT HELPERS ──────────────────────────────────────

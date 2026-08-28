@@ -81,6 +81,68 @@ while ($listener.IsListening) {
             continue
         }
 
+        if ($request.HttpMethod -eq "GET" -and $path -eq "/api/leaderboard") {
+            $logFile = Join-Path $root "registros_respuestas.csv"
+            $results = @()
+            if (Test-Path $logFile) {
+                $lines = Get-Content $logFile -Encoding UTF8 | Select-Object -Skip 1
+                $users = @{}
+                foreach ($l in $lines) {
+                    if ([string]::IsNullOrWhiteSpace($l)) { continue }
+                    $parts = $l.Split(';') | ForEach-Object { $_.Trim('"') }
+                    if ($parts.Count -ge 10) {
+                        $name  = $parts[1]
+                        $email = $parts[2]
+                        $cat   = $parts[3]
+                        $time  = [double]($parts[8] -replace ',', '.')
+                        $pts   = [int]$parts[9]
+
+                        $key = $email.ToLower().Trim()
+                        if (-not $users.ContainsKey($key)) {
+                            $users[$key] = @{
+                                name     = $name
+                                email    = $email
+                                score    = 0
+                                category = $cat
+                                time     = $time
+                            }
+                        }
+                        $users[$key].score += $pts
+                        if ($time -lt $users[$key].time) { $users[$key].time = $time }
+                    }
+                }
+                foreach ($u in $users.Values) {
+                    $results += $u
+                }
+            }
+            $jsonOut = ConvertTo-Json ($results | Sort-Object -Property @{Expression="score"; Descending=$true}, @{Expression="time"; Descending=$false})
+            if (-not $jsonOut) { $jsonOut = "[]" }
+
+            $response.ContentType = "application/json; charset=utf-8"
+            $buffer = [System.Text.Encoding]::UTF8.GetBytes($jsonOut)
+            $response.OutputStream.Write($buffer, 0, $buffer.Length)
+            $response.OutputStream.Close()
+            continue
+        }
+
+        if ($request.HttpMethod -eq "GET" -and $path -eq "/api/check-completed") {
+            $email = $request.QueryString["email"]
+            $completed = $false
+            if ($email) {
+                $clean = $email.ToLower().Trim()
+                $logFile = Join-Path $root "registros_respuestas.csv"
+                if (Test-Path $logFile) {
+                    $match = Select-String -Path $logFile -Pattern "`";`"$clean`";`"" -SimpleMatch
+                    if ($match) { $completed = $true }
+                }
+            }
+            $response.ContentType = "application/json"
+            $buffer = [System.Text.Encoding]::UTF8.GetBytes("{`"completed`":$($completed.ToString().ToLower())}")
+            $response.OutputStream.Write($buffer, 0, $buffer.Length)
+            $response.OutputStream.Close()
+            continue
+        }
+
         # --- STATIC FILE SERVING ---
         if ($path -eq "/") { $path = "/index.html" }
         $filePath = Join-Path $root $path.TrimStart('/')
