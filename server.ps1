@@ -100,18 +100,24 @@ while ($listener.IsListening) {
                         $key = $email.ToLower().Trim()
                         if (-not $users.ContainsKey($key)) {
                             $users[$key] = @{
-                                name     = $name
-                                email    = $email
-                                score    = 0
-                                category = $cat
-                                time     = $time
+                                name      = $name
+                                email     = $email
+                                score     = 0
+                                category  = $cat
+                                totalTime = 0.0
+                                qCount    = 0
+                                time      = 0.0
                             }
                         }
                         $users[$key].score += $pts
-                        if ($time -lt $users[$key].time) { $users[$key].time = $time }
+                        $users[$key].totalTime += $time
+                        $users[$key].qCount += 1
                     }
                 }
                 foreach ($u in $users.Values) {
+                    if ($u.qCount -gt 0) {
+                        $u.time = [math]::Round(($u.totalTime / $u.qCount), 2)
+                    }
                     $results += $u
                 }
             }
