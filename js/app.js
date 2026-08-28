@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         roulette.setupCanvas();
         roulette.draw();
       });
+      // Check if current player already played their single turn
+      updateRouletteLockState();
     }
   }
 
@@ -39,6 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
   let leaderboard      = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
   let loginsHistory    = JSON.parse(localStorage.getItem('vex_logins_history') || '[]');
   let responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
+  let completedPlayers = JSON.parse(localStorage.getItem('vex_completed_players') || '[]');
+
+  function hasPlayerCompleted(email) {
+    if (!email) return false;
+    return completedPlayers.includes(email.toLowerCase().trim());
+  }
+
+  function markPlayerCompleted(email) {
+    if (!email) return;
+    const clean = email.toLowerCase().trim();
+    if (!completedPlayers.includes(clean)) {
+      completedPlayers.push(clean);
+      localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+    }
+  }
 
   // ── ROUND STATE ──────────────────────────────────────────
   let activeRound = null;          // { category, questions[], index, correctCount, times[], perQ[] }
@@ -98,10 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── INITIAL STATE ────────────────────────────────────────
   if (playerName) {
-    // Already registered — skip login
     updateHeaderDisplay();
     updateStatsBar();
-    // roulette screen shown after init below
   } else {
     showScreen('login');
     setTimeout(() => inputNombre.focus(), 400);
@@ -116,9 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Show roulette screen if already logged in (after roulette is initialized)
+  // Show roulette screen or stats if already completed
   if (playerName) {
-    showScreen('roulette');
+    if (hasPlayerCompleted(playerEmail)) {
+      renderStatsScreen();
+      showScreen('stats');
+    } else {
+      showScreen('roulette');
+    }
   }
 
   // ── LOGIN ─────────────────────────────────────────────────
@@ -167,7 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Trigger audio init on first user gesture
     if (typeof audioSystem !== 'undefined') audioSystem.init();
 
-    showScreen('roulette');
+    // Check if player has already completed their single turn
+    if (hasPlayerCompleted(playerEmail)) {
+      alert(`Hola ${playerName}, ya realizaste tu giro anteriormente. Te redirigimos al Ranking de posiciones.`);
+      renderStatsScreen();
+      showScreen('stats');
+    } else {
+      showScreen('roulette');
+    }
   }
 
   function shakeInput(input, msg) {
@@ -216,8 +243,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── SPIN BUTTON ──────────────────────────────────────────
+  // ── SPIN BUTTON & ROULETTE LOCK ─────────────────────────
+  function updateRouletteLockState() {
+    if (!btnSpin) return;
+    const isCompleted = hasPlayerCompleted(playerEmail);
+    const titleBlock = document.querySelector('.roulette-title-block');
+    let existNotice = document.getElementById('roulette-lock-notice');
+
+    if (isCompleted) {
+      btnSpin.disabled = true;
+      btnSpin.innerHTML = '🔒 GIRO YA UTILIZADO';
+      btnSpin.style.opacity = '0.6';
+      btnSpin.style.animation = 'none';
+
+      if (!existNotice && titleBlock) {
+        const notice = document.createElement('div');
+        notice.id = 'roulette-lock-notice';
+        notice.style.cssText = 'background:rgba(255,208,0,0.1);border:1px solid var(--border-gold);color:var(--brand-gold);padding:12px 16px;border-radius:14px;font-size:13px;font-weight:700;margin-top:12px;text-align:center;line-height:1.4;';
+        notice.innerHTML = `
+          ⚠️ Ya completaste tu participación.<br>
+          <button id="btn-new-player-notice" style="margin-top:8px;padding:8px 14px;border:none;border-radius:8px;background:var(--brand-cyan);color:#000;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;">
+            👤 Registrar Nuevo Participante
+          </button>
+        `;
+        titleBlock.appendChild(notice);
+        document.getElementById('btn-new-player-notice')?.addEventListener('click', logoutAndNewPlayer);
+      }
+    } else {
+      btnSpin.disabled = false;
+      btnSpin.innerHTML = '🎯 ¡GIRAR!';
+      btnSpin.style.opacity = '1';
+      if (existNotice) existNotice.remove();
+    }
+  }
+
+  function logoutAndNewPlayer() {
+    playerName  = '';
+    playerEmail = '';
+    localStorage.removeItem('vex_player_name');
+    localStorage.removeItem('vex_player_email');
+    if (inputNombre) inputNombre.value = '';
+    if (inputEmail)  inputEmail.value = '';
+    showScreen('login');
+    setTimeout(() => inputNombre?.focus(), 300);
+  }
+
   if (btnSpin) {
     btnSpin.addEventListener('click', () => {
+      if (hasPlayerCompleted(playerEmail)) {
+        alert('Ya realizaste tu giro. Registrá a otra persona para volver a jugar.');
+        return;
+      }
       if (!roulette.isSpinning) {
         btnSpin.disabled = true;
         roulette.spin();
@@ -487,7 +563,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sessionRounds++;
     updateStatsBar();
-    if (btnSpin) btnSpin.disabled = false;
+
+    // Mark current player as completed (1 spin per registered user)
+    markPlayerCompleted(playerEmail);
+    updateRouletteLockState();
 
     const { category, correctCount, times } = activeRound;
     const total = 5;
@@ -604,11 +683,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <!-- Action Buttons -->
       <div class="results-actions">
-        <button class="btn-play-again" id="btn-play-again">
-          🎯 Volver a Girar
+        <button class="btn-play-again" id="btn-see-ranking-results" style="background:linear-gradient(135deg,var(--brand-gold),#FFAA00);">
+          🏆 Ver Ranking General
         </button>
-        <button class="btn-secondary" id="btn-see-ranking">
-          🏆 Ver Ranking
+        <button class="btn-secondary" id="btn-new-player-results" style="background:var(--bg-surface);border-color:var(--brand-cyan);color:var(--brand-cyan);font-weight:900;">
+          👤 Registrar Nuevo Participante
         </button>
       </div>
     `;
@@ -619,15 +698,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ringEl) ringEl.style.strokeDashoffset = dashOffset;
     }, 100);
 
-    document.getElementById('btn-play-again')?.addEventListener('click', () => {
-      activeRound = null;
-      showScreen('roulette');
-      if (btnSpin) btnSpin.disabled = false;
-    });
-    document.getElementById('btn-see-ranking')?.addEventListener('click', () => {
+    document.getElementById('btn-see-ranking-results')?.addEventListener('click', () => {
       renderStatsScreen();
       showScreen('stats');
     });
+    document.getElementById('btn-new-player-results')?.addEventListener('click', logoutAndNewPlayer);
 
     showScreen('results');
   }
@@ -748,9 +823,11 @@ document.addEventListener('DOMContentLoaded', () => {
         leaderboard = [];
         loginsHistory = [];
         responsesHistory = [];
+        completedPlayers = [];
         localStorage.removeItem('vex_leaderboard');
         localStorage.removeItem('vex_logins_history');
         localStorage.removeItem('vex_responses_history');
+        localStorage.removeItem('vex_completed_players');
         renderStatsScreen();
       }
     });
