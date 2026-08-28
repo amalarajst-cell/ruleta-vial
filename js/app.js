@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
           fetch('/api/leaderboard')
             .then(res => res.json())
             .then(data => {
-              if (Array.isArray(data) && data.length > 0) {
+              if (Array.isArray(data)) {
                 leaderboard = data;
                 localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
                 updateLeaderboardTableUI();
@@ -769,7 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           leaderboard = data;
           localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
           updateLeaderboardTableUI();
