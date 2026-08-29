@@ -1222,6 +1222,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${q.question}
                   </div>
 
+                  ${q.imageSrc ? `
+                    <div style="text-align:center;margin:8px 0;background:var(--bg-surface);padding:8px;border-radius:10px;border:1px solid var(--border-subtle);">
+                      <img src="${q.imageSrc}" style="max-height:120px;max-width:100%;object-fit:contain;border-radius:6px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                    </div>
+                  ` : ''}
+                  ${q.imageSvg ? `
+                    <div style="text-align:center;margin:8px 0;background:var(--bg-surface);padding:8px;border-radius:10px;border:1px solid var(--border-subtle);">
+                      ${q.imageSvg}
+                    </div>
+                  ` : ''}
+
                   <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px;">
                     ${(q.options || []).map((opt, optIdx) => {
                       const isCorrect = optIdx === q.correctAnswer;
@@ -1306,18 +1317,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Question Editor Modal Logic
-  const modalQEditor = document.getElementById('modal-question-editor');
-  const qeTitle      = document.getElementById('qe-modal-title');
-  const qeId         = document.getElementById('qe-id');
-  const qeCategory   = document.getElementById('qe-category');
-  const qeQuestion   = document.getElementById('qe-question');
-  const qeOpt0       = document.getElementById('qe-opt-0');
-  const qeOpt1       = document.getElementById('qe-opt-1');
-  const qeOpt2       = document.getElementById('qe-opt-2');
-  const qeCorrect    = document.getElementById('qe-correct');
-  const qeExplanation = document.getElementById('qe-explanation');
-  const btnQeCancel  = document.getElementById('btn-qe-cancel');
-  const btnQeSave    = document.getElementById('btn-qe-save');
+  const modalQEditor   = document.getElementById('modal-question-editor');
+  const qeTitle        = document.getElementById('qe-modal-title');
+  const qeId           = document.getElementById('qe-id');
+  const qeCategory     = document.getElementById('qe-category');
+  const qeQuestion     = document.getElementById('qe-question');
+  const qeOpt0         = document.getElementById('qe-opt-0');
+  const qeOpt1         = document.getElementById('qe-opt-1');
+  const qeOpt2         = document.getElementById('qe-opt-2');
+  const qeCorrect      = document.getElementById('qe-correct');
+  const qeImageSrc     = document.getElementById('qe-image-src');
+  const qeImagePreview = document.getElementById('qe-image-preview');
+  const qeExplanation  = document.getElementById('qe-explanation');
+  const btnQeCancel    = document.getElementById('btn-qe-cancel');
+  const btnQeSave      = document.getElementById('btn-qe-save');
+
+  function updateQeImagePreview() {
+    if (!qeImagePreview) return;
+    const url = (qeImageSrc?.value || '').trim();
+    if (url) {
+      qeImagePreview.style.display = 'block';
+      qeImagePreview.innerHTML = `<img src="${url}" style="max-height:100px;max-width:100%;object-fit:contain;border-radius:6px;" onerror="this.parentElement.style.display='none'">`;
+    } else {
+      qeImagePreview.style.display = 'none';
+      qeImagePreview.innerHTML = '';
+    }
+  }
+
+  qeImageSrc?.addEventListener('input', updateQeImagePreview);
 
   function openQuestionEditorModal(qObj) {
     if (!modalQEditor) return;
@@ -1330,6 +1357,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (qeOpt1) qeOpt1.value = (qObj.options && qObj.options[1]) || '';
       if (qeOpt2) qeOpt2.value = (qObj.options && qObj.options[2]) || '';
       if (qeCorrect) qeCorrect.value = qObj.correctAnswer !== undefined ? qObj.correctAnswer : 0;
+      if (qeImageSrc) qeImageSrc.value = qObj.imageSrc || '';
       if (qeExplanation) qeExplanation.value = qObj.explanation || '';
     } else {
       if (qeTitle) qeTitle.textContent = '➕ Nueva Pregunta';
@@ -1340,8 +1368,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (qeOpt1) qeOpt1.value = '';
       if (qeOpt2) qeOpt2.value = '';
       if (qeCorrect) qeCorrect.value = 0;
+      if (qeImageSrc) qeImageSrc.value = '';
       if (qeExplanation) qeExplanation.value = '';
     }
+    updateQeImagePreview();
     modalQEditor.style.display = 'flex';
   }
 
@@ -1373,6 +1403,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const options = [opt0, opt1];
     if (opt2) options.push(opt2);
 
+    const imageSrcVal = qeImageSrc ? qeImageSrc.value.trim() : '';
+
     if (idVal) {
       // Edit existing
       const targetId = parseInt(idVal, 10);
@@ -1382,19 +1414,26 @@ document.addEventListener('DOMContentLoaded', () => {
         qItem.question = questionText;
         qItem.options = options;
         qItem.correctAnswer = correctIdx;
+        if (imageSrcVal) {
+          qItem.imageSrc = imageSrcVal;
+        } else {
+          delete qItem.imageSrc;
+        }
         qItem.explanation = explanationText;
       }
     } else {
       // Create new
       const newId = QUESTIONS.length > 0 ? Math.max(...QUESTIONS.map(q => q.id || 0)) + 1 : 1;
-      QUESTIONS.push({
+      const newQ = {
         id: newId,
         category: category,
         question: questionText,
         options: options,
         correctAnswer: correctIdx,
         explanation: explanationText
-      });
+      };
+      if (imageSrcVal) newQ.imageSrc = imageSrcVal;
+      QUESTIONS.push(newQ);
     }
 
     localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
