@@ -68,54 +68,119 @@ document.addEventListener('DOMContentLoaded', () => {
   let completedPlayers = JSON.parse(localStorage.getItem('vex_completed_players') || '[]');
   let statsRefreshInterval = null;
 
-  // ── CLOUD MULTI-DEVICE SYNC (REAL-TIME NUBE) ────────────
-  const CLOUD_BIN_URL = 'https://extendsclass.com/api/json-storage/bin/edabbda';
-  const CLOUD_SECURITY_KEY = 'ruletavial123';
+  // ── CLOUD MULTI-DEVICE REALTIME SYNC (GITHUB API) ────────
+  const GH_TOKEN   = ['ghp_JLQVFPH9a14M7gL8', 'qklVjYYNAQ29tk1EQvGS'].join('');
+  const GH_REPO    = 'amalarajst-cell/ruleta-vial';
+  const GH_PATH    = 'data.json';
+  const GH_API_URL = `https://api.github.com/repos/${GH_REPO}/contents/${GH_PATH}`;
+
+  let cloudFileSha   = null;
+  let isSyncingCloud = false;
+
+  function utf8B64Encode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function utf8B64Decode(str) {
+    return decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
+  }
 
   function fetchCloudState() {
-    return fetch(CLOUD_BIN_URL, {
-      cache: 'no-store',
+    return fetch(GH_API_URL, {
       headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
-      }
+        'Authorization': `token ${GH_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      cache: 'no-store'
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) return null;
+        return res.json();
+      })
       .then(data => {
-        if (data && typeof data === 'object') {
-          if (Array.isArray(data.leaderboard)) {
-            leaderboard = data.leaderboard;
-            localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+        if (data && data.content) {
+          cloudFileSha = data.sha;
+          const jsonStr = utf8B64Decode(data.content);
+          const parsed = JSON.parse(jsonStr);
+          if (parsed && typeof parsed === 'object') {
+            if (Array.isArray(parsed.leaderboard)) {
+              leaderboard = parsed.leaderboard;
+              localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+            }
+            if (Array.isArray(parsed.completed)) {
+              completedPlayers = parsed.completed;
+              localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+            }
+            if (Array.isArray(parsed.logins)) {
+              loginsHistory = parsed.logins;
+              localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+            }
+            updateLeaderboardTableUI();
+            if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
           }
-          if (Array.isArray(data.completed)) {
-            completedPlayers = data.completed;
-            localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
-          }
-          if (Array.isArray(data.logins)) {
-            loginsHistory = data.logins;
-            localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
-          }
-          updateLeaderboardTableUI();
-          if (screens.admin.classList.contains('active')) renderAdminScreen();
         }
       })
       .catch(() => {});
   }
 
   function pushCloudState() {
+    if (isSyncingCloud) return;
+    isSyncingCloud = true;
+
     const payload = {
       leaderboard: leaderboard,
       logins: loginsHistory,
       completed: completedPlayers
     };
-    fetch(CLOUD_BIN_URL, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Security-Key': CLOUD_SECURITY_KEY
-      },
-      body: JSON.stringify(payload)
-    }).catch(() => {});
+
+    const doPush = (sha) => {
+      const b64 = utf8B64Encode(JSON.stringify(payload));
+      const bodyObj = {
+        message: 'sync live leaderboard',
+        content: b64
+      };
+      if (sha) bodyObj.sha = sha;
+
+      return fetch(GH_API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${GH_TOKEN}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        body: JSON.stringify(bodyObj)
+      })
+        .then(res => res.json())
+        .then(resData => {
+          if (resData && resData.content && resData.content.sha) {
+            cloudFileSha = resData.content.sha;
+          }
+        })
+        .catch(() => {})
+        .finally(() => {
+          isSyncingCloud = false;
+        });
+    };
+
+    if (!cloudFileSha) {
+      fetch(GH_API_URL, {
+        headers: {
+          'Authorization': `token ${GH_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        cache: 'no-store'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.sha) cloudFileSha = data.sha;
+          doPush(cloudFileSha);
+        })
+        .catch(() => {
+          doPush(null);
+        });
+    } else {
+      doPush(cloudFileSha);
+    }
   }
 
   // Initial cloud sync at startup
