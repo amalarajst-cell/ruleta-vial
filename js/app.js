@@ -1042,7 +1042,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Leaderboard -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <p class="page-section-title" style="margin-bottom:0">🏆 Tabla de Posiciones (#1 al Último)</p>
-        <button id="btn-clear-ranking" style="font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;text-decoration:underline;">Reiniciar</button>
       </div>
 
       <div id="leaderboard-table-container" style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;overflow:hidden;margin-bottom:24px;">
@@ -1054,21 +1053,6 @@ document.addEventListener('DOMContentLoaded', () => {
         Dirección General de Seguridad Vial
       </p>
     `;
-
-    document.getElementById('btn-clear-ranking')?.addEventListener('click', () => {
-      if (confirm('¿Reiniciar el ranking y borrar datos locales?')) {
-        leaderboard = [];
-        loginsHistory = [];
-        responsesHistory = [];
-        completedPlayers = [];
-        localStorage.removeItem('vex_leaderboard');
-        localStorage.removeItem('vex_logins_history');
-        localStorage.removeItem('vex_responses_history');
-        localStorage.removeItem('vex_completed_players');
-        pushCloudState();
-        renderStatsScreen();
-      }
-    });
   }
 
   // ── ADMIN DASHBOARD ──────────────────────────────────────
