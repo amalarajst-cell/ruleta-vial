@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else {
       btnSpin.disabled = false;
-      btnSpin.innerHTML = '🎯 ¡GIRAR!';
+      btnSpin.innerHTML = '¡GIRAR!';
       btnSpin.style.opacity = '1';
       if (existNotice) existNotice.remove();
     }
