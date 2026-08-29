@@ -26,10 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
       clearInterval(statsRefreshInterval);
       statsRefreshInterval = setInterval(() => {
         if (screens.stats.classList.contains('active') || screens.admin.classList.contains('active')) {
+          fetchCloudState();
           fetch('/api/leaderboard')
             .then(res => res.json())
             .then(data => {
-              if (Array.isArray(data)) {
+              if (Array.isArray(data) && data.length > 0) {
                 leaderboard = data;
                 localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
                 if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
@@ -67,6 +68,53 @@ document.addEventListener('DOMContentLoaded', () => {
   let completedPlayers = JSON.parse(localStorage.getItem('vex_completed_players') || '[]');
   let statsRefreshInterval = null;
 
+  // ── CLOUD MULTI-DEVICE SYNC (REAL-TIME NUBE) ────────────
+  const CLOUD_BIN_URL = 'https://extendsclass.com/api/json-storage/bin/edabbda';
+  const CLOUD_SECURITY_KEY = 'ruletavial123';
+
+  function fetchCloudState() {
+    return fetch(CLOUD_BIN_URL)
+      .then(res => res.json())
+      .then(data => {
+        if (data && typeof data === 'object') {
+          if (Array.isArray(data.leaderboard)) {
+            leaderboard = data.leaderboard;
+            localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+          }
+          if (Array.isArray(data.completed)) {
+            completedPlayers = data.completed;
+            localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+          }
+          if (Array.isArray(data.logins)) {
+            loginsHistory = data.logins;
+            localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+          }
+          if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
+          if (screens.admin.classList.contains('active')) renderAdminScreen();
+        }
+      })
+      .catch(() => {});
+  }
+
+  function pushCloudState() {
+    const payload = {
+      leaderboard: leaderboard,
+      logins: loginsHistory,
+      completed: completedPlayers
+    };
+    fetch(CLOUD_BIN_URL, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Security-Key': CLOUD_SECURITY_KEY
+      },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+  }
+
+  // Initial cloud sync at startup
+  fetchCloudState();
+
   function hasPlayerCompleted(email) {
     if (!email) return false;
     return completedPlayers.includes(email.toLowerCase().trim());
@@ -78,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!completedPlayers.includes(clean)) {
       completedPlayers.push(clean);
       localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+      pushCloudState();
     }
   }
 
@@ -197,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginPayload = { name: playerName, email: playerEmail, timestamp };
     loginsHistory.push(loginPayload);
     localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+    pushCloudState();
 
     // Send to local server log endpoint if running locally
     fetch('/api/log-login', {
@@ -779,6 +829,7 @@ document.addEventListener('DOMContentLoaded', () => {
     leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
     leaderboard = leaderboard.slice(0, 50);
     localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+    pushCloudState();
   }
 
   // ── STATS SCREEN & LIVE LEADERBOARD SYNC ─────────────────
@@ -854,6 +905,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('vex_logins_history');
         localStorage.removeItem('vex_responses_history');
         localStorage.removeItem('vex_completed_players');
+        pushCloudState();
         renderStatsScreen();
       }
     });
@@ -954,6 +1006,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('vex_logins_history');
         localStorage.removeItem('vex_responses_history');
         localStorage.removeItem('vex_completed_players');
+        pushCloudState();
         renderAdminScreen();
       }
     });
