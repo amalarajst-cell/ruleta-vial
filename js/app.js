@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── BOTTOM NAV & ADMIN HANDLERS ──────────────────────────
+  // ── BOTTOM NAV & HANDLERS ─────────────────────────────────
   document.getElementById('nav-ruleta')?.addEventListener('click', () => showScreen('roulette'));
   document.getElementById('nav-ranking')?.addEventListener('click', () => {
     renderStatsScreen();
@@ -498,13 +498,71 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStatsScreen();
     showScreen('stats');
   });
-  document.getElementById('nav-admin')?.addEventListener('click', () => {
-    renderAdminScreen();
-    showScreen('admin');
-  });
   document.getElementById('btn-exit-admin')?.addEventListener('click', () => showScreen('stats'));
   if (btnBackFromStats) {
     btnBackFromStats.addEventListener('click', () => showScreen('roulette'));
+  }
+
+  // ── ADMIN SECURITY & SECRET ACCESS ───────────────────────
+  const ADMIN_PIN = '1234';
+  const modalAdminPin = document.getElementById('modal-admin-pin');
+  const inputAdminPin = document.getElementById('input-admin-pin');
+  const adminPinError = document.getElementById('admin-pin-error');
+  const btnConfirmPin = document.getElementById('btn-confirm-admin-pin');
+  const btnCancelPin  = document.getElementById('btn-cancel-admin-pin');
+
+  function openAdminPinModal() {
+    if (!modalAdminPin) return;
+    if (inputAdminPin) inputAdminPin.value = '';
+    if (adminPinError) adminPinError.style.display = 'none';
+    modalAdminPin.style.display = 'flex';
+    setTimeout(() => inputAdminPin?.focus(), 200);
+  }
+
+  function closeAdminPinModal() {
+    if (modalAdminPin) modalAdminPin.style.display = 'none';
+  }
+
+  function verifyAdminPin() {
+    const enteredPin = (inputAdminPin?.value || '').trim();
+    if (enteredPin === ADMIN_PIN) {
+      closeAdminPinModal();
+      renderAdminScreen();
+      showScreen('admin');
+    } else {
+      if (adminPinError) adminPinError.style.display = 'block';
+      if (inputAdminPin) {
+        inputAdminPin.style.borderColor = '#FF3B3B';
+        inputAdminPin.focus();
+        setTimeout(() => inputAdminPin.style.borderColor = '', 1000);
+      }
+    }
+  }
+
+  btnConfirmPin?.addEventListener('click', verifyAdminPin);
+  btnCancelPin?.addEventListener('click', closeAdminPinModal);
+  inputAdminPin?.addEventListener('keypress', e => { if (e.key === 'Enter') verifyAdminPin(); });
+
+  // Triple-tap header or secret URL access (?admin or #admin)
+  let headerTapCount = 0;
+  let headerTapTimer = null;
+
+  document.querySelectorAll('.app-header .titles, .app-header .logo-mark').forEach(el => {
+    el.addEventListener('click', () => {
+      headerTapCount++;
+      clearTimeout(headerTapTimer);
+      if (headerTapCount >= 3) {
+        headerTapCount = 0;
+        openAdminPinModal();
+      } else {
+        headerTapTimer = setTimeout(() => { headerTapCount = 0; }, 800);
+      }
+    });
+  });
+
+  // Check URL parameters for ?admin or #admin
+  if (window.location.search.includes('admin') || window.location.hash.includes('admin')) {
+    openAdminPinModal();
   }
 
   // ── ROUND START ───────────────────────────────────────────
