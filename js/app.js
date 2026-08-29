@@ -764,8 +764,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── STATS SCREEN & LIVE LEADERBOARD SYNC ─────────────────
-  let statsRefreshInterval = null;
-
   function renderStatsScreen() {
     if (!statsContent) return;
 
