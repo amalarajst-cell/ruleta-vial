@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     roulette:  document.getElementById('screen-roulette'),
     questions: document.getElementById('screen-questions'),
     results:   document.getElementById('screen-results'),
-    stats:     document.getElementById('screen-stats')
+    stats:     document.getElementById('screen-stats'),
+    admin:     document.getElementById('screen-admin')
   };
 
   function showScreen(name) {
@@ -20,23 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
       screens[name].classList.add('active');
       screens[name].scrollTop = 0;
     }
-    // Auto-refresh leaderboard when stats screen is open
-    if (name === 'stats') {
+    // Auto-refresh leaderboard when stats or admin screen is open
+    if (name === 'stats' || name === 'admin') {
       clearInterval(statsRefreshInterval);
       statsRefreshInterval = setInterval(() => {
-        if (screens.stats.classList.contains('active')) {
+        if (screens.stats.classList.contains('active') || screens.admin.classList.contains('active')) {
           fetch('/api/leaderboard')
             .then(res => res.json())
             .then(data => {
               if (Array.isArray(data)) {
                 leaderboard = data;
                 localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
-                updateLeaderboardTableUI();
+                if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
+                if (screens.admin.classList.contains('active')) renderAdminScreen();
               }
             })
             .catch(() => {});
         }
-      }, 4000);
+      }, 3000);
     } else {
       clearInterval(statsRefreshInterval);
     }
@@ -333,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── BOTTOM NAV ───────────────────────────────────────────
+  // ── BOTTOM NAV & ADMIN HANDLERS ──────────────────────────
   document.getElementById('nav-ruleta')?.addEventListener('click', () => showScreen('roulette'));
   document.getElementById('nav-ranking')?.addEventListener('click', () => {
     renderStatsScreen();
@@ -344,6 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderStatsScreen();
     showScreen('stats');
   });
+  document.getElementById('nav-admin')?.addEventListener('click', () => {
+    renderAdminScreen();
+    showScreen('admin');
+  });
+  document.getElementById('btn-exit-admin')?.addEventListener('click', () => showScreen('stats'));
   if (btnBackFromStats) {
     btnBackFromStats.addEventListener('click', () => showScreen('roulette'));
   }
@@ -584,10 +591,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionRounds++;
     updateStatsBar();
 
-    // Mark current player as completed (1 spin per registered user)
-    markPlayerCompleted(playerEmail);
-    updateRouletteLockState();
-
     const { category, correctCount, times } = activeRound;
     const total = 5;
     const totalTime = times.length > 0 ? times.reduce((a, b) => a + b, 0) : 0;
@@ -732,12 +735,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── LEADERBOARD ───────────────────────────────────────────
   function saveToLeaderboard(points, catName, time) {
     const cleanEmail = (playerEmail || '').toLowerCase().trim();
-    const cleanName = (playerName || '').toLowerCase().trim();
+    const cleanName  = (playerName  || '').toLowerCase().trim();
     
-    // Check if player already exists in leaderboard
     const existingIdx = leaderboard.findIndex(e => {
       const eEmail = (e.email || '').toLowerCase().trim();
-      const eName  = (e.name || '').toLowerCase().trim();
+      const eName  = (e.name  || '').toLowerCase().trim();
       return (cleanEmail && eEmail === cleanEmail) || (cleanName && eName === cleanName);
     });
 
@@ -757,11 +759,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
-    leaderboard = leaderboard.slice(0, 30);
+    leaderboard = leaderboard.slice(0, 50);
     localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
   }
 
   // ── STATS SCREEN & LIVE LEADERBOARD SYNC ─────────────────
+  let statsRefreshInterval = null;
+
   function renderStatsScreen() {
     if (!statsContent) return;
 
@@ -777,7 +781,14 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(() => {});
 
-    const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+    const cleanMyEmail = (playerEmail || '').toLowerCase().trim();
+    const cleanMyName  = (playerName  || '').toLowerCase().trim();
+    const myIndex = leaderboard.findIndex(e => {
+      const eEmail = (e.email || '').toLowerCase().trim();
+      const eName  = (e.name || '').toLowerCase().trim();
+      return (cleanMyEmail && eEmail === cleanMyEmail) || (cleanMyName && eName === cleanMyName);
+    });
+    const myRankStr = myIndex >= 0 ? `Puesto #${myIndex + 1} de ${leaderboard.length}` : 'Aún sin posición (¡Girá la ruleta!)';
 
     statsContent.innerHTML = `
       <!-- Current Player Card -->
@@ -786,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div>
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:1px;">Participante</div>
           <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--brand-gold);">${playerName}</div>
-          <div style="font-size:11px;color:var(--text-secondary);">${playerEmail}</div>
+          <div style="font-size:11px;color:var(--brand-cyan);font-weight:700;">🏆 ${myRankStr}</div>
         </div>
         <button onclick="document.getElementById('input-nombre').value='';document.getElementById('input-email').value='';localStorage.removeItem('vex_player_name');localStorage.removeItem('vex_player_email');window.location.reload();"
           style="margin-left:auto;padding:8px 14px;border:1px solid rgba(255,59,59,0.4);border-radius:10px;background:rgba(255,59,59,0.08);color:#FF7070;font-size:11px;font-weight:700;cursor:pointer;">
@@ -798,6 +809,139 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="page-section-title">📊 Sesión Actual</p>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;">
         <div class="stat-card"><div class="sc-label">Puntos Totales</div><div class="sc-value" style="color:var(--brand-gold)">${sessionScore}</div></div>
+        <div class="stat-card"><div class="sc-label">Resp. Correctas</div><div class="sc-value" style="color:var(--brand-green)">${sessionCorrect}</div></div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <p class="page-section-title" style="margin-bottom:0">🏆 Tabla de Posiciones (#1 al Último)</p>
+        <button id="btn-clear-ranking" style="font-size:11px;color:var(--text-muted);background:none;border:none;cursor:pointer;text-decoration:underline;">Reiniciar</button>
+      </div>
+
+      <div id="leaderboard-table-container" style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:16px;overflow:hidden;margin-bottom:24px;">
+        ${getLeaderboardHTML()}
+      </div>
+
+      <p style="text-align:center;font-size:11px;color:var(--text-muted);line-height:1.6;">
+        Gerencia de Educación y Convivencia Vial<br>
+        Dirección General de Seguridad Vial
+      </p>
+    `;
+
+    document.getElementById('btn-clear-ranking')?.addEventListener('click', () => {
+      if (confirm('¿Reiniciar el ranking y borrar datos locales?')) {
+        leaderboard = [];
+        loginsHistory = [];
+        responsesHistory = [];
+        completedPlayers = [];
+        localStorage.removeItem('vex_leaderboard');
+        localStorage.removeItem('vex_logins_history');
+        localStorage.removeItem('vex_responses_history');
+        localStorage.removeItem('vex_completed_players');
+        renderStatsScreen();
+      }
+    });
+  }
+
+  // ── ADMIN DASHBOARD ──────────────────────────────────────
+  const adminContent = document.getElementById('admin-content');
+
+  function renderAdminScreen() {
+    if (!adminContent) return;
+
+    const totalCount = leaderboard.length;
+    const perfectCount = leaderboard.filter(e => e.score >= 500).length;
+    const maxScore = leaderboard.length > 0 ? Math.max(...leaderboard.map(e => e.score)) : 0;
+    const avgOverallTime = leaderboard.length > 0 
+      ? (leaderboard.reduce((a, b) => a + (typeof b.time === 'number' ? b.time : parseFloat(b.time) || 0), 0) / leaderboard.length).toFixed(2)
+      : '0.00';
+
+    const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+
+    adminContent.innerHTML = `
+      <!-- Admin Metric Cards -->
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:14px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">👥 Total Participantes</div>
+          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--brand-gold);margin-top:4px;">${totalCount}</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid rgba(0,229,138,0.3);border-radius:14px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">🏆 Puntaje Perfecto (5/5)</div>
+          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00E58A;margin-top:4px;">${perfectCount}</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid rgba(0,212,245,0.3);border-radius:14px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⭐ Puntaje Máximo</div>
+          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00D4F5;margin-top:4px;">${maxScore} <span style="font-size:12px;">pts</span></div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid rgba(255,208,0,0.3);border-radius:14px;padding:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⏱ Tiempo Prom. General</div>
+          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#FFD000;margin-top:4px;">${avgOverallTime} <span style="font-size:12px;">s</span></div>
+        </div>
+      </div>
+
+      <!-- Live Ranking List -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <p class="page-section-title" style="margin-bottom:0">📊 Ranking Completo (#1 al Último)</p>
+        <button id="btn-admin-reset" style="padding:6px 12px;border:1px solid rgba(255,59,59,0.5);border-radius:8px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
+          🧹 Reiniciar Todo
+        </button>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;margin-bottom:20px;">
+        ${leaderboard.length === 0 ? `
+          <div style="text-align:center;padding:34px;color:var(--text-muted);font-size:13px;">
+            Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.
+          </div>
+        ` : `
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Posición</th>
+                <th>Participante</th>
+                <th>Email</th>
+                <th>Categoría</th>
+                <th style="text-align:right">Pts</th>
+                <th style="text-align:right">Tiempo</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${leaderboard.map((e, i) => {
+                const isPerfect = e.score >= 500;
+                return `
+                  <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}">
+                    <td style="font-family:var(--font-display);font-weight:900;font-size:17px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
+                      ${rankBadge(i)}
+                    </td>
+                    <td style="font-weight:700;color:var(--text-primary)">
+                      ${e.name} ${isPerfect ? '<span style="font-size:9px;background:#00E58A;color:#000;padding:2px 5px;border-radius:4px;font-weight:900;margin-left:4px;">5/5</span>' : ''}
+                    </td>
+                    <td style="font-size:11px;color:var(--text-secondary)">${e.email || '-'}</td>
+                    <td style="font-size:12px;color:var(--text-secondary)">${e.category}</td>
+                    <td style="text-align:right;font-family:var(--font-display);font-weight:900;font-size:16px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
+                    <td style="text-align:right;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        `}
+      </div>
+    `;
+
+    document.getElementById('btn-admin-reset')?.addEventListener('click', () => {
+      if (confirm('¿ATENCIÓN: Reiniciar el tablero y borrar todos los participantes registrados para un nuevo evento?')) {
+        leaderboard = [];
+        loginsHistory = [];
+        responsesHistory = [];
+        completedPlayers = [];
+        localStorage.removeItem('vex_leaderboard');
+        localStorage.removeItem('vex_logins_history');
+        localStorage.removeItem('vex_responses_history');
+        localStorage.removeItem('vex_completed_players');
+        renderAdminScreen();
+      }
+    });
+  }<div class="sc-label">Puntos Totales</div><div class="sc-value" style="color:var(--brand-gold)">${sessionScore}</div></div>
         <div class="stat-card"><div class="sc-label">Resp. Correctas</div><div class="sc-value" style="color:var(--brand-green)">${sessionCorrect}</div></div>
       </div>
 
