@@ -1085,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adminContent.innerHTML = `
       <!-- Admin Top Nav Tabs -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <div class="admin-tabs-bar">
         <button id="tab-admin-metrics" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:${activeAdminTab==='metrics'?'linear-gradient(135deg,var(--brand-gold),#FFAA00)':'var(--bg-card)'};color:${activeAdminTab==='metrics'?'#000':'var(--text-secondary)'};border:1px solid ${activeAdminTab==='metrics'?'var(--brand-gold)':'var(--border-subtle)'};">
           📊 Métricas y Ranking
         </button>
@@ -1096,65 +1096,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ${activeAdminTab === 'metrics' ? `
         <!-- Admin Metric Cards -->
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
-          <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:14px;padding:14px;">
+        <div class="admin-metrics-grid">
+          <div class="admin-metric-card" style="border-color:var(--border-gold);">
             <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">👥 Total Participantes</div>
-            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--brand-gold);margin-top:4px;">${totalCount}</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:32px;color:var(--brand-gold);margin-top:6px;">${totalCount}</div>
           </div>
-          <div style="background:var(--bg-card);border:1px solid rgba(0,229,138,0.3);border-radius:14px;padding:14px;">
+          <div class="admin-metric-card" style="border-color:rgba(0,229,138,0.35);">
             <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">🏆 Puntaje Perfecto (5/5)</div>
-            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00E58A;margin-top:4px;">${perfectCount}</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:32px;color:#00E58A;margin-top:6px;">${perfectCount}</div>
           </div>
-          <div style="background:var(--bg-card);border:1px solid rgba(0,212,245,0.3);border-radius:14px;padding:14px;">
+          <div class="admin-metric-card" style="border-color:rgba(0,212,245,0.35);">
             <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⭐ Puntaje Máximo</div>
-            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00D4F5;margin-top:4px;">${maxScore} <span style="font-size:12px;">pts</span></div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:32px;color:#00D4F5;margin-top:6px;">${maxScore} <span style="font-size:14px;color:var(--text-muted);">pts</span></div>
           </div>
-          <div style="background:var(--bg-card);border:1px solid rgba(255,208,0,0.3);border-radius:14px;padding:14px;">
+          <div class="admin-metric-card" style="border-color:rgba(255,208,0,0.35);">
             <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⏱ Tiempo Prom. General</div>
-            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#FFD000;margin-top:4px;">${avgOverallTime} <span style="font-size:12px;">s</span></div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:32px;color:#FFD000;margin-top:6px;">${avgOverallTime} <span style="font-size:14px;color:var(--text-muted);">s</span></div>
           </div>
         </div>
 
         <!-- Live Ranking List -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
           <p class="page-section-title" style="margin-bottom:0">📊 Ranking Completo (#1 al Último)</p>
-          <button id="btn-admin-reset" style="padding:6px 12px;border:1px solid rgba(255,59,59,0.5);border-radius:8px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
+          <button id="btn-admin-reset" style="padding:8px 14px;border:1px solid rgba(255,59,59,0.5);border-radius:8px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
             🧹 Reiniciar Todo
           </button>
         </div>
 
-        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;margin-bottom:20px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
           ${leaderboard.length === 0 ? `
-            <div style="text-align:center;padding:34px;color:var(--text-muted);font-size:13px;">
+            <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">
               Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.
             </div>
           ` : `
-            <table class="leaderboard-table">
+            <table class="leaderboard-table" style="width:100%;">
               <thead>
-                <tr>
-                  <th>Posición</th>
-                  <th>Participante</th>
-                  <th>Email</th>
-                  <th>Categoría</th>
-                  <th style="text-align:right">Pts</th>
-                  <th style="text-align:right">Tiempo</th>
+                <tr style="background:rgba(0,0,0,0.2);">
+                  <th style="padding:12px 14px;">Posición</th>
+                  <th style="padding:12px 14px;">Participante</th>
+                  <th style="padding:12px 14px;">Email</th>
+                  <th style="padding:12px 14px;">Categoría</th>
+                  <th style="padding:12px 14px;text-align:right">Puntos</th>
+                  <th style="padding:12px 14px;text-align:right">Tiempo Total</th>
                 </tr>
               </thead>
               <tbody>
                 ${leaderboard.map((e, i) => {
                   const isPerfect = e.score >= 500;
                   return `
-                    <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}">
-                      <td style="font-family:var(--font-display);font-weight:900;font-size:17px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
+                    <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}transition:background 0.2s;">
+                      <td style="padding:12px 14px;font-family:var(--font-display);font-weight:900;font-size:18px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
                         ${rankBadge(i)}
                       </td>
-                      <td style="font-weight:700;color:var(--text-primary)">
-                        ${e.name} ${isPerfect ? '<span style="font-size:9px;background:#00E58A;color:#000;padding:2px 5px;border-radius:4px;font-weight:900;margin-left:4px;">5/5</span>' : ''}
+                      <td style="padding:12px 14px;font-weight:700;color:var(--text-primary);font-size:14px;">
+                        ${e.name} ${isPerfect ? '<span style="font-size:10px;background:#00E58A;color:#000;padding:2px 6px;border-radius:4px;font-weight:900;margin-left:6px;">5/5 PERFECTO</span>' : ''}
                       </td>
-                      <td style="font-size:11px;color:var(--text-secondary)">${e.email || '-'}</td>
-                      <td style="font-size:12px;color:var(--text-secondary)">${e.category}</td>
-                      <td style="text-align:right;font-family:var(--font-display);font-weight:900;font-size:16px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
-                      <td style="text-align:right;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
+                      <td style="padding:12px 14px;font-size:12px;color:var(--text-secondary)">${e.email || '-'}</td>
+                      <td style="padding:12px 14px;font-size:13px;color:var(--text-secondary);">${e.category}</td>
+                      <td style="padding:12px 14px;text-align:right;font-family:var(--font-display);font-weight:900;font-size:18px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
+                      <td style="padding:12px 14px;text-align:right;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
                     </tr>
                   `;
                 }).join('')}
@@ -1164,15 +1164,15 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       ` : `
         <!-- QUESTION MANAGER TAB -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <p class="page-section-title" style="margin-bottom:0">📚 Editor de Preguntas (${QUESTIONS.length})</p>
-          <button id="btn-add-question" style="padding:8px 14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <p class="page-section-title" style="margin-bottom:0">📚 Editor de Preguntas (${QUESTIONS.length} preguntas en total)</p>
+          <button id="btn-add-question" style="padding:10px 18px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:13px;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 14px rgba(255,208,0,0.3);">
             ➕ Nueva Pregunta
           </button>
         </div>
 
         <!-- Category Filters -->
-        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-bottom:12px;margin-bottom:16px;">
           ${[
             { id:'all', label:'Todas' },
             { id:'auto', label:'🚗 Auto' },
@@ -1183,69 +1183,71 @@ document.addEventListener('DOMContentLoaded', () => {
             { id:'senales', label:'🚸 Señal' },
             { id:'micromovilidad', label:'🛴 Micro' }
           ].map(c => `
-            <button class="btn-q-cat-filter" data-cat="${c.id}" style="padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;background:${selectedAdminCatFilter===c.id?'var(--brand-cyan)':'var(--bg-card)'};color:${selectedAdminCatFilter===c.id?'#000':'var(--text-secondary)'};border:1px solid ${selectedAdminCatFilter===c.id?'var(--brand-cyan)':'var(--border-subtle)'};">
+            <button class="btn-q-cat-filter" data-cat="${c.id}" style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer;background:${selectedAdminCatFilter===c.id?'var(--brand-cyan)':'var(--bg-card)'};color:${selectedAdminCatFilter===c.id?'#000':'var(--text-secondary)'};border:1px solid ${selectedAdminCatFilter===c.id?'var(--brand-cyan)':'var(--border-subtle)'};transition:all 0.2s;">
               ${c.label}
             </button>
           `).join('')}
         </div>
 
-        <!-- Questions List -->
-        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+        <!-- Questions Multi-Column Grid -->
+        <div class="admin-questions-grid">
           ${(() => {
             const filtered = selectedAdminCatFilter === 'all' 
               ? QUESTIONS 
               : QUESTIONS.filter(q => q.category === selectedAdminCatFilter);
 
             if (filtered.length === 0) {
-              return `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No hay preguntas registradas en esta categoría.</div>`;
+              return `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">No hay preguntas registradas en esta categoría.</div>`;
             }
 
             return filtered.map(q => {
               const catInfo = CATEGORIES[q.category] || { name: q.category, icon: '❓' };
               return `
-                <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:14px;text-align:left;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-size:11px;font-weight:900;background:rgba(0,212,245,0.15);color:var(--brand-cyan);padding:4px 8px;border-radius:6px;text-transform:uppercase;">
-                      ${catInfo.icon} ${catInfo.name} (#${q.id})
-                    </span>
-                    <div style="display:flex;gap:6px;">
-                      <button class="btn-edit-q" data-id="${q.id}" style="padding:4px 10px;border:1px solid var(--border-gold);border-radius:6px;background:rgba(255,208,0,0.1);color:var(--brand-gold);font-size:11px;font-weight:800;cursor:pointer;">
-                        ✏️ Editar
-                      </button>
-                      <button class="btn-delete-q" data-id="${q.id}" style="padding:4px 10px;border:1px solid rgba(255,59,59,0.4);border-radius:6px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
-                        🗑️ Borrar
-                      </button>
+                <div class="admin-q-card">
+                  <div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                      <span style="font-size:11px;font-weight:900;background:rgba(0,212,245,0.15);color:var(--brand-cyan);padding:4px 10px;border-radius:6px;text-transform:uppercase;">
+                        ${catInfo.icon} ${catInfo.name} (#${q.id})
+                      </span>
+                      <div style="display:flex;gap:6px;">
+                        <button class="btn-edit-q" data-id="${q.id}" style="padding:5px 12px;border:1px solid var(--border-gold);border-radius:6px;background:rgba(255,208,0,0.1);color:var(--brand-gold);font-size:11px;font-weight:800;cursor:pointer;">
+                          ✏️ Editar
+                        </button>
+                        <button class="btn-delete-q" data-id="${q.id}" style="padding:5px 12px;border:1px solid rgba(255,59,59,0.4);border-radius:6px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
+                          🗑️ Borrar
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:10px;line-height:1.4;">
-                    ${q.question}
-                  </div>
+                    
+                    <div style="font-weight:700;font-size:14px;color:#fff;margin-bottom:12px;line-height:1.4;">
+                      ${q.question}
+                    </div>
 
-                  ${q.imageSrc ? `
-                    <div style="text-align:center;margin:8px 0;background:var(--bg-surface);padding:8px;border-radius:10px;border:1px solid var(--border-subtle);">
-                      <img src="${q.imageSrc}" style="max-height:120px;max-width:100%;object-fit:contain;border-radius:6px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
-                    </div>
-                  ` : ''}
-                  ${q.imageSvg ? `
-                    <div style="text-align:center;margin:8px 0;background:var(--bg-surface);padding:8px;border-radius:10px;border:1px solid var(--border-subtle);">
-                      ${q.imageSvg}
-                    </div>
-                  ` : ''}
+                    ${q.imageSrc ? `
+                      <div style="text-align:center;margin:10px 0;background:var(--bg-surface);padding:8px;border-radius:10px;border:1px solid var(--border-subtle);">
+                        <img src="${q.imageSrc}" style="max-height:130px;max-width:100%;object-fit:contain;border-radius:6px;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+                      </div>
+                    ` : ''}
+                    ${q.imageSvg ? `
+                      <div style="text-align:center;margin:10px 0;background:var(--bg-surface);padding:8px;border-radius:10px;border:1px solid var(--border-subtle);">
+                        ${q.imageSvg}
+                      </div>
+                    ` : ''}
 
-                  <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px;">
-                    ${(q.options || []).map((opt, optIdx) => {
-                      const isCorrect = optIdx === q.correctAnswer;
-                      return `
-                        <div style="font-size:11px;padding:6px 10px;border-radius:6px;background:${isCorrect?'rgba(0,229,138,0.15)':'var(--bg-surface)'};color:${isCorrect?'#00E58A':'var(--text-secondary)'};border:1px solid ${isCorrect?'#00E58A':'transparent'};font-weight:${isCorrect?'800':'500'};">
-                          ${isCorrect ? '✓ ' : ''}${opt}
-                        </div>
-                      `;
-                    }).join('')}
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+                      ${(q.options || []).map((opt, optIdx) => {
+                        const isCorrect = optIdx === q.correctAnswer;
+                        return `
+                          <div style="font-size:12px;padding:8px 12px;border-radius:8px;background:${isCorrect?'rgba(0,229,138,0.15)':'var(--bg-surface)'};color:${isCorrect?'#00E58A':'var(--text-secondary)'};border:1px solid ${isCorrect?'#00E58A':'transparent'};font-weight:${isCorrect?'800':'500'};">
+                            ${isCorrect ? '✓ ' : ''}${opt}
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
                   </div>
 
                   ${q.explanation ? `
-                    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.3;border-top:1px dashed var(--border-subtle);padding-top:6px;margin-top:6px;">
+                    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.4;border-top:1px dashed var(--border-subtle);padding-top:8px;margin-top:8px;">
                       💡 Explicación: ${q.explanation}
                     </div>
                   ` : ''}

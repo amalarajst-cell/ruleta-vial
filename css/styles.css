@@ -1248,5 +1248,108 @@ body {
   animation: confettiDrop 1s ease-in forwards;
 }
 
+/* ============================================
+   SCREEN — ADMIN PC DESKTOP ADAPTATION
+   (Public screens stay in mobile format max-width: 500px)
+   ============================================ */
+#screen-admin {
+  background: var(--bg-deep);
+  min-height: 100vh;
+  width: 100%;
+}
+
+#screen-admin .app-header {
+  padding: 12px 24px;
+}
+
+#screen-admin .header-inner {
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#screen-admin .stats-page-content,
+#screen-admin #admin-content {
+  max-width: 1300px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+}
+
+/* Admin Tabs */
+.admin-tabs-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 22px;
+  max-width: 480px;
+}
+
+/* Metric Cards Grid - 4 columns on PC, 2 on mobile */
+.admin-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.admin-metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  transition: var(--transition);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.admin-metric-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-gold);
+}
+
+/* Questions Grid - Multi-column responsive grid on PC */
+.admin-questions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.admin-q-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+.admin-q-card:hover {
+  border-color: rgba(255, 208, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* Question Editor Modal - Desktop Adaptation */
+#modal-question-editor > div {
+  max-width: 680px !important;
+  width: 95% !important;
+}
+
+.qe-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .qe-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Performance optimization */
 canvas, .roulette-wheel-wrap { will-change: transform; }
+
