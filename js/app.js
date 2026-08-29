@@ -600,6 +600,21 @@ document.addEventListener('DOMContentLoaded', () => {
     saveToLeaderboard(sessionScore, category.name, parseFloat(avgTime));
     const pct = Math.round((correctCount / total) * 100);
 
+    // Mark current player as completed (1 spin per registered user)
+    markPlayerCompleted(playerEmail);
+    updateRouletteLockState();
+
+    // Calculate exact rank position for current participant
+    const cleanMyEmail = (playerEmail || '').toLowerCase().trim();
+    const cleanMyName  = (playerName  || '').toLowerCase().trim();
+    const myIndex = leaderboard.findIndex(e => {
+      const eEmail = (e.email || '').toLowerCase().trim();
+      const eName  = (e.name  || '').toLowerCase().trim();
+      return (cleanMyEmail && eEmail === cleanMyEmail) || (cleanMyName && eName === cleanMyName);
+    });
+    const myRank = myIndex >= 0 ? myIndex + 1 : 1;
+    const totalPlayers = leaderboard.length;
+
     let emoji = '💪';
     let title = 'Seguí practicando';
     let titleColor = '#A8BCCF';
