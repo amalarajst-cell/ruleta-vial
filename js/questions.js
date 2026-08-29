@@ -583,15 +583,7 @@ const QUESTIONS = [
     id: 48,
     category: "senales",
     question: "Determine qué indica la señal de tránsito que a continuación se presenta:",
-    imageSvg: `<svg viewBox="0 0 100 100" class="w-32 h-32 mx-auto my-3 filter drop-shadow-lg">
-      <polygon points="50,5 95,90 5,90" fill="#FFC72C" stroke="#1E293B" stroke-width="4"/>
-      <polygon points="50,15 85,83 15,83" fill="#FFC72C" stroke="#1E293B" stroke-width="2"/>
-      <path d="M 40,48 C 40,43 45,40 48,44 C 50,40 55,43 55,48 L 55,65 L 40,65 Z" fill="#0F172A"/>
-      <circle cx="45" cy="36" r="4" fill="#0F172A"/>
-      <path d="M 58,53 C 58,50 62,48 65,51 L 65,65 L 58,65 Z" fill="#0F172A"/>
-      <circle cx="61" cy="44" r="3" fill="#0F172A"/>
-      <rect x="33" y="65" width="34" height="4" fill="#0F172A"/>
-    </svg>`,
+    imageSrc: "img/zona_escolar.png",
     options: [
       "A. Niños jugando.",
       "B. Zona escolar.",
