@@ -339,26 +339,29 @@ body {
 
 .header-brand .titles {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .header-brand .titles h1 {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(9px, 2.8vw, 13px);
+  font-size: clamp(10px, 3vw, 13.5px);
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.15;
+  color: #FFFFFF;
 }
 
 .header-brand .titles h2 {
-  font-size: clamp(8px, 2.2vw, 10px);
-  font-weight: 600;
+  font-size: clamp(8px, 2.2vw, 10.5px);
+  font-weight: 700;
   color: var(--brand-gold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin-top: 2px;
 }
 
 .header-player-pill {
