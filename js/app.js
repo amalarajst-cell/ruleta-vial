@@ -73,7 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const CLOUD_SECURITY_KEY = 'ruletavial123';
 
   function fetchCloudState() {
-    return fetch(CLOUD_BIN_URL)
+    return fetch(CLOUD_BIN_URL, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    })
       .then(res => res.json())
       .then(data => {
         if (data && typeof data === 'object') {
@@ -89,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginsHistory = data.logins;
             localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
           }
-          if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
+          updateLeaderboardTableUI();
           if (screens.admin.classList.contains('active')) renderAdminScreen();
         }
       })
@@ -1033,7 +1039,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </tr>
         </thead>
         <tbody>
-          ${leaderboard.slice(0, 10).map((e, i) => {
+          ${leaderboard.map((e, i) => {
             const isMe = (e.name || '').toLowerCase() === (playerName || '').toLowerCase();
             return `
               <tr class="${isMe ? 'is-current' : ''}">
