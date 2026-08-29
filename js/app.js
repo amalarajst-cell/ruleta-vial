@@ -117,6 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateLeaderboardTableUI();
             if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
+            if (playerName && hasPlayerCompleted(playerEmail)) {
+              updateRouletteLockState();
+            }
           }
         }
       })
@@ -187,18 +190,42 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchCloudState();
 
   function hasPlayerCompleted(email) {
-    if (!email) return false;
-    return completedPlayers.includes(email.toLowerCase().trim());
+    const cleanE = (email || playerEmail || '').toLowerCase().trim();
+    const cleanN = (playerName || '').toLowerCase().trim();
+
+    if (!cleanE && !cleanN) return false;
+
+    // 1. Check in completedPlayers list
+    const inCompleted = completedPlayers.some(item => {
+      if (typeof item === 'string') {
+        const cleanItem = item.toLowerCase().trim();
+        return (cleanE && cleanItem === cleanE) || (cleanN && cleanItem === cleanN);
+      }
+      return false;
+    });
+    if (inCompleted) return true;
+
+    // 2. Check in leaderboard entries
+    const inLeaderboard = leaderboard.some(entry => {
+      const eEmail = (entry.email || '').toLowerCase().trim();
+      const eName  = (entry.name  || '').toLowerCase().trim();
+      return (cleanE && eEmail === cleanE) || (cleanN && eName === cleanN);
+    });
+    if (inLeaderboard) return true;
+
+    return false;
   }
 
   function markPlayerCompleted(email) {
-    if (!email) return;
-    const clean = email.toLowerCase().trim();
-    if (!completedPlayers.includes(clean)) {
-      completedPlayers.push(clean);
-      localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
-      pushCloudState();
-    }
+    if (!email && !playerName) return;
+    const cleanE = (email || '').toLowerCase().trim();
+    const cleanN = (playerName || '').toLowerCase().trim();
+    
+    if (cleanE && !completedPlayers.includes(cleanE)) completedPlayers.push(cleanE);
+    if (cleanN && !completedPlayers.includes(cleanN)) completedPlayers.push(cleanN);
+    
+    localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+    pushCloudState();
   }
 
   // ── ROUND STATE ──────────────────────────────────────────
@@ -449,6 +476,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tap canvas to spin
   if (spinCanvas) {
     spinCanvas.addEventListener('click', () => {
+      if (hasPlayerCompleted(playerEmail)) {
+        alert('Ya realizaste tu giro. Registrá a otra persona para volver a jugar.');
+        return;
+      }
       if (!roulette.isSpinning) {
         btnSpin.disabled = true;
         roulette.spin();
