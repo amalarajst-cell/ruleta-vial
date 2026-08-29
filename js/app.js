@@ -85,6 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
   }
 
+  // Load custom saved questions from localStorage if available
+  let savedCustomQ = JSON.parse(localStorage.getItem('vex_custom_questions') || 'null');
+  if (Array.isArray(savedCustomQ) && savedCustomQ.length > 0) {
+    QUESTIONS.splice(0, QUESTIONS.length, ...savedCustomQ);
+  }
+
   function fetchCloudState() {
     return fetch(GH_API_URL, {
       headers: {
@@ -115,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
               loginsHistory = parsed.logins;
               localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
             }
+            if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+              QUESTIONS.splice(0, QUESTIONS.length, ...parsed.questions);
+              localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+            }
             updateLeaderboardTableUI();
             if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
             if (playerName && hasPlayerCompleted(playerEmail)) {
@@ -133,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const payload = {
       leaderboard: leaderboard,
       logins: loginsHistory,
-      completed: completedPlayers
+      completed: completedPlayers,
+      questions: QUESTIONS
     };
 
     const doPush = (sha) => {
@@ -1055,8 +1066,10 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // ── ADMIN DASHBOARD ──────────────────────────────────────
+  // ── ADMIN DASHBOARD & QUESTION EDITOR ─────────────────────
   const adminContent = document.getElementById('admin-content');
+  let activeAdminTab = 'metrics'; // 'metrics' or 'questions'
+  let selectedAdminCatFilter = 'all';
 
   function renderAdminScreen() {
     if (!adminContent) return;
@@ -1071,75 +1084,177 @@ document.addEventListener('DOMContentLoaded', () => {
     const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
 
     adminContent.innerHTML = `
-      <!-- Admin Metric Cards -->
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
-        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:14px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">👥 Total Participantes</div>
-          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--brand-gold);margin-top:4px;">${totalCount}</div>
-        </div>
-        <div style="background:var(--bg-card);border:1px solid rgba(0,229,138,0.3);border-radius:14px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">🏆 Puntaje Perfecto (5/5)</div>
-          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00E58A;margin-top:4px;">${perfectCount}</div>
-        </div>
-        <div style="background:var(--bg-card);border:1px solid rgba(0,212,245,0.3);border-radius:14px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⭐ Puntaje Máximo</div>
-          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00D4F5;margin-top:4px;">${maxScore} <span style="font-size:12px;">pts</span></div>
-        </div>
-        <div style="background:var(--bg-card);border:1px solid rgba(255,208,0,0.3);border-radius:14px;padding:14px;">
-          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⏱ Tiempo Prom. General</div>
-          <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#FFD000;margin-top:4px;">${avgOverallTime} <span style="font-size:12px;">s</span></div>
-        </div>
-      </div>
-
-      <!-- Live Ranking List -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <p class="page-section-title" style="margin-bottom:0">📊 Ranking Completo (#1 al Último)</p>
-        <button id="btn-admin-reset" style="padding:6px 12px;border:1px solid rgba(255,59,59,0.5);border-radius:8px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
-          🧹 Reiniciar Todo
+      <!-- Admin Top Nav Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button id="tab-admin-metrics" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:${activeAdminTab==='metrics'?'linear-gradient(135deg,var(--brand-gold),#FFAA00)':'var(--bg-card)'};color:${activeAdminTab==='metrics'?'#000':'var(--text-secondary)'};border:1px solid ${activeAdminTab==='metrics'?'var(--brand-gold)':'var(--border-subtle)'};">
+          📊 Métricas y Ranking
+        </button>
+        <button id="tab-admin-questions" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:${activeAdminTab==='questions'?'linear-gradient(135deg,var(--brand-gold),#FFAA00)':'var(--bg-card)'};color:${activeAdminTab==='questions'?'#000':'var(--text-secondary)'};border:1px solid ${activeAdminTab==='questions'?'var(--brand-gold)':'var(--border-subtle)'};">
+          📚 Preguntas (${QUESTIONS.length})
         </button>
       </div>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;margin-bottom:20px;">
-        ${leaderboard.length === 0 ? `
-          <div style="text-align:center;padding:34px;color:var(--text-muted);font-size:13px;">
-            Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.
+      ${activeAdminTab === 'metrics' ? `
+        <!-- Admin Metric Cards -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;">
+          <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:14px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">👥 Total Participantes</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--brand-gold);margin-top:4px;">${totalCount}</div>
           </div>
-        ` : `
-          <table class="leaderboard-table">
-            <thead>
-              <tr>
-                <th>Posición</th>
-                <th>Participante</th>
-                <th>Email</th>
-                <th>Categoría</th>
-                <th style="text-align:right">Pts</th>
-                <th style="text-align:right">Tiempo</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${leaderboard.map((e, i) => {
-                const isPerfect = e.score >= 500;
-                return `
-                  <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}">
-                    <td style="font-family:var(--font-display);font-weight:900;font-size:17px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
-                      ${rankBadge(i)}
-                    </td>
-                    <td style="font-weight:700;color:var(--text-primary)">
-                      ${e.name} ${isPerfect ? '<span style="font-size:9px;background:#00E58A;color:#000;padding:2px 5px;border-radius:4px;font-weight:900;margin-left:4px;">5/5</span>' : ''}
-                    </td>
-                    <td style="font-size:11px;color:var(--text-secondary)">${e.email || '-'}</td>
-                    <td style="font-size:12px;color:var(--text-secondary)">${e.category}</td>
-                    <td style="text-align:right;font-family:var(--font-display);font-weight:900;font-size:16px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
-                    <td style="text-align:right;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        `}
-      </div>
+          <div style="background:var(--bg-card);border:1px solid rgba(0,229,138,0.3);border-radius:14px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">🏆 Puntaje Perfecto (5/5)</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00E58A;margin-top:4px;">${perfectCount}</div>
+          </div>
+          <div style="background:var(--bg-card);border:1px solid rgba(0,212,245,0.3);border-radius:14px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⭐ Puntaje Máximo</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#00D4F5;margin-top:4px;">${maxScore} <span style="font-size:12px;">pts</span></div>
+          </div>
+          <div style="background:var(--bg-card);border:1px solid rgba(255,208,0,0.3);border-radius:14px;padding:14px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;">⏱ Tiempo Prom. General</div>
+            <div style="font-family:var(--font-display);font-weight:900;font-size:26px;color:#FFD000;margin-top:4px;">${avgOverallTime} <span style="font-size:12px;">s</span></div>
+          </div>
+        </div>
+
+        <!-- Live Ranking List -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <p class="page-section-title" style="margin-bottom:0">📊 Ranking Completo (#1 al Último)</p>
+          <button id="btn-admin-reset" style="padding:6px 12px;border:1px solid rgba(255,59,59,0.5);border-radius:8px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
+            🧹 Reiniciar Todo
+          </button>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;margin-bottom:20px;">
+          ${leaderboard.length === 0 ? `
+            <div style="text-align:center;padding:34px;color:var(--text-muted);font-size:13px;">
+              Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.
+            </div>
+          ` : `
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>Posición</th>
+                  <th>Participante</th>
+                  <th>Email</th>
+                  <th>Categoría</th>
+                  <th style="text-align:right">Pts</th>
+                  <th style="text-align:right">Tiempo</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${leaderboard.map((e, i) => {
+                  const isPerfect = e.score >= 500;
+                  return `
+                    <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}">
+                      <td style="font-family:var(--font-display);font-weight:900;font-size:17px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
+                        ${rankBadge(i)}
+                      </td>
+                      <td style="font-weight:700;color:var(--text-primary)">
+                        ${e.name} ${isPerfect ? '<span style="font-size:9px;background:#00E58A;color:#000;padding:2px 5px;border-radius:4px;font-weight:900;margin-left:4px;">5/5</span>' : ''}
+                      </td>
+                      <td style="font-size:11px;color:var(--text-secondary)">${e.email || '-'}</td>
+                      <td style="font-size:12px;color:var(--text-secondary)">${e.category}</td>
+                      <td style="text-align:right;font-family:var(--font-display);font-weight:900;font-size:16px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
+                      <td style="text-align:right;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          `}
+        </div>
+      ` : `
+        <!-- QUESTION MANAGER TAB -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <p class="page-section-title" style="margin-bottom:0">📚 Editor de Preguntas (${QUESTIONS.length})</p>
+          <button id="btn-add-question" style="padding:8px 14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;">
+            ➕ Nueva Pregunta
+          </button>
+        </div>
+
+        <!-- Category Filters -->
+        <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px;">
+          ${[
+            { id:'all', label:'Todas' },
+            { id:'auto', label:'🚗 Auto' },
+            { id:'moto', label:'🏍️ Moto' },
+            { id:'bicicleta', label:'🚲 Bici' },
+            { id:'peatones', label:'🚶 Peatón' },
+            { id:'colectivo', label:'🚌 Bus' },
+            { id:'senales', label:'🚸 Señal' },
+            { id:'micromovilidad', label:'🛴 Micro' }
+          ].map(c => `
+            <button class="btn-q-cat-filter" data-cat="${c.id}" style="padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;background:${selectedAdminCatFilter===c.id?'var(--brand-cyan)':'var(--bg-card)'};color:${selectedAdminCatFilter===c.id?'#000':'var(--text-secondary)'};border:1px solid ${selectedAdminCatFilter===c.id?'var(--brand-cyan)':'var(--border-subtle)'};">
+              ${c.label}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Questions List -->
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+          ${(() => {
+            const filtered = selectedAdminCatFilter === 'all' 
+              ? QUESTIONS 
+              : QUESTIONS.filter(q => q.category === selectedAdminCatFilter);
+
+            if (filtered.length === 0) {
+              return `<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:13px;">No hay preguntas registradas en esta categoría.</div>`;
+            }
+
+            return filtered.map(q => {
+              const catInfo = CATEGORIES[q.category] || { name: q.category, icon: '❓' };
+              return `
+                <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:14px;text-align:left;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <span style="font-size:11px;font-weight:900;background:rgba(0,212,245,0.15);color:var(--brand-cyan);padding:4px 8px;border-radius:6px;text-transform:uppercase;">
+                      ${catInfo.icon} ${catInfo.name} (#${q.id})
+                    </span>
+                    <div style="display:flex;gap:6px;">
+                      <button class="btn-edit-q" data-id="${q.id}" style="padding:4px 10px;border:1px solid var(--border-gold);border-radius:6px;background:rgba(255,208,0,0.1);color:var(--brand-gold);font-size:11px;font-weight:800;cursor:pointer;">
+                        ✏️ Editar
+                      </button>
+                      <button class="btn-delete-q" data-id="${q.id}" style="padding:4px 10px;border:1px solid rgba(255,59,59,0.4);border-radius:6px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
+                        🗑️ Borrar
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:10px;line-height:1.4;">
+                    ${q.question}
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px;">
+                    ${(q.options || []).map((opt, optIdx) => {
+                      const isCorrect = optIdx === q.correctAnswer;
+                      return `
+                        <div style="font-size:11px;padding:6px 10px;border-radius:6px;background:${isCorrect?'rgba(0,229,138,0.15)':'var(--bg-surface)'};color:${isCorrect?'#00E58A':'var(--text-secondary)'};border:1px solid ${isCorrect?'#00E58A':'transparent'};font-weight:${isCorrect?'800':'500'};">
+                          ${isCorrect ? '✓ ' : ''}${opt}
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+
+                  ${q.explanation ? `
+                    <div style="font-size:11px;color:var(--text-muted);font-style:italic;line-height:1.3;border-top:1px dashed var(--border-subtle);padding-top:6px;margin-top:6px;">
+                      💡 Explicación: ${q.explanation}
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('');
+          })()}
+        </div>
+      `}
     `;
 
+    // Event listeners
+    document.getElementById('tab-admin-metrics')?.addEventListener('click', () => {
+      activeAdminTab = 'metrics';
+      renderAdminScreen();
+    });
+    document.getElementById('tab-admin-questions')?.addEventListener('click', () => {
+      activeAdminTab = 'questions';
+      renderAdminScreen();
+    });
     document.getElementById('btn-admin-reset')?.addEventListener('click', () => {
       if (confirm('¿ATENCIÓN: Reiniciar el tablero y borrar todos los participantes registrados para un nuevo evento?')) {
         leaderboard = [];
@@ -1154,7 +1269,139 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAdminScreen();
       }
     });
+
+    document.querySelectorAll('.btn-q-cat-filter').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        selectedAdminCatFilter = e.currentTarget.getAttribute('data-cat');
+        renderAdminScreen();
+      });
+    });
+
+    document.getElementById('btn-add-question')?.addEventListener('click', () => {
+      openQuestionEditorModal(null);
+    });
+
+    document.querySelectorAll('.btn-edit-q').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.getAttribute('data-id'), 10);
+        const qObj = QUESTIONS.find(q => q.id === id);
+        if (qObj) openQuestionEditorModal(qObj);
+      });
+    });
+
+    document.querySelectorAll('.btn-delete-q').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.getAttribute('data-id'), 10);
+        if (confirm(`¿Eliminar la pregunta #${id}?`)) {
+          const idx = QUESTIONS.findIndex(q => q.id === id);
+          if (idx >= 0) {
+            QUESTIONS.splice(idx, 1);
+            localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+            pushCloudState();
+            renderAdminScreen();
+          }
+        }
+      });
+    });
   }
+
+  // Question Editor Modal Logic
+  const modalQEditor = document.getElementById('modal-question-editor');
+  const qeTitle      = document.getElementById('qe-modal-title');
+  const qeId         = document.getElementById('qe-id');
+  const qeCategory   = document.getElementById('qe-category');
+  const qeQuestion   = document.getElementById('qe-question');
+  const qeOpt0       = document.getElementById('qe-opt-0');
+  const qeOpt1       = document.getElementById('qe-opt-1');
+  const qeOpt2       = document.getElementById('qe-opt-2');
+  const qeCorrect    = document.getElementById('qe-correct');
+  const qeExplanation = document.getElementById('qe-explanation');
+  const btnQeCancel  = document.getElementById('btn-qe-cancel');
+  const btnQeSave    = document.getElementById('btn-qe-save');
+
+  function openQuestionEditorModal(qObj) {
+    if (!modalQEditor) return;
+    if (qObj) {
+      if (qeTitle) qeTitle.textContent = `✏️ Editar Pregunta #${qObj.id}`;
+      if (qeId) qeId.value = qObj.id;
+      if (qeCategory) qeCategory.value = qObj.category || 'auto';
+      if (qeQuestion) qeQuestion.value = qObj.question || '';
+      if (qeOpt0) qeOpt0.value = (qObj.options && qObj.options[0]) || '';
+      if (qeOpt1) qeOpt1.value = (qObj.options && qObj.options[1]) || '';
+      if (qeOpt2) qeOpt2.value = (qObj.options && qObj.options[2]) || '';
+      if (qeCorrect) qeCorrect.value = qObj.correctAnswer !== undefined ? qObj.correctAnswer : 0;
+      if (qeExplanation) qeExplanation.value = qObj.explanation || '';
+    } else {
+      if (qeTitle) qeTitle.textContent = '➕ Nueva Pregunta';
+      if (qeId) qeId.value = '';
+      if (qeCategory) qeCategory.value = 'auto';
+      if (qeQuestion) qeQuestion.value = '';
+      if (qeOpt0) qeOpt0.value = '';
+      if (qeOpt1) qeOpt1.value = '';
+      if (qeOpt2) qeOpt2.value = '';
+      if (qeCorrect) qeCorrect.value = 0;
+      if (qeExplanation) qeExplanation.value = '';
+    }
+    modalQEditor.style.display = 'flex';
+  }
+
+  function closeQuestionEditorModal() {
+    if (modalQEditor) modalQEditor.style.display = 'none';
+  }
+
+  btnQeCancel?.addEventListener('click', closeQuestionEditorModal);
+
+  btnQeSave?.addEventListener('click', () => {
+    const idVal = qeId ? qeId.value : '';
+    const category = qeCategory ? qeCategory.value : 'auto';
+    const questionText = qeQuestion ? qeQuestion.value.trim() : '';
+    const opt0 = qeOpt0 ? qeOpt0.value.trim() : '';
+    const opt1 = qeOpt1 ? qeOpt1.value.trim() : '';
+    const opt2 = qeOpt2 ? qeOpt2.value.trim() : '';
+    const correctIdx = parseInt(qeCorrect ? qeCorrect.value : '0', 10);
+    const explanationText = qeExplanation ? qeExplanation.value.trim() : '';
+
+    if (!questionText) {
+      alert('Por favor ingresá el enunciado de la pregunta.');
+      return;
+    }
+    if (!opt0 || !opt1) {
+      alert('Por favor ingresá al menos la Opción A y la Opción B.');
+      return;
+    }
+
+    const options = [opt0, opt1];
+    if (opt2) options.push(opt2);
+
+    if (idVal) {
+      // Edit existing
+      const targetId = parseInt(idVal, 10);
+      const qItem = QUESTIONS.find(q => q.id === targetId);
+      if (qItem) {
+        qItem.category = category;
+        qItem.question = questionText;
+        qItem.options = options;
+        qItem.correctAnswer = correctIdx;
+        qItem.explanation = explanationText;
+      }
+    } else {
+      // Create new
+      const newId = QUESTIONS.length > 0 ? Math.max(...QUESTIONS.map(q => q.id || 0)) + 1 : 1;
+      QUESTIONS.push({
+        id: newId,
+        category: category,
+        question: questionText,
+        options: options,
+        correctAnswer: correctIdx,
+        explanation: explanationText
+      });
+    }
+
+    localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+    pushCloudState();
+    closeQuestionEditorModal();
+    renderAdminScreen();
+  });
 
   function getLeaderboardHTML() {
     const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
