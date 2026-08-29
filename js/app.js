@@ -639,6 +639,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="result-category-chip cat-${category.id}">
           ${category.icon} ${category.name}
         </div>
+        <div style="margin-top:10px;background:linear-gradient(135deg,rgba(255,208,0,0.2),rgba(255,170,0,0.1));border:1px solid var(--border-gold);color:var(--brand-gold);padding:8px 16px;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:14px;text-transform:uppercase;letter-spacing:1px;display:inline-flex;align-items:center;gap:6px;">
+          🏆 POSICIÓN #${myRank} DE ${totalPlayers} PARTICIPANTES
+        </div>
       </div>
 
       <!-- Score Ring -->
