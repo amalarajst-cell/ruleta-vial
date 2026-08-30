@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Desafío Vial — Informe y Código QR</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: #1a202c;
+      background: #ffffff;
+      line-height: 1.45;
+      font-size: 13px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Main Header Banner */
+    .header-banner {
+      background: linear-gradient(135deg, #0A1530 0%, #0D2248 100%);
+      color: #ffffff;
+      padding: 18px 24px;
+      border-radius: 12px;
+      border-bottom: 3px solid #FFD000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .header-titles h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .header-titles h2 {
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFD000;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 3px;
+    }
+
+    .badge-vial {
+      background: #FFD000;
+      color: #000000;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 8px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    /* Two-column layout: Left Info, Right QR Code */
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .card-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 17px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #0A1530;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 2px solid #E2E8F0;
+      padding-bottom: 6px;
+    }
+
+    .summary-text {
+      color: #334155;
+      font-size: 12.5px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    /* QR Box */
+    .qr-card {
+      background: linear-gradient(180deg, #F8FAFC 0%, #EFF6FF 100%);
+      border: 2px solid #0284C7;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-card h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #0369A1;
+      margin-bottom: 4px;
+    }
+
+    .qr-card p {
+      font-size: 11px;
+      color: #64748B;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .qr-image-wrap {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #CBD5E1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .qr-image-wrap img {
+      width: 140px;
+      height: 140px;
+      display: block;
+    }
+
+    .qr-url {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0284C7;
+      background: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #BAE6FD;
+      word-break: break-all;
+    }
+
+    /* Steps Flow */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .step-item {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-top: 3px solid #0284C7;
+      border-radius: 8px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .step-item:nth-child(1) { border-top-color: #0284C7; }
+    .step-item:nth-child(2) { border-top-color: #FFD000; }
+    .step-item:nth-child(3) { border-top-color: #00E58A; }
+    .step-item:nth-child(4) { border-top-color: #7C3AED; }
+
+    .step-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: #0A1530;
+      margin-bottom: 2px;
+    }
+
+    .step-title {
+      font-weight: 800;
+      font-size: 11.5px;
+      color: #0A1530;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-size: 10.5px;
+      color: #64748B;
+      line-height: 1.35;
+    }
+
+    /* Categories Badges Grid */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .cat-chip {
+      padding: 8px 4px;
+      border-radius: 8px;
+      text-align: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .cat-auto       { background: #D97706; }
+    .cat-moto       { background: #BE185D; }
+    .cat-bici       { background: #059669; }
+    .cat-peatones   { background: #0284C7; }
+    .cat-colectivo  { background: #7C3AED; }
+    .cat-senales    { background: #DC2626; }
+    .cat-micro      { background: #0891B2; }
+
+    /* Admin Section */
+    .admin-box {
+      background: #0A1530;
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 14px 18px;
+      border-left: 4px solid #FFD000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-text h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      color: #FFD000;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .admin-text p {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.35;
+    }
+
+    .admin-pin-pill {
+      background: rgba(255, 208, 0, 0.15);
+      border: 1px solid #FFD000;
+      color: #FFD000;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .footer-bar {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 10px;
+      color: #94A3B8;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Banner -->
+  <div class="header-banner">
+    <div class="header-titles">
+      <h1>Gerencia de Educación y Convivencia Vial</h1>
+      <h2>Dirección General de Seguridad Vial</h2>
+    </div>
+    <div class="badge-vial">
+      RULETA VIAL
+    </div>
+  </div>
+
+  <!-- Top Two-Column Grid -->
+  <div class="top-grid">
+    
+    <!-- Left: Overview & Objective -->
+    <div class="card">
+      <div class="card-title">🎯 Informe Ejecutivo del Juego</div>
+      <p class="summary-text">
+        <strong>Desafío Vial</strong> es una plataforma interactiva de concientización y aprendizaje ciudadano diseñada para ferias, jornadas y eventos de seguridad vial. Permite evaluar y fijar conocimientos sobre normas de tránsito y convivencia de forma ágil, dinámica y competitiva.
+      </p>
+      
+      <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:8px; padding:10px;">
+        <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:#0A1530; margin-bottom:4px;">
+          ⭐ Características Principales:
+        </div>
+        <ul style="font-size:11.5px; color:#475569; padding-left:18px; line-height:1.45;">
+          <li><strong>Sin instalación:</strong> Funciona directamente en cualquier navegador web.</li>
+          <li><strong>Multi-dispositivo:</strong> Participación desde celulares y administración desde PC.</li>
+          <li><strong>Explicación inmediata:</strong> Cada respuesta fundamenta la norma vial.</li>
+          <li><strong>Puntaje por velocidad:</strong> Estimula el juego dinámico y la atención.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right: QR Code for Participants -->
+    <div class="qr-card">
+      <h3>📲 Acceso Participantes</h3>
+      <p>Escaneá con tu celular para comenzar</p>
+      <div class="qr-image-wrap">
+        <img src="img/qr_ruleta.png" alt="Código QR Ruleta Vial">
+      </div>
+      <div class="qr-url">
+        amalarajst-cell.github.io/ruleta-vial/
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 4 Steps Flow -->
+  <div style="margin-bottom:8px; font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:900; color:#0A1530; text-transform:uppercase;">
+    🕹️ Dinámica de la Partida en 4 Pasos:
+  </div>
+  <div class="steps-grid">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-title">Registro</div>
+      <div class="step-desc">El participante ingresa su nombre y correo en pocos segundos.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-title">Giro Ruleta</div>
+      <div class="step-desc">Presiona ¡Girar! para sortear la categoría temática al azar.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-title">5 Preguntas</div>
+      <div class="step-desc">Responde con tiempo límite, fotos de señales y feedback vial.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-title">Ranking</div>
+      <div class="step-desc">Se publica su puntaje y posición en el podio en tiempo real.</div>
+    </div>
+  </div>
+
+  <!-- 7 Categories -->
+  <div style="margin-bottom:8px; font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:900; color:#0A1530; text-transform:uppercase;">
+    🚦 7 Categorías de Convivencia y Seguridad Vial:
+  </div>
+  <div class="categories-grid">
+    <div class="cat-chip cat-auto">🚗 Auto</div>
+    <div class="cat-chip cat-moto">🏍️ Moto</div>
+    <div class="cat-chip cat-bici">🚲 Bici</div>
+    <div class="cat-chip cat-peatones">🚶 Peatón</div>
+    <div class="cat-chip cat-colectivo">🚌 Bus</div>
+    <div class="cat-chip cat-senales">🚸 Señales</div>
+    <div class="cat-chip cat-micro">🛴 Micro</div>
+  </div>
+
+  <!-- Admin Panel Box -->
+  <div class="admin-box">
+    <div class="admin-text">
+      <h4>💻 Panel de Control para Administradores y Docentes</h4>
+      <p>
+        Acceso desde PC para proyectar el ranking en pantalla gigante, monitorear participantes en vivo y gestionar o editar preguntas e imágenes del banco temático.
+      </p>
+    </div>
+    <div class="admin-pin-pill">
+      PIN ADMIN: 1234
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-bar">
+    Gobierno de la Ciudad Autónoma de Buenos Aires — Dirección General de Seguridad Vial
+  </div>
+
+</body>
+</html>
