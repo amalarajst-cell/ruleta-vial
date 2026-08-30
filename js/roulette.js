@@ -143,7 +143,7 @@ class RouletteWheel {
     ctx.stroke();
     ctx.restore();
 
-    // ── Text & Icon (always upright) ────────────────────
+    // ── Text (always upright & perfectly centered) ───────
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.rotate(midAngle);
@@ -153,34 +153,20 @@ class RouletteWheel {
     const flipped = norm > Math.PI * 0.5 && norm < Math.PI * 1.5;
     if (flipped) ctx.rotate(Math.PI);
 
-    const textR = flipped ? -(radius * 0.56) : radius * 0.56;
+    const textR = flipped ? -(radius * 0.58) : radius * 0.58;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const iconSize = Math.max(14, Math.round(radius * 0.16));
-    const fontSize = Math.max(9, Math.round(radius * 0.11));
+    const fontSize = Math.max(11, Math.round(radius * 0.125));
 
-    // Subtle white glow behind text area
-    ctx.save();
-    ctx.globalAlpha = 0.12;
-    ctx.beginPath();
-    ctx.ellipse(textR, 0, radius * 0.28, radius * 0.2, 0, 0, 2 * Math.PI);
-    ctx.fillStyle = '#fff';
-    ctx.fill();
-    ctx.restore();
-
-    // Icon
-    ctx.font = `${iconSize}px system-ui, sans-serif`;
-    ctx.fillText(cat.icon, textR, -(fontSize + 3));
-
-    // Label — stroke for legibility
+    // Label — crisp stroke for maximum contrast & legibility
     ctx.font = `900 ${fontSize}px 'Barlow Condensed', 'Inter', system-ui, sans-serif`;
-    ctx.lineWidth = Math.max(3, fontSize * 0.35);
-    ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+    ctx.lineWidth = Math.max(3.5, fontSize * 0.3);
+    ctx.strokeStyle = 'rgba(0,0,0,0.85)';
     ctx.lineJoin = 'round';
-    ctx.strokeText(cat.label, textR, fontSize + 1);
+    ctx.strokeText(cat.label, textR, 0);
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(cat.label, textR, fontSize + 1);
+    ctx.fillText(cat.label, textR, 0);
 
     ctx.restore();
   }
@@ -220,18 +206,21 @@ class RouletteWheel {
     ctx.fill();
     ctx.restore();
 
-    // Hub border
+    // Hub outer gold border
     ctx.beginPath();
     ctx.arc(centerX, centerY, hubR, 0, 2 * Math.PI);
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3;
     ctx.strokeStyle = '#FFD000';
     ctx.stroke();
 
-    // Hub icon
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font = `${Math.max(11, hubR * 0.9)}px system-ui`;
-    ctx.fillText('🎯', centerX, centerY - hubR * 0.15);
+    // Hub inner metallic gold jewel
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, hubR * 0.5, 0, 2 * Math.PI);
+    ctx.fillStyle = '#FFD000';
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.stroke();
   }
 
   _drawPointer() {
