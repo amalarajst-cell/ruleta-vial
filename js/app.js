@@ -24,22 +24,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto-refresh leaderboard when stats or admin screen is open
     if (name === 'stats' || name === 'admin') {
       clearInterval(statsRefreshInterval);
-      statsRefreshInterval = setInterval(() => {
-        if (screens.stats.classList.contains('active') || screens.admin.classList.contains('active')) {
-          fetchCloudState();
-          fetch('/api/leaderboard')
-            .then(res => res.json())
-            .then(data => {
-              if (Array.isArray(data) && data.length > 0) {
-                leaderboard = data;
-                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
-                if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
-                if (screens.admin.classList.contains('active')) renderAdminScreen();
-              }
-            })
-            .catch(() => {});
-        }
-      }, 3000);
+      const refreshLeaderboardData = () => {
+        if (!screens.stats.classList.contains('active') && !screens.admin.classList.contains('active')) return;
+        
+        // 1. Fetch from local server if available
+        fetch('/api/leaderboard')
+          .then(res => res.json())
+          .then(data => {
+            const arr = Array.isArray(data) ? data : (data && typeof data === 'object' ? [data] : []);
+            if (arr.length > 0) {
+              leaderboard = mergeLeaderboards(leaderboard, arr);
+              localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+              if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
+              if (screens.admin.classList.contains('active')) renderAdminScreen();
+            }
+          })
+          .catch(() => {});
+
+        // 2. Fetch from cloud
+        fetchCloudState();
+      };
+
+      refreshLeaderboardData();
+      statsRefreshInterval = setInterval(refreshLeaderboardData, 2500);
     } else {
       clearInterval(statsRefreshInterval);
     }
@@ -67,6 +74,39 @@ document.addEventListener('DOMContentLoaded', () => {
   let responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
   let completedPlayers = JSON.parse(localStorage.getItem('vex_completed_players') || '[]');
   let statsRefreshInterval = null;
+
+  // ── LEADERBOARD MERGE HELPER (Prevents overwriting scores) ──
+  function mergeLeaderboards(baseList, incomingList) {
+    const map = new Map();
+    [...(baseList || []), ...(incomingList || [])].forEach(entry => {
+      if (!entry || (!entry.name && !entry.email)) return;
+      const key = (entry.email || entry.name).toLowerCase().trim();
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, { ...entry });
+      } else {
+        const existingScore = typeof existing.score === 'number' ? existing.score : parseInt(existing.score) || 0;
+        const entryScore    = typeof entry.score === 'number' ? entry.score : parseInt(entry.score) || 0;
+        const existingTime  = typeof existing.time === 'number' ? existing.time : parseFloat(existing.time) || 999;
+        const entryTime     = typeof entry.time === 'number' ? entry.time : parseFloat(entry.time) || 999;
+
+        if (entryScore > existingScore || (entryScore === existingScore && entryTime < existingTime)) {
+          map.set(key, { ...entry });
+        }
+      }
+    });
+
+    const merged = Array.from(map.values());
+    merged.sort((a, b) => {
+      const scoreDiff = (typeof b.score === 'number' ? b.score : parseInt(b.score) || 0) - 
+                         (typeof a.score === 'number' ? a.score : parseInt(a.score) || 0);
+      if (scoreDiff !== 0) return scoreDiff;
+      const timeA = typeof a.time === 'number' ? a.time : parseFloat(a.time) || 0;
+      const timeB = typeof b.time === 'number' ? b.time : parseFloat(b.time) || 0;
+      return timeA - timeB;
+    });
+    return merged.slice(0, 100);
+  }
 
   // ── CLOUD MULTI-DEVICE REALTIME SYNC (GITHUB API) ────────
   const GH_TOKEN   = ['ghp_JLQVFPH9a14M7gL8', 'qklVjYYNAQ29tk1EQvGS'].join('');
@@ -110,20 +150,29 @@ document.addEventListener('DOMContentLoaded', () => {
           const parsed = JSON.parse(jsonStr);
           if (parsed && typeof parsed === 'object') {
             if (Array.isArray(parsed.leaderboard)) {
-              leaderboard = parsed.leaderboard;
+              leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
               localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
             }
             if (Array.isArray(parsed.completed)) {
-              completedPlayers = parsed.completed;
+              completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
               localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
             }
             if (Array.isArray(parsed.logins)) {
-              loginsHistory = parsed.logins;
+              const loginKeys = new Set(loginsHistory.map(l => `${l.name}_${l.email}_${l.timestamp}`));
+              parsed.logins.forEach(l => {
+                const k = `${l.name}_${l.email}_${l.timestamp}`;
+                if (!loginKeys.has(k)) {
+                  loginsHistory.push(l);
+                  loginKeys.add(k);
+                }
+              });
               localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
             }
             if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-              QUESTIONS.splice(0, QUESTIONS.length, ...parsed.questions);
-              localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+              if (QUESTIONS.length <= parsed.questions.length) {
+                QUESTIONS.splice(0, QUESTIONS.length, ...parsed.questions);
+                localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+              }
             }
             updateLeaderboardTableUI();
             if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
@@ -136,65 +185,91 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(() => {});
   }
 
-  function pushCloudState() {
-    if (isSyncingCloud) return;
+  function pushCloudState(retryCount = 0) {
+    if (isSyncingCloud && retryCount === 0) return;
     isSyncingCloud = true;
 
-    const payload = {
-      leaderboard: leaderboard,
-      logins: loginsHistory,
-      completed: completedPlayers,
-      questions: QUESTIONS
-    };
+    // Fetch latest GitHub data first to ensure we merge and never overwrite another player's submission
+    fetch(GH_API_URL, {
+      headers: {
+        'Authorization': `token ${GH_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      cache: 'no-store'
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(cloudData => {
+        let latestSha = cloudData ? cloudData.sha : cloudFileSha;
+        if (cloudData && cloudData.content) {
+          try {
+            const parsed = JSON.parse(utf8B64Decode(cloudData.content));
+            if (parsed && typeof parsed === 'object') {
+              if (Array.isArray(parsed.leaderboard)) {
+                leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
+                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+              }
+              if (Array.isArray(parsed.completed)) {
+                completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
+                localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+              }
+              if (Array.isArray(parsed.logins)) {
+                const loginKeys = new Set(loginsHistory.map(l => `${l.name}_${l.email}_${l.timestamp}`));
+                parsed.logins.forEach(l => {
+                  const k = `${l.name}_${l.email}_${l.timestamp}`;
+                  if (!loginKeys.has(k)) {
+                    loginsHistory.push(l);
+                    loginKeys.add(k);
+                  }
+                });
+                localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+              }
+            }
+          } catch(e) {}
+        }
 
-    const doPush = (sha) => {
-      const b64 = utf8B64Encode(JSON.stringify(payload));
-      const bodyObj = {
-        message: 'sync live leaderboard',
-        content: b64
-      };
-      if (sha) bodyObj.sha = sha;
+        const payload = {
+          leaderboard: leaderboard,
+          logins: loginsHistory,
+          completed: completedPlayers,
+          questions: QUESTIONS
+        };
 
-      return fetch(GH_API_URL, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${GH_TOKEN}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/vnd.github.v3+json'
-        },
-        body: JSON.stringify(bodyObj)
-      })
-        .then(res => res.json())
-        .then(resData => {
-          if (resData && resData.content && resData.content.sha) {
-            cloudFileSha = resData.content.sha;
-          }
-        })
-        .catch(() => {})
-        .finally(() => {
-          isSyncingCloud = false;
+        const b64 = utf8B64Encode(JSON.stringify(payload));
+        const bodyObj = {
+          message: 'sync live leaderboard',
+          content: b64
+        };
+        if (latestSha) bodyObj.sha = latestSha;
+
+        return fetch(GH_API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify(bodyObj)
         });
-    };
-
-    if (!cloudFileSha) {
-      fetch(GH_API_URL, {
-        headers: {
-          'Authorization': `token ${GH_TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json'
-        },
-        cache: 'no-store'
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.sha) cloudFileSha = data.sha;
-          doPush(cloudFileSha);
-        })
-        .catch(() => {
-          doPush(null);
-        });
-    } else {
-      doPush(cloudFileSha);
-    }
+      .then(res => {
+        if (!res) return null;
+        if (res.status === 409 && retryCount < 3) {
+          setTimeout(() => pushCloudState(retryCount + 1), 600 * (retryCount + 1));
+          return null;
+        }
+        return res.json();
+      })
+      .then(resData => {
+        if (resData && resData.content && resData.content.sha) {
+          cloudFileSha = resData.content.sha;
+        }
+        updateLeaderboardTableUI();
+        if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
+      })
+      .catch(() => {})
+      .finally(() => {
+        isSyncingCloud = false;
+      });
   }
 
   // Initial cloud sync at startup
@@ -975,12 +1050,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveToLeaderboard(points, catName, time) {
     const cleanEmail = (playerEmail || '').toLowerCase().trim();
     const cleanName  = (playerName  || '').toLowerCase().trim();
-    
-    const existingIdx = leaderboard.findIndex(e => {
-      const eEmail = (e.email || '').toLowerCase().trim();
-      const eName  = (e.name  || '').toLowerCase().trim();
-      return (cleanEmail && eEmail === cleanEmail) || (cleanName && eName === cleanName);
-    });
 
     const entry = {
       name:     playerName,
@@ -991,15 +1060,32 @@ document.addEventListener('DOMContentLoaded', () => {
       date:     new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })
     };
 
+    // Upsert into local leaderboard
+    const existingIdx = leaderboard.findIndex(e => {
+      const eEmail = (e.email || '').toLowerCase().trim();
+      const eName  = (e.name  || '').toLowerCase().trim();
+      return (cleanEmail && eEmail === cleanEmail) || (cleanName && eName === cleanName);
+    });
+
     if (existingIdx >= 0) {
-      leaderboard[existingIdx] = entry;
+      if (points >= (leaderboard[existingIdx].score || 0)) {
+        leaderboard[existingIdx] = entry;
+      }
     } else {
       leaderboard.push(entry);
     }
 
-    leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
-    leaderboard = leaderboard.slice(0, 50);
+    leaderboard = mergeLeaderboards(leaderboard, []);
     localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+
+    // 1. Post to local server if available
+    fetch('/api/save-leaderboard-entry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    }).catch(() => {});
+
+    // 2. Sync to cloud (fetches, merges and pushes)
     pushCloudState();
   }
 
@@ -1011,8 +1097,9 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          leaderboard = data;
+        const arr = Array.isArray(data) ? data : (data && typeof data === 'object' ? [data] : []);
+        if (arr.length > 0) {
+          leaderboard = mergeLeaderboards(leaderboard, arr);
           localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
           updateLeaderboardTableUI();
         }
@@ -1278,6 +1365,11 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('vex_logins_history');
         localStorage.removeItem('vex_responses_history');
         localStorage.removeItem('vex_completed_players');
+        
+        // Reset on server
+        fetch('/api/reset-all', { method: 'POST' }).catch(() => {});
+
+        // Push empty state to cloud
         pushCloudState();
         renderAdminScreen();
       }
