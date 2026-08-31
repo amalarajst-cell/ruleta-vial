@@ -2,9 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Afiche Evento — Desafío Ruleta Vial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afiche de Promoción — Ruleta Vial</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+  <!-- QRCode.js for live real-time QR generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap');
+    :root {
+      --primary-navy: #0B192C;
+      --accent-yellow: #F59E0B;
+      --accent-gold: #D97706;
+      --accent-red: #DC2626;
+      --accent-blue: #0284C7;
+      --accent-green: #059669;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --border-color: #E2E8F0;
+    }
 
     @page {
       size: A4 portrait;
@@ -19,36 +37,209 @@
 
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: #060A14;
-      color: #ffffff;
-      width: 210mm;
-      height: 297mm;
-      margin: 0 auto;
-      padding: 12mm 14mm 10mm;
+      background-color: #CBD5E1;
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px 10px 40px;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
 
-    /* Background radiant glow */
-    body::before {
-      content: '';
-      position: absolute;
-      top: -80px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 650px;
-      height: 650px;
-      background: radial-gradient(circle, rgba(0, 212, 245, 0.12) 0%, rgba(255, 208, 0, 0.1) 40%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+    /* =========================================================
+       FLOATING TOP BAR / CONTROLS (Invisible on Print)
+       ========================================================= */
+    .editor-toolbar {
+      width: 100%;
+      max-width: 800px;
+      background: #0B192C;
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      z-index: 100;
+      border: 2px solid #F59E0B;
     }
 
-    .content-wrap {
+    .toolbar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding-bottom: 8px;
+    }
+
+    .toolbar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FCD34D;
+    }
+
+    .toolbar-badge {
+      background: #DC2626;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-print-hero {
+      background: #F59E0B;
+      color: #000000;
+      font-size: 13.5px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+      border: 1.5px solid #FCD34D;
+    }
+    .btn-print-hero:hover {
+      background: #D97706;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-dark {
+      background: #1E293B;
+      color: #F8FAFC;
+      border: 1px solid #475569;
+    }
+    .btn-dark:hover { background: #334155; }
+
+    .toolbar-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+      background: #111E33;
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .control-group label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-input {
+      background: #0B1424;
+      border: 1px solid #334155;
+      color: #F8FAFC;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-family: inherit;
+      outline: none;
+    }
+    .control-input:focus { border-color: #F59E0B; }
+
+    .edit-hint-banner {
+      font-size: 11px;
+      color: #CBD5E1;
+      background: rgba(2, 132, 199, 0.2);
+      border: 1px solid rgba(2, 132, 199, 0.4);
+      padding: 5px 8px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quick-print-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #F59E0B;
+      color: #000;
+      font-weight: 900;
+      font-size: 13.5px;
+      padding: 10px 18px;
+      border-radius: 50px;
+      border: 2px solid #0B192C;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 999;
+      font-family: 'Inter', sans-serif;
+    }
+    .quick-print-fab:hover {
+      background: #0B192C;
+      color: #FCD34D;
+      border-color: #FCD34D;
+      transform: scale(1.05);
+    }
+
+    /* =========================================================
+       POSTER SHEET (A4 SINGLE-PAGE: 210 x 297mm)
+       ========================================================= */
+    .poster-sheet {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      background: #FFFFFF;
+      color: var(--text-main);
+      padding: 8mm 12mm 6mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .poster-top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #DC2626 0%, #F59E0B 25%, #0284C7 50%, #059669 75%, #7C3AED 100%);
+    }
+
+    .poster-content {
       position: relative;
       z-index: 1;
       display: flex;
@@ -57,407 +248,578 @@
       justify-content: space-between;
     }
 
-    /* Top Institutional Bar */
-    .top-gov-bar {
+    /* 1. Header */
+    .inst-header {
       text-align: center;
-      padding-bottom: 8px;
-      border-bottom: 1.5px solid rgba(255, 208, 0, 0.3);
+      padding-bottom: 4px;
+      border-bottom: 1.5px solid #E2E8F0;
     }
 
-    .top-gov-bar h3 {
+    .inst-header h3 {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      color: #FFFFFF;
+      color: #0F172A;
     }
 
-    .top-gov-bar h4 {
-      font-size: 11px;
-      font-weight: 700;
+    .inst-header h4 {
+      font-size: 10.5px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: #FFD000;
-      margin-top: 2px;
+      color: #0284C7;
+      margin-top: 1px;
     }
 
-    /* Main Hero Title */
-    .hero-title-area {
+    /* 2. Hero Title */
+    .hero-title-box {
       text-align: center;
-      margin-top: 6px;
+      margin: 3px 0 2px;
     }
 
-    .extreme-tag {
+    .tag-ribbon {
       display: inline-block;
-      background: linear-gradient(135deg, #FF3B3B, #DC2626);
+      background: linear-gradient(135deg, #DC2626, #BE123C);
       color: #FFFFFF;
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
-      font-size: 14px;
-      letter-spacing: 3px;
+      font-size: 12.5px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      padding: 4px 18px;
+      padding: 2px 16px;
       border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(255, 59, 59, 0.4);
-      margin-bottom: 6px;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+      margin-bottom: 2px;
     }
 
-    .main-title {
+    .poster-main-title {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
-      font-size: 48px;
+      font-size: 46px;
       line-height: 0.95;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      background: linear-gradient(180deg, #FFFFFF 20%, #FFD000 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
+      letter-spacing: 1.5px;
+      color: #0B192C;
+      margin-bottom: 2px;
     }
 
-    .main-subtitle {
-      font-size: 14px;
-      font-weight: 700;
-      color: #00D4F5;
+    .poster-main-title span { color: #D97706; }
+
+    .poster-subtitle {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0284C7;
       text-transform: uppercase;
       letter-spacing: 1.5px;
     }
 
-    /* Center Visual Area: Roulette on Left, Giant QR on Right */
-    .hero-visual-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      align-items: center;
-      margin: 10px 0;
-    }
-
-    /* Roulette Graphic */
-    .roulette-side {
+    /* =========================================================
+       3. PROTAGONISTA CENTRAL: GRAN RULETA VIAL CENTRADA
+       ========================================================= */
+    .roulette-hero-center {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      text-align: center;
+      margin: 4px 0 2px;
     }
 
-    .roulette-graphic-wrap {
-      width: 235px;
-      height: 235px;
+    .roulette-frame {
+      width: 220px;
+      height: 220px;
       position: relative;
-      filter: drop-shadow(0 0 25px rgba(255, 208, 0, 0.35));
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.16));
     }
 
-    .roulette-caption {
-      margin-top: 10px;
+    .roulette-hero-caption {
+      margin-top: 4px;
       font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 800;
-      font-size: 15px;
-      color: #FFD000;
+      font-weight: 900;
+      font-size: 14px;
+      color: #0B192C;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-align: center;
     }
 
-    /* QR Box (The Big Call To Action) */
-    .qr-side {
+    /* 4. 7 Categorías Ribbon (Sin Iconos / Clean Typography) */
+    .categories-strip {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+      margin: 4px 0 6px;
+    }
+
+    .category-chip {
+      flex: 1;
+      padding: 4px 2px;
+      border-radius: 5px;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .cat-auto   { background: #D97706; }
+    .cat-moto   { background: #BE185D; }
+    .cat-bici   { background: #059669; }
+    .cat-peaton { background: #0284C7; }
+    .cat-bus    { background: #7C3AED; }
+    .cat-senales{ background: #DC2626; }
+    .cat-micro  { background: #0891B2; }
+
+    /* 5. 3 Pasos Fáciles (Horizontal Row) */
+    .instructions-bar-box {
+      background: #F8FAFC;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 6px 10px 7px;
+      margin: 3px 0 5px;
+    }
+
+    .instructions-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: #0B192C;
+      letter-spacing: 1.5px;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .steps-horizontal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .step-box-item {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 5px 6px;
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    .qr-hero-card {
-      background: linear-gradient(135deg, #0D1C38 0%, #0A1528 100%);
-      border: 2.5px solid #FFD000;
-      border-radius: 20px;
-      padding: 16px 20px 14px;
-      text-align: center;
-      box-shadow: 0 0 35px rgba(255, 208, 0, 0.25), inset 0 0 20px rgba(0, 212, 245, 0.1);
+    .step-circle-num {
+      width: 22px;
+      height: 22px;
+      background: #FEF3C7;
+      border: 1.5px solid #F59E0B;
+      color: #92400E;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      margin-bottom: 2px;
+    }
+
+    .step-box-item h5 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #0F172A;
+      margin-bottom: 1px;
+      line-height: 1.1;
+    }
+
+    .step-box-item p {
+      font-size: 8.5px;
+      color: #475569;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    /* =========================================================
+       6. BOTTOM HERO QR CARD (FLAWLESS 2-COLUMN STRUCTURE)
+       ========================================================= */
+    .qr-bottom-hero {
+      background: #0B192C;
+      border: 2px solid #F59E0B;
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 6px 20px rgba(11, 25, 44, 0.2);
+      margin: 3px 0 5px;
+      box-sizing: border-box;
       width: 100%;
-      max-width: 250px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
-    .qr-badge-scan {
-      background: #00D4F5;
+    /* Clean white container for QR */
+    .qr-box-wrapper {
+      width: 135px;
+      height: 135px;
+      min-width: 135px;
+      max-width: 135px;
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 5px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    #qrContainer {
+      width: 125px;
+      height: 125px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    #qrContainer canvas {
+      width: 125px !important;
+      height: 125px !important;
+      display: block !important;
+    }
+
+    #qrContainer img {
+      display: none !important;
+    }
+
+    /* Text on right side of QR */
+    .qr-info-wrapper {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      color: #FFFFFF;
+    }
+
+    .qr-action-badge {
+      background: #F59E0B;
       color: #000000;
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
       font-size: 13px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 15px rgba(0, 212, 245, 0.5);
-    }
-
-    .qr-frame {
-      background: #ffffff;
-      padding: 10px;
+      padding: 2px 10px;
       border-radius: 14px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-      margin-bottom: 10px;
+      display: inline-block;
+      width: fit-content;
     }
 
-    .qr-frame img {
-      width: 155px;
-      height: 155px;
-      display: block;
-    }
-
-    .qr-cta-text {
+    .qr-hero-headline {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 18px;
+      font-size: 26px;
       font-weight: 900;
-      color: #FFD000;
+      line-height: 0.95;
       text-transform: uppercase;
       letter-spacing: 1px;
-      line-height: 1.1;
-    }
-
-    .qr-url-pill {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: #94A3B8;
-      margin-top: 4px;
-      letter-spacing: 0.5px;
-    }
-
-    /* 3-Step Simple Play Instructions */
-    .instructions-section {
-      background: rgba(13, 27, 56, 0.8);
-      border: 1px solid rgba(255, 208, 0, 0.3);
-      border-radius: 16px;
-      padding: 12px 16px;
-      margin-bottom: 10px;
-    }
-
-    .instructions-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900;
-      font-size: 16px;
-      text-transform: uppercase;
-      color: #FFD000;
-      letter-spacing: 1.5px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .steps-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .step-card {
-      background: #060E1E;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 10px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .step-icon-circle {
-      width: 38px;
-      height: 38px;
-      background: rgba(255, 208, 0, 0.15);
-      border: 1.5px solid #FFD000;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-
-    .step-card h5 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900;
-      font-size: 14px;
-      text-transform: uppercase;
       color: #FFFFFF;
-      margin-bottom: 2px;
+    }
+    .qr-hero-headline span { color: #38BDF8; }
+
+    .qr-instructions-text {
+      font-size: 11px;
+      color: #CBD5E1;
+      font-weight: 600;
+      line-height: 1.25;
     }
 
-    .step-card p {
-      font-size: 10.5px;
-      color: #A8BCCF;
-      line-height: 1.3;
+    .qr-url-pill-box {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #FCD34D;
+      letter-spacing: 0.5px;
+      width: fit-content;
     }
 
-    /* 7 Categories Pill Banner */
-    .categories-bar {
+    /* 7. Footer */
+    .inst-footer {
+      border-top: 1.5px solid #E2E8F0;
+      padding-top: 4px;
       display: flex;
       justify-content: space-between;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .cat-badge {
-      flex: 1;
-      padding: 6px 2px;
-      border-radius: 6px;
-      text-align: center;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
-
-    .c-auto   { background: #D97706; }
-    .c-moto   { background: #BE185D; }
-    .c-bici   { background: #059669; }
-    .c-peaton { background: #0284C7; }
-    .c-bus    { background: #7C3AED; }
-    .c-senales{ background: #DC2626; }
-    .c-micro  { background: #0891B2; }
-
-    /* Footer */
-    .event-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 8px;
-      text-align: center;
-      font-size: 10px;
-      font-weight: 600;
+      align-items: center;
+      font-size: 8.5px;
+      font-weight: 700;
       color: #64748B;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
+    }
+
+    .inst-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ba-badge {
+      background: #0B192C;
+      color: #FFD000;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: 900;
+      font-size: 8.5px;
+    }
+
+    /* Visual Editable Highlighting Mode */
+    body.is-editing [contenteditable="true"] {
+      outline: 2px dashed #0284C7 !important;
+      background: rgba(2, 132, 199, 0.08);
+      border-radius: 4px;
+      cursor: text;
+    }
+    body.is-editing [contenteditable="true"]:focus {
+      outline: 2.5px solid #F59E0B !important;
+      background: rgba(245, 158, 11, 0.15);
+    }
+
+    /* Print media rule */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .editor-toolbar,
+      .quick-print-fab {
+        display: none !important;
+      }
+      .poster-sheet {
+        box-shadow: none !important;
+        width: 100% !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+      }
+      body.is-editing [contenteditable="true"] {
+        outline: none !important;
+        background: transparent !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="content-wrap">
-
-    <!-- Top Gov Bar -->
-    <div class="top-gov-bar">
-      <h3>Gerencia de Educación y Convivencia Vial</h3>
-      <h4>Dirección General de Seguridad Vial</h4>
-    </div>
-
-    <!-- Main Hero Title -->
-    <div class="hero-title-area">
-      <div class="extreme-tag">¡DESAFÍO INTERACTIVO EN VIVO!</div>
-      <h1 class="main-title">RULETA VIAL</h1>
-      <p class="main-subtitle">⚡ ¡GIRÁ, RESPONDÉ Y SUBÍ AL PODIO DEL RANKING! ⚡</p>
-    </div>
-
-    <!-- Center Hero Grid: Roulette on Left + QR Code on Right -->
-    <div class="hero-visual-grid">
-      
-      <!-- Left: Dynamic Canvas Rendered Roulette Wheel -->
-      <div class="roulette-side">
-        <div class="roulette-graphic-wrap">
-          <canvas id="poster-roulette-canvas" width="600" height="600" style="width:235px;height:235px;display:block;"></canvas>
-        </div>
-        <div class="roulette-caption">🎯 ¡7 CATEGORÍAS VIALES!</div>
+  <!-- TOP FLOATING EDITOR & PRINT PANEL -->
+  <div class="editor-toolbar" id="editorToolbar">
+    <div class="toolbar-header">
+      <div class="toolbar-title">
+        <span>⚙️ Panel de Edición del Afiche</span>
+        <span class="toolbar-badge">Hoja Blanca + Ruleta Protagonista</span>
       </div>
-
-      <!-- Right: Big Prominent QR Card -->
-      <div class="qr-side">
-        <div class="qr-hero-card">
-          <div class="qr-badge-scan">📱 ¡ESCANEÁ Y JUGÁ!</div>
-          <div class="qr-frame">
-            <img src="img/qr_ruleta.png" alt="Código QR Desafío Vial">
-          </div>
-          <div class="qr-cta-text">¡PARTICIPÁ DESDE TU CELULAR!</div>
-          <div class="qr-url-pill">amalarajst-cell.github.io/ruleta-vial/</div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- 3 Simple Steps Section -->
-    <div class="instructions-section">
-      <div class="instructions-title">¿CÓMO PARTICIPAR? — 3 PASOS FÁCILES</div>
-      <div class="steps-row">
-        <div class="step-card">
-          <div class="step-icon-circle">📷</div>
-          <h5>1. Escaneá el QR</h5>
-          <p>Apuntá con la cámara de tu celular e ingresá tu nombre.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-icon-circle">🎯</div>
-          <h5>2. Girá la Ruleta</h5>
-          <p>Tocá "Girar" y respondé las 5 preguntas por tiempo.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-icon-circle">👑</div>
-          <h5>3. ¡Ganá tu Puesto!</h5>
-          <p>Descubrí tu puntaje y mirá tu lugar en el podio en vivo.</p>
-        </div>
+      <div class="toolbar-actions">
+        <button class="btn btn-dark" id="btnToggleEditable" onclick="toggleDirectEdit()">
+          <span id="editIcon">✏️</span> <span id="editText">Habilitar Edición Directa</span>
+        </button>
+        <button class="btn btn-dark" onclick="resetDefaults()">
+          ↺ Restablecer
+        </button>
+        <button class="btn btn-print-hero" onclick="window.print()">
+          🖨️ IMPRIMIR / GUARDAR PDF
+        </button>
       </div>
     </div>
 
-    <!-- 7 Categories Bar -->
-    <div class="categories-bar">
-      <div class="cat-badge c-auto">🚗 Auto</div>
-      <div class="cat-badge c-moto">🏍️ Moto</div>
-      <div class="cat-badge c-bici">🚲 Bici</div>
-      <div class="cat-badge c-peaton">🚶 Peatón</div>
-      <div class="cat-badge c-bus">🚌 Bus</div>
-      <div class="cat-badge c-senales">🚸 Señales</div>
-      <div class="cat-badge c-micro">🛴 Micro</div>
+    <!-- Live Controls -->
+    <div class="toolbar-controls">
+      <div class="control-group">
+        <label for="inputQrUrl">🔗 Enlace del Código QR:</label>
+        <input type="text" id="inputQrUrl" class="control-input" value="https://amalarajst-cell.github.io/ruleta-vial/" oninput="updateQrCode(this.value)">
+      </div>
+
+      <div class="control-group">
+        <label for="inputTitle">Título Principal:</label>
+        <input type="text" id="inputTitle" class="control-input" value="RULETA VIAL" oninput="document.getElementById('displayTitle').innerHTML = this.value.replace('VIAL', '<span>VIAL</span>'); saveDraft();">
+      </div>
+
+      <div class="control-group">
+        <label for="inputTagline">Cinta Superior:</label>
+        <input type="text" id="inputTagline" class="control-input" value="¡DESAFÍO INTERACTIVO EN VIVO!" oninput="document.getElementById('displayTag').innerText = this.value; saveDraft();">
+      </div>
+
+      <div class="control-group">
+        <label for="inputSub">Subtítulo / Bajada:</label>
+        <input type="text" id="inputSub" class="control-input" value="⚡ ¡GIRÁ, RESPONDÉ Y SUBÍ AL PODIO DEL RANKING! ⚡" oninput="document.getElementById('displaySubtitle').innerText = this.value; saveDraft();">
+      </div>
     </div>
 
-    <!-- Event Footer -->
-    <div class="event-footer">
-      Gobierno de la Ciudad Autónoma de Buenos Aires — Dirección General de Seguridad Vial
+    <div class="edit-hint-banner">
+      💡 <strong>Tip:</strong> Podés hacer clic en <em>"Habilitar Edición Directa"</em> y hacer clic en cualquier texto del afiche para escribir libremente. Cuando termines, tocá <strong>"IMPRIMIR / GUARDAR PDF"</strong>.
     </div>
-
   </div>
 
+  <!-- Floating quick print button bottom right -->
+  <button class="quick-print-fab" onclick="window.print()" title="Imprimir o Guardar como PDF">
+    🖨️ Imprimir Afiche
+  </button>
+
+  <!-- POSTER SHEET (A4 WHITE FORMAT - RULETA PROTAGONISTA) -->
+  <div class="poster-sheet" id="posterSheet">
+    <div class="poster-top-bar"></div>
+
+    <div class="poster-content">
+
+      <!-- 1. Institutional Header -->
+      <div class="inst-header">
+        <h3 id="displayGov1" contenteditable="false">Gerencia de Educación y Convivencia Vial</h3>
+        <h4 id="displayGov2" contenteditable="false">Dirección General de Seguridad Vial</h4>
+      </div>
+
+      <!-- 2. Hero Title Section -->
+      <div class="hero-title-box">
+        <div class="tag-ribbon" id="displayTag" contenteditable="false">¡DESAFÍO INTERACTIVO EN VIVO!</div>
+        <h1 class="poster-main-title" id="displayTitle" contenteditable="false">RULETA <span>VIAL</span></h1>
+        <p class="poster-subtitle" id="displaySubtitle" contenteditable="false">⚡ ¡GIRÁ, RESPONDÉ Y SUBÍ AL PODIO DEL RANKING! ⚡</p>
+      </div>
+
+      <!-- 3. PROTAGONISTA: GRAN RULETA VIAL CENTRADA -->
+      <div class="roulette-hero-center">
+        <div class="roulette-frame">
+          <canvas id="poster-roulette-canvas" width="500" height="500" style="width:220px;height:220px;display:block;"></canvas>
+        </div>
+        <div class="roulette-hero-caption" id="displayWheelBadge" contenteditable="false">
+          🎯 ¡7 CATEGORÍAS VIALES • 5 PREGUNTAS POR RONDA!
+        </div>
+      </div>
+
+      <!-- 4. 7 Categorías Ribbon (Sin Iconos / Clean Typography) -->
+      <div class="categories-strip">
+        <div class="category-chip cat-auto" contenteditable="false">Auto</div>
+        <div class="category-chip cat-moto" contenteditable="false">Moto</div>
+        <div class="category-chip cat-bici" contenteditable="false">Bicicleta</div>
+        <div class="category-chip cat-peaton" contenteditable="false">Peatones</div>
+        <div class="category-chip cat-bus" contenteditable="false">Colectivo</div>
+        <div class="category-chip cat-senales" contenteditable="false">Señales</div>
+        <div class="category-chip cat-micro" contenteditable="false">Micromovilidad</div>
+      </div>
+
+      <!-- 5. 3 Pasos Fáciles (Horizontal Row) -->
+      <div class="instructions-bar-box">
+        <div class="instructions-title" id="displayStepsTitle" contenteditable="false">
+          ¿CÓMO PARTICIPAR? — 3 PASOS FÁCILES
+        </div>
+        <div class="steps-horizontal-grid">
+          <div class="step-box-item">
+            <div class="step-circle-num">1</div>
+            <h5 id="step1Title" contenteditable="false">Escaneá el QR</h5>
+            <p id="step1Desc" contenteditable="false">Apuntá con tu celular e ingresá tu nombre.</p>
+          </div>
+          <div class="step-box-item">
+            <div class="step-circle-num">2</div>
+            <h5 id="step2Title" contenteditable="false">Girá la Ruleta</h5>
+            <p id="step2Desc" contenteditable="false">Tocá "Girar" y respondé las 5 preguntas por tiempo.</p>
+          </div>
+          <div class="step-box-item">
+            <div class="step-circle-num">3</div>
+            <h5 id="step3Title" contenteditable="false">¡Ganá tu Puesto!</h5>
+            <p id="step3Desc" contenteditable="false">Descubrí tu puntaje y subí al podio en vivo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. BOTTOM HERO QR CARD (2-COLUMN CLEAN STRUCTURE) -->
+      <div class="qr-bottom-hero">
+        <div class="qr-box-wrapper">
+          <div id="qrContainer">
+            <!-- QR Generated here -->
+          </div>
+        </div>
+        <div class="qr-info-wrapper">
+          <div class="qr-action-badge" id="displayQrBadge" contenteditable="false">
+            📱 ¡ESCANEÁ CON TU CELULAR!
+          </div>
+          <div class="qr-hero-headline" id="displayQrCta" contenteditable="false">
+            ¡JUGÁ AHORA <span>EN VIVO</span>!
+          </div>
+          <div class="qr-instructions-text" id="displayQrInstructions" contenteditable="false">
+            Apuntá con tu cámara, abrí el enlace y empezá a responder desde tu celular.
+          </div>
+          <div class="qr-url-pill-box" id="displayQrUrlText" contenteditable="false">
+            amalarajst-cell.github.io/ruleta-vial/
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Footer -->
+      <div class="inst-footer">
+        <div class="inst-footer-left">
+          <span class="ba-badge">BA</span>
+          <span id="displayFooter1" contenteditable="false">Gobierno de la Ciudad Autónoma de Buenos Aires</span>
+        </div>
+        <div id="displayFooter2" contenteditable="false">Dirección General de Seguridad Vial</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LOGIC & DYNAMIC QR / ROULETTE ENGINE -->
   <script>
-    // Precision Canvas Roulette Renderer
+    let isEditingDirect = false;
+    let qrCodeInstance = null;
+
+    // Draw Crisp Roulette Wheel for White Paper Theme
     function drawPosterRoulette() {
       const canvas = document.getElementById('poster-roulette-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      const centerX = 300;
-      const centerY = 300;
-      const radius = 265;
+      const centerX = 250;
+      const centerY = 250;
+      const radius = 220;
 
       const categories = [
-        { label: 'BICICLETA',   color: '#059669', dark: '#037050' },
-        { label: 'PEATONES',     color: '#0284C7', dark: '#0164A0' },
-        { label: 'AUTO',          color: '#D97706', dark: '#B05E04' },
-        { label: 'COLECTIVO',    color: '#7C3AED', dark: '#5E24CC' },
-        { label: 'SEÑALES',       color: '#DC2626', dark: '#B01010' },
-        { label: 'MICROMOV.',    color: '#0891B2', dark: '#066E8E' },
-        { label: 'MOTO',          color: '#BE185D', dark: '#961047' }
+        { label: 'BICICLETA',   color: '#059669', dark: '#047857' },
+        { label: 'PEATONES',    color: '#0284C7', dark: '#0369A1' },
+        { label: 'AUTO',        color: '#D97706', dark: '#B45309' },
+        { label: 'COLECTIVO',   color: '#7C3AED', dark: '#6D28D9' },
+        { label: 'SEÑALES',     color: '#DC2626', dark: '#B91C1C' },
+        { label: 'MICROMOV.',   color: '#0891B2', dark: '#0E7490' },
+        { label: 'MOTO',        color: '#BE185D', dark: '#9D174D' }
       ];
 
       const numSegs = categories.length;
       const segAngle = (2 * Math.PI) / numSegs;
       const currentAngle = -Math.PI / 2;
 
-      ctx.clearRect(0, 0, 600, 600);
+      ctx.clearRect(0, 0, 500, 500);
 
-      // Outer Bezel
+      // Outer Ring / Bezel
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius + 10, 0, 2 * Math.PI);
-      ctx.fillStyle = '#0A1525';
+      ctx.fillStyle = '#0B192C';
       ctx.fill();
-      ctx.lineWidth = 10;
-      ctx.strokeStyle = '#FFD000';
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#F59E0B';
       ctx.stroke();
 
-      // Segments
+      // Slices
       for (let i = 0; i < numSegs; i++) {
         const cat = categories[i];
         const startAngle = currentAngle + i * segAngle;
         const endAngle = startAngle + segAngle;
         const midAngle = (startAngle + endAngle) / 2;
 
-        // Draw Arc Slice
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
@@ -470,12 +832,12 @@
         ctx.fillStyle = grad;
         ctx.fill();
 
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = '#FFFFFF';
         ctx.stroke();
         ctx.restore();
 
-        // Text (centered on radial spine)
+        // Text
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(midAngle);
@@ -488,9 +850,9 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        ctx.font = "900 30px 'Barlow Condensed', sans-serif";
-        ctx.lineWidth = 8;
-        ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+        ctx.font = "900 24px 'Barlow Condensed', sans-serif";
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = 'rgba(0,0,0,0.8)';
         ctx.lineJoin = 'round';
         ctx.strokeText(cat.label, textR, 0);
         ctx.fillStyle = '#FFFFFF';
@@ -499,57 +861,189 @@
         ctx.restore();
       }
 
-      // Outer Pins
+      // Outer Gold Pins
       const pinCount = numSegs * 2;
       for (let i = 0; i < pinCount; i++) {
         const angle = currentAngle + (i * 2 * Math.PI) / pinCount;
-        const px = centerX + (radius - 8) * Math.cos(angle);
-        const py = centerY + (radius - 8) * Math.sin(angle);
+        const px = centerX + (radius - 7) * Math.cos(angle);
+        const py = centerY + (radius - 7) * Math.sin(angle);
 
         ctx.beginPath();
-        ctx.arc(px, py, 6, 0, 2 * Math.PI);
+        ctx.arc(px, py, 4.5, 0, 2 * Math.PI);
         ctx.fillStyle = '#FFD000';
         ctx.fill();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.strokeStyle = '#000';
         ctx.stroke();
       }
 
       // Center Hub
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 40, 0, 2 * Math.PI);
-      ctx.fillStyle = '#0A1525';
+      ctx.arc(centerX, centerY, 32, 0, 2 * Math.PI);
+      ctx.fillStyle = '#0B192C';
       ctx.fill();
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#FFD000';
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#F59E0B';
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI);
-      ctx.fillStyle = '#FFD000';
+      ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
+      ctx.fillStyle = '#F59E0B';
       ctx.fill();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-      ctx.stroke();
 
       // Pointer Arrow at top
       ctx.save();
       ctx.beginPath();
-      const tipY = centerY - radius - 10;
-      ctx.moveTo(centerX - 24, tipY - 20);
-      ctx.lineTo(centerX + 24, tipY - 20);
-      ctx.lineTo(centerX, tipY + 28);
+      const tipY = centerY - radius - 8;
+      ctx.moveTo(centerX - 18, tipY - 16);
+      ctx.lineTo(centerX + 18, tipY - 16);
+      ctx.lineTo(centerX, tipY + 22);
       ctx.closePath();
-      ctx.fillStyle = '#FFD000';
+      ctx.fillStyle = '#DC2626';
       ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#FFFFFF';
       ctx.stroke();
       ctx.restore();
     }
 
-    document.addEventListener('DOMContentLoaded', drawPosterRoulette);
-    drawPosterRoulette();
+    // QR Code Engine
+    function updateQrCode(url) {
+      const container = document.getElementById('qrContainer');
+      if (!container) return;
+
+      container.innerHTML = '';
+      const displayUrlClean = url.replace(/^https?:\/\//, '');
+      const displayElem = document.getElementById('displayQrUrlText');
+      if (displayElem) displayElem.innerText = displayUrlClean;
+
+      if (typeof QRCode !== 'undefined') {
+        try {
+          qrCodeInstance = new QRCode(container, {
+            text: url,
+            width: 125,
+            height: 125,
+            colorDark: "#0B192C",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        } catch (e) {
+          showFallbackQr(container);
+        }
+      } else {
+        showFallbackQr(container);
+      }
+      saveDraft();
+    }
+
+    function showFallbackQr(container) {
+      container.innerHTML = `<img src="img/qr_ruleta.png" alt="QR Ruleta Vial" style="width:125px;height:125px;object-fit:contain;display:block!important;">`;
+    }
+
+    // Toggle Direct In-Place Edit Mode
+    function toggleDirectEdit() {
+      isEditingDirect = !isEditingDirect;
+      document.body.classList.toggle('is-editing', isEditingDirect);
+
+      const editableElements = document.querySelectorAll('.poster-sheet [contenteditable]');
+      editableElements.forEach(el => {
+        el.setAttribute('contenteditable', isEditingDirect ? 'true' : 'false');
+      });
+
+      const btnText = document.getElementById('editText');
+      const btnIcon = document.getElementById('editIcon');
+      if (isEditingDirect) {
+        btnText.innerText = 'Bloquear / Finalizar Edición';
+        btnIcon.innerText = '✅';
+      } else {
+        btnText.innerText = 'Habilitar Edición Directa';
+        btnIcon.innerText = '✏️';
+      }
+    }
+
+    // Save and Restore Edits in LocalStorage
+    function saveDraft() {
+      const draft = {
+        qrUrl: document.getElementById('inputQrUrl').value,
+        title: document.getElementById('displayTitle').innerText,
+        tag: document.getElementById('displayTag').innerText,
+        subtitle: document.getElementById('displaySubtitle').innerText,
+        gov1: document.getElementById('displayGov1').innerText,
+        gov2: document.getElementById('displayGov2').innerText,
+        wheelBadge: document.getElementById('displayWheelBadge').innerText,
+        stepsTitle: document.getElementById('displayStepsTitle').innerText,
+        step1T: document.getElementById('step1Title').innerText,
+        step1D: document.getElementById('step1Desc').innerText,
+        step2T: document.getElementById('step2Title').innerText,
+        step2D: document.getElementById('step2Desc').innerText,
+        step3T: document.getElementById('step3Title').innerText,
+        step3D: document.getElementById('step3Desc').innerText,
+        qrBadge: document.getElementById('displayQrBadge').innerText,
+        qrCta: document.getElementById('displayQrCta').innerText,
+        qrInst: document.getElementById('displayQrInstructions').innerText,
+        footer1: document.getElementById('displayFooter1').innerText,
+        footer2: document.getElementById('displayFooter2').innerText
+      };
+      localStorage.setItem('afiche_white_draft_hero_roulette', JSON.stringify(draft));
+    }
+
+    function loadDraft() {
+      const saved = localStorage.getItem('afiche_white_draft_hero_roulette');
+      if (!saved) return;
+      try {
+        const d = JSON.parse(saved);
+        if (d.qrUrl) document.getElementById('inputQrUrl').value = d.qrUrl;
+        if (d.title) {
+          document.getElementById('displayTitle').innerText = d.title;
+          document.getElementById('inputTitle').value = d.title;
+        }
+        if (d.tag) {
+          document.getElementById('displayTag').innerText = d.tag;
+          document.getElementById('inputTagline').value = d.tag;
+        }
+        if (d.subtitle) {
+          document.getElementById('displaySubtitle').innerText = d.subtitle;
+          document.getElementById('inputSub').value = d.subtitle;
+        }
+        if (d.gov1) document.getElementById('displayGov1').innerText = d.gov1;
+        if (d.gov2) document.getElementById('displayGov2').innerText = d.gov2;
+        if (d.wheelBadge) document.getElementById('displayWheelBadge').innerText = d.wheelBadge;
+        if (d.stepsTitle) document.getElementById('displayStepsTitle').innerText = d.stepsTitle;
+        if (d.step1T) document.getElementById('step1Title').innerText = d.step1T;
+        if (d.step1D) document.getElementById('step1Desc').innerText = d.step1D;
+        if (d.step2T) document.getElementById('step2Title').innerText = d.step2T;
+        if (d.step2D) document.getElementById('step2Desc').innerText = d.step2D;
+        if (d.step3T) document.getElementById('step3Title').innerText = d.step3T;
+        if (d.step3D) document.getElementById('step3Desc').innerText = d.step3D;
+        if (d.qrBadge) document.getElementById('displayQrBadge').innerText = d.qrBadge;
+        if (d.qrCta) document.getElementById('displayQrCta').innerText = d.qrCta;
+        if (d.qrInst) document.getElementById('displayQrInstructions').innerText = d.qrInst;
+        if (d.footer1) document.getElementById('displayFooter1').innerText = d.footer1;
+        if (d.footer2) document.getElementById('displayFooter2').innerText = d.footer2;
+      } catch (e) {
+        console.error('Error cargando borrador', e);
+      }
+    }
+
+    function resetDefaults() {
+      if (confirm('¿Restablecer el afiche a los textos predeterminados?')) {
+        localStorage.removeItem('afiche_white_draft_hero_roulette');
+        window.location.reload();
+      }
+    }
+
+    document.addEventListener('input', (e) => {
+      if (e.target.hasAttribute('contenteditable')) {
+        saveDraft();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDraft();
+      drawPosterRoulette();
+      const currentUrl = document.getElementById('inputQrUrl').value || 'https://amalarajst-cell.github.io/ruleta-vial/';
+      updateQrCode(currentUrl);
+    });
   </script>
 </body>
 </html>
