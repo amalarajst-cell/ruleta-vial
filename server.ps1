@@ -263,11 +263,22 @@ while ($listener.IsListening) {
         }
 
         if ($request.HttpMethod -eq "POST" -and $path -eq "/api/reset-all") {
+            $resetTimestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+            try {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, [System.Text.Encoding]::UTF8)
+                $jsonStr = $reader.ReadToEnd()
+                if ($jsonStr) {
+                    $bodyObj = ConvertFrom-Json $jsonStr
+                    if ($bodyObj.lastReset) { $resetTimestamp = [long]$bodyObj.lastReset }
+                }
+            } catch {}
+
             $dataFile = Join-Path $root "data.json"
             if (Test-Path $dataFile) {
                 try {
                     $raw = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
                     $parsed = ConvertFrom-Json $raw
+                    $parsed.lastReset = $resetTimestamp
                     $parsed.leaderboard = @()
                     $parsed.logins = @()
                     $parsed.completed = @()
@@ -277,12 +288,15 @@ while ($listener.IsListening) {
             }
             $logFile1 = Join-Path $root "registros_respuestas.csv"
             $logFile2 = Join-Path $root "registros_ingresos.csv"
-            if (Test-Path $logFile1) { [System.IO.File]::WriteAllText($logFile1, "`"Fecha y Hora`";`"Nombre`";`"Email`";`"Categoria`";`"Pregunta`";`"Respuesta Elegida`";`"Respuesta Correcta`";`"Resultado`";`"Tiempo (s)`";`"Puntos`"`r`n", [System.Text.Encoding]::UTF8) }
-            if (Test-Path $logFile2) { [System.IO.File]::WriteAllText($logFile2, "`"Fecha y Hora`";`"Nombre`";`"Email`"`r`n", [System.Text.Encoding]::UTF8) }
+            [System.IO.File]::WriteAllText($logFile1, "`"Fecha y Hora`";`"Nombre`";`"Email`";`"Categoria`";`"Pregunta`";`"Respuesta Elegida`";`"Respuesta Correcta`";`"Resultado`";`"Tiempo (s)`";`"Puntos`"`r`n", [System.Text.Encoding]::UTF8)
+            [System.IO.File]::WriteAllText($logFile2, "`"Fecha y Hora`";`"Nombre`";`"Email`"`r`n", [System.Text.Encoding]::UTF8)
 
             $response.ContentType = "application/json; charset=utf-8"
-            $buffer = [System.Text.Encoding]::UTF8.GetBytes('{"status":"ok"}')
+            $buffer = [System.Text.Encoding]::UTF8.GetBytes('{"status":"ok","lastReset":' + $resetTimestamp + '}')
             $response.OutputStream.Write($buffer, 0, $buffer.Length)
+            $response.OutputStream.Close()
+            continue
+        }
             $response.OutputStream.Close()
             continue
         }

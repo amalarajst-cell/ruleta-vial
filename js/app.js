@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sessionStreak  = 0;
   let sessionRounds  = 0;
   let sessionCorrect = 0;
+  let localLastReset   = parseInt(localStorage.getItem('vex_last_reset') || '0', 10);
   let leaderboard      = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
   let loginsHistory    = JSON.parse(localStorage.getItem('vex_logins_history') || '[]');
   let responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
@@ -149,25 +150,39 @@ document.addEventListener('DOMContentLoaded', () => {
           const jsonStr = utf8B64Decode(data.content);
           const parsed = JSON.parse(jsonStr);
           if (parsed && typeof parsed === 'object') {
-            if (Array.isArray(parsed.leaderboard)) {
-              leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
+            const cloudReset = parsed.lastReset || 0;
+            if (cloudReset > localLastReset) {
+              // Global reset was triggered on another device or admin
+              localLastReset = cloudReset;
+              localStorage.setItem('vex_last_reset', localLastReset.toString());
+              leaderboard = Array.isArray(parsed.leaderboard) ? parsed.leaderboard : [];
+              completedPlayers = Array.isArray(parsed.completed) ? parsed.completed : [];
+              loginsHistory = Array.isArray(parsed.logins) ? parsed.logins : [];
               localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
-            }
-            if (Array.isArray(parsed.completed)) {
-              completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
               localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
-            }
-            if (Array.isArray(parsed.logins)) {
-              const loginKeys = new Set(loginsHistory.map(l => `${l.name}_${l.email}_${l.timestamp}`));
-              parsed.logins.forEach(l => {
-                const k = `${l.name}_${l.email}_${l.timestamp}`;
-                if (!loginKeys.has(k)) {
-                  loginsHistory.push(l);
-                  loginKeys.add(k);
-                }
-              });
               localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+            } else {
+              if (Array.isArray(parsed.leaderboard)) {
+                leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
+                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+              }
+              if (Array.isArray(parsed.completed)) {
+                completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
+                localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+              }
+              if (Array.isArray(parsed.logins)) {
+                const loginKeys = new Set(loginsHistory.map(l => `${l.name}_${l.email}_${l.timestamp}`));
+                parsed.logins.forEach(l => {
+                  const k = `${l.name}_${l.email}_${l.timestamp}`;
+                  if (!loginKeys.has(k)) {
+                    loginsHistory.push(l);
+                    loginKeys.add(k);
+                  }
+                });
+                localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+              }
             }
+
             if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
               if (QUESTIONS.length <= parsed.questions.length) {
                 QUESTIONS.splice(0, QUESTIONS.length, ...parsed.questions);
@@ -204,30 +219,40 @@ document.addEventListener('DOMContentLoaded', () => {
           try {
             const parsed = JSON.parse(utf8B64Decode(cloudData.content));
             if (parsed && typeof parsed === 'object') {
-              if (Array.isArray(parsed.leaderboard)) {
-                leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
-                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
-              }
-              if (Array.isArray(parsed.completed)) {
-                completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
-                localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
-              }
-              if (Array.isArray(parsed.logins)) {
-                const loginKeys = new Set(loginsHistory.map(l => `${l.name}_${l.email}_${l.timestamp}`));
-                parsed.logins.forEach(l => {
-                  const k = `${l.name}_${l.email}_${l.timestamp}`;
-                  if (!loginKeys.has(k)) {
-                    loginsHistory.push(l);
-                    loginKeys.add(k);
-                  }
-                });
-                localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+              const cloudReset = parsed.lastReset || 0;
+              if (cloudReset > localLastReset) {
+                localLastReset = cloudReset;
+                localStorage.setItem('vex_last_reset', localLastReset.toString());
+                leaderboard = Array.isArray(parsed.leaderboard) ? parsed.leaderboard : [];
+                completedPlayers = Array.isArray(parsed.completed) ? parsed.completed : [];
+                loginsHistory = Array.isArray(parsed.logins) ? parsed.logins : [];
+              } else {
+                if (Array.isArray(parsed.leaderboard)) {
+                  leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
+                  localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+                }
+                if (Array.isArray(parsed.completed)) {
+                  completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
+                  localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+                }
+                if (Array.isArray(parsed.logins)) {
+                  const loginKeys = new Set(loginsHistory.map(l => `${l.name}_${l.email}_${l.timestamp}`));
+                  parsed.logins.forEach(l => {
+                    const k = `${l.name}_${l.email}_${l.timestamp}`;
+                    if (!loginKeys.has(k)) {
+                      loginsHistory.push(l);
+                      loginKeys.add(k);
+                    }
+                  });
+                  localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+                }
               }
             }
           } catch(e) {}
         }
 
         const payload = {
+          lastReset: localLastReset,
           leaderboard: leaderboard,
           logins: loginsHistory,
           completed: completedPlayers,
@@ -265,6 +290,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updateLeaderboardTableUI();
         if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
+      })
+      .catch(() => {})
+      .finally(() => {
+        isSyncingCloud = false;
+      });
+  }
+
+  // Explicit Force Reset: pushes empty state to cloud without merging old records
+  function forcePushResetCloudState(resetTimestamp, retryCount = 0) {
+    isSyncingCloud = true;
+    return fetch(GH_API_URL, {
+      headers: {
+        'Authorization': `token ${GH_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      cache: 'no-store'
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(cloudData => {
+        const latestSha = cloudData ? cloudData.sha : cloudFileSha;
+        const payload = {
+          lastReset: resetTimestamp,
+          leaderboard: [],
+          logins: [],
+          completed: [],
+          questions: QUESTIONS
+        };
+
+        const b64 = utf8B64Encode(JSON.stringify(payload));
+        const bodyObj = {
+          message: 'admin reset leaderboard',
+          content: b64
+        };
+        if (latestSha) bodyObj.sha = latestSha;
+
+        return fetch(GH_API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify(bodyObj)
+        });
+      })
+      .then(res => {
+        if (!res) return null;
+        if (res.status === 409 && retryCount < 3) {
+          setTimeout(() => forcePushResetCloudState(resetTimestamp, retryCount + 1), 600 * (retryCount + 1));
+          return null;
+        }
+        return res.json();
+      })
+      .then(resData => {
+        if (resData && resData.content && resData.content.sha) {
+          cloudFileSha = resData.content.sha;
+        }
       })
       .catch(() => {})
       .finally(() => {
@@ -1357,6 +1439,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btn-admin-reset')?.addEventListener('click', () => {
       if (confirm('¿ATENCIÓN: Reiniciar el tablero y borrar todos los participantes registrados para un nuevo evento?')) {
+        const resetTimestamp = Date.now();
+        localLastReset = resetTimestamp;
+        localStorage.setItem('vex_last_reset', localLastReset.toString());
+
         leaderboard = [];
         loginsHistory = [];
         responsesHistory = [];
@@ -1366,11 +1452,17 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('vex_responses_history');
         localStorage.removeItem('vex_completed_players');
         
-        // Reset on server
-        fetch('/api/reset-all', { method: 'POST' }).catch(() => {});
+        // 1. Reset on server
+        fetch('/api/reset-all', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lastReset: resetTimestamp })
+        }).catch(() => {});
 
-        // Push empty state to cloud
-        pushCloudState();
+        // 2. Force push empty state to cloud without merging old records
+        forcePushResetCloudState(resetTimestamp);
+        
+        // 3. Re-render admin UI
         renderAdminScreen();
       }
     });
