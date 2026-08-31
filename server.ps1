@@ -92,11 +92,12 @@ while ($listener.IsListening) {
             $entry = ConvertFrom-Json $jsonStr
 
             $dataFile = Join-Path $root "data.json"
-            $db = @{ leaderboard = @(); logins = @(); completed = @(); questions = @() }
+            $db = @{ lastReset = 0; leaderboard = @(); logins = @(); completed = @(); questions = @() }
             if (Test-Path $dataFile) {
                 try {
                     $raw = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
                     $parsed = ConvertFrom-Json $raw
+                    if ($parsed.lastReset)   { $db.lastReset = [long]$parsed.lastReset }
                     if ($parsed.leaderboard) { $db.leaderboard = @($parsed.leaderboard) }
                     if ($parsed.logins)      { $db.logins = @($parsed.logins) }
                     if ($parsed.completed)   { $db.completed = @($parsed.completed) }
@@ -137,96 +138,19 @@ while ($listener.IsListening) {
         }
 
         if ($request.HttpMethod -eq "GET" -and $path -eq "/api/leaderboard") {
-            $users = @{}
+            $sortedList = @()
             
-            # 1. Read from data.json if exists
+            # Read directly from data.json (single source of truth for active leaderboard)
             $dataFile = Join-Path $root "data.json"
             if (Test-Path $dataFile) {
                 try {
                     $raw = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
                     $parsed = ConvertFrom-Json $raw
-                    if ($parsed.leaderboard) {
-                        foreach ($entry in $parsed.leaderboard) {
-                            $key = if ($entry.email) { $entry.email.ToLower().Trim() } else { $entry.name.ToLower().Trim() }
-                            if ($key) {
-                                $users[$key] = @{
-                                    name     = [string]$entry.name
-                                    email    = [string]$entry.email
-                                    score    = [int]$entry.score
-                                    category = [string]$entry.category
-                                    time     = [double]$entry.time
-                                    date     = [string]$entry.date
-                                }
-                            }
-                        }
+                    if ($parsed.leaderboard -and $parsed.leaderboard.Count -gt 0) {
+                        $sortedList = @($parsed.leaderboard | Sort-Object -Property @{Expression={[int]$_.score}; Descending=$true}, @{Expression={[double]$_.time}; Descending=$false})
                     }
                 } catch {}
             }
-
-            # 2. Merge/supplement from registros_respuestas.csv
-            $logFile = Join-Path $root "registros_respuestas.csv"
-            if (Test-Path $logFile) {
-                try {
-                    $lines = Get-Content $logFile -Encoding UTF8 | Select-Object -Skip 1
-                    $csvUsers = @{}
-                    foreach ($l in $lines) {
-                        if ([string]::IsNullOrWhiteSpace($l)) { continue }
-                        # Safe CSV split with regex matching quotes
-                        $fields = [regex]::Matches($l, '(?<=^|;)(?:\"(?<val>[^\"]*(?:\"\"[^\"]*)*)\"|(?<val>[^;]*))') | ForEach-Object { $_.Groups['val'].Value -replace '\"\"', '"' }
-                        if ($fields.Count -ge 10) {
-                            $name  = $fields[1].Trim()
-                            $email = $fields[2].Trim()
-                            $cat   = $fields[3].Trim()
-                            $timeStr = ($fields[8] -replace ',', '.').Trim()
-                            $ptsStr  = $fields[9].Trim()
-                            $timeVal = 0.0
-                            $ptsVal  = 0
-                            [double]::TryParse($timeStr, [System.Globalization.NumberStyles]::Any, [System.Globalization.CultureInfo]::InvariantCulture, [ref]$timeVal) | Out-Null
-                            [int]::TryParse($ptsStr, [ref]$ptsVal) | Out-Null
-
-                            $key = if ($email) { $email.ToLower().Trim() } else { $name.ToLower().Trim() }
-                            if ($key) {
-                                if (-not $csvUsers.ContainsKey($key)) {
-                                    $csvUsers[$key] = @{
-                                        name      = $name
-                                        email     = $email
-                                        score     = 0
-                                        category  = $cat
-                                        totalTime = 0.0
-                                        qCount    = 0
-                                        time      = 0.0
-                                    }
-                                }
-                                $csvUsers[$key].score += $ptsVal
-                                $csvUsers[$key].totalTime += $timeVal
-                                $csvUsers[$key].qCount += 1
-                            }
-                        }
-                    }
-                    foreach ($k in $csvUsers.Keys) {
-                        $cu = $csvUsers[$k]
-                        $avgTime = if ($cu.qCount -gt 0) { [math]::Round(($cu.totalTime / $cu.qCount), 2) } else { 0.0 }
-                        if (-not $users.ContainsKey($k)) {
-                            $users[$k] = @{
-                                name     = $cu.name
-                                email    = $cu.email
-                                score    = $cu.score
-                                category = $cu.category
-                                time     = $avgTime
-                                date     = (Get-Date).ToString("dd/MM/yyyy HH:mm")
-                            }
-                        } else {
-                            # If CSV has higher score or same, keep highest
-                            if ($cu.score -gt $users[$k].score) {
-                                $users[$k].score = $cu.score
-                                $users[$k].time  = $avgTime
-                            }
-                        }
-                    }
-                } catch {}
-            }
-
-            $sortedList = @($users.Values | Sort-Object -Property @{Expression={[int]$_.score}; Descending=$true}, @{Expression={[double]$_.time}; Descending=$false})
 
             # Guaranteed JSON Array output
             $jsonOut = "[]"
@@ -249,10 +173,15 @@ while ($listener.IsListening) {
             $completed = $false
             if ($email) {
                 $clean = $email.ToLower().Trim()
-                $logFile = Join-Path $root "registros_respuestas.csv"
-                if (Test-Path $logFile) {
-                    $match = Select-String -Path $logFile -Pattern "`";`"$clean`";`"" -SimpleMatch
-                    if ($match) { $completed = $true }
+                $dataFile = Join-Path $root "data.json"
+                if (Test-Path $dataFile) {
+                    try {
+                        $raw = [System.IO.File]::ReadAllText($dataFile, [System.Text.Encoding]::UTF8)
+                        $parsed = ConvertFrom-Json $raw
+                        if ($parsed.completed -and ($parsed.completed -contains $clean)) {
+                            $completed = $true
+                        }
+                    } catch {}
                 }
             }
             $response.ContentType = "application/json; charset=utf-8"
@@ -294,9 +223,6 @@ while ($listener.IsListening) {
             $response.ContentType = "application/json; charset=utf-8"
             $buffer = [System.Text.Encoding]::UTF8.GetBytes('{"status":"ok","lastReset":' + $resetTimestamp + '}')
             $response.OutputStream.Write($buffer, 0, $buffer.Length)
-            $response.OutputStream.Close()
-            continue
-        }
             $response.OutputStream.Close()
             continue
         }

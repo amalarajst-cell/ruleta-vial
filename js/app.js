@@ -31,12 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/api/leaderboard')
           .then(res => res.json())
           .then(data => {
-            const arr = Array.isArray(data) ? data : (data && typeof data === 'object' ? [data] : []);
-            if (arr.length > 0) {
-              leaderboard = mergeLeaderboards(leaderboard, arr);
-              localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
-              if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
-              if (screens.admin.classList.contains('active')) renderAdminScreen();
+            if (Array.isArray(data)) {
+              if (data.length === 0) {
+                leaderboard = [];
+                localStorage.setItem('vex_leaderboard', '[]');
+                if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
+                if (screens.admin.classList.contains('active')) renderAdminScreen();
+              } else {
+                leaderboard = mergeLeaderboards(leaderboard, data);
+                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+                if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
+                if (screens.admin.classList.contains('active')) renderAdminScreen();
+              }
             }
           })
           .catch(() => {});
@@ -151,10 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const parsed = JSON.parse(jsonStr);
           if (parsed && typeof parsed === 'object') {
             const cloudReset = parsed.lastReset || 0;
-            if (cloudReset > localLastReset) {
-              // Global reset was triggered on another device or admin
-              localLastReset = cloudReset;
-              localStorage.setItem('vex_last_reset', localLastReset.toString());
+            if (cloudReset > localLastReset || (Array.isArray(parsed.leaderboard) && parsed.leaderboard.length === 0)) {
+              // Global reset was triggered or cloud leaderboard is empty
+              if (cloudReset > localLastReset) {
+                localLastReset = cloudReset;
+                localStorage.setItem('vex_last_reset', localLastReset.toString());
+              }
               leaderboard = Array.isArray(parsed.leaderboard) ? parsed.leaderboard : [];
               completedPlayers = Array.isArray(parsed.completed) ? parsed.completed : [];
               loginsHistory = Array.isArray(parsed.logins) ? parsed.logins : [];
@@ -220,9 +228,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const parsed = JSON.parse(utf8B64Decode(cloudData.content));
             if (parsed && typeof parsed === 'object') {
               const cloudReset = parsed.lastReset || 0;
-              if (cloudReset > localLastReset) {
-                localLastReset = cloudReset;
-                localStorage.setItem('vex_last_reset', localLastReset.toString());
+              if (cloudReset > localLastReset || (Array.isArray(parsed.leaderboard) && parsed.leaderboard.length === 0 && leaderboard.length === 0)) {
+                if (cloudReset > localLastReset) {
+                  localLastReset = cloudReset;
+                  localStorage.setItem('vex_last_reset', localLastReset.toString());
+                }
                 leaderboard = Array.isArray(parsed.leaderboard) ? parsed.leaderboard : [];
                 completedPlayers = Array.isArray(parsed.completed) ? parsed.completed : [];
                 loginsHistory = Array.isArray(parsed.logins) ? parsed.logins : [];
@@ -1179,10 +1189,14 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/api/leaderboard')
       .then(res => res.json())
       .then(data => {
-        const arr = Array.isArray(data) ? data : (data && typeof data === 'object' ? [data] : []);
-        if (arr.length > 0) {
-          leaderboard = mergeLeaderboards(leaderboard, arr);
-          localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+        if (Array.isArray(data)) {
+          if (data.length === 0) {
+            leaderboard = [];
+            localStorage.setItem('vex_leaderboard', '[]');
+          } else {
+            leaderboard = mergeLeaderboards(leaderboard, data);
+            localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+          }
           updateLeaderboardTableUI();
         }
       })
