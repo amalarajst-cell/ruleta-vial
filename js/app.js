@@ -1409,47 +1409,6 @@ document.addEventListener('DOMContentLoaded', () => {
           `}
         </div>
       ` : `
-          ${filteredLeaderboard.length === 0 ? `
-            <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">
-              ${adminSearchTerm ? 'No se encontraron participantes con esa búsqueda.' : 'Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.'}
-            </div>
-          ` : `
-            <table class="leaderboard-table" style="width:100%;border-collapse:collapse;">
-              <thead style="position:sticky;top:0;background:#0d1627;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                <tr style="background:rgba(0,0,0,0.3);">
-                  <th style="padding:12px 14px;">Posición</th>
-                  <th style="padding:12px 14px;">Participante</th>
-                  <th style="padding:12px 14px;">Email</th>
-                  <th style="padding:12px 14px;">Categoría</th>
-                  <th style="padding:12px 14px;text-align:right">Puntos</th>
-                  <th style="padding:12px 14px;text-align:right">Tiempo Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${filteredLeaderboard.map((e, i) => {
-                  const isPerfect = e.score >= 500;
-                  const originalIndex = leaderboard.indexOf(e);
-                  const displayRank = originalIndex >= 0 ? originalIndex : i;
-                  return `
-                    <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}transition:background 0.2s;">
-                      <td style="padding:12px 14px;font-family:var(--font-display);font-weight:900;font-size:17px;color:${displayRank===0?'#FFD000':displayRank===1?'#C0C0C0':displayRank===2?'#CD7F32':'var(--text-muted)'}">
-                        ${rankBadge(displayRank)}
-                      </td>
-                      <td style="padding:12px 14px;font-weight:700;color:var(--text-primary);font-size:14px;">
-                        ${e.name} ${isPerfect ? '<span style="font-size:10px;background:#00E58A;color:#000;padding:2px 6px;border-radius:4px;font-weight:900;margin-left:6px;">5/5 PERFECTO</span>' : ''}
-                      </td>
-                      <td style="padding:12px 14px;font-size:12px;color:var(--text-secondary)">${e.email || '-'}</td>
-                      <td style="padding:12px 14px;font-size:13px;color:var(--text-secondary);">${e.category}</td>
-                      <td style="padding:12px 14px;text-align:right;font-family:var(--font-display);font-weight:900;font-size:18px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
-                      <td style="padding:12px 14px;text-align:right;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
-                    </tr>
-                  `;
-                }).join('')}
-              </tbody>
-            </table>
-          `}
-        </div>
-      ` : `
         <!-- QUESTION MANAGER TAB -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
           <p class="page-section-title" style="margin-bottom:0">📚 Editor de Preguntas (${QUESTIONS.length} preguntas en total)</p>
