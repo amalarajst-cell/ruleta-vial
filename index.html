@@ -65,6 +65,7 @@
 
       <p class="login-disclaimer">
         Tus datos se registrarán localmente para guardar tu progreso y estadísticas. No se comparte con terceros.
+        <span id="btn-open-admin-link" style="cursor:pointer;opacity:0.7;font-size:13px;margin-left:8px;vertical-align:middle;" title="Panel de Administración">🔐</span>
       </p>
 
     </div>
@@ -219,9 +220,14 @@
             <h2>Estadísticas de Velocidad</h2>
           </div>
         </div>
-        <button id="btn-back-from-stats" class="header-player-pill" aria-label="Volver a la ruleta">
-          ← Volver
-        </button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button id="btn-open-admin-from-stats" style="padding:6px 10px;border:1px solid var(--border-gold);border-radius:10px;background:rgba(255,208,0,0.1);color:var(--brand-gold);font-size:12px;font-weight:800;cursor:pointer;" title="Acceso Admin">
+            🔐 Admin
+          </button>
+          <button id="btn-back-from-stats" class="header-player-pill" aria-label="Volver a la ruleta">
+            ← Volver
+          </button>
+        </div>
       </div>
     </header>
 
@@ -368,10 +374,10 @@
   <!-- ================================================
        APPLICATION SCRIPTS
   ================================================ -->
-  <script src="js/questions.js?v=45"></script>
-  <script src="js/audio.js?v=45"></script>
-  <script src="js/roulette.js?v=45"></script>
-  <script src="js/app.js?v=45"></script>
+  <script src="js/questions.js?v=46"></script>
+  <script src="js/audio.js?v=46"></script>
+  <script src="js/roulette.js?v=46"></script>
+  <script src="js/app.js?v=46"></script>
 
 </body>
 </html>

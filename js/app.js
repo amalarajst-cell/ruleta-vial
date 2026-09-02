@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
       screens[name].classList.add('active');
       screens[name].scrollTop = 0;
     }
+    if (name === 'admin') {
+      renderAdminScreen(true);
+    }
     // Auto-refresh leaderboard when stats or admin screen is open
     if (name === 'stats' || name === 'admin') {
       clearInterval(statsRefreshInterval);
@@ -707,8 +710,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const enteredPin = (inputAdminPin?.value || '').trim();
     if (enteredPin === ADMIN_PIN) {
       closeAdminPinModal();
-      renderAdminScreen();
       showScreen('admin');
+      renderAdminScreen(true);
     } else {
       if (adminPinError) adminPinError.style.display = 'block';
       if (inputAdminPin) {
@@ -722,6 +725,16 @@ document.addEventListener('DOMContentLoaded', () => {
   btnConfirmPin?.addEventListener('click', verifyAdminPin);
   btnCancelPin?.addEventListener('click', closeAdminPinModal);
   inputAdminPin?.addEventListener('keypress', e => { if (e.key === 'Enter') verifyAdminPin(); });
+
+  // Direct admin button links
+  document.getElementById('btn-open-admin-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openAdminPinModal();
+  });
+  document.getElementById('btn-open-admin-from-stats')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openAdminPinModal();
+  });
 
   // Triple-tap header or secret URL access (?admin or #admin)
   let headerTapCount = 0;
