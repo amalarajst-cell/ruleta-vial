@@ -1256,13 +1256,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeAdminTab = 'metrics'; // 'metrics' or 'questions'
   let selectedAdminCatFilter = 'all';
   let adminSearchTerm = '';
+  let lastAdminSignature = '';
 
-  function renderAdminScreen() {
+  function renderAdminScreen(force = false) {
     if (!adminContent) return;
 
+    const currentSig = `${activeAdminTab}_${selectedAdminCatFilter}_${adminSearchTerm}_${leaderboard.length}_` + 
+      leaderboard.map(e => `${e.name}_${e.score}_${e.time}`).join(';');
+    
+    if (!force && currentSig === lastAdminSignature) {
+      return; // Data has not changed! Do not rebuild DOM to avoid scroll jump.
+    }
+    lastAdminSignature = currentSig;
+
     // Save scroll positions before DOM rebuild
-    const tableScrollEl = document.getElementById('admin-table-container');
-    const savedTableScroll = tableScrollEl ? tableScrollEl.scrollTop : 0;
     const savedScreenScroll = screens.admin ? screens.admin.scrollTop : 0;
     const savedPageScroll = window.scrollY || document.documentElement.scrollTop || 0;
 
@@ -1347,7 +1354,48 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <div id="admin-table-container" style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow-x:auto;overflow-y:auto;max-height:550px;-webkit-overflow-scrolling:touch;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+        <div id="admin-table-container" style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow-x:auto;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+          ${filteredLeaderboard.length === 0 ? `
+            <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">
+              ${adminSearchTerm ? 'No se encontraron participantes con esa búsqueda.' : 'Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.'}
+            </div>
+          ` : `
+            <table class="leaderboard-table" style="width:100%;border-collapse:collapse;">
+              <thead style="position:sticky;top:0;background:#0d1627;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.6);">
+                <tr style="background:rgba(0,0,0,0.3);">
+                  <th style="padding:12px 14px;">Posición</th>
+                  <th style="padding:12px 14px;">Participante</th>
+                  <th style="padding:12px 14px;">Email</th>
+                  <th style="padding:12px 14px;">Categoría</th>
+                  <th style="padding:12px 14px;text-align:right">Puntos</th>
+                  <th style="padding:12px 14px;text-align:right">Tiempo Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredLeaderboard.map((e, i) => {
+                  const isPerfect = e.score >= 500;
+                  const originalIndex = leaderboard.indexOf(e);
+                  const displayRank = originalIndex >= 0 ? originalIndex : i;
+                  return `
+                    <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}transition:background 0.2s;">
+                      <td style="padding:12px 14px;font-family:var(--font-display);font-weight:900;font-size:17px;color:${displayRank===0?'#FFD000':displayRank===1?'#C0C0C0':displayRank===2?'#CD7F32':'var(--text-muted)'}">
+                        ${rankBadge(displayRank)}
+                      </td>
+                      <td style="padding:12px 14px;font-weight:700;color:var(--text-primary);font-size:14px;">
+                        ${e.name} ${isPerfect ? '<span style="font-size:10px;background:#00E58A;color:#000;padding:2px 6px;border-radius:4px;font-weight:900;margin-left:6px;">5/5 PERFECTO</span>' : ''}
+                      </td>
+                      <td style="padding:12px 14px;font-size:12px;color:var(--text-secondary)">${e.email || '-'}</td>
+                      <td style="padding:12px 14px;font-size:13px;color:var(--text-secondary);">${e.category}</td>
+                      <td style="padding:12px 14px;text-align:right;font-family:var(--font-display);font-weight:900;font-size:18px;color:${isPerfect ? '#00E58A' : 'var(--brand-gold)'}">${e.score}</td>
+                      <td style="padding:12px 14px;text-align:right;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--brand-cyan)">${typeof e.time === 'number' ? e.time.toFixed(2) : e.time}s</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          `}
+        </div>
+      ` : `
           ${filteredLeaderboard.length === 0 ? `
             <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">
               ${adminSearchTerm ? 'No se encontraron participantes con esa búsqueda.' : 'Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.'}
@@ -1752,11 +1800,14 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  let lastLeaderboardHTMLSignature = '';
   function updateLeaderboardTableUI() {
     const container = document.getElementById('leaderboard-table-container');
-    if (container) {
-      container.innerHTML = getLeaderboardHTML();
-    }
+    if (!container) return;
+    const sig = leaderboard.map(e => `${e.name}_${e.score}_${e.time}`).join(';');
+    if (sig === lastLeaderboardHTMLSignature) return;
+    lastLeaderboardHTMLSignature = sig;
+    container.innerHTML = getLeaderboardHTML();
   }
 
   // ── CSV EXPORT HELPERS ──────────────────────────────────────
