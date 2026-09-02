@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const timeB = typeof b.time === 'number' ? b.time : parseFloat(b.time) || 0;
       return timeA - timeB;
     });
-    return merged.slice(0, 100);
+    return merged;
   }
 
   // ── CLOUD MULTI-DEVICE REALTIME SYNC (GITHUB API) ────────
@@ -1253,6 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminContent = document.getElementById('admin-content');
   let activeAdminTab = 'metrics'; // 'metrics' or 'questions'
   let selectedAdminCatFilter = 'all';
+  let adminSearchTerm = '';
 
   function renderAdminScreen() {
     if (!adminContent) return;
@@ -1266,11 +1267,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const rankBadge = (i) => i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
 
+    const filteredLeaderboard = leaderboard.filter(e => {
+      if (!adminSearchTerm) return true;
+      const term = adminSearchTerm.toLowerCase().trim();
+      const n = (e.name || '').toLowerCase();
+      const em = (e.email || '').toLowerCase();
+      const c = (e.category || '').toLowerCase();
+      return n.includes(term) || em.includes(term) || c.includes(term);
+    });
+
     adminContent.innerHTML = `
       <!-- Admin Top Nav Tabs -->
       <div class="admin-tabs-bar">
         <button id="tab-admin-metrics" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:${activeAdminTab==='metrics'?'linear-gradient(135deg,var(--brand-gold),#FFAA00)':'var(--bg-card)'};color:${activeAdminTab==='metrics'?'#000':'var(--text-secondary)'};border:1px solid ${activeAdminTab==='metrics'?'var(--brand-gold)':'var(--border-subtle)'};">
-          📊 Métricas y Ranking
+          📊 Métricas y Ranking (${totalCount})
         </button>
         <button id="tab-admin-questions" style="flex:1;padding:12px;border:none;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer;background:${activeAdminTab==='questions'?'linear-gradient(135deg,var(--brand-gold),#FFAA00)':'var(--bg-card)'};color:${activeAdminTab==='questions'?'#000':'var(--text-secondary)'};border:1px solid ${activeAdminTab==='questions'?'var(--brand-gold)':'var(--border-subtle)'};">
           📚 Preguntas (${QUESTIONS.length})
@@ -1298,23 +1308,46 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Live Ranking List -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <p class="page-section-title" style="margin-bottom:0">📊 Ranking Completo (#1 al Último)</p>
-          <button id="btn-admin-reset" style="padding:8px 14px;border:1px solid rgba(255,59,59,0.5);border-radius:8px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:11px;font-weight:800;cursor:pointer;">
+        <!-- Export CSV & Action Tools Bar -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center;justify-content:space-between;background:var(--bg-card);padding:12px 14px;border-radius:14px;border:1px solid var(--border-subtle);">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <button id="btn-export-ranking" style="padding:9px 14px;border:1px solid var(--border-gold);border-radius:10px;background:linear-gradient(135deg,rgba(255,208,0,0.18),rgba(255,170,0,0.1));color:var(--brand-gold);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              📥 Exportar Ranking (${leaderboard.length})
+            </button>
+            <button id="btn-export-logins" style="padding:9px 14px;border:1px solid rgba(0,212,245,0.3);border-radius:10px;background:rgba(0,212,245,0.08);color:var(--brand-cyan);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              👥 Exportar Ingresos / Asistencia
+            </button>
+            <button id="btn-export-responses" style="padding:9px 14px;border:1px solid rgba(0,229,138,0.3);border-radius:10px;background:rgba(0,229,138,0.08);color:#00E58A;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              📝 Exportar Respuestas Detalle
+            </button>
+          </div>
+          <button id="btn-admin-reset" style="padding:9px 14px;border:1px solid rgba(255,59,59,0.5);border-radius:10px;background:rgba(255,59,59,0.1);color:#FF7070;font-size:12px;font-weight:800;cursor:pointer;">
             🧹 Reiniciar Todo
           </button>
         </div>
 
-        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
-          ${leaderboard.length === 0 ? `
+        <!-- Live Ranking List Header & Search Filter -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+          <p class="page-section-title" style="margin-bottom:0">
+            📊 Ranking Completo 
+            <span style="font-size:12px;font-weight:700;color:var(--brand-gold);margin-left:6px;">
+              (${filteredLeaderboard.length} de ${leaderboard.length} participantes)
+            </span>
+          </p>
+          <div style="flex:1;max-width:320px;position:relative;">
+            <input type="text" id="admin-search-input" value="${adminSearchTerm}" placeholder="🔍 Buscar por nombre, email..." style="width:100%;padding:9px 14px;border:1px solid var(--border-gold);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:12px;outline:none;">
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;max-height:600px;overflow-y:auto;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+          ${filteredLeaderboard.length === 0 ? `
             <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">
-              Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.
+              ${adminSearchTerm ? 'No se encontraron participantes con esa búsqueda.' : 'Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.'}
             </div>
           ` : `
-            <table class="leaderboard-table" style="width:100%;">
-              <thead>
-                <tr style="background:rgba(0,0,0,0.2);">
+            <table class="leaderboard-table" style="width:100%;border-collapse:collapse;">
+              <thead style="position:sticky;top:0;background:#0d1627;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,0.6);">
+                <tr style="background:rgba(0,0,0,0.3);">
                   <th style="padding:12px 14px;">Posición</th>
                   <th style="padding:12px 14px;">Participante</th>
                   <th style="padding:12px 14px;">Email</th>
@@ -1324,12 +1357,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
               </thead>
               <tbody>
-                ${leaderboard.map((e, i) => {
+                ${filteredLeaderboard.map((e, i) => {
                   const isPerfect = e.score >= 500;
+                  const originalIndex = leaderboard.indexOf(e);
+                  const displayRank = originalIndex >= 0 ? originalIndex : i;
                   return `
                     <tr style="${isPerfect ? 'background:rgba(0,229,138,0.06);' : ''}transition:background 0.2s;">
-                      <td style="padding:12px 14px;font-family:var(--font-display);font-weight:900;font-size:18px;color:${i===0?'#FFD000':i===1?'#C0C0C0':i===2?'#CD7F32':'var(--text-muted)'}">
-                        ${rankBadge(i)}
+                      <td style="padding:12px 14px;font-family:var(--font-display);font-weight:900;font-size:17px;color:${displayRank===0?'#FFD000':displayRank===1?'#C0C0C0':displayRank===2?'#CD7F32':'var(--text-muted)'}">
+                        ${rankBadge(displayRank)}
                       </td>
                       <td style="padding:12px 14px;font-weight:700;color:var(--text-primary);font-size:14px;">
                         ${e.name} ${isPerfect ? '<span style="font-size:10px;background:#00E58A;color:#000;padding:2px 6px;border-radius:4px;font-weight:900;margin-left:6px;">5/5 PERFECTO</span>' : ''}
@@ -1451,6 +1486,23 @@ document.addEventListener('DOMContentLoaded', () => {
       activeAdminTab = 'questions';
       renderAdminScreen();
     });
+    document.getElementById('btn-export-ranking')?.addEventListener('click', exportLeaderboardCSV);
+    document.getElementById('btn-export-logins')?.addEventListener('click', exportLoginsCSV);
+    document.getElementById('btn-export-responses')?.addEventListener('click', exportResponsesCSV);
+
+    const searchInput = document.getElementById('admin-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        adminSearchTerm = e.target.value;
+        renderAdminScreen();
+        const newSearchInput = document.getElementById('admin-search-input');
+        if (newSearchInput) {
+          newSearchInput.focus();
+          newSearchInput.setSelectionRange(newSearchInput.value.length, newSearchInput.value.length);
+        }
+      });
+    }
+
     document.getElementById('btn-admin-reset')?.addEventListener('click', () => {
       if (confirm('¿ATENCIÓN: Reiniciar el tablero y borrar todos los participantes registrados para un nuevo evento?')) {
         const resetTimestamp = Date.now();
@@ -1703,6 +1755,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  function exportLeaderboardCSV() {
+    if (leaderboard.length === 0) {
+      alert('Aún no hay participantes en el ranking.');
+      return;
+    }
+    let csv = '"Posición";"Nombre";"Email";"Categoría";"Puntos";"Tiempo Promedio (s)";"Fecha"\r\n';
+    leaderboard.forEach((e, idx) => {
+      const nClean = (e.name || '').replace(/"/g, '""');
+      const eClean = (e.email || '').replace(/"/g, '""');
+      const cClean = (e.category || '').replace(/"/g, '""');
+      const tVal = typeof e.time === 'number' ? e.time.toFixed(2) : e.time;
+      csv += `"${idx + 1}";"${nClean}";"${eClean}";"${cClean}";"${e.score}";"${tVal}";"${e.date || ''}"\r\n`;
+    });
+    downloadCSV(`Ranking_General_${new Date().toISOString().slice(0,10)}.csv`, csv);
   }
 
   function exportLoginsCSV() {
