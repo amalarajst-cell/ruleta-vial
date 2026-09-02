@@ -31,15 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('/api/leaderboard')
           .then(res => res.json())
           .then(data => {
-            if (Array.isArray(data)) {
-              if (data.length === 0) {
-                leaderboard = [];
-                localStorage.setItem('vex_leaderboard', '[]');
-                if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
-                if (screens.admin.classList.contains('active')) renderAdminScreen();
-              } else {
-                leaderboard = mergeLeaderboards(leaderboard, data);
-                localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+            if (Array.isArray(data) && data.length > 0) {
+              const prevStr = JSON.stringify(leaderboard);
+              leaderboard = mergeLeaderboards(leaderboard, data);
+              const newStr = JSON.stringify(leaderboard);
+              if (prevStr !== newStr) {
+                localStorage.setItem('vex_leaderboard', newStr);
                 if (screens.stats.classList.contains('active')) updateLeaderboardTableUI();
                 if (screens.admin.classList.contains('active')) renderAdminScreen();
               }
@@ -52,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       refreshLeaderboardData();
-      statsRefreshInterval = setInterval(refreshLeaderboardData, 2500);
+      statsRefreshInterval = setInterval(refreshLeaderboardData, 5000);
     } else {
       clearInterval(statsRefreshInterval);
     }
@@ -170,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
               localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
               localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
             } else {
+              const prevLeaderboardJson = JSON.stringify(leaderboard);
               if (Array.isArray(parsed.leaderboard)) {
                 leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
                 localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
@@ -189,16 +187,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
               }
-            }
 
-            if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-              if (QUESTIONS.length <= parsed.questions.length) {
-                QUESTIONS.splice(0, QUESTIONS.length, ...parsed.questions);
-                localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+              if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+                if (QUESTIONS.length <= parsed.questions.length) {
+                  QUESTIONS.splice(0, QUESTIONS.length, ...parsed.questions);
+                  localStorage.setItem('vex_custom_questions', JSON.stringify(QUESTIONS));
+                }
+              }
+              const newLeaderboardJson = JSON.stringify(leaderboard);
+              if (prevLeaderboardJson !== newLeaderboardJson) {
+                updateLeaderboardTableUI();
+                if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
               }
             }
-            updateLeaderboardTableUI();
-            if (screens.admin && screens.admin.classList.contains('active')) renderAdminScreen();
+
             if (playerName && hasPlayerCompleted(playerEmail)) {
               updateRouletteLockState();
             }
@@ -1258,6 +1260,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAdminScreen() {
     if (!adminContent) return;
 
+    // Save scroll positions before DOM rebuild
+    const tableScrollEl = document.getElementById('admin-table-container');
+    const savedTableScroll = tableScrollEl ? tableScrollEl.scrollTop : 0;
+    const savedScreenScroll = screens.admin ? screens.admin.scrollTop : 0;
+    const savedPageScroll = window.scrollY || document.documentElement.scrollTop || 0;
+
     const totalCount = leaderboard.length;
     const perfectCount = leaderboard.filter(e => e.score >= 500).length;
     const maxScore = leaderboard.length > 0 ? Math.max(...leaderboard.map(e => e.score)) : 0;
@@ -1339,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow:hidden;max-height:600px;overflow-y:auto;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+        <div id="admin-table-container" style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:16px;overflow-x:auto;overflow-y:auto;max-height:550px;-webkit-overflow-scrolling:touch;margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
           ${filteredLeaderboard.length === 0 ? `
             <div style="text-align:center;padding:40px;color:var(--text-muted);font-size:14px;">
               ${adminSearchTerm ? 'No se encontraron participantes con esa búsqueda.' : 'Aún no hay participantes registrados. A medida que jueguen aparecerán en tiempo real.'}
@@ -1476,6 +1484,14 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `}
     `;
+
+    // Restore scroll positions immediately
+    requestAnimationFrame(() => {
+      const newTableScrollEl = document.getElementById('admin-table-container');
+      if (newTableScrollEl && savedTableScroll > 0) newTableScrollEl.scrollTop = savedTableScroll;
+      if (screens.admin && savedScreenScroll > 0) screens.admin.scrollTop = savedScreenScroll;
+      if (savedPageScroll > 0) window.scrollTo(0, savedPageScroll);
+    });
 
     // Event listeners
     document.getElementById('tab-admin-metrics')?.addEventListener('click', () => {
