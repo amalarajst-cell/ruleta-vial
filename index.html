@@ -1,383 +1,811 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#060A14">
-  <title>Formación Vial Extreme | Gerencia de Educación y Convivencia Vial</title>
-  <meta name="description" content="Aplicación interactiva de Educación y Convivencia Vial — Dirección General de Seguridad Vial. Ruleta de preguntas sobre tránsito.">
-  <link rel="stylesheet" href="css/styles.css?v=40">
+  <meta name="theme-color" content="#121414">
+  <title>VialPlay — Desafío Gamificado de Seguridad Vial</title>
+  <meta name="description" content="Aprende y pon a prueba tus conocimientos sobre seguridad vial con la Ruleta Vial interactiva de VialPlay.">
+
+  <!-- Google Fonts: Archivo, Archivo Black & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body>
 
   <!-- ================================================
-       SCREEN 1 — REGISTRO / LOGIN
+       APPLICATION HEADER (FIXED TOP)
   ================================================ -->
-  <div id="screen-login" class="screen active">
+  <header class="app-header">
+    <div class="app-header-inner">
+      <!-- Brand Logo -->
+      <div class="brand-block" id="header-brand-block" title="VialPlay Seguridad Vial">
+        <img src="assets/logo.png" alt="VialPlay Logo" class="brand-logo" onerror="this.style.display='none'">
+        <div class="brand-titles">
+          <span class="brand-title">VialPlay</span>
+          <span class="brand-sub">Educación Vial</span>
+        </div>
+      </div>
 
-    <!-- Top Government Banner -->
-    <div class="login-top-banner">
-      <h1>Gerencia de Educación<br>y Convivencia Vial</h1>
-      <h2>Dirección General de Seguridad Vial</h2>
+      <!-- Header Status Group -->
+      <div class="header-status-group">
+        <!-- Sound Toggle -->
+        <button class="btn-sound-toggle" id="btn-sound-toggle" type="button" aria-label="Sonido">
+          <span class="material-symbols-outlined text-[18px]" id="icon-sound-toggle">volume_up</span>
+        </button>
+
+        <!-- Streak Pill -->
+        <div class="status-pill" title="Racha de aciertos">
+          <span class="material-symbols-outlined text-[16px]" style="color:var(--secondary-container)">local_fire_department</span>
+          <span id="header-streak-val" style="color:var(--secondary-container)">0</span>
+        </div>
+
+        <!-- Score Pill -->
+        <div class="status-pill" title="Puntos XP acumulados">
+          <span class="material-symbols-outlined text-[16px]" style="color:var(--tertiary)">bolt</span>
+          <span id="header-score-val" style="color:var(--tertiary)">0</span>
+        </div>
+
+        <!-- Player Avatar Pill -->
+        <div class="header-player-pill" id="header-player-pill" title="Editar Perfil">
+          <img src="assets/avatars/auto.png" alt="Avatar" class="header-avatar-thumb" id="header-avatar-img">
+          <span id="header-player-name">Piloto</span>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <!-- Background decoration -->
-    <div class="login-bg-hero" aria-hidden="true"></div>
 
-    <!-- Login Form -->
-    <div class="login-form-wrapper">
+  <!-- ================================================
+       SCREEN 1: REGISTRO Y PERFIL VIAL
+  ================================================ -->
+  <main class="screen active" id="screen-register">
+    <div style="display:flex;flex-direction:column;gap:18px;">
 
-      <div class="login-tagline">
-        <div class="extreme-badge">RULETA VIAL</div>
-        <h3>¡Prueba tu conocimiento!</h3>
-        <p>Registrate para participar en el desafío de preguntas sobre educación vial y seguridad en el tránsito.</p>
-      </div>
-
-      <div class="form-card">
-        <div class="form-group">
-          <label for="input-nombre">👤 Nombre completo</label>
-          <input
-            id="input-nombre"
-            type="text"
-            placeholder="Ej: María González"
-            maxlength="30"
-            autocomplete="name"
-            inputmode="text"
-          />
+      <!-- Step Badge -->
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="status-pill" style="background:var(--primary-container);color:var(--tertiary);border:1px solid rgba(141,226,214,0.25);">
+          <span class="material-symbols-outlined text-[16px]">verified_user</span>
+          <span>Paso 1 de 2 • Perfil Vial</span>
         </div>
-        <div class="form-group">
-          <label for="input-email">✉️ Correo electrónico</label>
-          <input
-            id="input-email"
-            type="email"
-            placeholder="Ej: maria@correo.com"
-            autocomplete="email"
-            inputmode="email"
-          />
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div style="width:32px;height:8px;border-radius:9999px;background:var(--secondary-container);"></div>
+          <div style="width:8px;height:8px;border-radius:9999px;background:var(--surface-container-highest);"></div>
         </div>
       </div>
 
-      <button id="btn-ingresar" class="btn-primary" aria-label="Ingresar al desafío">
-        INGRESAR AL DESAFÍO
+      <!-- Welcome Title -->
+      <div>
+        <h1 style="font-family:var(--font-display);font-size:26px;line-height:1.2;color:var(--on-surface);">
+          ¡Únete al camino seguro!
+        </h1>
+        <p style="font-size:14px;color:var(--tertiary);margin-top:4px;">
+          Aprende las normas viales jugando, gira la ruleta y compite en el ranking.
+        </p>
+      </div>
+
+      <!-- Avatar Selector Section (Swipeable Slider with Female & Male Avatars) -->
+      <div class="surface-card avatar-slider-card">
+        <div class="avatar-slider-header">
+          <div>
+            <p class="avatar-slider-title">Elige tu Avatar Vial</p>
+            <span class="avatar-slider-subtitle">Desliza con el dedo hacia los lados</span>
+          </div>
+          <div class="avatar-counter-badge" id="avatar-counter-badge">1 / 10</div>
+        </div>
+
+        <!-- Gender Filter Switcher -->
+        <div class="avatar-gender-tabs">
+          <button type="button" class="avatar-gender-tab active" data-filter="all">
+            <span class="material-symbols-outlined text-[15px]">groups</span>
+            <span>Todos (10)</span>
+          </button>
+          <button type="button" class="avatar-gender-tab" data-filter="female">
+            <span class="material-symbols-outlined text-[15px]">face_3</span>
+            <span>Mujeres (5)</span>
+          </button>
+          <button type="button" class="avatar-gender-tab" data-filter="male">
+            <span class="material-symbols-outlined text-[15px]">face_6</span>
+            <span>Varones (5)</span>
+          </button>
+        </div>
+
+        <!-- Swipeable Viewport -->
+        <div class="avatar-slider-wrapper">
+          <button type="button" class="avatar-nav-arrow prev" id="avatar-btn-prev" aria-label="Anterior avatar">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          <div class="avatar-slider-viewport" id="avatar-slider-viewport">
+            <div class="avatar-slider-track" id="avatar-slider-track">
+              <!-- Slide 0: Auto Masculino -->
+              <div class="avatar-slide active" data-index="0" data-gender="male" data-avatar-src="assets/avatars/auto.png" data-role="Auto B" data-name="Alex • Piloto de Auto" data-desc="Auto Particular • Licencia B">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/auto.png" alt="Alex - Auto" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Alex <span class="avatar-gender-badge male">♂ Piloto</span></h4>
+                <span class="avatar-slide-role">Auto Particular • Piloto B</span>
+              </div>
+
+              <!-- Slide 1: Auto Femenino -->
+              <div class="avatar-slide" data-index="1" data-gender="female" data-avatar-src="assets/avatars/auto_fem.png" data-role="Auto B" data-name="Valentina • Pilota de Auto" data-desc="Auto Particular • Licencia B">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/auto_fem.png" alt="Valentina - Auto" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Valentina <span class="avatar-gender-badge female">♀ Pilota</span></h4>
+                <span class="avatar-slide-role">Auto Particular • Piloto B</span>
+              </div>
+
+              <!-- Slide 2: Ciclista Masculino -->
+              <div class="avatar-slide" data-index="2" data-gender="male" data-avatar-src="assets/avatars/ciclista.png" data-role="Ciclista" data-name="Lucas • Ciclista Urbano" data-desc="Movilidad Sustentable & Ciclovías">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/ciclista.png" alt="Lucas - Ciclista" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Lucas <span class="avatar-gender-badge male">♂ Ciclista</span></h4>
+                <span class="avatar-slide-role">Ciclista Urbano • Movilidad Eco</span>
+              </div>
+
+              <!-- Slide 3: Ciclista Femenino -->
+              <div class="avatar-slide" data-index="3" data-gender="female" data-avatar-src="assets/avatars/ciclista_fem.png" data-role="Ciclista" data-name="Luna • Ciclista Urbana" data-desc="Movilidad Sustentable & Ciclovías">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/ciclista_fem.png" alt="Luna - Ciclista" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Luna <span class="avatar-gender-badge female">♀ Ciclista</span></h4>
+                <span class="avatar-slide-role">Ciclista Urbana • Movilidad Eco</span>
+              </div>
+
+              <!-- Slide 4: Moto Masculino -->
+              <div class="avatar-slide" data-index="4" data-gender="male" data-avatar-src="assets/avatars/moto.png" data-role="Moto A" data-name="Marcos • Motociclista" data-desc="Ruta y Casco Homologado">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/moto.png" alt="Marcos - Moto" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Marcos <span class="avatar-gender-badge male">♂ Motociclista</span></h4>
+                <span class="avatar-slide-role">Motociclista • Ruta y Casco</span>
+              </div>
+
+              <!-- Slide 5: Moto Femenino -->
+              <div class="avatar-slide" data-index="5" data-gender="female" data-avatar-src="assets/avatars/moto_fem.png" data-role="Moto A" data-name="Camila • Motociclista" data-desc="Ruta y Casco Homologado">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/moto_fem.png" alt="Camila - Moto" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Camila <span class="avatar-gender-badge female">♀ Motociclista</span></h4>
+                <span class="avatar-slide-role">Motociclista • Ruta y Casco</span>
+              </div>
+
+              <!-- Slide 6: Peatón Masculino -->
+              <div class="avatar-slide" data-index="6" data-gender="male" data-avatar-src="assets/avatars/peaton.png" data-role="Peatón" data-name="Mateo • Peatón Alerta" data-desc="Cruce Cebrado y Convivencia Vial">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/peaton.png" alt="Mateo - Peatón" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Mateo <span class="avatar-gender-badge male">♂ Peatón</span></h4>
+                <span class="avatar-slide-role">Peatón Seguro • Cruce Cebrado</span>
+              </div>
+
+              <!-- Slide 7: Peatón Femenino -->
+              <div class="avatar-slide" data-index="7" data-gender="female" data-avatar-src="assets/avatars/peaton_fem.png" data-role="Peatón" data-name="Sofía • Peatón Alerta" data-desc="Cruce Cebrado y Convivencia Vial">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/peaton_fem.png" alt="Sofía - Peatón" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Sofía <span class="avatar-gender-badge female">♀ Peatón</span></h4>
+                <span class="avatar-slide-role">Peatón Seguro • Cruce Cebrado</span>
+              </div>
+
+              <!-- Slide 8: Colectivo Masculino -->
+              <div class="avatar-slide" data-index="8" data-gender="male" data-avatar-src="assets/avatars/profesional.png" data-role="Colectivo (D1 / Pasajeros)" data-name="Don Roberto • Chofer Profesional" data-desc="Transporte de Pasajeros (D1)">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/profesional.png" alt="Don Roberto - Chofer" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Don Roberto <span class="avatar-gender-badge male">♂ Chofer</span></h4>
+                <span class="avatar-slide-role">Transporte de Pasajeros (D1)</span>
+              </div>
+
+              <!-- Slide 9: Colectivo Femenino -->
+              <div class="avatar-slide" data-index="9" data-gender="female" data-avatar-src="assets/avatars/profesional_fem.png" data-role="Colectivo (D1 / Pasajeros)" data-name="Doña Carmen • Chofer Profesional" data-desc="Transporte de Pasajeros (D1)">
+                <div class="avatar-slide-circle">
+                  <img src="assets/avatars/profesional_fem.png" alt="Doña Carmen - Chofer" draggable="false">
+                </div>
+                <h4 class="avatar-slide-name">Doña Carmen <span class="avatar-gender-badge female">♀ Chofer</span></h4>
+                <span class="avatar-slide-role">Transporte de Pasajeros (D1)</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="avatar-nav-arrow next" id="avatar-btn-next" aria-label="Siguiente avatar">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- Swipe Instruction & Dots -->
+        <div class="avatar-slider-footer">
+          <div class="avatar-swipe-indicator">
+            <span class="material-symbols-outlined">swipe</span>
+            <span>Desliza con el dedo</span>
+          </div>
+          <div class="avatar-slider-dots" id="avatar-slider-dots">
+            <button type="button" class="slider-dot active" data-index="0" aria-label="Avatar 1"></button>
+            <button type="button" class="slider-dot" data-index="1" aria-label="Avatar 2"></button>
+            <button type="button" class="slider-dot" data-index="2" aria-label="Avatar 3"></button>
+            <button type="button" class="slider-dot" data-index="3" aria-label="Avatar 4"></button>
+            <button type="button" class="slider-dot" data-index="4" aria-label="Avatar 5"></button>
+            <button type="button" class="slider-dot" data-index="5" aria-label="Avatar 6"></button>
+            <button type="button" class="slider-dot" data-index="6" aria-label="Avatar 7"></button>
+            <button type="button" class="slider-dot" data-index="7" aria-label="Avatar 8"></button>
+            <button type="button" class="slider-dot" data-index="8" aria-label="Avatar 9"></button>
+            <button type="button" class="slider-dot" data-index="9" aria-label="Avatar 10"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Form -->
+      <form class="surface-card" style="display:flex;flex-direction:column;gap:14px;" onsubmit="event.preventDefault();">
+        <!-- Nickname -->
+        <div class="input-group">
+          <label class="input-label" for="reg-name">
+            <span>Nombre de Piloto / Participante</span>
+            <span style="color:var(--tertiary);font-size:11px;">Requerido</span>
+          </label>
+          <div class="input-field-wrap">
+            <span class="material-symbols-outlined">person</span>
+            <input class="text-input" id="reg-name" type="text" placeholder="Ej. Alex Rivera" maxlength="32" required>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <label class="input-label" for="reg-email">
+            <span>Correo Electrónico</span>
+            <span style="color:var(--on-surface-variant);font-size:11px;">Para guardar tu puesto</span>
+          </label>
+          <div class="input-field-wrap">
+            <span class="material-symbols-outlined">mail</span>
+            <input class="text-input" id="reg-email" type="email" placeholder="tuemail@ejemplo.com" required>
+          </div>
+        </div>
+
+
+
+        <!-- Citizen Pact Checkbox -->
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding-top:4px;">
+          <input type="checkbox" checked style="margin-top:3px;accent-color:var(--secondary-container);width:18px;height:18px;">
+          <span style="font-size:12px;color:var(--on-surface-variant);line-height:1.4;">
+            Acepto comprometerme con la <strong style="color:var(--on-surface)">conducción responsable</strong>, el respeto a las normas viales y la convivencia en el tránsito.
+          </span>
+        </label>
+
+        <!-- Submit CTA -->
+        <button class="btn-tactile-primary" id="btn-register-submit" type="submit" style="margin-top:8px;">
+          <span>CREAR CUENTA Y ENTRAR</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </form>
+
+      <!-- Footer Disclaimer -->
+      <div style="text-align:center;padding:8px 0;font-size:12px;color:var(--on-surface-variant);">
+        <span>Gerencia de Educación y Convivencia Vial • Dirección General de Seguridad Vial</span>
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- ================================================
+       SCREEN 2: RULETA VIAL DE BIENVENIDA
+  ================================================ -->
+  <main class="screen" id="screen-roulette">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Driver Category & Status Strip -->
+      <div class="primary-card" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+          <div style="width:46px;height:46px;border-radius:50%;overflow:hidden;background:var(--surface-container-highest);border:2px solid var(--tertiary);flex-shrink:0;">
+            <img src="assets/avatars/auto.png" alt="Avatar" id="user-banner-avatar" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div style="display:flex;flex-direction:column;min-width:0;">
+            <div style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-container);padding:2px 8px;border-radius:9999px;width:fit-content;">
+              <span class="material-symbols-outlined text-[13px]" style="color:var(--secondary-container)">directions_car</span>
+              <span style="font-size:11px;font-weight:700;color:var(--tertiary);" id="user-banner-role">Clase B • Auto</span>
+            </div>
+            <span style="font-weight:700;font-size:15px;color:var(--on-surface);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="user-banner-name">
+              Piloto Vial
+            </span>
+          </div>
+        </div>
+
+        <!-- Health & Starter XP badges -->
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+          <div class="status-pill" style="color:var(--error);background:var(--surface-container-low)">
+            <span class="material-symbols-outlined text-[16px]">favorite</span>
+            <span>3/3</span>
+          </div>
+          <div class="status-pill" style="color:var(--secondary-container);background:var(--surface-container-low)">
+            <span class="material-symbols-outlined text-[16px]">military_tech</span>
+            <span>Nv. 1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Welcome Tag Banner -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--tertiary);padding:8px 14px;border-radius:14px;color:var(--on-tertiary);box-shadow:0 4px 14px rgba(141,226,214,0.25);">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="material-symbols-outlined text-[20px]">stars</span>
+          <span style="font-family:var(--font-display);font-size:12px;letter-spacing:0.04em;">TIRADA DE BIENVENIDA: 1 GRATIS</span>
+        </div>
+        <span style="background:var(--on-tertiary);color:var(--tertiary);font-family:var(--font-display);font-size:11px;padding:3px 8px;border-radius:9999px;">
+          +100% XP BONUS
+        </span>
+      </div>
+
+      <!-- Roulette Headline -->
+      <div>
+        <h1 style="font-family:var(--font-display);font-size:24px;line-height:1.2;color:var(--on-surface);">
+          ¡Gira la Ruleta Vial!
+        </h1>
+        <p style="font-size:14px;color:var(--on-surface-variant);margin-top:4px;">
+          Descubre tu categoría práctica, responde 5 preguntas y gana puntos para tu licencia.
+        </p>
+      </div>
+
+      <!-- Centerpiece: Canvas Roulette Arena -->
+      <div class="roulette-arena">
+        <div class="neon-aura"></div>
+        <div class="canvas-wrapper" id="roulette-wheel-wrap">
+          <canvas id="roulette-canvas" width="320" height="320" aria-label="Ruleta Vial"></canvas>
+        </div>
+      </div>
+
+      <!-- Lock Notice if already spun -->
+      <div id="roulette-lock-tag" style="display:none;background:rgba(255,198,0,0.12);border:1px solid var(--secondary-container);color:var(--secondary-container);padding:12px 14px;border-radius:12px;text-align:center;font-size:13px;font-weight:700;">
+        ⚠️ Ya completaste tu participación. Consulta tu puesto en el ranking o registra a un nuevo participante.
+      </div>
+
+      <!-- Primary Tactile Spin CTA -->
+      <button class="btn-tactile-primary" id="btn-spin-roulette" type="button">
+        <span class="material-symbols-outlined text-[26px]">cached</span>
+        <span>¡GIRAR RULETA AHORA!</span>
       </button>
 
-      <p class="login-disclaimer">
-        Tus datos se registrarán localmente para guardar tu progreso y estadísticas. No se comparte con terceros.
-        <span id="btn-open-admin-link" style="cursor:pointer;opacity:0.7;font-size:13px;margin-left:8px;vertical-align:middle;" title="Panel de Administración">🔐</span>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;color:var(--on-surface-variant);font-size:12px;">
+        <span class="material-symbols-outlined text-[16px]" style="color:var(--tertiary)">check_circle</span>
+        <span>1 tiro gratis disponible • Sin costo de vidas viales</span>
+      </div>
+
+      <!-- Starter Rewards Potential Preview Bento -->
+      <div class="primary-card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined text-[18px]" style="color:var(--secondary-container)">workspace_premium</span>
+            <span style="font-size:13px;font-weight:700;color:var(--on-surface);">Recompensas del Giro Inicial</span>
+          </div>
+          <span style="font-size:11px;background:var(--surface-container);color:var(--tertiary);padding:2px 8px;border-radius:9999px;">
+            3 Desbloqueos
+          </span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;">
+          <div style="background:var(--surface-container);padding:10px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
+              <img src="assets/medals/oro.png" alt="Medalla Oro" style="width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">
+            </div>
+            <span style="font-size:11px;font-weight:700;">Medallón Oro</span>
+            <span style="font-size:10px;color:var(--secondary-container);">Top Podio</span>
+          </div>
+
+          <div style="background:var(--surface-container);padding:10px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:rgba(141,226,214,0.15);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined text-[18px]" style="color:var(--tertiary)">speed</span>
+            </div>
+            <span style="font-size:11px;font-weight:700;">Bonus x2</span>
+            <span style="font-size:10px;color:var(--secondary-container);">15 Minutos</span>
+          </div>
+
+          <div style="background:var(--surface-container);padding:10px;border-radius:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">
+              <span class="material-symbols-outlined text-[18px]">car_crash</span>
+            </div>
+            <span style="font-size:11px;font-weight:700;">Simulador</span>
+            <span style="font-size:10px;color:var(--tertiary);">Pase Pro</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- ================================================
+       SCREEN 3: DESAFÍO DE PREGUNTAS (QUIZ ARENA)
+  ================================================ -->
+  <main class="screen" id="screen-quiz">
+    <div style="display:flex;flex-direction:column;">
+
+      <!-- Quiz Header -->
+      <div class="quiz-header">
+        <div class="quiz-category-badge" id="quiz-category-badge">
+          🚗 Auto
+        </div>
+        <div class="quiz-counter">
+          <span class="active-num" id="quiz-current-num">1</span>
+          <span>/5</span>
+        </div>
+      </div>
+
+      <!-- Glowing Progress Bar -->
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+      </div>
+
+      <!-- Reaction Timer Pill -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div class="timer-pill">
+          <div class="timer-dot"></div>
+          <span>Tiempo:</span>
+          <span id="quiz-timer-text">0.0s</span>
+        </div>
+        <span style="font-size:11px;color:var(--on-surface-variant);font-weight:600;">+Velocidad = +Puntos XP</span>
+      </div>
+
+      <!-- Question Card -->
+      <div class="question-card">
+        <p class="question-text" id="quiz-question-text">
+          Cargando enunciado de la pregunta...
+        </p>
+
+        <!-- Optional Traffic Sign Image Block -->
+        <div class="question-img-block" id="quiz-image-block" style="display:none;">
+          <img id="quiz-image-tag" src="" alt="Señal de tránsito">
+        </div>
+      </div>
+
+      <!-- Multiple Choice Options Stack -->
+      <div class="options-stack" id="quiz-options-stack">
+        <!-- Injected dynamically by JS -->
+      </div>
+
+      <!-- Feedback Box -->
+      <div class="feedback-box" id="quiz-feedback-box">
+        <div class="feedback-title" id="quiz-feedback-title">¡Respuesta!</div>
+        <p class="feedback-explanation" id="quiz-feedback-explanation"></p>
+        <span class="feedback-timetag" id="quiz-feedback-timetag"></span>
+      </div>
+
+      <!-- Next Question Tactile Button -->
+      <button class="btn-tactile-primary" id="quiz-btn-next" style="display:none;margin-top:8px;">
+        <span id="quiz-btn-next-label">Siguiente Pregunta (2/5)</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+
+    </div>
+  </main>
+
+
+  <!-- ================================================
+       SCREEN 4: RESULTADOS DEL DESAFÍO
+  ================================================ -->
+  <main class="screen" id="screen-results">
+    <div style="display:flex;flex-direction:column;">
+
+      <!-- Hero Results Card -->
+      <div class="results-hero-card">
+        <div id="res-medal-display" style="display:none;margin-bottom:8px;"></div>
+        <div style="font-size:44px;margin-bottom:6px;" id="res-emoji">🏆</div>
+        <h2 style="font-family:var(--font-display);font-size:24px;color:var(--secondary-container);" id="res-title">
+          ¡Desafío Completado!
+        </h2>
+        <p style="font-size:14px;color:var(--on-surface-variant);margin-top:4px;" id="res-subtitle">
+          Completaste las 5 preguntas del desafío vial.
+        </p>
+
+        <!-- Rank Position Pill -->
+        <div style="margin-top:12px;background:rgba(255,198,0,0.15);border:1px solid var(--secondary-container);color:var(--secondary-container);padding:8px 16px;border-radius:12px;font-family:var(--font-display);font-size:13px;letter-spacing:0.04em;display:inline-block;" id="res-rank-pill">
+          🏆 POSICIÓN #1 DE 1 PARTICIPANTES
+        </div>
+      </div>
+
+      <!-- Score Ring Circular Gauge -->
+      <div class="score-ring-wrap" aria-label="Resultado de preguntas">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#1e2020" stroke-width="14" />
+          <circle id="res-score-ring-circle" cx="70" cy="70" r="54" fill="none" stroke="var(--secondary-container)" stroke-width="14" stroke-linecap="round" />
+        </svg>
+        <div class="score-ring-text">
+          <span class="score-big-num" style="color:var(--secondary-container);" id="res-score-num">5</span>
+          <span class="score-sub">de 5</span>
+        </div>
+      </div>
+
+      <!-- 2x2 Stats Grid -->
+      <div class="stats-grid-2x2">
+        <div class="stat-tile">
+          <div class="stat-tile-label">Aciertos</div>
+          <div class="stat-tile-val" style="color:var(--success);" id="res-stat-correct">5/5</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Precisión</div>
+          <div class="stat-tile-val" style="color:var(--secondary-container);" id="res-stat-pct">100%</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Tiempo Prom.</div>
+          <div class="stat-tile-val" style="color:var(--tertiary);" id="res-stat-time">2.4s</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-label">Puntos XP</div>
+          <div class="stat-tile-val" style="color:var(--secondary-container);" id="res-stat-points">540 XP</div>
+        </div>
+      </div>
+
+      <!-- Per-Question Breakdown List -->
+      <div class="surface-card" style="padding:12px;margin-bottom:16px;">
+        <p style="font-family:var(--font-display);font-size:12px;text-transform:uppercase;color:var(--tertiary);margin-bottom:8px;">
+          Desglose por Pregunta
+        </p>
+        <div class="breakdown-box" id="res-breakdown-list">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn-tactile-primary" id="btn-res-go-ranking" type="button">
+          <span class="material-symbols-outlined">leaderboard</span>
+          <span>VER TABLA DE POSICIONES</span>
+        </button>
+        <button class="btn-tactile-secondary" id="btn-res-new-player" type="button">
+          <span class="material-symbols-outlined">person_add</span>
+          <span>REGISTRAR OTRO PARTICIPANTE</span>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- ================================================
+       SCREEN 5: RANKING Y TABLA DE POSICIONES
+  ================================================ -->
+  <main class="screen" id="screen-ranking">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Current User Position Card -->
+      <div class="primary-card" id="rank-user-position-card" style="padding:14px;">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Top 3 Podium of Honor -->
+      <div id="rank-podium-container" class="podium-container" style="display:none;">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Leaderboard Header & Search Filter -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <h2 style="font-family:var(--font-display);font-size:20px;color:var(--on-surface);">
+            🏆 Tabla de Posiciones
+          </h2>
+          <span style="font-size:12px;color:var(--tertiary);font-weight:600;">Ranking oficial en tiempo real</span>
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="input-field-wrap">
+        <span class="material-symbols-outlined">search</span>
+        <input class="text-input" id="rank-search-input" type="text" placeholder="Buscar por piloto, email o categoría...">
+      </div>
+
+      <!-- Leaderboard Table Wrap -->
+      <div class="ranking-table-wrap">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Piloto</th>
+              <th style="text-align:right">XP</th>
+              <th style="text-align:right">Tiempo</th>
+            </tr>
+          </thead>
+          <tbody id="rank-table-body">
+            <!-- Injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <p style="text-align:center;font-size:11px;color:var(--on-surface-variant);line-height:1.5;">
+        Gerencia de Educación y Convivencia Vial<br>Dirección General de Seguridad Vial
       </p>
 
     </div>
-  </div>
+  </main>
 
 
   <!-- ================================================
-       SCREEN 2 — RULETA
+       SCREEN 6: PANEL DE ADMINISTRACIÓN (DESKTOP COMPUTER FORMAT)
   ================================================ -->
-  <div id="screen-roulette" class="screen">
+  <main class="screen" id="screen-admin">
+    <div style="display:flex;flex-direction:column;gap:18px;width:100%;">
 
-    <!-- App Header -->
-    <header class="app-header">
-      <div class="header-inner">
-        <div class="header-brand">
-          <div class="titles">
-            <h1>Gerencia de Educación y Convivencia Vial</h1>
-            <h2>Dirección General de Seguridad Vial</h2>
+      <!-- Admin Top Desktop Header Bar -->
+      <div class="admin-header-bar">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,198,0,0.15);border:1.5px solid var(--secondary-container);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">
+            👑
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <h2 style="font-family:var(--font-display);font-size:22px;color:var(--secondary-container);margin:0;">
+                Panel de Control Administrativo
+              </h2>
+              <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,229,138,0.15);color:var(--success);border:1px solid rgba(0,229,138,0.3);padding:3px 10px;border-radius:9999px;font-size:11px;font-weight:800;">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);"></span> EN VIVO EN TIEMPO REAL
+              </span>
+            </div>
+            <p style="font-size:13px;color:var(--on-surface-variant);margin:3px 0 0;">
+              Gerencia de Educación y Convivencia Vial • Dirección General de Seguridad Vial
+            </p>
           </div>
         </div>
-        <div class="header-player-pill" id="btn-change-player" role="button" aria-label="Cambiar participante" tabindex="0">
-          <div class="player-avatar" aria-hidden="true">👤</div>
-          <span class="player-name-text" id="header-player-name">Jugador</span>
-        </div>
-      </div>
-    </header>
 
-    <!-- Roulette Content -->
-    <main class="roulette-content">
-
-      <div class="roulette-title-block">
-        <div class="tag">🎮 Desafío Vial</div>
-        <h2>¡Girá la Ruleta!</h2>
-        <p>Respondé 5 preguntas de la categoría que caiga.<br>¡Más rápido = más puntos!</p>
-      </div>
-
-      <div class="roulette-wheel-wrap" id="roulette-wheel-wrap">
-        <canvas id="roulette-canvas" aria-label="Ruleta de categorías viales"></canvas>
-      </div>
-
-      <button id="btn-spin" class="btn-spin" aria-label="Girar la ruleta">
-        ¡GIRAR!
-      </button>
-
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav" aria-label="Navegación principal">
-      <div class="bottom-nav-inner">
-        <button class="nav-btn active" id="nav-ruleta" data-target="roulette" aria-label="Ruleta">
-          <span class="nav-icon">🎯</span>
-          Ruleta
-        </button>
-        <button class="nav-btn" id="nav-ranking" data-target="stats" aria-label="Ranking">
-          <span class="nav-icon">🏆</span>
-          Ranking
+        <button class="btn-tactile-secondary" id="btn-exit-admin" style="width:auto;padding:0 22px;height:44px;font-size:13px;border-color:var(--secondary-container);color:var(--secondary-container);display:inline-flex;align-items:center;gap:6px;">
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span>Volver a la Ruleta</span>
         </button>
       </div>
-    </nav>
-  </div>
 
-
-  <!-- ================================================
-       SCREEN 3 — PREGUNTAS
-  ================================================ -->
-  <div id="screen-questions" class="screen">
-
-    <!-- Question Header -->
-    <header class="question-header">
-      <div class="question-header-inner">
-        <div id="q-category-chip" class="category-chip" aria-live="polite">
-          <!-- Category injected by JS -->
-        </div>
-        <div class="question-counter" aria-label="Pregunta actual">
-          <span class="current" id="q-current">1</span>
-          <span class="total">/5</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Progress Bar -->
-    <div class="progress-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0">
-      <div class="track">
-        <div class="fill" id="progress-fill" style="width: 0%"></div>
-      </div>
-    </div>
-
-    <!-- Question Body (scrollable) -->
-    <main class="question-body" id="question-body">
-
-      <!-- Live Timer -->
-      <div class="live-timer" aria-live="off">
-        <div class="timer-dot"></div>
-        <span class="timer-label">Tiempo</span>
-        <span class="timer-value" id="q-timer">0.0s</span>
-      </div>
-
-      <!-- Question Text -->
-      <p class="question-text" id="q-text" aria-live="polite">
-        <!-- Question text injected -->
-      </p>
-
-      <!-- Optional Image -->
-      <div class="question-image-block" id="q-image-block" style="display:none;" aria-hidden="true">
-        <!-- Image or SVG injected -->
-      </div>
-
-      <!-- Options -->
-      <div class="options-list" id="q-options" role="list" aria-label="Opciones de respuesta">
-        <!-- Options injected -->
-      </div>
-
-      <!-- Feedback -->
-      <div class="feedback-box" id="q-feedback" aria-live="assertive">
-        <div class="fb-title" id="fb-title"></div>
-        <p class="fb-explanation" id="fb-explanation"></p>
-        <span class="fb-time-tag" id="fb-time-tag"></span>
-      </div>
-
-      <!-- Next Button -->
-      <button class="btn-next" id="btn-next" aria-label="Siguiente pregunta">
-        Siguiente <span id="btn-next-label">Pregunta (2/5)</span> →
-      </button>
-
-    </main>
-
-  </div>
-
-
-  <!-- ================================================
-       SCREEN 4 — RESULTADOS
-  ================================================ -->
-  <div id="screen-results" class="screen">
-    <div class="results-wrapper" id="results-wrapper">
-      <!-- Injected by JS -->
-    </div>
-  </div>
-
-
-  <!-- ================================================
-       SCREEN 5 — RANKING / ESTADÍSTICAS GLOBALES
-  ================================================ -->
-  <div id="screen-stats" class="screen">
-
-    <!-- Reuse App Header style -->
-    <header class="app-header">
-      <div class="header-inner">
-        <div class="header-brand">
-          <div class="logo-mark">👑</div>
-          <div class="titles">
-            <h1>Ranking de Participantes</h1>
-            <h2>Estadísticas de Velocidad</h2>
+      <!-- 4-Column Desktop Metrics Grid -->
+      <div class="admin-metrics-grid">
+        <div class="admin-metric-card" style="border-color:var(--secondary-container);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:0.5px;">👥 Total Participantes</span>
+            <span class="material-symbols-outlined text-[20px]" style="color:var(--secondary-container)">groups</span>
           </div>
+          <div style="font-family:var(--font-display);font-size:32px;color:var(--secondary-container);margin-top:6px;" id="admin-metric-users">0</div>
+          <span style="font-size:11px;color:var(--tertiary);">Registrados en la plataforma</span>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button id="btn-open-admin-from-stats" style="padding:6px 10px;border:1px solid var(--border-gold);border-radius:10px;background:rgba(255,208,0,0.1);color:var(--brand-gold);font-size:12px;font-weight:800;cursor:pointer;" title="Acceso Admin">
-            🔐 Admin
+
+        <div class="admin-metric-card" style="border-color:rgba(0,229,138,0.4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:0.5px;">🏆 Puntajes Perfectos</span>
+            <span class="material-symbols-outlined text-[20px]" style="color:var(--success)">verified</span>
+          </div>
+          <div style="font-family:var(--font-display);font-size:32px;color:var(--success);margin-top:6px;" id="admin-metric-perfect">0</div>
+          <span style="font-size:11px;color:var(--success);">5 de 5 preguntas acertadas</span>
+        </div>
+
+        <div class="admin-metric-card" style="border-color:rgba(141,226,214,0.4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:0.5px;">⭐ Puntaje Récord</span>
+            <span class="material-symbols-outlined text-[20px]" style="color:var(--tertiary)">military_tech</span>
+          </div>
+          <div style="font-family:var(--font-display);font-size:32px;color:var(--tertiary);margin-top:6px;" id="admin-metric-maxscore">0 XP</div>
+          <span style="font-size:11px;color:var(--tertiary);">Puntuación máxima histórica</span>
+        </div>
+
+        <div class="admin-metric-card" style="border-color:rgba(255,255,255,0.25);">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:0.5px;">⏱ Tiempo Promedio</span>
+            <span class="material-symbols-outlined text-[20px]" style="color:#FFF">timer</span>
+          </div>
+          <div style="font-family:var(--font-display);font-size:32px;color:#FFFFFF;margin-top:6px;" id="admin-metric-avgtime">0.0s</div>
+          <span style="font-size:11px;color:var(--on-surface-variant);">Velocidad media de respuesta</span>
+        </div>
+      </div>
+
+      <!-- Desktop Toolbar: Export CSVs & Search Filter -->
+      <div class="admin-toolbar">
+        <div class="admin-export-group">
+          <span style="font-family:var(--font-display);font-size:12px;text-transform:uppercase;color:var(--tertiary);margin-right:6px;">
+            Exportaciones:
+          </span>
+          <button id="btn-export-ranking" style="padding:10px 16px;border-radius:10px;background:rgba(255,198,0,0.15);border:1px solid var(--secondary-container);color:var(--secondary-container);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined text-[16px]">download</span>
+            <span>Ranking Completo (CSV)</span>
           </button>
-          <button id="btn-back-from-stats" class="header-player-pill" aria-label="Volver a la ruleta">
-            ← Volver
+          <button id="btn-export-logins" style="padding:10px 16px;border-radius:10px;background:rgba(141,226,214,0.15);border:1px solid var(--tertiary);color:var(--tertiary);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined text-[16px]">how_to_reg</span>
+            <span>Asistencia / Ingresos (CSV)</span>
+          </button>
+          <button id="btn-export-responses" style="padding:10px 16px;border-radius:10px;background:rgba(0,229,138,0.15);border:1px solid var(--success);color:var(--success);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined text-[16px]">fact_check</span>
+            <span>Detalle Respuestas (CSV)</span>
+          </button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;flex:1;max-width:440px;">
+          <div class="input-field-wrap" style="flex:1;">
+            <span class="material-symbols-outlined">search</span>
+            <input class="text-input" id="admin-search-input" type="text" placeholder="Filtrar por participante, email, rol o categoría..." style="padding-top:9px;padding-bottom:9px;font-size:13px;">
+          </div>
+          <button id="btn-admin-reset" title="Reiniciar datos locales" style="padding:10px 14px;border-radius:10px;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;color:#FF4D4D;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
+            <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
+            <span>Reiniciar</span>
           </button>
         </div>
       </div>
-    </header>
 
-    <div class="stats-page-content" id="stats-content">
-      <!-- Injected by JS -->
-    </div>
-
-    <!-- Bottom Navigation (same as roulette) -->
-    <nav class="bottom-nav" aria-label="Navegación principal" style="margin-top:auto;">
-      <div class="bottom-nav-inner">
-        <button class="nav-btn" id="nav-ruleta-from-stats" data-target="roulette">
-          <span class="nav-icon">🎯</span>
-          Ruleta
-        </button>
-        <button class="nav-btn active" id="nav-ranking-from-stats" data-target="stats">
-          <span class="nav-icon">🏆</span>
-          Ranking
-        </button>
+      <!-- Wide Desktop Table Container -->
+      <div class="admin-table-container">
+        <div class="ranking-table-wrap" style="max-height:600px;margin-bottom:0;">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th style="width:70px;text-align:center;">Pos</th>
+                <th>Participante</th>
+                <th>Rol / Licencia</th>
+                <th>Email</th>
+                <th>Categoría</th>
+                <th style="text-align:right">XP</th>
+                <th style="text-align:right">Tiempo Prom.</th>
+                <th style="text-align:right">Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
-    </nav>
-  </div>
+
+    </div>
+  </main>
 
 
   <!-- ================================================
-       ADMIN PIN ACCESS MODAL
+       ADMIN PIN MODAL
   ================================================ -->
-  <div id="modal-admin-pin" class="modal-backdrop" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(8px);">
-    <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:20px;padding:24px;width:90%;max-width:340px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.8);animation:screenIn 0.25s ease;">
+  <div class="modal-backdrop" id="modal-admin-pin">
+    <div class="modal-dialog">
       <div style="font-size:36px;margin-bottom:8px;">🔐</div>
-      <h3 style="font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--brand-gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Acceso Administrador</h3>
-      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.4;">Ingresá la clave secreta para acceder al panel de control en vivo.</p>
-      
-      <input type="password" id="input-admin-pin" maxlength="10" placeholder="••••" style="width:100%;padding:14px;border:1px solid var(--border-gold);border-radius:12px;background:var(--bg-surface);color:#fff;font-size:20px;text-align:center;letter-spacing:6px;outline:none;margin-bottom:14px;">
-      <p id="admin-pin-error" style="display:none;color:#FF7070;font-size:11px;font-weight:700;margin-bottom:12px;">Clave incorrecta</p>
+      <h3 style="font-family:var(--font-display);font-size:18px;color:var(--secondary-container);text-transform:uppercase;">
+        Acceso Administrador
+      </h3>
+      <p style="font-size:12px;color:var(--on-surface-variant);margin:8px 0 16px;line-height:1.4;">
+        Ingresa el PIN de seguridad para acceder al panel de control en vivo.
+      </p>
 
-      <div style="display:flex;gap:10px;">
-        <button id="btn-cancel-admin-pin" style="flex:1;padding:12px;border:1px solid rgba(255,255,255,0.2);border-radius:10px;background:rgba(255,255,255,0.05);color:var(--text-secondary);font-weight:700;cursor:pointer;">Cancelar</button>
-        <button id="btn-confirm-admin-pin" style="flex:1;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:13px;text-transform:uppercase;cursor:pointer;">Ingresar</button>
-      </div>
-    </div>
-  </div>
+      <input type="password" id="input-admin-pin" maxlength="10" placeholder="••••" style="width:100%;padding:12px;border:1.5px solid var(--secondary-container);border-radius:12px;background:var(--surface-container-lowest);color:#fff;font-size:22px;text-align:center;letter-spacing:8px;outline:none;margin-bottom:8px;">
+      <p id="admin-pin-error" style="display:none;color:var(--error);font-size:12px;font-weight:700;margin-bottom:12px;">PIN incorrecto</p>
 
-  <!-- ================================================
-       EDIT / ADD QUESTION MODAL
-  ================================================ -->
-  <div id="modal-question-editor" class="modal-backdrop" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:16px;">
-    <div style="background:var(--bg-card);border:1px solid var(--border-gold);border-radius:20px;padding:24px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,0.8);animation:screenIn 0.25s ease;">
-      <h3 id="qe-modal-title" style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--brand-gold);margin-bottom:16px;text-transform:uppercase;">✏️ Editar Pregunta</h3>
-      
-      <input type="hidden" id="qe-id">
-
-      <div class="qe-form-row" style="margin-bottom:12px;text-align:left;">
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Categoría</label>
-          <select id="qe-category" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;">
-            <option value="auto">🚗 Auto</option>
-            <option value="moto">🏍️ Moto</option>
-            <option value="bicicleta">🚲 Bicicleta</option>
-            <option value="peatones">🚶 Peatones</option>
-            <option value="colectivo">🚌 Colectivo</option>
-            <option value="senales">🚸 Señales</option>
-            <option value="micromovilidad">🛴 Micromovilidad</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Respuesta Correcta</label>
-          <select id="qe-correct" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;">
-            <option value="0">Opción A</option>
-            <option value="1">Opción B</option>
-            <option value="2">Opción C</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px;text-align:left;">
-        <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Pregunta / Enunciado</label>
-        <textarea id="qe-question" rows="3" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;resize:vertical;"></textarea>
-      </div>
-
-      <div class="qe-form-row" style="margin-bottom:12px;text-align:left;">
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Opción A</label>
-          <input type="text" id="qe-opt-0" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;">
-        </div>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Opción B</label>
-          <input type="text" id="qe-opt-1" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;">
-        </div>
-      </div>
-
-      <div class="qe-form-row" style="margin-bottom:12px;text-align:left;">
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Opción C (Opcional)</label>
-          <input type="text" id="qe-opt-2" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;">
-        </div>
-        <div>
-          <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Ruta de Imagen (Opcional - ej: img/senal1.png)</label>
-          <input type="text" id="qe-image-src" placeholder="img/senal1.png" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;">
-        </div>
-      </div>
-
-      <div id="qe-image-preview" style="margin-bottom:12px;display:none;text-align:center;background:var(--bg-surface);padding:8px;border-radius:8px;border:1px solid var(--border-subtle);">
-        <!-- Preview injected by JS -->
-      </div>
-
-      <div style="margin-bottom:18px;text-align:left;">
-        <label style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Explicación / Fundamento Vial</label>
-        <textarea id="qe-explanation" rows="2" style="width:100%;padding:11px;border:1px solid var(--border-subtle);border-radius:10px;background:var(--bg-surface);color:#fff;font-size:13px;margin-top:4px;outline:none;resize:vertical;"></textarea>
-      </div>
-
-      <div style="display:flex;gap:12px;">
-        <button id="btn-qe-cancel" style="flex:1;padding:13px;border:1px solid rgba(255,255,255,0.2);border-radius:10px;background:rgba(255,255,255,0.05);color:var(--text-secondary);font-weight:700;cursor:pointer;">Cancelar</button>
-        <button id="btn-qe-save" style="flex:1;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--brand-gold),#FFAA00);color:#000;font-family:var(--font-display);font-weight:900;font-size:14px;text-transform:uppercase;cursor:pointer;">💾 Guardar</button>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button id="btn-cancel-admin-pin" class="btn-tactile-secondary" style="flex:1;height:42px;font-size:13px;" type="button">Cancelar</button>
+        <button id="btn-confirm-admin-pin" class="btn-tactile-primary" style="flex:1;height:42px;font-size:13px;" type="button">Ingresar</button>
       </div>
     </div>
   </div>
 
 
   <!-- ================================================
-       SCREEN 5 — ADMIN DASHBOARD EN VIVO
+       BOTTOM NAVIGATION BAR (FIXED BOTTOM)
   ================================================ -->
-  <div id="screen-admin" class="screen">
-    <header class="app-header" style="border-bottom: 2px solid var(--brand-gold);">
-      <div class="header-inner">
-        <div class="header-brand">
-          <div class="logo-mark">👑</div>
-          <div class="titles">
-            <h1>Panel de Control Admin</h1>
-            <h2><span style="display:inline-block;width:8px;height:8px;background:#00E58A;border-radius:50%;margin-right:4px;box-shadow:0 0 8px #00E58A;"></span> En vivo en tiempo real</h2>
-          </div>
-        </div>
-        <button id="btn-exit-admin" class="header-player-pill" style="border-color:var(--brand-gold);color:var(--brand-gold);cursor:pointer;">
-          ← Volver
-        </button>
-      </div>
-    </header>
-
-    <div class="stats-page-content" id="admin-content" style="padding-bottom:40px;">
-      <!-- Injected by JS -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="nav-item active" data-target="roulette" type="button" aria-label="Ruleta">
+        <span class="material-symbols-outlined text-[24px]">casino</span>
+        <span>Ruleta</span>
+      </button>
+      <button class="nav-item" data-target="ranking" type="button" aria-label="Ranking">
+        <span class="material-symbols-outlined text-[24px]">leaderboard</span>
+        <span>Ranking</span>
+      </button>
+      <button class="nav-item" data-target="register" type="button" aria-label="Perfil">
+        <span class="material-symbols-outlined text-[24px]">account_circle</span>
+        <span>Perfil</span>
+      </button>
     </div>
-  </div>
+  </nav>
 
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
 
-  <!-- ================================================
-       APPLICATION SCRIPTS
-  ================================================ -->
-  <script src="js/questions.js?v=47"></script>
-  <script src="js/audio.js?v=47"></script>
-  <script src="js/roulette.js?v=47"></script>
-  <script src="js/app.js?v=47"></script>
-
+  <!-- Scripts -->
+  <script src="js/questions.js?v=2"></script>
+  <script src="js/colectivo_questions.js?v=2"></script>
+  <script src="js/audio.js?v=2"></script>
+  <script src="js/roulette.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
 </body>
 </html>

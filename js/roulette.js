@@ -1,6 +1,6 @@
 // ============================================================
-//  FORMACIÓN VIAL EXTREME — ROULETTE ENGINE (Mobile-First)
-//  Canvas-based roulette with real signal images on segments
+//  VIALPLAY — ROULETTE ENGINE (Stitch Edition)
+//  Canvas-based high-DPI roulette wheel with stitch theme
 // ============================================================
 class RouletteWheel {
   constructor(canvasId, options = {}) {
@@ -8,32 +8,47 @@ class RouletteWheel {
     if (!this.canvas) return;
 
     this.ctx = this.canvas.getContext('2d');
-    this.categories = [
-      { id: 'bicicleta',      label: 'BICICLETA',   icon: '🚲', color: '#059669', darkColor: '#037050' },
-      { id: 'peatones',       label: 'PEATONES',     icon: '🚶', color: '#0284C7', darkColor: '#0164A0' },
-      { id: 'auto',           label: 'AUTO',          icon: '🚗', color: '#D97706', darkColor: '#B05E04' },
-      { id: 'colectivo',      label: 'COLECTIVO',    icon: '🚌', color: '#7C3AED', darkColor: '#5E24CC' },
-      { id: 'senales',        label: 'SEÑALES',       icon: '🚸', color: '#DC2626', darkColor: '#B01010' },
-      { id: 'micromovilidad', label: 'MICROMOV.',    icon: '🛴', color: '#0891B2', darkColor: '#066E8E' },
-      { id: 'moto',           label: 'MOTO',          icon: '🏍️', color: '#BE185D', darkColor: '#961047' }
+    
+    // Standard General Categories
+    this.defaultCategories = [
+      { id: 'bicicleta',      label: 'BICICLETA',   color: '#059669', darkColor: '#037050', name: 'Bicicleta' },
+      { id: 'peatones',       label: 'PEATONES',     color: '#0284C7', darkColor: '#0164A0', name: 'Peatones' },
+      { id: 'auto',           label: 'AUTO',          color: '#D97706', darkColor: '#B05E04', name: 'Auto' },
+      { id: 'colectivo',      label: 'COLECTIVO',    color: '#7C3AED', darkColor: '#5E24CC', name: 'Colectivo' },
+      { id: 'senales',        label: 'SEÑALES',       color: '#DC2626', darkColor: '#B01010', name: 'Señales' },
+      { id: 'micromovilidad', label: 'MICROMOV.',    color: '#0891B2', darkColor: '#066E8E', name: 'Micromovilidad' },
+      { id: 'moto',           label: 'MOTO',          color: '#BE185D', darkColor: '#961047', name: 'Moto' }
     ];
+
+    // 🚌 Dedicated Colectivo / Transporte de Pasajeros Categories
+    this.colectivoCategories = [
+      { id: 'prioridad',  label: 'PRIORIDAD',  color: '#D97706', darkColor: '#B05E04', name: 'Prioridades de Paso' },
+      { id: 'senales',    label: 'SEÑALES',    color: '#DC2626', darkColor: '#B01010', name: 'Señales y Demarcación' },
+      { id: 'velocidad',  label: 'VELOCIDAD',  color: '#0284C7', darkColor: '#0164A0', name: 'Límites de Velocidad' },
+      { id: 'metrobus',   label: 'METROBÚS',   color: '#059669', darkColor: '#037050', name: 'Carriles y Metrobús' },
+      { id: 'seguridad',  label: 'SEGURIDAD',  color: '#7C3AED', darkColor: '#5E24CC', name: 'Puntos Ciegos y Seguridad' },
+      { id: 'pasajeros',  label: 'PASAJEROS',  color: '#0891B2', darkColor: '#066E8E', name: 'Transporte de Pasajeros' },
+      { id: 'normativa',  label: 'NORMATIVA',  color: '#BE185D', darkColor: '#961047', name: 'Normativa y Licencia D1' }
+    ];
+
+    this.mode = 'default';
+    this.categories = this.defaultCategories;
+    this.centerText = { top: 'VIAL', bottom: 'PLAY' };
 
     this.numSegments = this.categories.length;
     this.segmentAngle = (2 * Math.PI) / this.numSegments;
-    this.currentAngle = -Math.PI / 2; // Start so first segment is at top (pointing to pointer)
+    this.currentAngle = -Math.PI / 2; // Start so first segment is at top pointer
     this.isSpinning = false;
     this.onSpinEnd = options.onSpinEnd || null;
     this.lastTickSegment = -1;
 
     this.setupCanvas();
-    // Defer initial draw to ensure layout is complete
     requestAnimationFrame(() => {
       this.setupCanvas();
       this.draw();
     });
 
     window.addEventListener('resize', () => {
-      // Small delay to ensure new layout dimensions are applied
       setTimeout(() => {
         this.setupCanvas();
         this.draw();
@@ -41,11 +56,26 @@ class RouletteWheel {
     });
   }
 
+  setMode(mode) {
+    this.mode = mode;
+    if (mode === 'colectivo') {
+      this.categories = this.colectivoCategories;
+      this.centerText = { top: 'BUS', bottom: 'D1' };
+    } else {
+      this.categories = this.defaultCategories;
+      this.centerText = { top: 'VIAL', bottom: 'PLAY' };
+    }
+    this.numSegments = this.categories.length;
+    this.segmentAngle = (2 * Math.PI) / this.numSegments;
+    this.draw();
+  }
+
   setupCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2); // cap at 2x for perf
+    if (!this.canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     const wrap = this.canvas.parentElement;
-    const size = wrap ? Math.min(wrap.clientWidth, wrap.clientHeight, 340) : 300;
-    const safeSize = Math.max(size, 50); // ensure minimum size
+    const size = wrap ? Math.min(wrap.clientWidth, wrap.clientHeight, 360) : 340;
+    const safeSize = Math.max(size, 80);
 
     this.size = safeSize;
     this.canvas.style.width  = `${safeSize}px`;
@@ -56,7 +86,7 @@ class RouletteWheel {
     this.ctx.resetTransform();
     this.ctx.scale(dpr, dpr);
 
-    const padding = safeSize * 0.06;
+    const padding = safeSize * 0.055;
     this.radius  = Math.max(1, safeSize / 2 - padding);
     this.centerX = safeSize / 2;
     this.centerY = safeSize / 2;
@@ -66,51 +96,45 @@ class RouletteWheel {
     const ctx = this.ctx;
     const { centerX, centerY, radius, size } = this;
 
-    // Safety guard — don't draw if canvas not yet sized properly
     if (!radius || radius <= 5 || !size) return;
 
     ctx.clearRect(0, 0, size, size);
 
-    // ── Outer Glow Ring ──────────────────────────────────
+    // ── Outer Ambient Aura Glow ──────────────────────────
     ctx.save();
-    const glowGrad = ctx.createRadialGradient(centerX, centerY, radius - 4, centerX, centerY, radius + 14);
-    glowGrad.addColorStop(0, 'rgba(255, 208, 0, 0.5)');
-    glowGrad.addColorStop(1, 'rgba(255, 208, 0, 0)');
+    const glowGrad = ctx.createRadialGradient(centerX, centerY, radius - 8, centerX, centerY, radius + 16);
+    glowGrad.addColorStop(0, 'rgba(141, 226, 214, 0.45)');
+    glowGrad.addColorStop(0.6, 'rgba(255, 198, 0, 0.25)');
+    glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.beginPath();
-    ctx.arc(centerX, centerY, radius + 14, 0, 2 * Math.PI);
+    ctx.arc(centerX, centerY, radius + 16, 0, 2 * Math.PI);
     ctx.fillStyle = glowGrad;
     ctx.fill();
     ctx.restore();
 
-    // ── Background Ring ───────────────────────────────────
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius + 6, 0, 2 * Math.PI);
-    ctx.fillStyle = '#0A1525';
-    ctx.fill();
-    ctx.restore();
-
-    // ── Bezel ─────────────────────────────────────────────
+    // ── Deep Bezel Base ──────────────────────────────────
     ctx.save();
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius + 5, 0, 2 * Math.PI);
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#FFD000';
+    ctx.fillStyle = '#153244';
+    ctx.fill();
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = '#FFC600';
     ctx.stroke();
     ctx.restore();
 
-    // ── Draw each segment ─────────────────────────────────
+    // ── Segments ─────────────────────────────────────────
     for (let i = 0; i < this.numSegments; i++) {
       this._drawSegment(i);
     }
 
-    // ── Decorative outer pins ─────────────────────────────
+    // ── Decorative Outer Pins ─────────────────────────────
     this._drawPins();
 
-    // ── Center Hub ────────────────────────────────────────
+    // ── Center Dynamic Hub ────────────────────────────────
     this._drawHub();
 
-    // ── Pointer Arrow ─────────────────────────────────────
+    // ── Pointer Arrow at Top ──────────────────────────────
     this._drawPointer();
   }
 
@@ -122,47 +146,55 @@ class RouletteWheel {
     const endAngle   = startAngle + this.segmentAngle;
     const midAngle   = (startAngle + endAngle) / 2;
 
-    // Fill segment with radial gradient
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
     ctx.closePath();
 
-    // Safe gradient values
-    const r0 = Math.max(0.1, radius * 0.1);
+    const r0 = Math.max(0.1, radius * 0.15);
     const grad = ctx.createRadialGradient(centerX, centerY, r0, centerX, centerY, radius);
-    grad.addColorStop(0.3, cat.color);
-    grad.addColorStop(1,   cat.darkColor);
+    grad.addColorStop(0.25, cat.color);
+    grad.addColorStop(1,    cat.darkColor);
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Segment border
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+    // Segment divider lines with clean styling
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = 'rgba(18, 20, 20, 0.85)';
     ctx.stroke();
     ctx.restore();
 
-    // ── Text (always upright & perfectly centered) ───────
+    // ── Segment Text (SIN ICONOS, FORMATO CONDENSADO Y ADAPTABLE) ──
     ctx.save();
     ctx.translate(centerX, centerY);
     ctx.rotate(midAngle);
 
-    // Check if text would be upside-down and flip if needed
     let norm = (midAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
     const flipped = norm > Math.PI * 0.5 && norm < Math.PI * 1.5;
     if (flipped) ctx.rotate(Math.PI);
 
-    const textR = flipped ? -(radius * 0.58) : radius * 0.58;
+    const hubR = Math.max(22, radius * 0.20);
+    const maxTextLength = (radius - 10) - (hubR + 8);
+    const midR = hubR + (radius - 10 - hubR) * 0.52;
+    const textR = flipped ? -midR : midR;
+
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const fontSize = Math.max(11, Math.round(radius * 0.125));
-
-    // Label — crisp stroke for maximum contrast & legibility
-    ctx.font = `900 ${fontSize}px 'Barlow Condensed', 'Inter', system-ui, sans-serif`;
-    ctx.lineWidth = Math.max(3.5, fontSize * 0.3);
-    ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+    // Auto-scale font size to ensure every word fits with margins
+    let fontSize = Math.max(12, Math.round(radius * 0.125));
+    ctx.font = `900 ${fontSize}px 'Barlow Condensed', 'Archivo', system-ui, sans-serif`;
+    let measured = ctx.measureText(cat.label).width;
+    while (measured > maxTextLength && fontSize > 8.5) {
+      fontSize -= 0.5;
+      ctx.font = `900 ${fontSize}px 'Barlow Condensed', 'Archivo', system-ui, sans-serif`;
+      measured = ctx.measureText(cat.label).width;
+    }
+    
+    // Label with drop outline for high readability
+    ctx.lineWidth = Math.max(3, fontSize * 0.26);
+    ctx.strokeStyle = 'rgba(12, 16, 20, 0.95)';
     ctx.lineJoin = 'round';
     ctx.strokeText(cat.label, textR, 0);
     ctx.fillStyle = '#FFFFFF';
@@ -173,7 +205,7 @@ class RouletteWheel {
 
   _drawPins() {
     const ctx = this.ctx;
-    const { centerX, centerY, radius, numSegments, currentAngle, segmentAngle } = this;
+    const { centerX, centerY, radius, numSegments, currentAngle } = this;
     const pinCount = numSegments * 2;
 
     for (let i = 0; i < pinCount; i++) {
@@ -182,11 +214,11 @@ class RouletteWheel {
       const py = centerY + (radius - 5) * Math.sin(angle);
 
       ctx.beginPath();
-      ctx.arc(px, py, 3, 0, 2 * Math.PI);
-      ctx.fillStyle = '#FFD000';
+      ctx.arc(px, py, 3.2, 0, 2 * Math.PI);
+      ctx.fillStyle = '#FFC600';
       ctx.fill();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = '#000';
+      ctx.strokeStyle = '#121414';
       ctx.stroke();
     }
   }
@@ -194,57 +226,75 @@ class RouletteWheel {
   _drawHub() {
     const ctx = this.ctx;
     const { centerX, centerY, radius } = this;
-    const hubR = Math.max(16, radius * 0.13);
+    const hubR = Math.max(22, radius * 0.20);
 
-    // Hub shadow
+    // Outer Hub Shadow
     ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.6)';
-    ctx.shadowBlur = 12;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+    ctx.shadowBlur = 14;
     ctx.beginPath();
     ctx.arc(centerX, centerY, hubR, 0, 2 * Math.PI);
-    ctx.fillStyle = '#0A1525';
+    ctx.fillStyle = '#0C0F0F';
     ctx.fill();
     ctx.restore();
 
-    // Hub outer gold border
+    // Hub Outer Bezel
     ctx.beginPath();
     ctx.arc(centerX, centerY, hubR, 0, 2 * Math.PI);
     ctx.lineWidth = 3;
-    ctx.strokeStyle = '#FFD000';
+    ctx.strokeStyle = '#8DE2D6';
     ctx.stroke();
 
-    // Hub inner metallic gold jewel
+    // Inner Jewel
     ctx.beginPath();
-    ctx.arc(centerX, centerY, hubR * 0.5, 0, 2 * Math.PI);
-    ctx.fillStyle = '#FFD000';
+    ctx.arc(centerX, centerY, hubR * 0.78, 0, 2 * Math.PI);
+    ctx.fillStyle = '#153244';
     ctx.fill();
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#FFC600';
     ctx.stroke();
+
+    // VialPlay text in center
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = `900 ${Math.max(8.5, hubR * 0.38)}px 'Archivo Black', 'Archivo', sans-serif`;
+    const topText = this.centerText?.top || 'VIAL';
+    const bottomText = this.centerText?.bottom || 'PLAY';
+    ctx.fillStyle = '#8DE2D6';
+    ctx.fillText(topText, centerX, centerY - hubR * 0.16);
+    ctx.fillStyle = '#FFC600';
+    ctx.fillText(bottomText, centerX, centerY + hubR * 0.22);
   }
 
   _drawPointer() {
     const ctx = this.ctx;
     const { centerX, centerY, radius } = this;
-    const tipY = centerY - radius - 6;
-    const baseHalf = 14;
+    const tipY = centerY - radius - 5;
+    const baseHalf = 15;
 
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(centerX - baseHalf, tipY - 10);
-    ctx.lineTo(centerX + baseHalf, tipY - 10);
-    ctx.lineTo(centerX, tipY + 18);
+    ctx.moveTo(centerX - baseHalf, tipY - 14);
+    ctx.lineTo(centerX + baseHalf, tipY - 14);
+    ctx.lineTo(centerX, tipY + 16);
     ctx.closePath();
 
-    ctx.fillStyle = '#FFD000';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 3;
+    ctx.fillStyle = '#FFC600';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 4;
     ctx.fill();
 
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#121414';
     ctx.stroke();
+
+    // Pointer mini indicator pip
+    ctx.beginPath();
+    ctx.arc(centerX, tipY - 5, 3.5, 0, 2 * Math.PI);
+    ctx.fillStyle = '#153244';
+    ctx.fill();
+
     ctx.restore();
   }
 
@@ -265,18 +315,18 @@ class RouletteWheel {
 
     const startAngle     = this.currentAngle;
     const totalRotation  = targetFinal;
-    const spinDuration   = 4800;
+    const spinDuration   = 4600;
     const startTime      = performance.now();
 
     const animate = (now) => {
       const elapsed  = now - startTime;
       const progress = Math.min(elapsed / spinDuration, 1);
 
-      // Cubic ease-out for natural deceleration
+      // Quartic ease-out deceleration
       const ease = 1 - Math.pow(1 - progress, 4);
       this.currentAngle = startAngle + totalRotation * ease;
 
-      // Tick sound on segment change
+      // Tick sound on segment boundary
       const pointerNorm = ((pointerAngle - this.currentAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
       const seg = Math.floor(pointerNorm / this.segmentAngle) % this.numSegments;
       if (seg !== this.lastTickSegment) {

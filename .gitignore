@@ -1,7 +1,12 @@
-# Temporary Word Files
-~$*
+# Backups and intermediate design assets
+RULETA_ORIGINAL/
+stitch_app_juegos_seguridad_vial/
+stitch_iconos_temp/
+Colectivo Preguntas/
+*.zip
 
-# OS metadata files
+# Temporary Office & OS metadata files
+~$*
 Thumbs.db
 Desktop.ini
 .DS_Store

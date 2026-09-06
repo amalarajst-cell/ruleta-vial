@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGlow2nd" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1f4b66"/>
+      <stop offset="100%" stop-color="#153244"/>
+    </radialGradient>
+    <linearGradient id="silverPodiumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#E2E8F0"/>
+      <stop offset="70%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+    <linearGradient id="silverShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#071219" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Base Card Container -->
+  <rect width="128" height="128" rx="28" fill="url(#bgGlow2nd)"/>
+
+  <!-- Olympic / Gaming Ribbon Top Banner -->
+  <g filter="url(#shadow2)">
+    <!-- Hanging V-ribbon in Turquoise Mint with dark navy trim -->
+    <path d="M 44 12 L 56 42 L 44 42 L 34 12 Z" fill="#8DE2D6"/>
+    <path d="M 84 12 L 72 42 L 84 42 L 94 12 Z" fill="#8DE2D6"/>
+    <path d="M 40 12 L 46 42 L 43 42 L 37 12 Z" fill="#153244" opacity="0.6"/>
+    <path d="M 88 12 L 82 42 L 85 42 L 91 12 Z" fill="#153244" opacity="0.6"/>
+    <!-- Silver loop connector -->
+    <rect x="56" y="34" width="16" height="8" rx="3" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/>
+  </g>
+
+  <!-- 2nd Place Silver Badge Medallion -->
+  <g filter="url(#shadow2)">
+    <!-- Outer Silver Rim with reflective bevel -->
+    <circle cx="64" cy="72" r="39" fill="url(#silverPodiumGrad)" stroke="#FFFFFF" stroke-width="2"/>
+    <!-- Inner Dark Asphalt Inset -->
+    <circle cx="64" cy="72" r="32" fill="#12202B" stroke="#CBD5E1" stroke-width="2"/>
+
+    <!-- Road Track Dashed Inner Ring (Road Safety Motif) -->
+    <circle cx="64" cy="72" r="27" fill="none" stroke="#8DE2D6" stroke-width="2" stroke-dasharray="4,4" opacity="0.9"/>
+
+    <!-- Silver Wings / Laurel Star Top Emblem -->
+    <g transform="translate(64, 52)">
+      <!-- Pair of Silver Wings -->
+      <path d="M -14 4 C -16 -2 -8 -7 -2 -3 L 0 0 L 2 -3 C 8 -7 16 -2 14 4 Z" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1"/>
+      <!-- Glowing Turquoise Center Gem -->
+      <polygon points="0,-7 3,-3 0,1 -3,-3" fill="#8DE2D6"/>
+    </g>
+
+    <!-- Large Bold "2" Graphic (Game 2nd Place) -->
+    <g transform="translate(64, 76)">
+      <!-- Central Bold Number 2 -->
+      <text x="0" y="8" fill="url(#silverShine)" font-family="'Archivo Black', 'Arial Black', sans-serif" font-weight="900" font-size="28" text-anchor="middle" filter="drop-shadow(0px 2px 0px #475569)">2</text>
+      <!-- Small laurel side twigs in silver -->
+      <path d="M -18 -4 C -22 6 -16 16 -12 18" fill="none" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
+      <path d="M 18 -4 C 22 6 16 16 12 18" fill="none" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- "2do LUGAR / PLATA" Ribbon Pill at Bottom -->
+    <g transform="translate(64, 105)">
+      <rect x="-34" y="-8" width="68" height="16" rx="8" fill="#E2E8F0" stroke="#153244" stroke-width="1.5"/>
+      <text x="0" y="3.5" fill="#153244" font-family="'Archivo Black', 'Arial Black', sans-serif" font-weight="900" font-size="8.5" text-anchor="middle" letter-spacing="0.8">2° LUGAR</text>
+    </g>
+  </g>
+</svg>

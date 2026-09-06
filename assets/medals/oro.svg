@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGlow1st" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1f4b66"/>
+      <stop offset="100%" stop-color="#153244"/>
+    </radialGradient>
+    <linearGradient id="goldPodiumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF275"/>
+      <stop offset="40%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#D99000"/>
+    </linearGradient>
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8B3"/>
+      <stop offset="100%" stop-color="#FFC600"/>
+    </linearGradient>
+    <filter id="shadow1" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#071219" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Base Card Container -->
+  <rect width="128" height="128" rx="28" fill="url(#bgGlow1st)"/>
+
+  <!-- Olympic / Gaming Ribbon Top Banner -->
+  <g filter="url(#shadow1)">
+    <!-- Hanging V-ribbon in Turquoise Mint with dark navy trim -->
+    <path d="M 44 12 L 56 42 L 44 42 L 34 12 Z" fill="#8DE2D6"/>
+    <path d="M 84 12 L 72 42 L 84 42 L 94 12 Z" fill="#8DE2D6"/>
+    <path d="M 40 12 L 46 42 L 43 42 L 37 12 Z" fill="#153244" opacity="0.6"/>
+    <path d="M 88 12 L 82 42 L 85 42 L 91 12 Z" fill="#153244" opacity="0.6"/>
+    <!-- Gold loop connector -->
+    <rect x="56" y="34" width="16" height="8" rx="3" fill="#FFC600" stroke="#CC8800" stroke-width="1.5"/>
+  </g>
+
+  <!-- 1st Place Golden Badge / Crown Medallion -->
+  <g filter="url(#shadow1)">
+    <!-- Outer Starburst / Laurel Rim -->
+    <circle cx="64" cy="72" r="39" fill="url(#goldPodiumGrad)" stroke="#FFEAA5" stroke-width="2"/>
+    <!-- Inner Dark Asphalt Inset -->
+    <circle cx="64" cy="72" r="32" fill="#12202B" stroke="#FFC600" stroke-width="2"/>
+
+    <!-- Road Track Dashed Inner Ring (Road Safety Motif) -->
+    <circle cx="64" cy="72" r="27" fill="none" stroke="#8DE2D6" stroke-width="2" stroke-dasharray="4,4" opacity="0.9"/>
+
+    <!-- Champion Crown on Top of Central Number -->
+    <g transform="translate(64, 52)">
+      <polygon points="-14,4 -9,-7 -2,-2 0,-9 2,-2 9,-7 14,4" fill="#FFC600" stroke="#FFF275" stroke-width="1"/>
+      <circle cx="-9" cy="-7" r="1.5" fill="#FFFFFF"/>
+      <circle cx="0" cy="-9" r="2" fill="#8DE2D6"/>
+      <circle cx="9" cy="-7" r="1.5" fill="#FFFFFF"/>
+      <rect x="-13" y="4" width="26" height="3" rx="1.5" fill="#D99000"/>
+    </g>
+
+    <!-- Large Bold "1" Graphic (Game 1st Place) -->
+    <g transform="translate(64, 76)">
+      <!-- Central Bold Number 1 -->
+      <text x="0" y="8" fill="url(#goldShine)" font-family="'Archivo Black', 'Arial Black', sans-serif" font-weight="900" font-size="28" text-anchor="middle" filter="drop-shadow(0px 2px 0px #A06500)">1</text>
+      <!-- Small laurel side twigs -->
+      <path d="M -18 -4 C -22 6 -16 16 -12 18" fill="none" stroke="#FFC600" stroke-width="2" stroke-linecap="round"/>
+      <path d="M 18 -4 C 22 6 16 16 12 18" fill="none" stroke="#FFC600" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- "1er LUGAR / ORO" Ribbon Pill at Bottom -->
+    <g transform="translate(64, 105)">
+      <rect x="-34" y="-8" width="68" height="16" rx="8" fill="#FFC600" stroke="#153244" stroke-width="1.5"/>
+      <text x="0" y="3.5" fill="#153244" font-family="'Archivo Black', 'Arial Black', sans-serif" font-weight="900" font-size="8.5" text-anchor="middle" letter-spacing="0.8">1° LUGAR</text>
+    </g>
+  </g>
+</svg>
