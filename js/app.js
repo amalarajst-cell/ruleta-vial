@@ -313,11 +313,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBannerRole) userBannerRole.textContent = playerRole || 'Auto B';
   }
 
-  // ── COLECTIVO PROFILE CHECK ──────────────────────────────
+  // ── COLECTIVO & MOTO PROFILE CHECKS ──────────────────────
   function isColectivoProfile() {
     const role = (playerRole || '').toLowerCase();
     const avatar = (playerAvatar || '').toLowerCase();
     return role.includes('colectivo') || role.includes('pasajero') || role.includes('d1') || role.includes('profesional') || avatar.includes('profesional');
+  }
+
+  function isMotoProfile() {
+    const role = (playerRole || '').toLowerCase();
+    const avatar = (playerAvatar || '').toLowerCase();
+    return role.includes('moto') || avatar.includes('moto');
   }
 
   // ── ROULETTE INSTANCE ─────────────────────────────────────
@@ -331,6 +337,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!roulette) return;
     if (isColectivoProfile()) {
       roulette.setMode('colectivo');
+    } else if (isMotoProfile()) {
+      roulette.setMode('moto');
     } else {
       roulette.setMode('default');
     }
@@ -646,6 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── START QUIZ ROUND ──────────────────────────────────────
   function startQuizRound(category) {
     const isColectivo = isColectivoProfile();
+    const isMoto = isMotoProfile();
     let selectedQuestions = [];
 
     if (isColectivo && typeof COLECTIVO_QUESTIONS !== 'undefined' && COLECTIVO_QUESTIONS.length > 0) {
@@ -673,8 +682,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       selectedQuestions = shuffleArray(picked);
+    } else if (isMoto && typeof MOTO_QUESTIONS !== 'undefined' && MOTO_QUESTIONS.length > 0) {
+      // 🏍️ EXCLUSIVO PERFIL MOTOCICLISTA (CLASE A / FORMACIÓN VIAL EXTREME)
+      const targetCatId = category.id; // 'casco', 'frenado', 'espejos', 'pasajeros', 'clima', 'velocidad', 'normativa'
+      const catPool = MOTO_QUESTIONS.filter(q => q.category === targetCatId);
+      
+      let picked = [];
+      if (catPool.length >= 5) {
+        picked = shuffleArray([...catPool]).slice(0, 5);
+      } else {
+        picked = shuffleArray([...catPool]);
+        const otherMoto = shuffleArray(MOTO_QUESTIONS.filter(q => q.category !== targetCatId));
+        for (let i = 0; picked.length < 5 && i < otherMoto.length; i++) {
+          picked.push(otherMoto[i]);
+        }
+      }
+      // Aseguramos que haya preguntas con imagen si están disponibles
+      const hasImg = picked.some(q => !!q.imageSrc);
+      if (!hasImg) {
+        const anyWithImg = MOTO_QUESTIONS.find(q => !!q.imageSrc && (q.category === targetCatId || true));
+        if (anyWithImg && picked.length > 0) {
+          picked[picked.length - 1] = anyWithImg;
+        }
+      }
+      selectedQuestions = shuffleArray(picked);
     } else {
-      // Perfiles estándar (Auto B, Moto A, Ciclista, Peatón)
+      // Perfiles estándar (Auto B, Ciclista, Peatón)
       const catId = category.id;
       const catPool = (typeof QUESTIONS !== 'undefined') 
         ? QUESTIONS.filter(q => q.category === catId) 
@@ -698,7 +731,13 @@ document.addEventListener('DOMContentLoaded', () => {
         name: category.name || 'Transporte de Pasajeros',
         icon: '🚌',
         color: category.color || '#7C3AED'
-      } : category,
+      } : (isMoto ? {
+        id: category.id,
+        label: category.label || 'MOTO EXTREME',
+        name: category.name || 'Motovehículos Clase A',
+        icon: '🏍️',
+        color: category.color || '#BE185D'
+      } : category),
       questions: selectedQuestions,
       currentIndex: 0,
       correctCount: 0,
@@ -732,9 +771,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Header updates
     if (quizCategoryBadge) {
       const isColectivo = isColectivoProfile();
-      quizCategoryBadge.textContent = isColectivo 
-        ? '🚌 TRANSPORTE DE PASAJEROS (D1)' 
-        : `${category.icon} ${category.label || category.name}`;
+      const isMoto = isMotoProfile();
+      if (isColectivo) {
+        quizCategoryBadge.textContent = '🚌 TRANSPORTE DE PASAJEROS (D1)';
+      } else if (isMoto) {
+        quizCategoryBadge.textContent = `🏍️ MOTO EXTREME • ${category.label || category.name}`;
+      } else {
+        quizCategoryBadge.textContent = `${category.icon || ''} ${category.label || category.name}`;
+      }
     }
     if (quizCurrentNum) {
       quizCurrentNum.textContent = qNum;

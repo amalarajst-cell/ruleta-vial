@@ -31,6 +31,17 @@ class RouletteWheel {
       { id: 'normativa',  label: 'NORMATIVA',  color: '#BE185D', darkColor: '#961047', name: 'Normativa y Licencia D1' }
     ];
 
+    // 🏍️ Dedicated Motociclista Categories (Formación Vial Extreme - Clase A)
+    this.motoCategories = [
+      { id: 'casco',      label: 'CASCO & EQUIPO',  color: '#BE185D', darkColor: '#961047', name: 'Casco & Indumentaria', icon: '🪖' },
+      { id: 'frenado',    label: 'FRENADO',         color: '#DC2626', darkColor: '#B01010', name: 'Técnicas de Frenado', icon: '🛑' },
+      { id: 'espejos',    label: 'PUNTOS CIEGOS',   color: '#0284C7', darkColor: '#0164A0', name: 'Puntos Ciegos y Espejos', icon: '👁️' },
+      { id: 'pasajeros',  label: 'ACOMPAÑANTE',     color: '#D97706', darkColor: '#B05E04', name: 'Pasajeros y Carga', icon: '👥' },
+      { id: 'clima',      label: 'CLIMA & CALZADA', color: '#059669', darkColor: '#037050', name: 'Calzada Mojada y Clima', icon: '🌧️' },
+      { id: 'velocidad',  label: 'VELOCIDADES',     color: '#7C3AED', darkColor: '#5E24CC', name: 'Velocidades y Vías', icon: '⚡' },
+      { id: 'normativa',  label: 'VTV & LEYES',     color: '#0891B2', darkColor: '#066E8E', name: 'Documentación, VTV y Leyes', icon: '📋' }
+    ];
+
     this.mode = 'default';
     this.categories = this.defaultCategories;
     this.centerText = { top: 'VIAL', bottom: 'PLAY' };
@@ -61,6 +72,9 @@ class RouletteWheel {
     if (mode === 'colectivo') {
       this.categories = this.colectivoCategories;
       this.centerText = { top: 'BUS', bottom: 'D1' };
+    } else if (mode === 'moto') {
+      this.categories = this.motoCategories;
+      this.centerText = { top: 'MOTO', bottom: 'CLASE A' };
     } else {
       this.categories = this.defaultCategories;
       this.centerText = { top: 'VIAL', bottom: 'PLAY' };
