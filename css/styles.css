@@ -1871,4 +1871,967 @@ body.admin-mode .bottom-nav {
   background: rgba(255, 77, 77, 0.2);
 }
 
+/* ============================================================
+   CENTRO VIAL (HUB) — HERO BANNER & NAVIGATION PILLS
+============================================================ */
+.hub-hero-banner {
+  background: linear-gradient(135deg, rgba(255, 198, 0, 0.12) 0%, rgba(141, 226, 214, 0.08) 50%, rgba(17, 24, 39, 0.95) 100%);
+  border: 1.5px solid rgba(255, 198, 0, 0.3);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hub-hero-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255, 198, 0, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hub-hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hub-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hub-avatar-wrap {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 2px solid var(--secondary-container);
+  overflow: hidden;
+  background: var(--surface-container-highest);
+  box-shadow: 0 0 16px rgba(255, 198, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.hub-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hub-user-greeting {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.hub-user-role-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(141, 226, 214, 0.15);
+  border: 1px solid rgba(141, 226, 214, 0.3);
+  color: var(--tertiary);
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.hub-quick-stats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface-container-lowest);
+  padding: 8px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--outline-variant);
+}
+
+.hub-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.hub-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hub-stat-val {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--secondary-container);
+}
+
+.hub-stat-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--outline-variant);
+}
+
+.hub-banner-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+}
+
+.hub-tagline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.btn-hub-play-roulette {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--secondary-container);
+  color: #000000;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  padding: 8px 18px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 198, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.btn-hub-play-roulette:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 198, 0, 0.6);
+}
+
+/* Category Filter Pills */
+.hub-category-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.hub-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: var(--surface-container-high);
+  border: 1.5px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.hub-pill-btn:hover {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+}
+
+.hub-pill-btn.active {
+  background: var(--tertiary);
+  color: #000000;
+  border-color: var(--tertiary);
+  box-shadow: 0 3px 12px rgba(141, 226, 214, 0.35);
+}
+
+/* ============================================================
+   SECCIONES DEL HUB & TITULOS
+============================================================ */
+.hub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hub-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hub-section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hub-section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hub-section-icon.games {
+  background: rgba(255, 198, 0, 0.15);
+  color: var(--secondary-container);
+  border: 1px solid rgba(255, 198, 0, 0.3);
+}
+
+.hub-section-icon.simulators {
+  background: rgba(141, 226, 214, 0.15);
+  color: var(--tertiary);
+  border: 1px solid rgba(141, 226, 214, 0.3);
+}
+
+.hub-section-icon.manuals {
+  background: rgba(0, 229, 138, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(0, 229, 138, 0.3);
+}
+
+.hub-section-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.hub-section-desc {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  margin: 2px 0 0;
+}
+
+.hub-count-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--surface-container-high);
+  color: var(--tertiary);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--outline-variant);
+}
+
+/* ============================================================
+   BENTO CARDS DE JUEGOS Y SIMULADORES
+============================================================ */
+.hub-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.hub-card {
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+  overflow: hidden;
+}
+
+.hub-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--secondary-container);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.hub-card.featured {
+  border-color: rgba(255, 198, 0, 0.5);
+  background: linear-gradient(135deg, rgba(255, 198, 0, 0.08) 0%, var(--surface-container) 70%);
+  box-shadow: 0 4px 18px rgba(255, 198, 0, 0.15);
+}
+
+.hub-card-badge-top {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  background: var(--secondary-container);
+  color: #000000;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.hub-card-badge-sub {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--tertiary);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.hub-card-body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.hub-card-icon-hero {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hub-card-icon-hero.roulette {
+  background: linear-gradient(135deg, #FFC600, #E6A800);
+  color: #000;
+}
+
+.hub-card-icon-hero.trivia {
+  background: linear-gradient(135deg, #8DE2D6, #00E58A);
+  color: #000;
+}
+
+.hub-card-icon-hero.signals {
+  background: linear-gradient(135deg, #EF4444, #B91C1C);
+  color: #FFF;
+}
+
+.hub-card-icon-hero.reaction {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #000;
+}
+
+.hub-card-icon-hero.braking {
+  background: linear-gradient(135deg, #06B6D4, #0891B2);
+  color: #FFF;
+}
+
+.hub-card-icon-hero.blindspots {
+  background: linear-gradient(135deg, #BE185D, #831843);
+  color: #FFF;
+}
+
+.hub-card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.hub-card-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--on-surface);
+  margin: 0 0 4px;
+}
+
+.hub-card-text {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.hub-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.hub-tag {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--surface-container-highest);
+  color: var(--on-surface-variant);
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.hub-card-footer {
+  margin-top: auto;
+}
+
+.hub-card-btn {
+  width: 100%;
+  height: 42px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+}
+
+/* ============================================================
+   MANUALES VIALES — LISTA DIDÁCTICA
+============================================================ */
+.hub-manuals-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hub-manual-item {
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  cursor: pointer;
+}
+
+.hub-manual-item:hover {
+  background: var(--surface-container-high);
+  border-color: var(--tertiary);
+  transform: translateX(4px);
+}
+
+.hub-manual-icon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.hub-manual-info {
+  flex: 1;
+}
+
+.hub-manual-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--tertiary);
+  background: rgba(141, 226, 214, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.hub-manual-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--on-surface);
+  margin: 0 0 2px;
+}
+
+.hub-manual-desc {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.btn-hub-read-manual {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.hub-manual-item:hover .btn-hub-read-manual {
+  background: var(--tertiary);
+  color: #000000;
+  border-color: var(--tertiary);
+}
+
+/* ============================================================
+   MODALES DE SIMULADORES Y MANUALES
+============================================================ */
+.modal-sim-dialog {
+  max-width: 560px;
+  width: 94%;
+}
+
+.modal-sim-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.btn-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--on-surface-variant);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-modal-close:hover {
+  color: #FFFFFF;
+}
+
+/* Reaction Test Traffic Light */
+.traffic-light-housing {
+  background: #181c24;
+  border: 3px solid #333a4d;
+  border-radius: 28px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: fit-content;
+  margin: 0 auto 16px;
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.traffic-lamp {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: #2a2e3a;
+  transition: all 0.1s ease;
+}
+
+.traffic-lamp.red.lit {
+  background: #FF3333;
+  box-shadow: 0 0 28px #FF3333, inset 0 0 14px #FFF;
+}
+
+.traffic-lamp.yellow.lit {
+  background: #FFC600;
+  box-shadow: 0 0 28px #FFC600, inset 0 0 14px #FFF;
+}
+
+.traffic-lamp.green.lit {
+  background: #00E58A;
+  box-shadow: 0 0 32px #00E58A, inset 0 0 16px #FFF;
+}
+
+.sim-reaction-status-box {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--on-surface);
+  min-height: 24px;
+  margin-bottom: 12px;
+}
+
+.btn-sim-pedal {
+  width: 100%;
+  height: 90px;
+  border-radius: 18px;
+  border: none;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+.btn-sim-pedal.idle {
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+  border: 2px solid var(--secondary-container);
+}
+
+.btn-sim-pedal.waiting {
+  background: #FF3333;
+  color: #FFFFFF;
+  box-shadow: 0 0 30px rgba(255, 51, 51, 0.6);
+  animation: pulseWait 1.2s infinite ease-in-out;
+}
+
+.btn-sim-pedal.ready {
+  background: #00E58A;
+  color: #000000;
+  box-shadow: 0 0 35px rgba(0, 229, 138, 0.8);
+  transform: scale(1.03);
+}
+
+@keyframes pulseWait {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+.sim-reaction-result {
+  margin-top: 16px;
+  background: var(--surface-container-lowest);
+  border: 1.5px solid var(--secondary-container);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.sim-ms-display {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--secondary-container);
+  line-height: 1;
+}
+
+.sim-grade-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  background: rgba(0, 229, 138, 0.15);
+  color: var(--success);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sim-pedagogic-tip {
+  font-size: 12px;
+  color: var(--on-surface);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* Braking Simulator Controls */
+.sim-control-group {
+  margin-bottom: 14px;
+}
+
+.sim-slider {
+  width: 100%;
+  accent-color: var(--secondary-container);
+  height: 8px;
+  cursor: pointer;
+}
+
+.sim-choice-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sim-choice-pill {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-container-lowest);
+  border: 1.5px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.sim-choice-pill:hover {
+  background: var(--surface-container-high);
+  color: #FFF;
+}
+
+.sim-choice-pill.active {
+  background: rgba(255, 198, 0, 0.18);
+  border-color: var(--secondary-container);
+  color: var(--secondary-container);
+}
+
+.sim-road-track-container {
+  background: #000000;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 14px 0;
+}
+
+.sim-road-track-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.sim-road-track-bar {
+  display: flex;
+  height: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #222;
+}
+
+.sim-track-reac-fill {
+  background: linear-gradient(90deg, #8DE2D6, #00E58A);
+  transition: width 0.3s ease;
+}
+
+.sim-track-brake-fill {
+  background: linear-gradient(90deg, #FFC600, #FF4D4D);
+  transition: width 0.3s ease;
+}
+
+.sim-braking-total-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-container-lowest);
+  border: 1.5px solid var(--secondary-container);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+
+.sim-total-meters {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--secondary-container);
+}
+
+.sim-equivalent-car-box {
+  font-size: 12px;
+  color: var(--on-surface);
+}
+
+.sim-braking-tip-box {
+  font-size: 11px;
+  color: var(--tertiary);
+  background: rgba(141, 226, 214, 0.1);
+  border: 1px solid rgba(141, 226, 214, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+
+/* Blind Spot Diagram */
+.blindspot-diagram-arena {
+  background: #0a0e17;
+  border: 2px dashed #242f47;
+  border-radius: 16px;
+  height: 220px;
+  position: relative;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.blindspot-vehicle-box {
+  width: 90px;
+  height: 120px;
+  background: #1e293b;
+  border: 2px solid var(--secondary-container);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-container);
+  z-index: 5;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+}
+
+.blindspot-zone {
+  position: absolute;
+  background: rgba(255, 77, 77, 0.3);
+  border: 1.5px solid #FF4D4D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: #FFC600;
+  text-align: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.blindspot-zone:hover {
+  background: rgba(255, 77, 77, 0.55);
+}
+
+.blindspot-zone.front {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 35px;
+  border-radius: 8px;
+}
+
+.blindspot-zone.right-side {
+  right: 15px;
+  top: 30px;
+  width: 95px;
+  height: 150px;
+  border-radius: 8px;
+  background: rgba(190, 24, 93, 0.4);
+  border-color: #BE185D;
+}
+
+.blindspot-zone.left-side {
+  left: 15px;
+  top: 30px;
+  width: 95px;
+  height: 150px;
+  border-radius: 8px;
+}
+
+.blindspot-zone.rear {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 35px;
+  border-radius: 8px;
+}
+
+.blindspot-explanation-card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+/* Manual Viewer Modal */
+.modal-manual-dialog {
+  max-width: 680px;
+  width: 95%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-manual-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.manual-chapters-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.manual-ch-btn {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.manual-ch-btn:hover {
+  background: var(--surface-container-high);
+  color: #FFF;
+}
+
+.manual-ch-btn.active {
+  background: var(--tertiary);
+  color: #000;
+  border-color: var(--tertiary);
+}
+
+.manual-view-content {
+  overflow-y: auto;
+  padding-right: 6px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--on-surface);
+}
+
+.manual-view-content h4 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--secondary-container);
+  margin: 14px 0 6px;
+}
+
+.manual-view-content p {
+  margin: 0 0 10px;
+}
+
+.manual-view-content ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+
+.manual-view-content li {
+  margin-bottom: 4px;
+}
+
+.manual-tip-box {
+  background: rgba(141, 226, 214, 0.08);
+  border-left: 3px solid var(--tertiary);
+  padding: 10px 14px;
+  border-radius: 0 10px 10px 0;
+  margin: 12px 0;
+  font-size: 12px;
+}
+
+
 
