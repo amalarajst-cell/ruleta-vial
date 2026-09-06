@@ -335,14 +335,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateRouletteMode() {
     if (!roulette) return;
+    let mode = 'default';
     if (isColectivoProfile()) {
-      roulette.setMode('colectivo');
+      mode = 'colectivo';
     } else if (isMotoProfile()) {
-      roulette.setMode('moto');
+      mode = 'moto';
     } else {
-      roulette.setMode('default');
+      mode = 'default';
+    }
+    roulette.setMode(mode);
+
+    // Sync quick selector pills
+    document.querySelectorAll('.role-pill-btn').forEach(btn => {
+      const btnMode = btn.dataset.roleMode;
+      const isActive = (btnMode === mode) || 
+                       (mode === 'default' && (btnMode === 'auto' || (playerRole || '').toLowerCase().includes(btnMode)));
+      btn.classList.toggle('active', isActive);
+    });
+
+    // Update banner role icon & label
+    if (userBannerRole) {
+      if (mode === 'moto') {
+        userBannerRole.textContent = 'Clase A • Motociclista';
+      } else if (mode === 'colectivo') {
+        userBannerRole.textContent = 'Clase D1 • Colectivo';
+      } else if ((playerRole || '').toLowerCase().includes('cicl')) {
+        userBannerRole.textContent = 'Ciclista Urbano';
+      } else if ((playerRole || '').toLowerCase().includes('peat')) {
+        userBannerRole.textContent = 'Peatón';
+      } else {
+        userBannerRole.textContent = playerRole || 'Clase B • Auto';
+      }
+    }
+    if (userBannerAvatar && playerAvatar) {
+      userBannerAvatar.src = playerAvatar;
     }
   }
+
+  // Quick Role Selector Click Events
+  document.querySelectorAll('.role-pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.roleMode;
+      const isFemale = (preferredGender === 'female');
+      if (mode === 'moto') {
+        playerRole = 'Moto A';
+        playerAvatar = isFemale ? 'assets/avatars/moto_fem.png' : 'assets/avatars/moto.png';
+      } else if (mode === 'colectivo') {
+        playerRole = 'Colectivo D1';
+        playerAvatar = isFemale ? 'assets/avatars/profesional_fem.png' : 'assets/avatars/profesional.png';
+      } else if (mode === 'ciclista') {
+        playerRole = 'Ciclista';
+        playerAvatar = isFemale ? 'assets/avatars/ciclista_fem.png' : 'assets/avatars/ciclista.png';
+      } else if (mode === 'peaton') {
+        playerRole = 'Peatón';
+        playerAvatar = isFemale ? 'assets/avatars/peaton_fem.png' : 'assets/avatars/peaton.png';
+      } else {
+        playerRole = 'Auto B';
+        playerAvatar = isFemale ? 'assets/avatars/auto_fem.png' : 'assets/avatars/auto.png';
+      }
+      localStorage.setItem('vialplay_player_role', playerRole);
+      localStorage.setItem('vialplay_player_avatar', playerAvatar);
+
+      // Sync slider if on register screen
+      const matchingIdx = avatarSlides.findIndex(s => s.dataset.role === playerRole && s.dataset.gender === (isFemale ? 'female' : 'male'));
+      if (matchingIdx !== -1) {
+        goToAvatarSlide(matchingIdx, false);
+      }
+
+      updateHeaderDisplay();
+      updateRouletteMode();
+      requestAnimationFrame(() => {
+        roulette.setupCanvas();
+        roulette.draw();
+      });
+      if (audioSystem && audioSystem.playClick) audioSystem.playClick();
+    });
+  });
+
   updateRouletteMode();
 
   function updateRouletteLockState() {

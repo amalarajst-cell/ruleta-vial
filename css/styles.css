@@ -1360,3 +1360,64 @@ body.admin-mode .bottom-nav {
   padding: 14px 16px;
   font-size: 14px;
 }
+
+/* Role Quick Selector on Roulette Screen */
+.role-quick-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  -webkit-overflow-scrolling: touch;
+}
+.role-quick-selector::-webkit-scrollbar {
+  display: none;
+}
+.role-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  border: 1.5px solid var(--outline-variant);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  user-select: none;
+}
+.role-pill-btn:hover {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  transform: translateY(-1px);
+}
+.role-pill-btn.active {
+  background: #BE185D;
+  color: #FFFFFF;
+  border-color: #F43F5E;
+  box-shadow: 0 4px 14px rgba(190, 24, 93, 0.4);
+}
+.role-pill-btn[data-role-mode="auto"].active {
+  background: #D97706;
+  border-color: #F59E0B;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+}
+.role-pill-btn[data-role-mode="colectivo"].active {
+  background: #7C3AED;
+  border-color: #8B5CF6;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+.role-pill-btn[data-role-mode="ciclista"].active {
+  background: #059669;
+  border-color: #10B981;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
+}
+.role-pill-btn[data-role-mode="peaton"].active {
+  background: #0284C7;
+  border-color: #0EA5E9;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+}
+

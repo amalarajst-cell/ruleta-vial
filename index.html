@@ -352,6 +352,31 @@
         </p>
       </div>
 
+      <!-- Quick Role Mode Switcher -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:12px;font-weight:700;color:var(--tertiary);text-transform:uppercase;letter-spacing:0.05em;">Modo de Ruleta por Vehículo:</span>
+          <span style="font-size:11px;color:var(--on-surface-variant);">Toca para cambiar ruleta</span>
+        </div>
+        <div class="role-quick-selector">
+          <button type="button" class="role-pill-btn" data-role-mode="moto">
+            <span>🏍️ Motociclista (A)</span>
+          </button>
+          <button type="button" class="role-pill-btn" data-role-mode="colectivo">
+            <span>🚌 Colectivo (D1)</span>
+          </button>
+          <button type="button" class="role-pill-btn active" data-role-mode="auto">
+            <span>🚗 Auto (B)</span>
+          </button>
+          <button type="button" class="role-pill-btn" data-role-mode="ciclista">
+            <span>🚲 Ciclista</span>
+          </button>
+          <button type="button" class="role-pill-btn" data-role-mode="peaton">
+            <span>🚶 Peatón</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Centerpiece: Canvas Roulette Arena -->
       <div class="roulette-arena">
         <div class="neon-aura"></div>
@@ -802,11 +827,11 @@
   <canvas id="confetti-canvas"></canvas>
 
   <!-- Scripts -->
-  <script src="js/questions.js?v=2"></script>
-  <script src="js/colectivo_questions.js?v=2"></script>
-  <script src="js/moto_questions.js?v=2"></script>
-  <script src="js/audio.js?v=2"></script>
-  <script src="js/roulette.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/questions.js?v=4"></script>
+  <script src="js/colectivo_questions.js?v=4"></script>
+  <script src="js/moto_questions.js?v=4"></script>
+  <script src="js/audio.js?v=4"></script>
+  <script src="js/roulette.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
