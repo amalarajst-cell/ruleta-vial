@@ -45,7 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (name === 'admin') {
       document.body.classList.add('admin-mode');
-      renderAdminDashboard(true);
+      if (typeof updateQuestionsBadges === 'function') updateQuestionsBadges();
+      if (adminTabQuestions && adminTabQuestions.style.display !== 'none') {
+        if (typeof renderAdminQuestionsTab === 'function') renderAdminQuestionsTab();
+      } else {
+        renderAdminDashboard(true);
+      }
     } else {
       document.body.classList.remove('admin-mode');
     }
@@ -287,6 +292,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnExportLogins   = document.getElementById('btn-export-logins');
   const btnExportAnswers  = document.getElementById('btn-export-responses');
   const btnAdminReset     = document.getElementById('btn-admin-reset');
+
+  // Admin Tabs & Question Manager DOM References
+  const tabBtnStats         = document.getElementById('tab-btn-stats');
+  const tabBtnQuestions     = document.getElementById('tab-btn-questions');
+  const adminTabStats       = document.getElementById('admin-tab-stats');
+  const adminTabQuestions   = document.getElementById('admin-tab-questions');
+
+  const adminBankPills      = Array.from(document.querySelectorAll('.admin-bank-pill'));
+  const badgeCountMoto      = document.getElementById('badge-count-moto');
+  const badgeCountColectivo = document.getElementById('badge-count-colectivo');
+  const badgeCountGeneral   = document.getElementById('badge-count-general');
+
+  const btnAdminNewQ        = document.getElementById('btn-admin-new-question');
+  const btnAdminExportQ     = document.getElementById('btn-admin-export-questions');
+  const btnAdminResetQ      = document.getElementById('btn-admin-reset-questions');
+
+  const adminQCatFilter     = document.getElementById('admin-q-cat-filter');
+  const adminQSearch        = document.getElementById('admin-q-search');
+  const adminQCounterLabel  = document.getElementById('admin-q-counter-label');
+  const adminQuestionsList  = document.getElementById('admin-questions-list');
+
+  // Question Edit Modal DOM
+  const modalAdminQuestion  = document.getElementById('modal-admin-question');
+  const modalQTitle         = document.getElementById('modal-q-title');
+  const modalQSubtitle      = document.getElementById('modal-q-subtitle');
+  const btnCloseQModal      = document.getElementById('btn-close-q-modal');
+  const btnCancelQuestion   = document.getElementById('btn-cancel-question');
+  const formEditQuestion    = document.getElementById('form-edit-question');
+  const editQId             = document.getElementById('edit-q-id');
+  const editQBank           = document.getElementById('edit-q-bank');
+  const editQCategory       = document.getElementById('edit-q-category');
+  const editQText           = document.getElementById('edit-q-text');
+  const editQExplanation    = document.getElementById('edit-q-explanation');
+  const editQImgPreview     = document.getElementById('edit-q-img-preview');
+  const editQNoImgLabel     = document.getElementById('edit-q-no-img-label');
+  const editQFileInput      = document.getElementById('edit-q-file-input');
+  const btnEditQUpload      = document.getElementById('btn-edit-q-upload');
+  const btnEditQRemoveImg   = document.getElementById('btn-edit-q-remove-img');
+  const editQImgPath        = document.getElementById('edit-q-img-path');
 
   // ── SOUND TOGGLE ──────────────────────────────────────────
   function updateSoundIcon() {
@@ -720,24 +764,49 @@ document.addEventListener('DOMContentLoaded', () => {
   spinBtn?.addEventListener('click', triggerSpin);
   document.getElementById('roulette-canvas')?.addEventListener('click', triggerSpin);
 
+  // ── ACTIVE QUESTION BANKS & PERSISTENCE ───────────────────
+  function getActiveQuestions(bank) {
+    const key = `vialplay_custom_${bank}_questions`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (err) {
+        console.error('Error parsing custom questions', err);
+      }
+    }
+    if (bank === 'moto') return (typeof MOTO_QUESTIONS !== 'undefined') ? MOTO_QUESTIONS : [];
+    if (bank === 'colectivo') return (typeof COLECTIVO_QUESTIONS !== 'undefined') ? COLECTIVO_QUESTIONS : [];
+    return (typeof QUESTIONS !== 'undefined') ? QUESTIONS : [];
+  }
+
+  function saveActiveQuestions(bank, list) {
+    const key = `vialplay_custom_${bank}_questions`;
+    localStorage.setItem(key, JSON.stringify(list));
+    if (typeof updateQuestionsBadges === 'function') {
+      updateQuestionsBadges();
+    }
+  }
+
   // ── START QUIZ ROUND ──────────────────────────────────────
   function startQuizRound(category) {
     const isColectivo = isColectivoProfile();
     const isMoto = isMotoProfile();
     let selectedQuestions = [];
 
-    if (isColectivo && typeof COLECTIVO_QUESTIONS !== 'undefined' && COLECTIVO_QUESTIONS.length > 0) {
+    if (isColectivo) {
       // 🚌 EXCLUSIVO PERFIL COLECTIVO (D1 / TRANSPORTE DE PASAJEROS)
-      // La ruleta de Colectivo cayó en una categoría específica:
+      const colectivoPool = getActiveQuestions('colectivo');
       const targetCatId = category.id; // 'prioridad', 'senales', 'velocidad', 'metrobus', 'seguridad', 'pasajeros', 'normativa'
-      const catPool = COLECTIVO_QUESTIONS.filter(q => q.category === targetCatId);
+      const catPool = colectivoPool.filter(q => q.category === targetCatId);
       
       let picked = [];
       if (catPool.length >= 5) {
         picked = shuffleArray([...catPool]).slice(0, 5);
       } else {
         picked = shuffleArray([...catPool]);
-        const otherColectivo = shuffleArray(COLECTIVO_QUESTIONS.filter(q => q.category !== targetCatId));
+        const otherColectivo = shuffleArray(colectivoPool.filter(q => q.category !== targetCatId));
         for (let i = 0; picked.length < 5 && i < otherColectivo.length; i++) {
           picked.push(otherColectivo[i]);
         }
@@ -745,23 +814,24 @@ document.addEventListener('DOMContentLoaded', () => {
       // Aseguramos que haya preguntas con imagen si están disponibles
       const hasImg = picked.some(q => !!q.imageSrc);
       if (!hasImg) {
-        const anyWithImg = COLECTIVO_QUESTIONS.find(q => !!q.imageSrc && (q.category === targetCatId || true));
+        const anyWithImg = colectivoPool.find(q => !!q.imageSrc && (q.category === targetCatId || true));
         if (anyWithImg && picked.length > 0) {
           picked[picked.length - 1] = anyWithImg;
         }
       }
       selectedQuestions = shuffleArray(picked);
-    } else if (isMoto && typeof MOTO_QUESTIONS !== 'undefined' && MOTO_QUESTIONS.length > 0) {
+    } else if (isMoto) {
       // 🏍️ EXCLUSIVO PERFIL MOTOCICLISTA (CLASE A / FORMACIÓN VIAL EXTREME)
+      const motoPool = getActiveQuestions('moto');
       const targetCatId = category.id; // 'casco', 'frenado', 'espejos', 'pasajeros', 'clima', 'velocidad', 'normativa'
-      const catPool = MOTO_QUESTIONS.filter(q => q.category === targetCatId);
+      const catPool = motoPool.filter(q => q.category === targetCatId);
       
       let picked = [];
       if (catPool.length >= 5) {
         picked = shuffleArray([...catPool]).slice(0, 5);
       } else {
         picked = shuffleArray([...catPool]);
-        const otherMoto = shuffleArray(MOTO_QUESTIONS.filter(q => q.category !== targetCatId));
+        const otherMoto = shuffleArray(motoPool.filter(q => q.category !== targetCatId));
         for (let i = 0; picked.length < 5 && i < otherMoto.length; i++) {
           picked.push(otherMoto[i]);
         }
@@ -769,7 +839,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Aseguramos que haya preguntas con imagen si están disponibles
       const hasImg = picked.some(q => !!q.imageSrc);
       if (!hasImg) {
-        const anyWithImg = MOTO_QUESTIONS.find(q => !!q.imageSrc && (q.category === targetCatId || true));
+        const anyWithImg = motoPool.find(q => !!q.imageSrc && (q.category === targetCatId || true));
         if (anyWithImg && picked.length > 0) {
           picked[picked.length - 1] = anyWithImg;
         }
@@ -777,16 +847,15 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedQuestions = shuffleArray(picked);
     } else {
       // Perfiles estándar (Auto B, Ciclista, Peatón)
+      const generalPool = getActiveQuestions('general');
       const catId = category.id;
-      const catPool = (typeof QUESTIONS !== 'undefined') 
-        ? QUESTIONS.filter(q => q.category === catId) 
-        : [];
+      const catPool = generalPool.filter(q => q.category === catId);
 
       if (catPool.length >= 5) {
         selectedQuestions = shuffleArray([...catPool]).slice(0, 5);
       } else {
         selectedQuestions = shuffleArray([...catPool]);
-        const otherQuestions = shuffleArray(QUESTIONS.filter(q => q.category !== catId));
+        const otherQuestions = shuffleArray(generalPool.filter(q => q.category !== catId));
         for (let i = 0; selectedQuestions.length < 5 && i < otherQuestions.length; i++) {
           selectedQuestions.push(otherQuestions[i]);
         }
@@ -1495,6 +1564,461 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Datos reiniciados con éxito.');
     }
   });
+
+  // ── ADMIN QUESTION MANAGER LOGIC ──────────────────────────
+  let currentAdminBank = 'moto';
+
+  const BANK_CATEGORY_NAMES = {
+    moto: {
+      'casco': '🪖 Uso de Casco y Protección',
+      'frenado': '🛑 Técnicas de Frenado',
+      'espejos': '👀 Ángulos Muertos y Espejos',
+      'pasajeros': '👥 Conducción con Pasajero',
+      'clima': '🌧️ Clima Adverso y Calzada',
+      'velocidad': '⚡ Velocidades Máximas',
+      'normativa': '📋 Normativa y Documentación'
+    },
+    colectivo: {
+      'prioridad': '🚸 Prioridad Peatonal y Giros',
+      'senales': '🛑 Señales Viales y Semáforos',
+      'velocidad': '⚡ Velocidades Máximas',
+      'metrobus': '🚌 Carril Exclusivo y Metrobús',
+      'seguridad': '🛡️ Seguridad Activa y Pasiva',
+      'pasajeros': '👥 Transporte de Pasajeros',
+      'normativa': '📋 Normativa D1 y Alcohol Cero'
+    },
+    general: {
+      'senales': '🛑 Señales de Tránsito',
+      'prioridad': '🚸 Prioridades de Paso',
+      'seguridad': '🛡️ Seguridad Vial',
+      'normas': '📋 Normativa y Reglas',
+      'velocidades': '⚡ Velocidades y Conducción',
+      'alcohol': '🍷 Alcohol Cero y Sustancias',
+      'mantenimiento': '🔧 Mecánica y Mantenimiento'
+    }
+  };
+
+  const BANK_NAMES = {
+    moto: 'Motociclistas (Clase A)',
+    colectivo: 'Colectivo / Pasajeros (D1)',
+    general: 'General / Multivehicular'
+  };
+
+  function updateQuestionsBadges() {
+    const motoCount = getActiveQuestions('moto').length;
+    const colectivoCount = getActiveQuestions('colectivo').length;
+    const generalCount = getActiveQuestions('general').length;
+
+    if (badgeCountMoto) badgeCountMoto.textContent = motoCount;
+    if (badgeCountColectivo) badgeCountColectivo.textContent = colectivoCount;
+    if (badgeCountGeneral) badgeCountGeneral.textContent = generalCount;
+  }
+
+  // Admin Tab Navigation
+  tabBtnStats?.addEventListener('click', () => {
+    tabBtnStats.classList.add('active');
+    tabBtnQuestions?.classList.remove('active');
+    if (adminTabStats) adminTabStats.style.display = 'flex';
+    if (adminTabQuestions) adminTabQuestions.style.display = 'none';
+    renderAdminDashboard();
+  });
+
+  tabBtnQuestions?.addEventListener('click', () => {
+    tabBtnQuestions.classList.add('active');
+    tabBtnStats?.classList.remove('active');
+    if (adminTabStats) adminTabStats.style.display = 'none';
+    if (adminTabQuestions) adminTabQuestions.style.display = 'flex';
+    renderAdminQuestionsTab();
+  });
+
+  // Bank Selector Pills
+  adminBankPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      adminBankPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentAdminBank = pill.dataset.bank || 'moto';
+      if (adminQSearch) adminQSearch.value = '';
+      populateCategoryFilter();
+      renderAdminQuestionsList();
+    });
+  });
+
+  function populateCategoryFilter() {
+    if (!adminQCatFilter) return;
+    const questions = getActiveQuestions(currentAdminBank);
+    const catMap = BANK_CATEGORY_NAMES[currentAdminBank] || {};
+
+    const catCounts = {};
+    questions.forEach(q => {
+      const c = q.category || 'general';
+      catCounts[c] = (catCounts[c] || 0) + 1;
+    });
+
+    const uniqueCats = Array.from(new Set([...Object.keys(catMap), ...Object.keys(catCounts)]));
+
+    let html = `<option value="all">Todas las categorías (${questions.length})</option>`;
+    uniqueCats.forEach(catId => {
+      const count = catCounts[catId] || 0;
+      const label = catMap[catId] || catId;
+      html += `<option value="${catId}">${label} (${count})</option>`;
+    });
+
+    adminQCatFilter.innerHTML = html;
+  }
+
+  function populateCategorySelect(selectElem, bank, selectedCat) {
+    if (!selectElem) return;
+    const questions = getActiveQuestions(bank);
+    const catMap = BANK_CATEGORY_NAMES[bank] || {};
+
+    const uniqueCats = Array.from(new Set([
+      ...Object.keys(catMap),
+      ...questions.map(q => q.category).filter(Boolean)
+    ]));
+
+    selectElem.innerHTML = uniqueCats.map(catId => {
+      const label = catMap[catId] || catId;
+      const isSelected = catId === selectedCat ? 'selected' : '';
+      return `<option value="${catId}" ${isSelected}>${label}</option>`;
+    }).join('');
+
+    if (selectedCat && !uniqueCats.includes(selectedCat)) {
+      selectElem.insertAdjacentHTML('beforeend', `<option value="${selectedCat}" selected>${selectedCat}</option>`);
+    }
+  }
+
+  function renderAdminQuestionsTab() {
+    updateQuestionsBadges();
+    populateCategoryFilter();
+    renderAdminQuestionsList();
+  }
+
+  function renderAdminQuestionsList() {
+    if (!adminQuestionsList) return;
+    const questions = getActiveQuestions(currentAdminBank);
+    const catFilter = adminQCatFilter?.value || 'all';
+    const searchQuery = (adminQSearch?.value || '').toLowerCase().trim();
+
+    const filtered = questions.filter(q => {
+      if (catFilter !== 'all' && q.category !== catFilter) return false;
+      if (!searchQuery) return true;
+      const textMatch = (q.question || '').toLowerCase().includes(searchQuery);
+      const catMatch = (q.category || '').toLowerCase().includes(searchQuery);
+      const optMatch = (q.options || []).some(opt => (opt || '').toLowerCase().includes(searchQuery));
+      const expMatch = (q.explanation || '').toLowerCase().includes(searchQuery);
+      const idMatch = String(q.id).includes(searchQuery);
+      return textMatch || catMatch || optMatch || expMatch || idMatch;
+    });
+
+    if (adminQCounterLabel) {
+      adminQCounterLabel.textContent = `Mostrando ${filtered.length} de ${questions.length} preguntas`;
+    }
+
+    if (filtered.length === 0) {
+      adminQuestionsList.innerHTML = `
+        <div style="text-align:center;padding:48px 16px;background:var(--surface-container);border-radius:16px;border:1px dashed var(--outline-variant);">
+          <span class="material-symbols-outlined text-[48px]" style="color:var(--on-surface-variant);display:block;margin-bottom:8px;">search_off</span>
+          <p style="font-size:15px;font-weight:700;color:var(--on-surface);">No se encontraron preguntas</p>
+          <p style="font-size:13px;color:var(--on-surface-variant);margin-top:4px;">Probá cambiando el filtro de categoría o limpiando el texto de búsqueda.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const catMap = BANK_CATEGORY_NAMES[currentAdminBank] || {};
+
+    adminQuestionsList.innerHTML = filtered.map((q) => {
+      const catLabel = catMap[q.category] || q.category || 'General';
+      const hasImage = !!q.imageSrc;
+      const imgThumbnail = hasImage ? `
+        <div class="admin-q-thumb-wrap" title="Hacé clic para ver imagen en tamaño completo" onclick="window.openPreviewImage('${q.imageSrc}')">
+          <img src="${q.imageSrc}" alt="Pregunta ${q.id}" onerror="this.src='assets/avatars/auto.png';this.title='Error al cargar imagen';">
+          <span class="admin-q-img-badge">🖼️ Imagen</span>
+        </div>
+      ` : '';
+
+      const optionsHtml = (q.options || []).map((opt, oIdx) => {
+        const isCorrect = oIdx === q.correct;
+        const letter = ['A', 'B', 'C', 'D'][oIdx] || `${oIdx + 1}`;
+        return `
+          <div class="admin-q-opt-item ${isCorrect ? 'correct' : ''}">
+            <span class="admin-q-opt-letter">${letter}</span>
+            <span class="admin-q-opt-text">${opt}</span>
+            ${isCorrect ? '<span class="material-symbols-outlined text-[16px]" style="color:var(--success);margin-left:auto;flex-shrink:0;">check_circle</span>' : ''}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="admin-q-card" data-qid="${q.id}">
+          <div class="admin-q-card-header">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="admin-q-cat-tag">${catLabel}</span>
+              <span class="admin-q-id-tag">#${q.id}</span>
+              ${hasImage ? '<span class="admin-q-has-img-tag"><span class="material-symbols-outlined text-[13px]">image</span> Con Imagen</span>' : ''}
+            </div>
+            <div class="admin-q-actions">
+              <button type="button" class="btn-q-edit" data-qid="${q.id}" title="Editar pregunta e imagen">
+                <span class="material-symbols-outlined text-[15px]">edit</span>
+                <span>Editar</span>
+              </button>
+              <button type="button" class="btn-q-delete" data-qid="${q.id}" title="Eliminar pregunta">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-q-card-body">
+            ${imgThumbnail}
+            <div class="admin-q-content-col">
+              <h4 class="admin-q-title">${q.question}</h4>
+              <div class="admin-q-options-grid">
+                ${optionsHtml}
+              </div>
+              ${q.explanation ? `
+                <div class="admin-q-explanation-box">
+                  <span class="material-symbols-outlined text-[14px]">info</span>
+                  <span><strong>Explicación:</strong> ${q.explanation}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach click events
+    adminQuestionsList.querySelectorAll('.btn-q-edit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qid = btn.dataset.qid;
+        openQuestionEditModal(qid, currentAdminBank);
+      });
+    });
+
+    adminQuestionsList.querySelectorAll('.btn-q-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qid = btn.dataset.qid;
+        deleteQuestion(qid, currentAdminBank);
+      });
+    });
+  }
+
+  // Question Edit Modal Actions
+  function openQuestionEditModal(qId, bank) {
+    if (!modalAdminQuestion) return;
+    const questions = getActiveQuestions(bank);
+    const q = qId ? questions.find(item => String(item.id) === String(qId)) : null;
+
+    if (modalQTitle) modalQTitle.textContent = q ? '✏️ Editar Pregunta' : '➕ Nueva Pregunta';
+    if (modalQSubtitle) modalQSubtitle.textContent = `Banco: ${BANK_NAMES[bank] || bank}`;
+
+    if (editQId) editQId.value = q ? q.id : '';
+    if (editQBank) editQBank.value = bank;
+
+    populateCategorySelect(editQCategory, bank, q ? q.category : '');
+
+    if (editQText) editQText.value = q ? q.question : '';
+    if (editQExplanation) editQExplanation.value = q && q.explanation ? q.explanation : '';
+
+    const opts = q ? (q.options || []) : ['', '', '', ''];
+    for (let i = 0; i < 4; i++) {
+      const input = document.getElementById(`edit-q-opt-${i}`);
+      if (input) input.value = opts[i] || '';
+    }
+
+    const correctIdx = q && typeof q.correct === 'number' ? q.correct : 0;
+    const radios = document.querySelectorAll('input[name="edit-q-correct"]');
+    radios.forEach(r => {
+      r.checked = (parseInt(r.value, 10) === correctIdx);
+    });
+
+    const imgSrc = q && q.imageSrc ? q.imageSrc : '';
+    setModalImagePreview(imgSrc);
+
+    modalAdminQuestion.style.display = 'flex';
+    modalAdminQuestion.classList.add('active');
+  }
+
+  function closeQuestionEditModal() {
+    if (!modalAdminQuestion) return;
+    modalAdminQuestion.style.display = 'none';
+    modalAdminQuestion.classList.remove('active');
+    if (formEditQuestion) formEditQuestion.reset();
+    setModalImagePreview('');
+  }
+
+  function setModalImagePreview(src) {
+    if (editQImgPath) editQImgPath.value = src || '';
+    if (src) {
+      if (editQImgPreview) {
+        editQImgPreview.src = src;
+        editQImgPreview.style.display = 'block';
+      }
+      if (editQNoImgLabel) editQNoImgLabel.style.display = 'none';
+    } else {
+      if (editQImgPreview) {
+        editQImgPreview.src = '';
+        editQImgPreview.style.display = 'none';
+      }
+      if (editQNoImgLabel) editQNoImgLabel.style.display = 'block';
+    }
+  }
+
+  // Image Upload / Remove Handlers
+  btnEditQUpload?.addEventListener('click', () => {
+    editQFileInput?.click();
+  });
+
+  editQFileInput?.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 3 * 1024 * 1024) {
+      alert('La imagen seleccionada supera los 3 MB. Por favor elige una imagen más liviana.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      const dataUrl = loadEvent.target.result;
+      setModalImagePreview(dataUrl);
+    };
+    reader.readAsDataURL(file);
+    editQFileInput.value = '';
+  });
+
+  btnEditQRemoveImg?.addEventListener('click', () => {
+    setModalImagePreview('');
+  });
+
+  editQImgPath?.addEventListener('input', (e) => {
+    const val = (e.target.value || '').trim();
+    setModalImagePreview(val);
+  });
+
+  btnCloseQModal?.addEventListener('click', closeQuestionEditModal);
+  btnCancelQuestion?.addEventListener('click', closeQuestionEditModal);
+
+  // Form Save
+  formEditQuestion?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const bank = editQBank?.value || currentAdminBank;
+    const qid = editQId?.value;
+    const category = editQCategory?.value;
+    const questionText = (editQText?.value || '').trim();
+    const explanation = (editQExplanation?.value || '').trim();
+    const imageSrc = (editQImgPath?.value || '').trim();
+
+    if (!questionText) {
+      alert('Por favor ingresa el enunciado de la pregunta.');
+      editQText?.focus();
+      return;
+    }
+
+    const rawOpts = [
+      (document.getElementById('edit-q-opt-0')?.value || '').trim(),
+      (document.getElementById('edit-q-opt-1')?.value || '').trim(),
+      (document.getElementById('edit-q-opt-2')?.value || '').trim(),
+      (document.getElementById('edit-q-opt-3')?.value || '').trim(),
+    ];
+
+    if (!rawOpts[0] || !rawOpts[1]) {
+      alert('Debes ingresar al menos las opciones A y B.');
+      return;
+    }
+
+    const options = [];
+    rawOpts.forEach(opt => {
+      if (opt) options.push(opt);
+    });
+
+    const checkedRadio = document.querySelector('input[name="edit-q-correct"]:checked');
+    let correctIdx = checkedRadio ? parseInt(checkedRadio.value, 10) : 0;
+    if (correctIdx >= options.length) {
+      correctIdx = 0;
+    }
+
+    const questions = getActiveQuestions(bank);
+    if (qid) {
+      const existingIdx = questions.findIndex(item => String(item.id) === String(qid));
+      if (existingIdx !== -1) {
+        questions[existingIdx] = {
+          ...questions[existingIdx],
+          category,
+          question: questionText,
+          options,
+          correct: correctIdx,
+          explanation,
+          imageSrc: imageSrc || undefined
+        };
+      }
+    } else {
+      const newId = (bank === 'moto' ? 1000 : bank === 'colectivo' ? 2000 : 3000) + questions.length + 1;
+      const newQuestion = {
+        id: newId,
+        category,
+        question: questionText,
+        options,
+        correct: correctIdx,
+        explanation,
+        imageSrc: imageSrc || undefined
+      };
+      questions.unshift(newQuestion);
+    }
+
+    saveActiveQuestions(bank, questions);
+    closeQuestionEditModal();
+    renderAdminQuestionsTab();
+  });
+
+  // Delete Question
+  function deleteQuestion(qId, bank) {
+    if (!confirm(`¿Estás seguro de eliminar la pregunta #${qId}?`)) return;
+    const questions = getActiveQuestions(bank);
+    const updated = questions.filter(q => String(q.id) !== String(qId));
+    saveActiveQuestions(bank, updated);
+    renderAdminQuestionsTab();
+  }
+
+  // New Question Button
+  btnAdminNewQ?.addEventListener('click', () => {
+    openQuestionEditModal(null, currentAdminBank);
+  });
+
+  // Export Questions JSON
+  btnAdminExportQ?.addEventListener('click', () => {
+    const list = getActiveQuestions(currentAdminBank);
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(list, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `preguntas_${currentAdminBank}_${new Date().toISOString().slice(0, 10)}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+  });
+
+  // Reset Questions to Defaults
+  btnAdminResetQ?.addEventListener('click', () => {
+    if (confirm(`¿Deseas restaurar el banco "${BANK_NAMES[currentAdminBank]}" a las preguntas originales del sistema? Se perderán las modificaciones locales realizadas en este banco.`)) {
+      localStorage.removeItem(`vialplay_custom_${currentAdminBank}_questions`);
+      updateQuestionsBadges();
+      renderAdminQuestionsTab();
+      alert('Banco restaurado a valores por defecto con éxito.');
+    }
+  });
+
+  // Filter & Search listeners
+  adminQCatFilter?.addEventListener('change', renderAdminQuestionsList);
+  adminQSearch?.addEventListener('input', renderAdminQuestionsList);
+
+  // Global helper for opening preview image in full size
+  window.openPreviewImage = function(src) {
+    if (!src) return;
+    const w = window.open('');
+    if (w) {
+      w.document.write(`<title>Vista Previa de Imagen</title><body style="margin:0;background:#0d121c;display:flex;align-items:center;justify-content:center;height:100vh;"><img src="${src}" style="max-width:92vw;max-height:92vh;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,0.8);border:2px solid #FFC600;"></body>`);
+    }
+  };
 
   // ── CONFETTI EFFECT ───────────────────────────────────────
   function launchConfetti() {
