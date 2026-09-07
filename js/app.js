@@ -751,11 +751,15 @@ document.addEventListener('DOMContentLoaded', () => {
       alert(`Hola ${playerName}, ya participaste anteriormente con este correo. Te mostramos el Ranking de posiciones.`);
       showScreen('ranking');
     } else {
-      showScreen('hub');
+      window.open('juegos.html', '_blank');
     }
   }
 
   regSubmitBtn?.addEventListener('click', handleRegistration);
+  document.querySelector('#screen-register form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleRegistration(e);
+  });
   headerBtnPlayer?.addEventListener('click', () => {
     if (regNameInput) regNameInput.value = playerName;
     if (regEmailInput) regEmailInput.value = playerEmail;
@@ -2805,7 +2809,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── INITIAL BOOTSTRAP ─────────────────────────────────────
   fetchCloudState();
 
-  if (playerName) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetScreen = urlParams.get('screen');
+
+  if (targetScreen && screens[targetScreen]) {
+    updateHeaderDisplay();
+    showScreen(targetScreen);
+  } else if (playerName) {
     updateHeaderDisplay();
     if (hasPlayerCompleted(playerEmail)) {
       showScreen('ranking');
