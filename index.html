@@ -41,6 +41,12 @@
           <span class="material-symbols-outlined text-[18px]" id="icon-sound-toggle">volume_up</span>
         </button>
 
+        <!-- Admin Quick Access -->
+        <button class="status-pill" id="header-btn-admin" type="button" title="Panel de Administración" style="cursor:pointer;background:rgba(141,226,214,0.12);border-color:rgba(141,226,214,0.3);color:var(--tertiary);">
+          <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+          <span style="font-weight:700;font-size:11px;">Admin</span>
+        </button>
+
         <!-- Streak Pill -->
         <div class="status-pill" title="Racha de aciertos">
           <span class="material-symbols-outlined text-[16px]" style="color:var(--secondary-container)">local_fire_department</span>
@@ -671,6 +677,10 @@
           </h2>
           <span style="font-size:12px;color:var(--tertiary);font-weight:600;">Ranking oficial en tiempo real</span>
         </div>
+        <button type="button" id="btn-open-admin-from-stats" class="btn-tactile-secondary" style="height:36px;padding:0 12px;font-size:12px;display:inline-flex;align-items:center;gap:6px;">
+          <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+          <span>Panel Admin</span>
+        </button>
       </div>
 
       <!-- Search Input -->
@@ -930,8 +940,9 @@
         Ingresa el PIN de seguridad para acceder al panel de control en vivo.
       </p>
 
-      <input type="password" id="input-admin-pin" maxlength="10" placeholder="••••" style="width:100%;padding:12px;border:1.5px solid var(--secondary-container);border-radius:12px;background:var(--surface-container-lowest);color:#fff;font-size:22px;text-align:center;letter-spacing:8px;outline:none;margin-bottom:8px;">
-      <p id="admin-pin-error" style="display:none;color:var(--error);font-size:12px;font-weight:700;margin-bottom:12px;">PIN incorrecto</p>
+      <input type="password" id="input-admin-pin" maxlength="10" placeholder="••••" style="width:100%;padding:12px;border:1.5px solid var(--secondary-container);border-radius:12px;background:var(--surface-container-lowest);color:#fff;font-size:22px;text-align:center;letter-spacing:8px;outline:none;margin-bottom:6px;">
+      <p id="admin-pin-error" style="display:none;color:var(--error);font-size:12px;font-weight:700;margin-bottom:8px;">PIN incorrecto</p>
+      <p style="font-size:11px;color:var(--tertiary);margin-bottom:12px;">PIN predeterminado: <strong>1234</strong></p>
 
       <div style="display:flex;gap:10px;margin-top:8px;">
         <button id="btn-cancel-admin-pin" class="btn-tactile-secondary" style="flex:1;height:42px;font-size:13px;" type="button">Cancelar</button>
@@ -1085,6 +1096,10 @@
       <button class="nav-item" data-target="register" type="button" aria-label="Perfil">
         <span class="material-symbols-outlined text-[24px]">account_circle</span>
         <span>Perfil</span>
+      </button>
+      <button class="nav-item" data-target="admin" type="button" aria-label="Admin" id="nav-btn-admin">
+        <span class="material-symbols-outlined text-[24px]">admin_panel_settings</span>
+        <span>Admin</span>
       </button>
     </div>
   </nav>

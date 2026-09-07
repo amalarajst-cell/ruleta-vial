@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -177,7 +178,13 @@
           <img src="assets/brand/logo_ba.png" alt="Buenos Aires Ciudad" style="height:24px;filter:brightness(0) invert(1);opacity:0.95;object-fit:contain;">
           <h1 class="header-title">Zona de Práctica</h1>
         </div>
-        <span class="header-metric" id="metric-completed">Completados: 4/10</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="header-metric" id="metric-completed">Completados: 4/10</span>
+          <a href="index.html?screen=admin" title="Panel de Administración" style="color:#8DE2D6;display:inline-flex;align-items:center;padding:5px 10px;border-radius:10px;background:rgba(141,226,214,0.12);border:1px solid rgba(141,226,214,0.25);text-decoration:none;font-size:12px;font-weight:700;gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">admin_panel_settings</span>
+            <span>Admin</span>
+          </a>
+        </div>
       </div>
       <div class="progress-bar-track">
         <div class="progress-bar-fill" id="progress-fill"></div>

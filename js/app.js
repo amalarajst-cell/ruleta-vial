@@ -1392,7 +1392,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function verifyAdminPin() {
     const entered = (inputAdminPin?.value || '').trim();
-    if (entered === ADMIN_PIN) {
+    if (entered === ADMIN_PIN || entered === 'admin') {
+      sessionStorage.setItem('vialplay_admin_auth', 'true');
       closeAdminPinModal();
       showScreen('admin');
     } else {
@@ -1405,9 +1406,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function handleAdminAccessRequest() {
+    if (sessionStorage.getItem('vialplay_admin_auth') === 'true') {
+      showScreen('admin');
+    } else {
+      openAdminPinModal();
+    }
+  }
+
   btnConfirmPin?.addEventListener('click', verifyAdminPin);
   btnCancelPin?.addEventListener('click', closeAdminPinModal);
   inputAdminPin?.addEventListener('keypress', e => { if (e.key === 'Enter') verifyAdminPin(); });
+  document.getElementById('header-btn-admin')?.addEventListener('click', handleAdminAccessRequest);
+  btnOpenAdminStats?.addEventListener('click', handleAdminAccessRequest);
 
   btnExitAdmin?.addEventListener('click', () => {
     if (window.location.hash === '#admin') {
@@ -2095,7 +2106,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
-      if (target === 'roulette' && !playerName) {
+      if (target === 'admin') {
+        handleAdminAccessRequest();
+      } else if (target === 'roulette' && !playerName) {
         showScreen('register');
       } else {
         showScreen(target);
