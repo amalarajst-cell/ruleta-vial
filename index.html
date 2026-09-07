@@ -61,7 +61,7 @@
 
         <!-- Player Avatar Pill -->
         <div class="header-player-pill" id="header-player-pill" title="Editar Perfil">
-          <img src="assets/avatars/auto.png" alt="Avatar" class="header-avatar-thumb" id="header-avatar-img">
+          <img src="assets/brand/icon_auto.png" alt="Rol" class="header-avatar-thumb" id="header-avatar-img" style="filter:brightness(0) invert(1);object-fit:contain;">
           <span id="header-player-name">Piloto</span>
         </div>
       </div>
@@ -97,155 +97,33 @@
         </p>
       </div>
 
-      <!-- Avatar Selector Section (Swipeable Slider with Female & Male Avatars) -->
-      <div class="surface-card avatar-slider-card">
-        <div class="avatar-slider-header">
-          <div>
-            <p class="avatar-slider-title">Elige tu Avatar Vial</p>
-            <span class="avatar-slider-subtitle">Desliza con el dedo hacia los lados</span>
-          </div>
-          <div class="avatar-counter-badge" id="avatar-counter-badge">1 / 10</div>
+      <!-- Modalidad / Rol de Movilidad (Iconos Oficiales de la Ciudad) -->
+      <div class="surface-card" style="display:flex;flex-direction:column;gap:12px;padding:18px;">
+        <div>
+          <h3 style="font-weight:700;font-size:16px;color:var(--on-surface);">Elegí tu Rol de Movilidad</h3>
+          <p style="font-size:12px;color:var(--on-surface-variant);margin-top:2px;">Seleccioná el medio en el que te movés a diario</p>
         </div>
-
-        <!-- Gender Filter Switcher -->
-        <div class="avatar-gender-tabs">
-          <button type="button" class="avatar-gender-tab active" data-filter="all">
-            <span class="material-symbols-outlined text-[15px]">groups</span>
-            <span>Todos (10)</span>
+        <div class="role-selector-grid" id="reg-role-selector">
+          <button type="button" class="role-select-btn active" data-role="Auto B">
+            <img src="assets/brand/icon_auto.png" alt="Auto">
+            <span>Auto (B)</span>
           </button>
-          <button type="button" class="avatar-gender-tab" data-filter="female">
-            <span class="material-symbols-outlined text-[15px]">face_3</span>
-            <span>Mujeres (5)</span>
+          <button type="button" class="role-select-btn" data-role="Moto A">
+            <img src="assets/brand/icon_moto.png" alt="Moto">
+            <span>Moto (A)</span>
           </button>
-          <button type="button" class="avatar-gender-tab" data-filter="male">
-            <span class="material-symbols-outlined text-[15px]">face_6</span>
-            <span>Varones (5)</span>
+          <button type="button" class="role-select-btn" data-role="Colectivo D1">
+            <img src="assets/brand/icon_colectivo.png" alt="Colectivo">
+            <span>Colectivo (D1)</span>
           </button>
-        </div>
-
-        <!-- Swipeable Viewport -->
-        <div class="avatar-slider-wrapper">
-          <button type="button" class="avatar-nav-arrow prev" id="avatar-btn-prev" aria-label="Anterior avatar">
-            <span class="material-symbols-outlined">chevron_left</span>
+          <button type="button" class="role-select-btn" data-role="Ciclista">
+            <img src="assets/brand/icon_bici.png" alt="Ciclista">
+            <span>Ciclista</span>
           </button>
-
-          <div class="avatar-slider-viewport" id="avatar-slider-viewport">
-            <div class="avatar-slider-track" id="avatar-slider-track">
-              <!-- Slide 0: Auto Masculino -->
-              <div class="avatar-slide active" data-index="0" data-gender="male" data-avatar-src="assets/avatars/auto.png" data-role="Auto B" data-name="Alex • Piloto de Auto" data-desc="Auto Particular • Licencia B">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/auto.png" alt="Alex - Auto" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Alex <span class="avatar-gender-badge male">♂ Piloto</span></h4>
-                <span class="avatar-slide-role">Auto Particular • Piloto B</span>
-              </div>
-
-              <!-- Slide 1: Auto Femenino -->
-              <div class="avatar-slide" data-index="1" data-gender="female" data-avatar-src="assets/avatars/auto_fem.png" data-role="Auto B" data-name="Valentina • Pilota de Auto" data-desc="Auto Particular • Licencia B">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/auto_fem.png" alt="Valentina - Auto" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Valentina <span class="avatar-gender-badge female">♀ Pilota</span></h4>
-                <span class="avatar-slide-role">Auto Particular • Piloto B</span>
-              </div>
-
-              <!-- Slide 2: Ciclista Masculino -->
-              <div class="avatar-slide" data-index="2" data-gender="male" data-avatar-src="assets/avatars/ciclista.png" data-role="Ciclista" data-name="Lucas • Ciclista Urbano" data-desc="Movilidad Sustentable & Ciclovías">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/ciclista.png" alt="Lucas - Ciclista" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Lucas <span class="avatar-gender-badge male">♂ Ciclista</span></h4>
-                <span class="avatar-slide-role">Ciclista Urbano • Movilidad Eco</span>
-              </div>
-
-              <!-- Slide 3: Ciclista Femenino -->
-              <div class="avatar-slide" data-index="3" data-gender="female" data-avatar-src="assets/avatars/ciclista_fem.png" data-role="Ciclista" data-name="Luna • Ciclista Urbana" data-desc="Movilidad Sustentable & Ciclovías">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/ciclista_fem.png" alt="Luna - Ciclista" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Luna <span class="avatar-gender-badge female">♀ Ciclista</span></h4>
-                <span class="avatar-slide-role">Ciclista Urbana • Movilidad Eco</span>
-              </div>
-
-              <!-- Slide 4: Moto Masculino -->
-              <div class="avatar-slide" data-index="4" data-gender="male" data-avatar-src="assets/avatars/moto.png" data-role="Moto A" data-name="Marcos • Motociclista" data-desc="Ruta y Casco Homologado">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/moto.png" alt="Marcos - Moto" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Marcos <span class="avatar-gender-badge male">♂ Motociclista</span></h4>
-                <span class="avatar-slide-role">Motociclista • Ruta y Casco</span>
-              </div>
-
-              <!-- Slide 5: Moto Femenino -->
-              <div class="avatar-slide" data-index="5" data-gender="female" data-avatar-src="assets/avatars/moto_fem.png" data-role="Moto A" data-name="Camila • Motociclista" data-desc="Ruta y Casco Homologado">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/moto_fem.png" alt="Camila - Moto" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Camila <span class="avatar-gender-badge female">♀ Motociclista</span></h4>
-                <span class="avatar-slide-role">Motociclista • Ruta y Casco</span>
-              </div>
-
-              <!-- Slide 6: Peatón Masculino -->
-              <div class="avatar-slide" data-index="6" data-gender="male" data-avatar-src="assets/avatars/peaton.png" data-role="Peatón" data-name="Mateo • Peatón Alerta" data-desc="Cruce Cebrado y Convivencia Vial">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/peaton.png" alt="Mateo - Peatón" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Mateo <span class="avatar-gender-badge male">♂ Peatón</span></h4>
-                <span class="avatar-slide-role">Peatón Seguro • Cruce Cebrado</span>
-              </div>
-
-              <!-- Slide 7: Peatón Femenino -->
-              <div class="avatar-slide" data-index="7" data-gender="female" data-avatar-src="assets/avatars/peaton_fem.png" data-role="Peatón" data-name="Sofía • Peatón Alerta" data-desc="Cruce Cebrado y Convivencia Vial">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/peaton_fem.png" alt="Sofía - Peatón" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Sofía <span class="avatar-gender-badge female">♀ Peatón</span></h4>
-                <span class="avatar-slide-role">Peatón Seguro • Cruce Cebrado</span>
-              </div>
-
-              <!-- Slide 8: Colectivo Masculino -->
-              <div class="avatar-slide" data-index="8" data-gender="male" data-avatar-src="assets/avatars/profesional.png" data-role="Colectivo (D1 / Pasajeros)" data-name="Don Roberto • Chofer Profesional" data-desc="Transporte de Pasajeros (D1)">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/profesional.png" alt="Don Roberto - Chofer" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Don Roberto <span class="avatar-gender-badge male">♂ Chofer</span></h4>
-                <span class="avatar-slide-role">Transporte de Pasajeros (D1)</span>
-              </div>
-
-              <!-- Slide 9: Colectivo Femenino -->
-              <div class="avatar-slide" data-index="9" data-gender="female" data-avatar-src="assets/avatars/profesional_fem.png" data-role="Colectivo (D1 / Pasajeros)" data-name="Doña Carmen • Chofer Profesional" data-desc="Transporte de Pasajeros (D1)">
-                <div class="avatar-slide-circle">
-                  <img src="assets/avatars/profesional_fem.png" alt="Doña Carmen - Chofer" draggable="false">
-                </div>
-                <h4 class="avatar-slide-name">Doña Carmen <span class="avatar-gender-badge female">♀ Chofer</span></h4>
-                <span class="avatar-slide-role">Transporte de Pasajeros (D1)</span>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" class="avatar-nav-arrow next" id="avatar-btn-next" aria-label="Siguiente avatar">
-            <span class="material-symbols-outlined">chevron_right</span>
+          <button type="button" class="role-select-btn" data-role="Peatón">
+            <img src="assets/brand/icon_peaton.png" alt="Peatón">
+            <span>Peatón</span>
           </button>
-        </div>
-
-        <!-- Swipe Instruction & Dots -->
-        <div class="avatar-slider-footer">
-          <div class="avatar-swipe-indicator">
-            <span class="material-symbols-outlined">swipe</span>
-            <span>Desliza con el dedo</span>
-          </div>
-          <div class="avatar-slider-dots" id="avatar-slider-dots">
-            <button type="button" class="slider-dot active" data-index="0" aria-label="Avatar 1"></button>
-            <button type="button" class="slider-dot" data-index="1" aria-label="Avatar 2"></button>
-            <button type="button" class="slider-dot" data-index="2" aria-label="Avatar 3"></button>
-            <button type="button" class="slider-dot" data-index="3" aria-label="Avatar 4"></button>
-            <button type="button" class="slider-dot" data-index="4" aria-label="Avatar 5"></button>
-            <button type="button" class="slider-dot" data-index="5" aria-label="Avatar 6"></button>
-            <button type="button" class="slider-dot" data-index="6" aria-label="Avatar 7"></button>
-            <button type="button" class="slider-dot" data-index="7" aria-label="Avatar 8"></button>
-            <button type="button" class="slider-dot" data-index="8" aria-label="Avatar 9"></button>
-            <button type="button" class="slider-dot" data-index="9" aria-label="Avatar 10"></button>
-          </div>
         </div>
       </div>
 
@@ -361,8 +239,8 @@
       <!-- Driver Category & Status Strip -->
       <div class="primary-card" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;">
         <div style="display:flex;align-items:center;gap:12px;min-width:0;">
-          <div style="width:46px;height:46px;border-radius:50%;overflow:hidden;background:var(--surface-container-highest);border:2px solid var(--tertiary);flex-shrink:0;">
-            <img src="assets/avatars/auto.png" alt="Avatar" id="user-banner-avatar" style="width:100%;height:100%;object-fit:cover;">
+          <div style="width:46px;height:46px;border-radius:50%;overflow:hidden;background:var(--surface-container-highest);border:2px solid var(--tertiary);flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:8px;">
+            <img src="assets/brand/icon_auto.png" alt="Vehículo" id="user-banner-avatar" style="width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1);">
           </div>
           <div style="display:flex;flex-direction:column;min-width:0;">
             <div style="display:inline-flex;align-items:center;gap:4px;background:var(--surface-container);padding:2px 8px;border-radius:9999px;width:fit-content;">

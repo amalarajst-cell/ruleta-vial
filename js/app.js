@@ -58,11 +58,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ── ROLE ICON HELPER (OFFICIAL GCBA ICONS) ────────────────
+  function getRoleIcon(role) {
+    const r = (role || '').toLowerCase();
+    if (r.includes('moto')) return 'assets/brand/icon_moto.png';
+    if (r.includes('colect') || r.includes('profesional') || r.includes('d1')) return 'assets/brand/icon_colectivo.png';
+    if (r.includes('cicl') || r.includes('bici')) return 'assets/brand/icon_bici.png';
+    if (r.includes('peat')) return 'assets/brand/icon_peaton.png';
+    return 'assets/brand/icon_auto.png';
+  }
+
   // ── PLAYER & SESSION STATE ────────────────────────────────
   let playerName   = localStorage.getItem('vialplay_player_name') || '';
   let playerEmail  = localStorage.getItem('vialplay_player_email') || '';
-  let playerAvatar = localStorage.getItem('vialplay_player_avatar') || 'assets/avatars/auto.png';
   let playerRole   = localStorage.getItem('vialplay_player_role') || 'Auto B';
+  let playerAvatar = localStorage.getItem('vialplay_player_avatar') || getRoleIcon(playerRole);
+  if (!playerAvatar || playerAvatar.includes('assets/avatars/')) {
+    playerAvatar = getRoleIcon(playerRole);
+    localStorage.setItem('vialplay_player_avatar', playerAvatar);
+  }
 
   let sessionScore   = 0;
   let sessionStreak  = 0;
@@ -222,14 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const regNameInput      = document.getElementById('reg-name');
   const regEmailInput     = document.getElementById('reg-email');
   const regSubmitBtn      = document.getElementById('btn-register-submit');
-  const avatarSliderViewport = document.getElementById('avatar-slider-viewport');
-  const avatarSliderTrack    = document.getElementById('avatar-slider-track');
-  const avatarSlides         = Array.from(document.querySelectorAll('.avatar-slide'));
-  const avatarSliderDots     = Array.from(document.querySelectorAll('.slider-dot'));
-  const avatarGenderTabs     = Array.from(document.querySelectorAll('.avatar-gender-tab'));
-  const avatarBtnPrev        = document.getElementById('avatar-btn-prev');
-  const avatarBtnNext        = document.getElementById('avatar-btn-next');
-  const avatarCounterBadge   = document.getElementById('avatar-counter-badge');
 
   // Roulette screen
   const spinBtn           = document.getElementById('btn-spin-roulette');
@@ -349,12 +355,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── INITIAL STATE SETUP ───────────────────────────────────
   function updateHeaderDisplay() {
+    const roleIcon = getRoleIcon(playerRole);
     if (headerPlayerName) headerPlayerName.textContent = playerName || 'Participante';
-    if (headerAvatarImg) headerAvatarImg.src = playerAvatar || 'assets/avatars/auto.png';
+    if (headerAvatarImg) {
+      headerAvatarImg.src = roleIcon;
+      headerAvatarImg.style.filter = 'brightness(0) invert(1)';
+    }
     if (headerScoreVal) headerScoreVal.textContent = sessionScore;
     if (headerStreakVal) headerStreakVal.textContent = sessionStreak;
 
-    if (userBannerAvatar) userBannerAvatar.src = playerAvatar || 'assets/avatars/auto.png';
+    if (userBannerAvatar) {
+      userBannerAvatar.src = roleIcon;
+      userBannerAvatar.style.filter = 'brightness(0) invert(1)';
+    }
     if (userBannerName) userBannerName.textContent = playerName || 'Piloto Vial';
     if (userBannerRole) userBannerRole.textContent = playerRole || 'Auto B';
 
@@ -365,7 +378,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const hubScoreVal = document.getElementById('hub-score-val');
     const hubStreakVal = document.getElementById('hub-streak-val');
 
-    if (hubUserAvatar) hubUserAvatar.src = playerAvatar || 'assets/avatars/auto.png';
+    if (hubUserAvatar) {
+      hubUserAvatar.src = roleIcon;
+      hubUserAvatar.style.filter = 'brightness(0) invert(1)';
+    }
     if (hubUserName) hubUserName.textContent = playerName || 'Piloto';
     if (hubUserRole) hubUserRole.textContent = playerRole || 'Auto B';
     if (hubScoreVal) hubScoreVal.textContent = `${sessionScore} XP`;
@@ -376,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function isColectivoProfile() {
     const role = (playerRole || '').toLowerCase();
     const avatar = (playerAvatar || '').toLowerCase();
-    return role.includes('colectivo') || role.includes('pasajero') || role.includes('d1') || role.includes('profesional') || avatar.includes('profesional');
+    return role.includes('colectivo') || role.includes('pasajero') || role.includes('d1') || role.includes('profesional') || avatar.includes('profesional') || avatar.includes('colectivo');
   }
 
   function isMotoProfile() {
@@ -426,8 +442,9 @@ document.addEventListener('DOMContentLoaded', () => {
         userBannerRole.textContent = playerRole || 'Clase B • Auto';
       }
     }
-    if (userBannerAvatar && playerAvatar) {
-      userBannerAvatar.src = playerAvatar;
+    if (userBannerAvatar) {
+      userBannerAvatar.src = getRoleIcon(playerRole);
+      userBannerAvatar.style.filter = 'brightness(0) invert(1)';
     }
   }
 
@@ -435,32 +452,22 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.role-pill-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const mode = btn.dataset.roleMode;
-      const isFemale = (preferredGender === 'female');
       if (mode === 'moto') {
         playerRole = 'Moto A';
-        playerAvatar = isFemale ? 'assets/avatars/moto_fem.png' : 'assets/avatars/moto.png';
       } else if (mode === 'colectivo') {
         playerRole = 'Colectivo D1';
-        playerAvatar = isFemale ? 'assets/avatars/profesional_fem.png' : 'assets/avatars/profesional.png';
       } else if (mode === 'ciclista') {
         playerRole = 'Ciclista';
-        playerAvatar = isFemale ? 'assets/avatars/ciclista_fem.png' : 'assets/avatars/ciclista.png';
       } else if (mode === 'peaton') {
         playerRole = 'Peatón';
-        playerAvatar = isFemale ? 'assets/avatars/peaton_fem.png' : 'assets/avatars/peaton.png';
       } else {
         playerRole = 'Auto B';
-        playerAvatar = isFemale ? 'assets/avatars/auto_fem.png' : 'assets/avatars/auto.png';
       }
+      playerAvatar = getRoleIcon(playerRole);
       localStorage.setItem('vialplay_player_role', playerRole);
       localStorage.setItem('vialplay_player_avatar', playerAvatar);
 
-      // Sync slider if on register screen
-      const matchingIdx = avatarSlides.findIndex(s => s.dataset.role === playerRole && s.dataset.gender === (isFemale ? 'female' : 'male'));
-      if (matchingIdx !== -1) {
-        goToAvatarSlide(matchingIdx, false);
-      }
-
+      updateRegisterRoleUI();
       updateHeaderDisplay();
       updateRouletteMode();
       requestAnimationFrame(() => {
@@ -496,220 +503,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ── AVATAR SWIPE SLIDER CONTROLLER (10 AVATARS & GENDER TABS) ──
-  let currentAvatarIndex = 0;
-  const totalAvatarSlides = avatarSlides.length;
-  let preferredGender = 'male';
-
-  function updateGenderTabsUI(gender) {
-    if (!avatarGenderTabs || avatarGenderTabs.length === 0) return;
-    avatarGenderTabs.forEach(tab => {
-      const filter = tab.dataset.filter;
-      if (filter === gender) {
-        tab.classList.add('active');
-      } else if (filter === 'all' && gender === 'all') {
-        tab.classList.add('active');
-      } else if (filter !== 'all') {
-        tab.classList.toggle('active', filter === gender);
-      }
+  // ── REGISTRATION ROLE SELECTOR CONTROLLER ──────────────────
+  function updateRegisterRoleUI() {
+    const roleBtns = document.querySelectorAll('#reg-role-selector .role-select-btn');
+    if (!roleBtns.length) return;
+    const currentRole = (playerRole || 'Auto B').toLowerCase();
+    
+    roleBtns.forEach(btn => {
+      const btnRole = (btn.dataset.role || '').toLowerCase();
+      const isActive = currentRole.includes(btnRole) || 
+                       (btnRole === 'auto' && currentRole.includes('auto')) ||
+                       (btnRole === 'moto' && currentRole.includes('moto')) ||
+                       (btnRole === 'colectivo' && currentRole.includes('colect')) ||
+                       (btnRole === 'ciclista' && (currentRole.includes('cicl') || currentRole.includes('bici'))) ||
+                       (btnRole === 'peaton' && currentRole.includes('peat'));
+      btn.classList.toggle('active', isActive);
     });
   }
 
-  function goToAvatarSlide(index, syncPill = true) {
-    if (totalAvatarSlides === 0) return;
-    if (index < 0) index = totalAvatarSlides - 1;
-    if (index >= totalAvatarSlides) index = 0;
-
-    currentAvatarIndex = index;
-    const offset = -currentAvatarIndex * 100;
-    if (avatarSliderTrack) {
-      avatarSliderTrack.style.transition = 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)';
-      avatarSliderTrack.style.transform = `translateX(${offset}%)`;
-    }
-
-    // Update active slide class
-    avatarSlides.forEach((slide, i) => {
-      slide.classList.toggle('active', i === currentAvatarIndex);
-    });
-
-    // Update pagination dots
-    avatarSliderDots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === currentAvatarIndex);
-    });
-
-    // Update counter badge
-    if (avatarCounterBadge) {
-      avatarCounterBadge.textContent = `${currentAvatarIndex + 1} / ${totalAvatarSlides}`;
-    }
-
-    // Get active slide metadata
-    const activeSlide = avatarSlides[currentAvatarIndex];
-    if (activeSlide) {
-      playerAvatar = activeSlide.dataset.avatarSrc;
-      playerRole   = activeSlide.dataset.role || 'Auto B';
-      localStorage.setItem('vialplay_player_avatar', playerAvatar);
-      localStorage.setItem('vialplay_player_role', playerRole);
-
-      const slideGender = activeSlide.dataset.gender || 'male';
-      preferredGender = slideGender;
-      avatarGenderTabs.forEach(tab => {
-        const filter = tab.dataset.filter;
-        if (filter === 'female' || filter === 'male') {
-          tab.classList.toggle('active', filter === slideGender);
-        } else if (filter === 'all') {
-          tab.classList.remove('active');
-        }
-      });
-    }
-
-    updateRouletteMode();
-    if (audioSystem && audioSystem.playClick) {
-      audioSystem.playClick();
-    }
-  }
-
-  // Gender tab buttons
-  avatarGenderTabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      avatarGenderTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      const filter = tab.dataset.filter;
-      if (filter === 'female') {
-        preferredGender = 'female';
-        // If currently on a male slide, switch to the female counterpart of same role
-        const activeSlide = avatarSlides[currentAvatarIndex];
-        if (activeSlide && activeSlide.dataset.gender === 'male') {
-          const role = (activeSlide.dataset.role || '').toLowerCase();
-          const targetFemaleIdx = avatarSlides.findIndex(s =>
-            s.dataset.gender === 'female' && (s.dataset.role || '').toLowerCase() === role
-          );
-          if (targetFemaleIdx !== -1) {
-            goToAvatarSlide(targetFemaleIdx);
-            return;
-          }
-        }
-        // If not already female, jump to first female
-        const firstFemale = avatarSlides.findIndex(s => s.dataset.gender === 'female');
-        if (firstFemale !== -1 && activeSlide?.dataset.gender !== 'female') {
-          goToAvatarSlide(firstFemale);
-        }
-      } else if (filter === 'male') {
-        preferredGender = 'male';
-        // If currently on female slide, switch to male counterpart of same role
-        const activeSlide = avatarSlides[currentAvatarIndex];
-        if (activeSlide && activeSlide.dataset.gender === 'female') {
-          const role = (activeSlide.dataset.role || '').toLowerCase();
-          const targetMaleIdx = avatarSlides.findIndex(s =>
-            s.dataset.gender === 'male' && (s.dataset.role || '').toLowerCase() === role
-          );
-          if (targetMaleIdx !== -1) {
-            goToAvatarSlide(targetMaleIdx);
-            return;
-          }
-        }
-        // Jump to first male
-        const firstMale = avatarSlides.findIndex(s => s.dataset.gender === 'male');
-        if (firstMale !== -1 && activeSlide?.dataset.gender !== 'male') {
-          goToAvatarSlide(firstMale);
-        }
-      }
-    });
-  });
-
-  // Prev / Next button navigation
-  avatarBtnPrev?.addEventListener('click', (e) => {
-    e.preventDefault();
-    goToAvatarSlide(currentAvatarIndex - 1);
-  });
-
-  avatarBtnNext?.addEventListener('click', (e) => {
-    e.preventDefault();
-    goToAvatarSlide(currentAvatarIndex + 1);
-  });
-
-  // Pagination dot navigation
-  avatarSliderDots.forEach((dot, i) => {
-    dot.addEventListener('click', (e) => {
-      e.preventDefault();
-      goToAvatarSlide(i);
-    });
-  });
-
-  // Touch Swipe & Mouse Drag Handling
-  if (avatarSliderViewport) {
-    let startX = 0;
-    let currentX = 0;
-    let isDragging = false;
-    let startTime = 0;
-
-    function onDragStart(e) {
-      isDragging = true;
-      startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-      currentX = startX;
-      startTime = Date.now();
-      if (avatarSliderTrack) {
-        avatarSliderTrack.style.transition = 'none';
-      }
-      avatarSliderViewport.classList.add('is-dragging');
-    }
-
-    function onDragMove(e) {
-      if (!isDragging) return;
-      currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-      const deltaX = currentX - startX;
-      const viewportWidth = avatarSliderViewport.offsetWidth || 300;
-      const deltaPercent = (deltaX / viewportWidth) * 100;
-      const basePercent = -currentAvatarIndex * 100;
-      if (avatarSliderTrack) {
-        avatarSliderTrack.style.transform = `translateX(${basePercent + deltaPercent}%)`;
-      }
-    }
-
-    function onDragEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      avatarSliderViewport.classList.remove('is-dragging');
-      const deltaX = currentX - startX;
-      const deltaTime = Date.now() - startTime;
-      const velocity = Math.abs(deltaX) / (deltaTime || 1);
-
-      // Threshold: 35px or quick flick with velocity > 0.35
-      if (deltaX < -35 || (deltaX < -15 && velocity > 0.35)) {
-        goToAvatarSlide(currentAvatarIndex + 1);
-      } else if (deltaX > 35 || (deltaX > 15 && velocity > 0.35)) {
-        goToAvatarSlide(currentAvatarIndex - 1);
+  document.querySelectorAll('#reg-role-selector .role-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const roleMode = btn.dataset.role;
+      if (roleMode === 'moto') {
+        playerRole = 'Moto A';
+      } else if (roleMode === 'colectivo') {
+        playerRole = 'Colectivo D1';
+      } else if (roleMode === 'ciclista') {
+        playerRole = 'Ciclista';
+      } else if (roleMode === 'peaton') {
+        playerRole = 'Peatón';
       } else {
-        // Snap back to current slide
-        goToAvatarSlide(currentAvatarIndex);
+        playerRole = 'Auto B';
       }
-    }
+      playerAvatar = getRoleIcon(playerRole);
+      localStorage.setItem('vialplay_player_role', playerRole);
+      localStorage.setItem('vialplay_player_avatar', playerAvatar);
 
-    // Touch events for mobile
-    avatarSliderViewport.addEventListener('touchstart', onDragStart, { passive: true });
-    avatarSliderViewport.addEventListener('touchmove', onDragMove, { passive: true });
-    avatarSliderViewport.addEventListener('touchend', onDragEnd, { passive: true });
-
-    // Mouse drag events for desktop
-    avatarSliderViewport.addEventListener('mousedown', onDragStart);
-    window.addEventListener('mousemove', onDragMove);
-    window.addEventListener('mouseup', onDragEnd);
-  }
-
-
-
-  // Restore active avatar from saved preferences
-  if (playerAvatar || playerRole) {
-    const savedIdx = avatarSlides.findIndex(s => {
-      if (playerAvatar && s.dataset.avatarSrc === playerAvatar) return true;
-      if (playerRole && s.dataset.role === playerRole) return true;
-      return false;
+      updateRegisterRoleUI();
+      updateHeaderDisplay();
+      updateRouletteMode();
+      if (audioSystem && audioSystem.playClick) audioSystem.playClick();
     });
-    if (savedIdx !== -1) {
-      goToAvatarSlide(savedIdx, true);
-    }
-  }
+  });
+
+  // Initial sync of register role UI
+  updateRegisterRoleUI();
 
   // ── REGISTRATION / LOGIN ──────────────────────────────────
   function validateEmail(email) {
@@ -734,6 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     playerName = name;
     playerEmail = email;
+    playerAvatar = getRoleIcon(playerRole);
     localStorage.setItem('vialplay_player_name', playerName);
     localStorage.setItem('vialplay_player_email', playerEmail);
     localStorage.setItem('vialplay_player_avatar', playerAvatar);
@@ -1249,7 +1088,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const rankText = myIndex >= 0 ? `Puesto #${myIndex + 1} de ${leaderboard.length}` : 'Aún sin posición (¡Girá la ruleta!)';
         rankUserPosCard.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;">
-            <img src="${playerAvatar}" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--secondary-container);object-fit:cover;">
+            <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.06);border:2px solid var(--secondary-container);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <img src="${getRoleIcon(playerRole)}" style="width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);">
+            </div>
             <div>
               <div style="font-size:11px;font-weight:700;color:var(--tertiary);text-transform:uppercase;">Tu Perfil Vial</div>
               <div style="font-family:var(--font-display);font-size:18px;color:var(--on-surface);">${playerName}</div>
@@ -1335,8 +1176,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (filtered.length === 0) {
         rankTableBody.innerHTML = `
           <tr>
-            <td colspan="4" style="text-align:center;padding:32px;color:var(--on-surface-variant);">
-              ${filterTerm ? 'No se encontraron participantes con esa búsqueda.' : 'Aún no hay participantes registrados. ¡Sé el primero en girar la ruleta!'}
+            <td colspan="4" style="text-align:center;padding:24px;color:var(--on-surface-variant);">
+              No se encontraron participantes.
             </td>
           </tr>
         `;
@@ -1352,12 +1193,15 @@ document.addEventListener('DOMContentLoaded', () => {
             medalMarkup = `<img src="assets/medals/bronce.png" class="medal-icon" alt="3°" title="3° Lugar (Bronce)">`;
           }
           const isMe = cleanMyEmail && (e.email || '').toLowerCase().trim() === cleanMyEmail;
+          const userIcon = getRoleIcon(e.role || e.category);
           return `
             <tr style="${isMe ? 'background:rgba(255,198,0,0.12);font-weight:bold;' : ''}">
               <td class="rank-medal" style="text-align:center;width:44px;">${medalMarkup}</td>
               <td>
                 <div style="display:flex;align-items:center;gap:8px;">
-                  <img src="${e.avatar || 'assets/avatars/auto.png'}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;">
+                  <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <img src="${userIcon}" style="width:16px;height:16px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+                  </div>
                   <div>
                     <span style="color:${isMe ? 'var(--secondary-container)' : 'var(--on-surface)'}">${e.name}</span>
                     <div style="font-size:10px;color:var(--tertiary);">${e.category || 'Vial'}</div>
@@ -1503,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (originalIdx === 1) medalBadge = `<img src="assets/medals/plata.png" class="medal-icon" alt="2°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
           else if (originalIdx === 2) medalBadge = `<img src="assets/medals/bronce.png" class="medal-icon" alt="3°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
 
-          const avatarImg = e.avatar || 'assets/avatars/auto.png';
+          const userIcon = getRoleIcon(e.role || e.category);
           const roleLabel = e.role || 'Auto (Cat B)';
           const catLabel = e.category || 'Vial General';
           const timeLabel = e.time ? Number(e.time).toFixed(2) + 's' : '0.00s';
@@ -1514,7 +1358,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <td style="text-align:center;width:70px;">${medalBadge}</td>
               <td>
                 <div style="display:flex;align-items:center;gap:10px;">
-                  <img src="${avatarImg}" style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--secondary-container);object-fit:cover;flex-shrink:0;" onerror="this.src='assets/avatars/auto.png'">
+                  <div style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--secondary-container);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <img src="${userIcon}" style="width:20px;height:20px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+                  </div>
                   <span style="font-weight:700;color:var(--on-surface);font-size:14px;">${e.name}</span>
                 </div>
               </td>
@@ -1763,7 +1609,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const hasImage = !!q.imageSrc;
       const imgThumbnail = hasImage ? `
         <div class="admin-q-thumb-wrap" title="Hacé clic para ver imagen en tamaño completo" onclick="window.openPreviewImage('${q.imageSrc}')">
-          <img src="${q.imageSrc}" alt="Pregunta ${q.id}" onerror="this.src='assets/avatars/auto.png';this.title='Error al cargar imagen';">
+          <img src="${q.imageSrc}" alt="Pregunta ${q.id}" onerror="this.src='assets/brand/icon_auto.png';this.title='Error al cargar imagen';">
           <span class="admin-q-img-badge">🖼️ Imagen</span>
         </div>
       ` : '';

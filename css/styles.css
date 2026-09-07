@@ -331,6 +331,62 @@ body {
   box-shadow: 0 4px 16px rgba(0,0,0,0.35);
 }
 
+/* Registration Role / Vehicle Selector (No cartoon avatars) */
+.role-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.role-select-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 10px;
+  background: var(--surface-container-lowest);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.role-select-btn:hover {
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+  border-color: rgba(141, 226, 214, 0.3);
+  transform: translateY(-2px);
+}
+
+.role-select-btn.active {
+  background: rgba(141, 226, 214, 0.12);
+  border-color: var(--tertiary);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(141, 226, 214, 0.25);
+}
+
+.role-select-btn img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease;
+}
+
+.role-select-btn.active img {
+  transform: scale(1.1);
+}
+
+.role-select-btn span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
 /* Registration & Avatar Swipe Slider */
 .avatar-slider-card {
   display: flex;
