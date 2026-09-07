@@ -154,10 +154,13 @@ body {
 }
 
 .brand-logo {
-  height: 34px;
+  height: 32px;
   width: auto;
-  object-contain: contain;
-  border-radius: 8px;
+  object-fit: contain;
+  border-radius: 6px;
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+  transition: opacity 0.2s ease;
 }
 
 .brand-titles {
@@ -1388,6 +1391,23 @@ body.admin-mode .bottom-nav {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
   user-select: none;
+}
+.role-pill-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  vertical-align: middle;
+  filter: brightness(0) invert(1);
+  display: inline-block;
+  flex-shrink: 0;
+}
+.admin-bank-pill .role-pill-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+  object-fit: contain;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 .role-pill-btn:hover {
   background: var(--surface-container-highest);
