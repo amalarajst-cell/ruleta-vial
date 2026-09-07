@@ -6,7 +6,7 @@
   <title>Zona de Práctica — Juegos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -34,7 +34,7 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
     }
     .header-inner {
-      max-width: 560px;
+      max-width: 580px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -75,13 +75,32 @@
       transition: width 0.4s ease;
     }
 
-    /* ── ÁREA PRINCIPAL CON BOTÓN RULETA ── */
+    /* ── ÁREA PRINCIPAL CON TEXTO Y BOTÓN RULETA ── */
     .tab-main {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 28px 20px;
+      max-width: 580px;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+      gap: 22px;
+    }
+    .tab-description-card {
+      background: rgba(30, 32, 32, 0.6);
+      border: 1px solid rgba(141, 226, 214, 0.15);
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    .tab-description {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #c2c7cc;
+      margin: 0;
     }
     .btn-ruleta {
       display: inline-flex;
@@ -89,7 +108,7 @@
       align-items: center;
       justify-content: center;
       gap: 16px;
-      padding: 28px 40px;
+      padding: 28px 44px;
       background: #1e2020;
       border: 3px solid #FFC600;
       border-radius: 28px;
@@ -125,6 +144,11 @@
       text-transform: uppercase;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
+    .btn-hint {
+      font-size: 13px;
+      color: #8c9196;
+      margin-top: -6px;
+    }
   </style>
 </head>
 <body>
@@ -142,12 +166,19 @@
     </div>
   </header>
 
-  <!-- Contenido con el botón RULETA VIAL -->
+  <!-- Contenido con texto y botón RULETA VIAL -->
   <main class="tab-main">
-    <button class="btn-ruleta" id="btn-ruleta" onclick="window.location.href='index.html?screen=roulette'">
+    <div class="tab-description-card">
+      <p class="tab-description">
+        Jugá, practicá y poné a prueba tus reflejos en cada desafío. Transformá tus decisiones en hábitos seguros para moverte mejor por la calle.
+      </p>
+    </div>
+
+    <button class="btn-ruleta" id="btn-ruleta" onclick="window.location.href='index.html?screen=modalidades'">
       <img src="assets/ruleta_icono.jpg" alt="Ruleta">
       <span>RULETA VIAL</span>
     </button>
+    <span class="btn-hint">Tocá la ruleta para acceder a todas las modalidades</span>
   </main>
 
 </body>

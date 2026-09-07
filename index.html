@@ -315,16 +315,366 @@
         </div>
       </div>
 
-      <!-- Botón RULETA VIAL -->
-      <div style="min-height:55vh;display:flex;align-items:center;justify-content:center;padding:10px 0;">
-        <button class="btn-ruleta-menu" id="btn-hub-roulette" type="button">
+      <!-- Texto descriptivo solicitado -->
+      <div style="background:rgba(30, 32, 32, 0.6);border:1px solid rgba(141, 226, 214, 0.15);border-radius:16px;padding:16px 20px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.3);">
+        <p style="font-size:15px;line-height:1.6;color:#c2c7cc;margin:0;">
+          Jugá, practicá y poné a prueba tus reflejos en cada desafío. Transformá tus decisiones en hábitos seguros para moverte mejor por la calle.
+        </p>
+      </div>
+
+      <!-- Botón RULETA VIAL que lleva a las modalidades -->
+      <div style="min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px 0;">
+        <button class="btn-ruleta-menu" id="btn-hub-roulette" type="button" onclick="showScreen('modalidades')">
           <img src="assets/ruleta_icono.jpg" alt="Ruleta">
           <span>RULETA VIAL</span>
         </button>
+        <span style="font-size:13px;color:#8c9196;">Tocá la ruleta para acceder a todas las modalidades</span>
       </div>
     </div>
   </main>
 
+
+
+  <!-- ================================================
+       SCREEN 2B: MODALIDADES (JUEGOS, SIMULADORES Y MANUALES)
+  ================================================-->
+  <main class="screen" id="screen-modalidades">
+    <div style="display:flex;flex-direction:column;gap:20px;">
+
+      <!-- Hub Hero Banner -->
+      <div class="hub-hero-banner">
+        <div class="hub-hero-content">
+          <div class="hub-user-badge">
+            <div class="hub-avatar-wrap">
+              <img src="assets/avatars/auto.png" alt="Avatar" id="hub-user-avatar" class="hub-avatar-img">
+            </div>
+            <div>
+              <div class="hub-user-greeting">¡Hola, <span id="hub-user-name">Piloto</span>! 👋</div>
+              <div class="hub-user-role-tag" id="hub-user-role">🚗 Auto (Cat B)</div>
+            </div>
+          </div>
+
+          <div class="hub-quick-stats">
+            <div class="hub-stat-item">
+              <span class="hub-stat-label">Puntaje Total</span>
+              <span class="hub-stat-val" id="hub-score-val">0 XP</span>
+            </div>
+            <div class="hub-stat-divider"></div>
+            <div class="hub-stat-item">
+              <span class="hub-stat-label">Racha Vial</span>
+              <span class="hub-stat-val" id="hub-streak-val">🔥 0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hub-banner-cta-row">
+          <div class="hub-tagline">
+            <span class="material-symbols-outlined text-[18px]" style="color:var(--secondary-container)">verified_user</span>
+            <span>Centro de Capacitación y Entrenamiento Vial</span>
+          </div>
+          <button type="button" class="btn-hub-play-roulette" id="btn-hub-quick-roulette">
+            <span class="material-symbols-outlined text-[20px]">casino</span>
+            <span>GIRAR RULETA AHORA</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Hub Filter Tabs -->
+      <div class="hub-category-pills">
+        <button type="button" class="hub-pill-btn active" data-hub-filter="all">
+          <span class="material-symbols-outlined text-[18px]">grid_view</span>
+          <span>Todo el Centro</span>
+        </button>
+        <button type="button" class="hub-pill-btn" data-hub-filter="games">
+          <span class="material-symbols-outlined text-[18px]">sports_esports</span>
+          <span>Juegos</span>
+        </button>
+        <button type="button" class="hub-pill-btn" data-hub-filter="simulators">
+          <span class="material-symbols-outlined text-[18px]">speed</span>
+          <span>Simuladores</span>
+        </button>
+        <button type="button" class="hub-pill-btn" data-hub-filter="manuals">
+          <span class="material-symbols-outlined text-[18px]">menu_book</span>
+          <span>Manuales</span>
+        </button>
+      </div>
+
+      <!-- ==============================================
+           SECCIÓN 1: JUEGOS VIALES
+      ============================================== -->
+      <section class="hub-section" id="hub-section-games" data-section="games">
+        <div class="hub-section-header">
+          <div class="hub-section-title-wrap">
+            <div class="hub-section-icon games">
+              <span class="material-symbols-outlined">sports_esports</span>
+            </div>
+            <div>
+              <h2 class="hub-section-title">Zona de Juegos Gamificados</h2>
+              <p class="hub-section-desc">Pone a prueba tus conocimientos, responde preguntas y gana XP para tu ranking.</p>
+            </div>
+          </div>
+          <span class="hub-count-badge">3 Juegos</span>
+        </div>
+
+        <div class="hub-cards-grid">
+          <!-- Card 1: Ruleta Vial (Principal) -->
+          <div class="hub-card featured" id="card-play-roulette">
+            <div class="hub-card-badge-top">⭐ DESAFÍO PRINCIPAL</div>
+            <div class="hub-card-body">
+              <div class="hub-card-icon-hero roulette">
+                <span class="material-symbols-outlined text-[40px]">casino</span>
+              </div>
+              <div class="hub-card-info">
+                <h3 class="hub-card-title">La Ruleta Vial</h3>
+                <p class="hub-card-text">Gira la ruleta física con físicas dinámicas, responde 5 preguntas según tu vehículo y acumula puntos XP.</p>
+                <div class="hub-card-tags">
+                  <span class="hub-tag">🏍️ Motos</span>
+                  <span class="hub-tag">🚌 Colectivos</span>
+                  <span class="hub-tag">🚗 Autos</span>
+                  <span class="hub-tag">⭐ +100 XP</span>
+                </div>
+              </div>
+            </div>
+            <div class="hub-card-footer">
+              <button type="button" class="btn-tactile-primary hub-card-btn" id="btn-hub-roulette">
+                <span class="material-symbols-outlined text-[20px]">play_arrow</span>
+                <span>JUGAR RULETA VIAL</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2: Trivia Exprés Contra Reloj -->
+          <div class="hub-card" id="card-play-trivia">
+            <div class="hub-card-body">
+              <div class="hub-card-icon-hero trivia">
+                <span class="material-symbols-outlined text-[32px]">timer</span>
+              </div>
+              <div class="hub-card-info">
+                <h3 class="hub-card-title">Trivia Exprés Contra Reloj</h3>
+                <p class="hub-card-text">5 preguntas al azar de alta velocidad. Cuanto más rápido respondas, mayor será tu bonificación.</p>
+                <div class="hub-card-tags">
+                  <span class="hub-tag">⚡ Velocidad</span>
+                  <span class="hub-tag">⏱️ 10s Máx</span>
+                </div>
+              </div>
+            </div>
+            <div class="hub-card-footer">
+              <button type="button" class="btn-tactile-secondary hub-card-btn" id="btn-hub-trivia">
+                <span class="material-symbols-outlined text-[18px]">bolt</span>
+                <span>INICIAR TRIVIA EXPRÉS</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3: Desafío de Señales Viales -->
+          <div class="hub-card" id="card-play-signals">
+            <div class="hub-card-body">
+              <div class="hub-card-icon-hero signals">
+                <span class="material-symbols-outlined text-[32px]">traffic</span>
+              </div>
+              <div class="hub-card-info">
+                <h3 class="hub-card-title">Identificador de Señales</h3>
+                <p class="hub-card-text">Ronda intensiva con las señales preventivas, reglamentarias e informativas más importantes.</p>
+                <div class="hub-card-tags">
+                  <span class="hub-tag">🛑 Señales</span>
+                  <span class="hub-tag">🖼️ Ilustrado</span>
+                </div>
+              </div>
+            </div>
+            <div class="hub-card-footer">
+              <button type="button" class="btn-tactile-secondary hub-card-btn" id="btn-hub-signals">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                <span>JUGAR SEÑALES</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SECCIÓN 2: SIMULADORES VIALES
+      ============================================== -->
+      <section class="hub-section" id="hub-section-simulators" data-section="simulators">
+        <div class="hub-section-header">
+          <div class="hub-section-title-wrap">
+            <div class="hub-section-icon simulators">
+              <span class="material-symbols-outlined">speed</span>
+            </div>
+            <div>
+              <h2 class="hub-section-title">Simuladores Interactivos</h2>
+              <p class="hub-section-desc">Experimenta física y visualmente los factores críticos de la conducción real.</p>
+            </div>
+          </div>
+          <span class="hub-count-badge">3 Simuladores</span>
+        </div>
+
+        <div class="hub-cards-grid">
+          <!-- Sim 1: Tiempo de Reacción -->
+          <div class="hub-card sim-card" id="card-sim-reaction">
+            <div class="hub-card-body">
+              <div class="hub-card-icon-hero reaction">
+                <span class="material-symbols-outlined text-[32px]">touch_app</span>
+              </div>
+              <div class="hub-card-info">
+                <div class="hub-card-badge-sub">⚡ REFLEJOS EN VIVO</div>
+                <h3 class="hub-card-title">Simulador de Tiempo de Reacción</h3>
+                <p class="hub-card-text">Semáforo reactivo en milisegundos. Mide tu tiempo entre percibir el peligro y pisar el pedal de freno.</p>
+                <div class="hub-card-tags">
+                  <span class="hub-tag">⏱️ Milisegundos</span>
+                  <span class="hub-tag">🚦 Semáforo Real</span>
+                </div>
+              </div>
+            </div>
+            <div class="hub-card-footer">
+              <button type="button" class="btn-tactile-primary hub-card-btn" id="btn-open-sim-reaction">
+                <span class="material-symbols-outlined text-[18px]">play_circle</span>
+                <span>PROBAR MIS REFLEJOS</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sim 2: Distancia de Frenado -->
+          <div class="hub-card sim-card" id="card-sim-braking">
+            <div class="hub-card-body">
+              <div class="hub-card-icon-hero braking">
+                <span class="material-symbols-outlined text-[32px]">straighten</span>
+              </div>
+              <div class="hub-card-info">
+                <div class="hub-card-badge-sub">🛑 FÍSICA APLICADA</div>
+                <h3 class="hub-card-title">Simulador de Distancia de Frenado</h3>
+                <p class="hub-card-text">Calcula en metros cuánto tarda en detenerse un vehículo según la velocidad y la lluvia en el asfalto.</p>
+                <div class="hub-card-tags">
+                  <span class="hub-tag">🌧️ Seco vs Lluvia</span>
+                  <span class="hub-tag">📏 Metros Reales</span>
+                </div>
+              </div>
+            </div>
+            <div class="hub-card-footer">
+              <button type="button" class="btn-tactile-secondary hub-card-btn" id="btn-open-sim-braking">
+                <span class="material-symbols-outlined text-[18px]">tune</span>
+                <span>CALCULAR FRENADO</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sim 3: Puntos Ciegos (Ángulos Muertos) -->
+          <div class="hub-card sim-card" id="card-sim-blindspots">
+            <div class="hub-card-body">
+              <div class="hub-card-icon-hero blindspots">
+                <span class="material-symbols-outlined text-[32px]">visibility_off</span>
+              </div>
+              <div class="hub-card-info">
+                <div class="hub-card-badge-sub">👀 VISIÓN PERIFÉRICA</div>
+                <h3 class="hub-card-title">Simulador de Puntos Ciegos</h3>
+                <p class="hub-card-text">Visualiza las zonas no visibles para choferes de colectivos y autos respecto a motos y ciclistas.</p>
+                <div class="hub-card-tags">
+                  <span class="hub-tag">🚌 Espejos Colectivo</span>
+                  <span class="hub-tag">🏍️ Ángulos Muertos</span>
+                </div>
+              </div>
+            </div>
+            <div class="hub-card-footer">
+              <button type="button" class="btn-tactile-secondary hub-card-btn" id="btn-open-sim-blindspots">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                <span>VER ÁNGULOS CIEGOS</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SECCIÓN 3: MANUALES Y NORMATIVA VIAL
+      ============================================== -->
+      <section class="hub-section" id="hub-section-manuals" data-section="manuals">
+        <div class="hub-section-header">
+          <div class="hub-section-title-wrap">
+            <div class="hub-section-icon manuals">
+              <span class="material-symbols-outlined">menu_book</span>
+            </div>
+            <div>
+              <h2 class="hub-section-title">Manuales Oficiales & Normativa</h2>
+              <p class="hub-section-desc">Guías didácticas para estudiar, rendir tu examen y consultar reglas de tránsito.</p>
+            </div>
+          </div>
+          <span class="hub-count-badge">5 Manuales</span>
+        </div>
+
+        <div class="hub-manuals-grid">
+          <!-- Manual 1: Motociclistas -->
+          <div class="hub-manual-item" data-manual="moto">
+            <div class="hub-manual-icon">🏍️</div>
+            <div class="hub-manual-info">
+              <span class="hub-manual-tag">CLASE A</span>
+              <h4 class="hub-manual-title">Manual del Conductor de Motos</h4>
+              <p class="hub-manual-desc">Técnicas de frenado 70/30, indumentaria con homologación, conducción defensiva y lluvia.</p>
+            </div>
+            <button type="button" class="btn-hub-read-manual" data-manual="moto">
+              <span>LEER MANUAL</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Manual 2: Colectivos / D1 -->
+          <div class="hub-manual-item" data-manual="colectivo">
+            <div class="hub-manual-icon">🚌</div>
+            <div class="hub-manual-info">
+              <span class="hub-manual-tag">CLASE D1</span>
+              <h4 class="hub-manual-title">Manual de Transporte de Pasajeros</h4>
+              <p class="hub-manual-desc">Protocolos de parada, uso de carriles exclusivos/Metrobús, seguridad de usuarios y alcohol cero.</p>
+            </div>
+            <button type="button" class="btn-hub-read-manual" data-manual="colectivo">
+              <span>LEER MANUAL</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Manual 3: Autos / Clase B -->
+          <div class="hub-manual-item" data-manual="auto">
+            <div class="hub-manual-icon">🚗</div>
+            <div class="hub-manual-info">
+              <span class="hub-manual-tag">CLASE B</span>
+              <h4 class="hub-manual-title">Manual del Conductor de Autos</h4>
+              <p class="hub-manual-desc">Prioridades en rotonda y encrucijada, velocidades máximas en autopista y ciudad, cinturón y SRI infantil.</p>
+            </div>
+            <button type="button" class="btn-hub-read-manual" data-manual="auto">
+              <span>LEER MANUAL</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Manual 4: Señales de Tránsito -->
+          <div class="hub-manual-item" data-manual="senales">
+            <div class="hub-manual-icon">🛑</div>
+            <div class="hub-manual-info">
+              <span class="hub-manual-tag">SISTEMA VIAL</span>
+              <h4 class="hub-manual-title">Catálogo Completo de Señales</h4>
+              <p class="hub-manual-desc">Significado, forma y color de señales reglamentarias (rojas), preventivas (amarillas) e informativas (azules).</p>
+            </div>
+            <button type="button" class="btn-hub-read-manual" data-manual="senales">
+              <span>LEER MANUAL</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Manual 5: Ley Nacional 24.449 -->
+          <div class="hub-manual-item" data-manual="ley">
+            <div class="hub-manual-icon">⚖️</div>
+            <div class="hub-manual-info">
+              <span class="hub-manual-tag">LEGISLACIÓN</span>
+              <h4 class="hub-manual-title">Ley Nacional de Tránsito N° 24.449</h4>
+              <p class="hub-manual-desc">Resumen pedagógico: Alcohol Cero al volante, documentación obligatoria para circular y régimen de sanciones.</p>
+            </div>
+            <button type="button" class="btn-hub-read-manual" data-manual="ley">
+              <span>LEER MANUAL</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
 
   <!-- ================================================
        SCREEN 3: RULETA VIAL DE BIENVENIDA
@@ -1040,6 +1390,245 @@
 
 
 
+
+  <div class="modal-backdrop" id="modal-sim-reaction">
+    <div class="modal-dialog modal-sim-dialog">
+      <div class="modal-sim-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="material-symbols-outlined text-[24px]" style="color:var(--tertiary);">speed</span>
+          <h3 style="font-family:var(--font-display);font-size:18px;margin:0;color:var(--on-surface);">Test de Tiempo de Reacción</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btn-close-sim-reaction">&times;</button>
+      </div>
+
+      <div class="sim-reaction-body">
+        <p style="font-size:13px;color:var(--on-surface-variant);margin:0 0 14px;text-align:center;">
+          Toca <strong>INICIAR</strong> y aguarda. Apenas veas la luz <strong style="color:var(--success);">VERDE</strong>, presiona inmediatamente el pedal para frenar.
+        </p>
+
+        <!-- Realistic Traffic Light Housing -->
+        <div class="traffic-light-housing">
+          <div class="traffic-lamp red" id="sim-lamp-red"></div>
+          <div class="traffic-lamp yellow" id="sim-lamp-yellow"></div>
+          <div class="traffic-lamp green" id="sim-lamp-green"></div>
+        </div>
+
+        <div class="sim-reaction-status-box" id="sim-reaction-status">
+          Presiona "INICIAR PRUEBA" para comenzar
+        </div>
+
+        <!-- Big Tactile Pedal / Trigger -->
+        <button type="button" class="btn-sim-pedal idle" id="btn-sim-pedal">
+          <span class="material-symbols-outlined text-[36px]" id="sim-pedal-icon">play_arrow</span>
+          <span id="sim-pedal-label">INICIAR PRUEBA</span>
+        </button>
+
+        <!-- Result Box -->
+        <div class="sim-reaction-result" id="sim-reaction-result" style="display:none;">
+          <div style="font-size:11px;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;">Tu Tiempo de Reacción:</div>
+          <div class="sim-ms-display" id="sim-ms-val">265 ms</div>
+          <div class="sim-grade-badge" id="sim-grade-badge">⚡ Reflejos Óptimos</div>
+          <div class="sim-pedagogic-tip" id="sim-pedagogic-tip">
+            A 60 km/h, en ese tiempo recorriste <strong>4.4 metros</strong> antes de empezar a frenar.
+          </div>
+          <button type="button" class="btn-tactile-secondary" id="btn-sim-reaction-retry" style="margin-top:10px;height:38px;padding:0 18px;font-size:12px;">
+            <span class="material-symbols-outlined text-[16px]">replay</span>
+            <span>Repetir Prueba</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================
+       MODAL: SIMULADOR DE DISTANCIA DE FRENADO
+  ================================================ -->
+  <div class="modal-backdrop" id="modal-sim-braking">
+    <div class="modal-dialog modal-sim-dialog">
+      <div class="modal-sim-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="material-symbols-outlined text-[24px]" style="color:var(--secondary-container);">straighten</span>
+          <h3 style="font-family:var(--font-display);font-size:18px;margin:0;color:var(--on-surface);">Calculadora de Distancia de Frenado</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btn-close-sim-braking">&times;</button>
+      </div>
+
+      <div class="sim-braking-body">
+        <p style="font-size:12px;color:var(--on-surface-variant);margin:0 0 12px;">
+          Descubre cuántos metros necesita tu vehículo para detenerse por completo combinando la <strong>reacción humana</strong> y el <strong>frenado físico</strong>.
+        </p>
+
+        <!-- Speed Slider Control -->
+        <div class="sim-control-group">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <span style="font-size:12px;font-weight:700;color:var(--on-surface);">Velocidad de Circulación:</span>
+            <span style="font-family:var(--font-display);font-size:20px;font-weight:900;color:var(--secondary-container);" id="sim-speed-val">60 km/h</span>
+          </div>
+          <input type="range" id="sim-speed-range" min="30" max="140" step="5" value="60" class="sim-slider">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--on-surface-variant);margin-top:2px;">
+            <span>30 km/h (Calle)</span>
+            <span>60 km/h (Avenida)</span>
+            <span>100 km/h (Ruta)</span>
+            <span>140 km/h</span>
+          </div>
+        </div>
+
+        <!-- Weather Condition Pills -->
+        <div class="sim-control-group">
+          <span style="font-size:12px;font-weight:700;color:var(--on-surface);display:block;margin-bottom:6px;">Estado del Asfalto y Clima:</span>
+          <div class="sim-choice-pills" id="sim-weather-pills">
+            <button type="button" class="sim-choice-pill active" data-weather="seco">
+              <span>☀️ Asfalto Seco</span>
+            </button>
+            <button type="button" class="sim-choice-pill" data-weather="mojado">
+              <span>🌧️ Lluvia / Mojado</span>
+            </button>
+            <button type="button" class="sim-choice-pill" data-weather="hielo">
+              <span>❄️ Hielo / Nieve</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Vehicle Type Pills -->
+        <div class="sim-control-group">
+          <span style="font-size:12px;font-weight:700;color:var(--on-surface);display:block;margin-bottom:6px;">Tipo de Vehículo:</span>
+          <div class="sim-choice-pills" id="sim-vehicle-pills">
+            <button type="button" class="sim-choice-pill" data-veh="moto">
+              <span>🏍️ Motocicleta</span>
+            </button>
+            <button type="button" class="sim-choice-pill active" data-veh="auto">
+              <span>🚗 Automóvil</span>
+            </button>
+            <button type="button" class="sim-choice-pill" data-veh="colectivo">
+              <span>🚌 Colectivo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Visual Road Track -->
+        <div class="sim-road-track-container">
+          <div class="sim-road-track-labels">
+            <span style="color:var(--tertiary);">Reacción: <strong id="sim-track-reac-m">16.7m</strong></span>
+            <span style="color:#FF4D4D;">Frenado Físico: <strong id="sim-track-brake-m">20.2m</strong></span>
+          </div>
+          <div class="sim-road-track-bar">
+            <div class="sim-track-reac-fill" id="sim-track-reac-fill" style="width:45%;" title="Distancia recorrida durante el tiempo de reacción"></div>
+            <div class="sim-track-brake-fill" id="sim-track-brake-fill" style="width:55%;" title="Distancia de frenado de los neumáticos"></div>
+          </div>
+        </div>
+
+        <!-- Grand Total Metric Card -->
+        <div class="sim-braking-total-card">
+          <div>
+            <span style="font-size:11px;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;">Distancia Total de Detención:</span>
+            <div class="sim-total-meters" id="sim-total-meters">36.9 metros</div>
+          </div>
+          <div class="sim-equivalent-car-box" id="sim-car-equivalents">
+            🚗 Aprox. <strong>9 autos</strong> en fila
+          </div>
+        </div>
+
+        <div class="sim-braking-tip-box" id="sim-braking-tip">
+          💡 <strong>Regla de los 2 Segundos:</strong> En pavimento seco mantén 2 segundos de separación con el vehículo de adelante. Con lluvia duplícalo a <strong>4 segundos</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================
+       MODAL: SIMULADOR DE PUNTOS CIEGOS
+  ================================================ -->
+  <div class="modal-backdrop" id="modal-sim-blindspot">
+    <div class="modal-dialog modal-sim-dialog">
+      <div class="modal-sim-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="material-symbols-outlined text-[24px]" style="color:#BE185D;">visibility_off</span>
+          <h3 style="font-family:var(--font-display);font-size:18px;margin:0;color:var(--on-surface);">Simulador de Puntos Ciegos</h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btn-close-sim-blindspot">&times;</button>
+      </div>
+
+      <div class="sim-blindspot-body">
+        <p style="font-size:12px;color:var(--on-surface-variant);margin:0 0 10px;">
+          Un conductor no puede verte en todos los ángulos. Toca cada zona para descubrir los riesgos de los ángulos muertos:
+        </p>
+
+        <!-- Vehicle Type Selector -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button type="button" class="sim-choice-pill active" id="btn-blind-colectivo">
+            <span>🚌 Colectivo Urbano (D1)</span>
+          </button>
+          <button type="button" class="sim-choice-pill" id="btn-blind-auto">
+            <span>🚗 Automóvil Particular (B)</span>
+          </button>
+        </div>
+
+        <!-- Interactive Diagram Arena -->
+        <div class="blindspot-diagram-arena" id="blindspot-diagram-arena">
+          <div class="blindspot-zone front" data-zone="front">
+            <span>⚠️ Zona Frontal Baja</span>
+          </div>
+          <div class="blindspot-zone right-side" data-zone="right">
+            <span>⚠️ Lateral Derecho (Mayor Peligro)</span>
+          </div>
+          <div class="blindspot-zone left-side" data-zone="left">
+            <span>⚠️ Lateral Izquierdo</span>
+          </div>
+          <div class="blindspot-zone rear" data-zone="rear">
+            <span>⚠️ Parte Trasera Completa</span>
+          </div>
+          <div class="blindspot-vehicle-box" id="blindspot-vehicle-box">
+            <span class="material-symbols-outlined text-[38px]">directions_bus</span>
+            <span style="font-size:11px;font-weight:900;">CHOFER</span>
+          </div>
+        </div>
+
+        <div class="blindspot-explanation-card" id="blindspot-explanation-card">
+          <div style="font-weight:800;color:var(--secondary-container);font-size:13px;" id="blind-zone-title">
+            ⚠️ Lateral Derecho: El ángulo ciego más peligroso
+          </div>
+          <p style="font-size:12px;color:var(--on-surface);margin:4px 0 0;line-height:1.4;" id="blind-zone-desc">
+            Por la altura de la cabina y la distancia al espejo derecho, si circulas en moto o bicicleta por la derecha del colectivo, el chofer <strong>NO TIENE VISIBILIDAD</strong> de tu presencia al girar.
+          </p>
+          <div style="margin-top:6px;font-size:11px;color:var(--tertiary);font-weight:700;">
+            🛡️ Regla de oro: <em>"Si tú no ves los ojos del chofer en su espejo, él NO te ve a ti."</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================
+       MODAL: VISOR DE MANUALES Y LEY VIAL
+  ================================================ -->
+  <div class="modal-backdrop" id="modal-manual-viewer">
+    <div class="modal-dialog modal-manual-dialog">
+      <div class="modal-manual-header">
+        <div>
+          <span class="hub-manual-tag" id="manual-view-tag">CLASE A</span>
+          <h3 id="manual-view-title" style="font-family:var(--font-display);font-size:18px;margin:4px 0 0;color:var(--on-surface);">
+            Manual del Conductor
+          </h3>
+        </div>
+        <button type="button" class="btn-modal-close" id="btn-close-manual-view">&times;</button>
+      </div>
+
+      <!-- Chapter Tabs -->
+      <div class="manual-chapters-nav" id="manual-chapters-nav">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Manual Content -->
+      <div class="manual-view-content" id="manual-view-content">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+
   <!-- ================================================
        BOTTOM NAVIGATION BAR (FIXED BOTTOM)
   ================================================ -->
@@ -1068,11 +1657,11 @@
   <canvas id="confetti-canvas"></canvas>
 
   <!-- Scripts -->
-  <script src="js/questions.js?v=6"></script>
-  <script src="js/colectivo_questions.js?v=6"></script>
-  <script src="js/moto_questions.js?v=6"></script>
-  <script src="js/audio.js?v=6"></script>
-  <script src="js/roulette.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/questions.js?v=7"></script>
+  <script src="js/colectivo_questions.js?v=7"></script>
+  <script src="js/moto_questions.js?v=7"></script>
+  <script src="js/audio.js?v=7"></script>
+  <script src="js/roulette.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
 </body>
 </html>
