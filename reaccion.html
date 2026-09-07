@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Desafío de Tiempo de Reacción — Seguridad Vial BA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #121414;
+      --surface: #1a1c1c;
+      --surface-card: #1e2020;
+      --surface-hover: #282a2b;
+      --text: #e2e2e2;
+      --text-muted: #8c9196;
+      --accent-cyan: #8DE2D6;
+      --accent-yellow: #FFC600;
+      --accent-red: #FF4444;
+      --accent-green: #00E676;
+      --accent-amber: #FFA000;
+      --outline: rgba(141, 226, 214, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg);
+      font-family: 'Archivo', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      width: 100%;
+      background: rgba(22, 24, 24, 0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--outline);
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .header-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #252828;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-back:hover {
+      background: #333636;
+      transform: translateX(-2px);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo-img {
+      height: 24px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.95;
+    }
+
+    .header-title-text {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 17px;
+      letter-spacing: 0.4px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    .btn-sound {
+      background: #252828;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent-cyan);
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-wrap {
+      flex: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── SPEED & VEHICLE SELECTOR ── */
+    .controls-card {
+      background: rgba(30, 32, 32, 0.7);
+      border: 1px solid var(--outline);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pills-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-btn {
+      background: #252828;
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn:hover {
+      background: #333636;
+      color: #fff;
+    }
+
+    .pill-btn.active {
+      background: var(--accent-cyan);
+      color: #121414;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 2px 10px rgba(141, 226, 214, 0.4);
+    }
+
+    .pill-btn img {
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .pill-btn.active img {
+      filter: brightness(0);
+    }
+
+    /* ── ROUNDS BADGE ── */
+    .rounds-tracker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .dots-wrap {
+      display: flex;
+      gap: 6px;
+    }
+
+    .round-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333636;
+      transition: background 0.3s ease;
+    }
+
+    .round-dot.done {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(141, 226, 214, 0.6);
+    }
+
+    .round-dot.active {
+      background: var(--accent-yellow);
+      box-shadow: 0 0 8px rgba(255, 198, 0, 0.8);
+      transform: scale(1.2);
+    }
+
+    /* ── REACTION ARENA TAP AREA ── */
+    .arena-card {
+      min-height: 280px;
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* State: IDLE */
+    .arena-card.state-idle {
+      background: linear-gradient(180deg, #1e2224 0%, #151819 100%);
+      border: 3px solid var(--accent-cyan);
+    }
+
+    /* State: WAITING (Pulsing Amber) */
+    .arena-card.state-waiting {
+      background: radial-gradient(circle at center, #2e240b 0%, #171408 100%);
+      border: 3px solid var(--accent-amber);
+      animation: pulse-waiting 1.5s infinite;
+    }
+
+    @keyframes pulse-waiting {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 160, 0, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(255, 160, 0, 0.45); }
+    }
+
+    /* State: READY (RED STOP FLASHER) */
+    .arena-card.state-ready {
+      background: radial-gradient(circle at center, #ff1744 0%, #b71c1c 100%);
+      border: 3px solid #ff8a80;
+      box-shadow: 0 0 45px rgba(255, 23, 68, 0.8);
+      animation: flash-red 0.15s ease-out;
+    }
+
+    @keyframes flash-red {
+      0% { transform: scale(0.98); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    /* State: EARLY (FALSE START) */
+    .arena-card.state-early {
+      background: linear-gradient(180deg, #3d1c1c 0%, #200d0d 100%);
+      border: 3px solid var(--accent-red);
+    }
+
+    /* State: RESULT */
+    .arena-card.state-result {
+      background: linear-gradient(180deg, #162423 0%, #0d1615 100%);
+      border: 3px solid var(--accent-cyan);
+      box-shadow: 0 0 30px rgba(141, 226, 214, 0.3);
+    }
+
+    .arena-icon-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      font-size: 40px;
+      background: rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+    }
+
+    .state-ready .arena-icon-wrap {
+      background: #ffffff;
+      color: #d50000;
+      transform: scale(1.15);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+    }
+
+    .arena-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .arena-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 420px;
+    }
+
+    /* ── PHYSICS BREAKDOWN METRICS ── */
+    .metrics-grid {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .metric-box {
+      background: rgba(30, 32, 32, 0.7);
+      border: 1px solid var(--outline);
+      border-radius: 16px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 22px;
+      color: var(--accent-cyan);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .metric-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.4px;
+    }
+
+    .metric-desc {
+      font-size: 10px;
+      color: #8c9196;
+      margin-top: 4px;
+    }
+
+    /* ── STOPPING DISTANCE ROAD BAR ── */
+    .road-simulation-card {
+      display: none;
+      background: rgba(30, 32, 32, 0.7);
+      border: 1px solid var(--outline);
+      border-radius: 18px;
+      padding: 18px 20px;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .road-sim-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .road-track {
+      height: 38px;
+      background: #151717;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .road-segment-reaction {
+      background: #FFA000;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #121414;
+      white-space: nowrap;
+      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .road-segment-braking {
+      background: #FF4444;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* ── EDUCATIONAL TIP BOX ── */
+    .edu-tip-card {
+      display: none;
+      background: rgba(255, 198, 0, 0.08);
+      border: 1px solid rgba(255, 198, 0, 0.3);
+      border-radius: 16px;
+      padding: 14px 18px;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .edu-tip-icon {
+      color: var(--accent-yellow);
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .edu-tip-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #ffefa8;
+    }
+
+    /* ── ACTIONS ── */
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .btn-action-primary {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--accent-cyan);
+      color: #121414;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(141, 226, 214, 0.35);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-action-primary:hover {
+      transform: translateY(-2px);
+      background: #a9eee4;
+    }
+
+    .btn-action-secondary {
+      padding: 14px 20px;
+      background: #252828;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .btn-action-secondary:hover {
+      background: #333636;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      .arena-title {
+        font-size: 24px;
+      }
+      .arena-card {
+        min-height: 240px;
+        padding: 24px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── CABECERA ── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="juegos.html" class="btn-back" title="Volver a Zona de Práctica">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div class="brand-logo-wrap">
+          <img src="assets/brand/logo_ba.png" alt="Buenos Aires Ciudad" class="brand-logo-img">
+          <span class="header-title-text">Reflejos & Frenado</span>
+        </div>
+      </div>
+      <button type="button" class="btn-sound" id="btn-sound" title="Alternar Sonido">
+        <span class="material-symbols-outlined text-[20px]" id="sound-icon">volume_up</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── CONTENEDOR PRINCIPAL ── -->
+  <main class="main-wrap">
+
+    <!-- Configuración: Vehículo y Velocidad de Prueba -->
+    <div class="controls-card">
+      <div class="control-row">
+        <span class="control-label">Tipo de Vehículo:</span>
+        <div class="pills-group" id="vehicle-pills">
+          <button type="button" class="pill-btn active" data-veh="auto">
+            <img src="assets/brand/icon_auto.png" alt="Auto">
+            <span>Auto</span>
+          </button>
+          <button type="button" class="pill-btn" data-veh="moto">
+            <img src="assets/brand/icon_moto.png" alt="Moto">
+            <span>Moto</span>
+          </button>
+          <button type="button" class="pill-btn" data-veh="colectivo">
+            <img src="assets/brand/icon_colectivo.png" alt="Colectivo">
+            <span>Colectivo</span>
+          </button>
+          <button type="button" class="pill-btn" data-veh="bici">
+            <img src="assets/brand/icon_bici.png" alt="Bici">
+            <span>Bicicleta</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <span class="control-label">Velocidad Simulada:</span>
+        <div class="pills-group" id="speed-pills">
+          <button type="button" class="pill-btn active" data-speed="40">
+            <span>40 km/h (Calle)</span>
+          </button>
+          <button type="button" class="pill-btn" data-speed="60">
+            <span>60 km/h (Avenida)</span>
+          </button>
+          <button type="button" class="pill-btn" data-speed="100">
+            <span>100 km/h (Autopista)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progreso de Rondas (3 Intentos para Promedio Oficial) -->
+    <div class="rounds-tracker">
+      <span id="round-label">Intento 1 de 3</span>
+      <div class="dots-wrap">
+        <div class="round-dot active" id="dot-1"></div>
+        <div class="round-dot" id="dot-2"></div>
+        <div class="round-dot" id="dot-3"></div>
+      </div>
+    </div>
+
+    <!-- ARENA TÁCTIL INTERACTIVA -->
+    <div class="arena-card state-idle" id="reaction-arena">
+      <div class="arena-icon-wrap" id="arena-icon">
+        <span class="material-symbols-outlined text-[44px]">touch_app</span>
+      </div>
+      <h2 class="arena-title" id="arena-title">TOCÁ PARA EMPEZAR</h2>
+      <p class="arena-desc" id="arena-desc">
+        Cuando la pantalla cambie a <strong style="color:var(--accent-red)">ROJO</strong> o veas <strong>¡FRENÁ YA!</strong>, tocá la pantalla lo más rápido posible.
+      </p>
+    </div>
+
+    <!-- MÉTRICAS FÍSICAS DE LA REACCIÓN -->
+    <div class="metrics-grid" id="metrics-grid">
+      <div class="metric-box">
+        <div class="metric-value" id="val-ms">0 ms</div>
+        <div class="metric-title">Tiempo de Reacción</div>
+        <div class="metric-desc" id="desc-ms">Reflejo neuromuscular</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-value" id="val-d-reac" style="color:#FFA000;">0.0 m</div>
+        <div class="metric-title">Distancia a Ciegas</div>
+        <div class="metric-desc">Antes de tocar el freno</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-value" id="val-d-total" style="color:#FF4444;">0.0 m</div>
+        <div class="metric-title">Detención Total</div>
+        <div class="metric-desc">Reacción + Frenado físico</div>
+      </div>
+    </div>
+
+    <!-- SIMULACIÓN DE DETENCIÓN EN CALLE -->
+    <div class="road-simulation-card" id="road-sim-card">
+      <div class="road-sim-header">
+        <span>Trayectoria de Detención a <span id="lbl-speed-sim">40 km/h</span></span>
+        <span id="lbl-total-meters" style="color:var(--accent-cyan);font-weight:800;">0 m</span>
+      </div>
+      <div class="road-track">
+        <div class="road-segment-reaction" id="track-reac" style="width: 25%;">Reacción</div>
+        <div class="road-segment-braking" id="track-brake" style="width: 75%;">Frenado</div>
+      </div>
+    </div>
+
+    <!-- CONSEJO PEDAGÓGICO DE SEGURIDAD VIAL -->
+    <div class="edu-tip-card" id="edu-tip-card">
+      <span class="material-symbols-outlined edu-tip-icon">lightbulb</span>
+      <p class="edu-tip-text" id="edu-tip-text">
+        El tiempo promedio humano de reacción al volante ronda los 750 a 1000 ms. Si mirás el celular durante 3 segundos a 60 km/h, avanzás 50 metros sin prestar atención a la calle.
+      </p>
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="actions-row">
+      <button type="button" class="btn-action-primary" id="btn-next-try" style="display:none;">
+        <span class="material-symbols-outlined text-[20px]">refresh</span>
+        <span id="btn-next-try-text">Siguiente Intento</span>
+      </button>
+      <a href="juegos.html" class="btn-action-secondary">
+        <span>Menú de Juegos</span>
+      </a>
+    </div>
+
+  </main>
+
+  <script>
+    // ── LÓGICA DEL JUEGO DE TIEMPO DE REACCIÓN ──
+    (function() {
+      let audioEnabled = true;
+      let audioCtx = null;
+
+      function getAudioContext() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      function playSound(type) {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+          const now = ctx.currentTime;
+
+          if (type === 'start') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(440, now);
+            osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          } else if (type === 'alert') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(800, now);
+            osc.frequency.setValueAtTime(1000, now + 0.08);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+            osc.start(now);
+            osc.stop(now + 0.2);
+          } else if (type === 'early') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.setValueAtTime(120, now + 0.1);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+            osc.start(now);
+            osc.stop(now + 0.25);
+          } else if (type === 'win') {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.frequency.setValueAtTime(freq, now + i * 0.07);
+              gain.gain.setValueAtTime(0.2, now + i * 0.07);
+              gain.gain.linearRampToValueAtTime(0.01, now + i * 0.07 + 0.12);
+              osc.start(now + i * 0.07);
+              osc.stop(now + i * 0.07 + 0.12);
+            });
+          }
+        } catch(e) {}
+      }
+
+      // Sound Toggle
+      const btnSound = document.getElementById('btn-sound');
+      const soundIcon = document.getElementById('sound-icon');
+      btnSound.addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        soundIcon.textContent = audioEnabled ? 'volume_up' : 'volume_off';
+      });
+
+      // State Machine: 'idle', 'waiting', 'ready', 'result', 'early'
+      let currentState = 'idle';
+      let waitTimer = null;
+      let startTime = 0;
+      let currentRound = 1;
+      const totalRounds = 3;
+      const roundTimes = [];
+
+      let selectedSpeed = 40; // km/h
+      let selectedVehicle = 'auto';
+
+      // Friction factor by vehicle
+      const vehicleFriction = {
+        auto: 0.75,
+        moto: 0.65,
+        colectivo: 0.55,
+        bici: 0.45
+      };
+
+      // Elements
+      const arena = document.getElementById('reaction-arena');
+      const arenaIcon = document.getElementById('arena-icon');
+      const arenaTitle = document.getElementById('arena-title');
+      const arenaDesc = document.getElementById('arena-desc');
+      const metricsGrid = document.getElementById('metrics-grid');
+      const roadSimCard = document.getElementById('road-sim-card');
+      const eduTipCard = document.getElementById('edu-tip-card');
+      const eduTipText = document.getElementById('edu-tip-text');
+      const btnNextTry = document.getElementById('btn-next-try');
+      const btnNextTryText = document.getElementById('btn-next-try-text');
+
+      const valMs = document.getElementById('val-ms');
+      const descMs = document.getElementById('desc-ms');
+      const valDReac = document.getElementById('val-d-reac');
+      const valDTotal = document.getElementById('val-d-total');
+      const lblSpeedSim = document.getElementById('lbl-speed-sim');
+      const lblTotalMeters = document.getElementById('lbl-total-meters');
+      const trackReac = document.getElementById('track-reac');
+      const trackBrake = document.getElementById('track-brake');
+      const roundLabel = document.getElementById('round-label');
+
+      // Vehicle Pills
+      document.querySelectorAll('#vehicle-pills .pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#vehicle-pills .pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedVehicle = btn.dataset.veh;
+          if (currentState === 'result') calculateAndDisplayPhysics(roundTimes[roundTimes.length - 1]);
+        });
+      });
+
+      // Speed Pills
+      document.querySelectorAll('#speed-pills .pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#speed-pills .pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedSpeed = parseInt(btn.dataset.speed, 10);
+          if (currentState === 'result') calculateAndDisplayPhysics(roundTimes[roundTimes.length - 1]);
+        });
+      });
+
+      function updateRoundDots() {
+        for (let i = 1; i <= totalRounds; i++) {
+          const dot = document.getElementById('dot-' + i);
+          if (!dot) continue;
+          dot.classList.remove('active', 'done');
+          if (i < currentRound) {
+            dot.classList.add('done');
+          } else if (i === currentRound) {
+            dot.classList.add('active');
+          }
+        }
+        roundLabel.textContent = `Intento ${currentRound} de ${totalRounds}`;
+      }
+
+      function setArenaState(state) {
+        currentState = state;
+        arena.className = 'arena-card state-' + state;
+
+        if (state === 'idle') {
+          arenaIcon.innerHTML = '<span class="material-symbols-outlined text-[44px]">touch_app</span>';
+          arenaTitle.textContent = 'TOCÁ PARA EMPEZAR';
+          arenaDesc.innerHTML = 'Cuando la pantalla cambie a <strong style="color:var(--accent-red)">ROJO</strong> o veas <strong>¡FRENÁ YA!</strong>, tocá la pantalla lo más rápido posible.';
+          btnNextTry.style.display = 'none';
+        } else if (state === 'waiting') {
+          arenaIcon.innerHTML = '<span class="material-symbols-outlined text-[44px]" style="color:var(--accent-amber)">timer</span>';
+          arenaTitle.textContent = 'CONCENTRATE...';
+          arenaDesc.textContent = 'Esperá la señal roja... ¡No te adelantes!';
+          btnNextTry.style.display = 'none';
+        } else if (state === 'ready') {
+          arenaIcon.innerHTML = '<span class="material-symbols-outlined text-[48px]">front_hand</span>';
+          arenaTitle.textContent = '¡¡FRENÁ YA!!';
+          arenaDesc.textContent = '¡TOCÁ AHORA!';
+        } else if (state === 'early') {
+          arenaIcon.innerHTML = '<span class="material-symbols-outlined text-[44px]" style="color:var(--accent-red)">warning</span>';
+          arenaTitle.textContent = '¡TE ADELANTASTE!';
+          arenaDesc.textContent = 'Presionaste antes de que apareciera la señal de peligro. En la calle una frenada imprevista genera siniestros.';
+          btnNextTry.style.display = 'inline-flex';
+          btnNextTryText.textContent = 'Reintentar este intento';
+        } else if (state === 'result') {
+          arenaIcon.innerHTML = '<span class="material-symbols-outlined text-[44px]" style="color:var(--accent-cyan)">check_circle</span>';
+          arenaTitle.textContent = '¡FRENASTE!';
+          btnNextTry.style.display = 'inline-flex';
+          if (currentRound >= totalRounds) {
+            btnNextTryText.textContent = 'Ver Promedio Final';
+          } else {
+            btnNextTryText.textContent = `Siguiente Intento (${currentRound + 1}/${totalRounds})`;
+          }
+        }
+      }
+
+      function startWaiting() {
+        setArenaState('waiting');
+        playSound('start');
+
+        // Hide metrics during wait
+        metricsGrid.style.display = 'none';
+        roadSimCard.style.display = 'none';
+        eduTipCard.style.display = 'none';
+
+        // Random delay between 1.8s and 4.2s
+        const delay = 1800 + Math.random() * 2400;
+
+        clearTimeout(waitTimer);
+        waitTimer = setTimeout(() => {
+          if (currentState === 'waiting') {
+            setArenaState('ready');
+            startTime = performance.now();
+            playSound('alert');
+          }
+        }, delay);
+      }
+
+      function handleArenaClick() {
+        if (currentState === 'idle') {
+          startWaiting();
+        } else if (currentState === 'waiting') {
+          // False start!
+          clearTimeout(waitTimer);
+          playSound('early');
+          setArenaState('early');
+        } else if (currentState === 'ready') {
+          const reactionTime = Math.round(performance.now() - startTime);
+          playSound('win');
+          setArenaState('result');
+          roundTimes.push(reactionTime);
+          calculateAndDisplayPhysics(reactionTime);
+        }
+      }
+
+      function calculateAndDisplayPhysics(reactionTimeMs) {
+        // Physics calculations:
+        // Speed in m/s: V_ms = V_kmh / 3.6
+        const speedMs = selectedSpeed / 3.6;
+        const timeSec = reactionTimeMs / 1000;
+
+        // Reaction distance (meters traveled before foot touches brake pedal)
+        const dReaction = +(speedMs * timeSec).toFixed(1);
+
+        // Braking distance: D_brake = V^2 / (2 * g * mu)
+        // g = 9.81 m/s^2, mu = friction
+        const mu = vehicleFriction[selectedVehicle] || 0.7;
+        const dBraking = +((Math.pow(speedMs, 2)) / (2 * 9.81 * mu)).toFixed(1);
+
+        // Total stopping distance
+        const dTotal = +(dReaction + dBraking).toFixed(1);
+
+        // Display
+        valMs.textContent = reactionTimeMs + ' ms';
+        valDReac.textContent = dReaction + ' m';
+        valDTotal.textContent = dTotal + ' m';
+
+        // Description badge
+        if (reactionTimeMs < 250) {
+          descMs.textContent = '⚡ Reflejos de élite (Excepcional)';
+          descMs.style.color = 'var(--accent-cyan)';
+        } else if (reactionTimeMs <= 360) {
+          descMs.textContent = '👍 Buen tiempo de respuesta (Óptimo)';
+          descMs.style.color = '#76FF03';
+        } else if (reactionTimeMs <= 500) {
+          descMs.textContent = '⚠️ Promedio (Mantener distancia)';
+          descMs.style.color = 'var(--accent-amber)';
+        } else {
+          descMs.textContent = '🛑 Respuesta tardía (Riesgo alto)';
+          descMs.style.color = 'var(--accent-red)';
+        }
+
+        // Road simulation track percentages
+        lblSpeedSim.textContent = selectedSpeed + ' km/h';
+        lblTotalMeters.textContent = dTotal + ' m en total';
+
+        const totalPct = dTotal > 0 ? dTotal : 1;
+        const reacPct = Math.max(15, Math.min(85, Math.round((dReaction / totalPct) * 100)));
+        const brakePct = 100 - reacPct;
+
+        trackReac.style.width = reacPct + '%';
+        trackReac.textContent = `Reacción: ${dReaction}m`;
+        trackBrake.style.width = brakePct + '%';
+        trackBrake.textContent = `Frenado: ${dBraking}m`;
+
+        // Educational tips dynamically tailored
+        if (selectedSpeed >= 100) {
+          eduTipText.innerHTML = `A <strong>100 km/h</strong>, recorriste <strong>${dReaction} metros</strong> antes de tan siquiera rozar el pedal de freno. Por eso en autopistas es mandatorio conservar <strong>al menos 54 metros (regla de los 2 segundos)</strong> con el vehículo que te antecede.`;
+        } else if (reactionTimeMs > 400) {
+          eduTipText.innerHTML = `Tu tiempo de reacción sumó <strong>${dReaction} metros</strong> a ciegas. Factores como la fatiga, el mate o desviar la vista 1 segundo al celular duplican este trayecto, convirtiendo un susto en un impacto.`;
+        } else {
+          eduTipText.innerHTML = `¡Excelentes reflejos! A <strong>${selectedSpeed} km/h</strong> tu vehículo necesitó <strong>${dTotal} metros</strong> en total para detenerse por completo. La anticipación y el respeto a las velocidades máximas salvan vidas en la Ciudad.`;
+        }
+
+        metricsGrid.style.display = 'grid';
+        roadSimCard.style.display = 'flex';
+        eduTipCard.style.display = 'flex';
+      }
+
+      function handleNextTry() {
+        if (currentState === 'early') {
+          // Re-try current round
+          setArenaState('idle');
+          return;
+        }
+
+        if (currentRound < totalRounds) {
+          currentRound++;
+          updateRoundDots();
+          setArenaState('idle');
+          metricsGrid.style.display = 'none';
+          roadSimCard.style.display = 'none';
+          eduTipCard.style.display = 'none';
+        } else {
+          // Show Final Summary Modal
+          showFinalSummary();
+        }
+      }
+
+      function showFinalSummary() {
+        const sum = roundTimes.reduce((a, b) => a + b, 0);
+        const avg = Math.round(sum / roundTimes.length);
+        const best = Math.min(...roundTimes);
+
+        arenaTitle.textContent = `PROMEDIO: ${avg} MS`;
+        arenaIcon.innerHTML = '<span class="material-symbols-outlined text-[48px]" style="color:var(--accent-yellow)">emoji_events</span>';
+        arenaDesc.innerHTML = `Completaste los 3 intentos.<br>Mejor reacción: <strong>${best} ms</strong> • Promedio oficial: <strong>${avg} ms</strong>`;
+        btnNextTry.style.display = 'inline-flex';
+        btnNextTryText.textContent = 'Reiniciar Desafío Completo';
+        btnNextTry.onclick = resetGame;
+      }
+
+      function resetGame() {
+        currentRound = 1;
+        roundTimes.length = 0;
+        updateRoundDots();
+        btnNextTry.onclick = handleNextTry;
+        setArenaState('idle');
+        metricsGrid.style.display = 'none';
+        roadSimCard.style.display = 'none';
+        eduTipCard.style.display = 'none';
+      }
+
+      // Event Listeners
+      arena.addEventListener('click', handleArenaClick);
+      btnNextTry.addEventListener('click', handleNextTry);
+
+      // Keyboard spacebar support for desktop
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && e.target.tagName !== 'BUTTON') {
+          e.preventDefault();
+          handleArenaClick();
+        }
+      });
+
+      // Initial dots setup
+      updateRoundDots();
+    })();
+  </script>
+</body>
+</html>

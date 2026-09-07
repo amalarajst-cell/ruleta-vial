@@ -151,10 +151,19 @@
       text-transform: uppercase;
       text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     }
-    .btn-hint {
-      font-size: 13px;
-      color: #8c9196;
-      margin-top: -6px;
+    .btn-reaccion {
+      border-color: #8DE2D6;
+      box-shadow: 0 10px 0 #009E8C, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-reaccion:hover {
+      border-color: #C0FFF6;
+      box-shadow: 0 14px 0 #009E8C, 0 24px 44px rgba(141, 226, 214, 0.3);
+    }
+    .btn-reaccion:active {
+      box-shadow: 0 4px 0 #009E8C, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-reaccion span {
+      color: #8DE2D6;
     }
   </style>
 </head>
@@ -176,7 +185,7 @@
     </div>
   </header>
 
-  <!-- Contenido con texto y botón RULETA VIAL -->
+  <!-- Contenido con texto y botones de juegos -->
   <main class="tab-main">
     <div class="tab-description-card">
       <h2 class="tab-hero-title">El aula interactiva de la movilidad responsable.</h2>
@@ -185,11 +194,23 @@
       </p>
     </div>
 
-    <button class="btn-ruleta" id="btn-ruleta" onclick="window.location.href='index.html?screen=roulette'">
-      <img src="assets/ruleta_icono.jpg" alt="Ruleta">
-      <span>RULETA VIAL</span>
-    </button>
-    <span class="btn-hint">Tocá la ruleta para comenzar a jugar</span>
+    <!-- 1. JUEGO: RULETA VIAL -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <button class="btn-ruleta" id="btn-ruleta" onclick="window.location.href='index.html?screen=roulette'">
+        <img src="assets/ruleta_icono.jpg" alt="Ruleta">
+        <span>RULETA VIAL</span>
+      </button>
+      <span class="btn-hint">Tocá la ruleta para comenzar a jugar</span>
+    </div>
+
+    <!-- 2. JUEGO: TIEMPO DE REACCIÓN -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;">
+      <button class="btn-ruleta btn-reaccion" id="btn-reaccion" onclick="window.location.href='reaccion.html'">
+        <img src="assets/reaccion_icono.jpg" alt="Tiempo de Reacción">
+        <span>TIEMPO DE REACCIÓN</span>
+      </button>
+      <span class="btn-hint">Tocá para poner a prueba tus reflejos y frenado</span>
+    </div>
   </main>
 
 </body>

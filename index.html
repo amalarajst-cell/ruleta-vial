@@ -325,13 +325,23 @@
         </p>
       </div>
 
-      <!-- Botón RULETA VIAL que lleva a la ruleta -->
-      <div style="min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px 0;">
-        <button class="btn-ruleta-menu" id="btn-hub-roulette" type="button" onclick="showScreen('roulette')">
-          <img src="assets/ruleta_icono.jpg" alt="Ruleta">
-          <span>RULETA VIAL</span>
-        </button>
-        <span style="font-size:13px;color:#8c9196;">Tocá la ruleta para comenzar a jugar</span>
+      <!-- Botones de Juegos: RULETA VIAL y TIEMPO DE REACCIÓN -->
+      <div style="min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:10px 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="btn-ruleta-menu" id="btn-hub-roulette" type="button" onclick="showScreen('roulette')">
+            <img src="assets/ruleta_icono.jpg" alt="Ruleta">
+            <span>RULETA VIAL</span>
+          </button>
+          <span style="font-size:13px;color:#8c9196;">Tocá la ruleta para comenzar a jugar</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <button class="btn-ruleta-menu btn-reaccion-menu" id="btn-hub-reaccion" type="button" onclick="window.location.href='reaccion.html'">
+            <img src="assets/reaccion_icono.jpg" alt="Tiempo de Reacción">
+            <span>TIEMPO DE REACCIÓN</span>
+          </button>
+          <span style="font-size:13px;color:#8c9196;">Tocá para poner a prueba tus reflejos y frenado</span>
+        </div>
       </div>
     </div>
   </main>
