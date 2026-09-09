@@ -724,22 +724,89 @@
       background: #2a3236;
     }
 
-    /* ── PEDAGOGICAL BANNER ── */
-    .pedagogical-card {
-      background: rgba(22, 26, 27, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    /* ── DISTANCIA RECORRIDA A 40, 60 Y 100 KM/H ── */
+    .distance-matrix-card {
+      background: rgba(22, 26, 27, 0.7);
+      border: 1px solid var(--outline);
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 10px 14px;
       display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-      line-height: 1.45;
-      color: var(--text-muted);
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .pedagogical-card strong {
-      color: #fff;
+    .distance-matrix-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .distance-matrix-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .distance-matrix-title .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--accent-cyan);
+    }
+
+    .distance-time-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      background: rgba(141, 226, 214, 0.12);
+      border: 1px solid rgba(141, 226, 214, 0.25);
+      padding: 1px 7px;
+      border-radius: 6px;
+    }
+
+    .distance-cols-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .distance-col-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 6px 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+
+    .dist-speed-lbl {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .dist-speed-tag-40 { color: var(--accent-green); }
+    .dist-speed-tag-60 { color: var(--accent-yellow); }
+    .dist-speed-tag-100 { color: var(--accent-red); }
+
+    .dist-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .dist-sub {
+      font-size: 9px;
+      color: var(--text-muted);
     }
 
     /* Responsive */
@@ -935,12 +1002,33 @@
       </div>
     </div>
 
-    <!-- PIE PEDAGÓGICO DE CONCIENTIZACIÓN -->
-    <div class="pedagogical-card" id="pedagogical-card">
-      <span class="material-symbols-outlined text-[24px]" style="color:var(--accent-cyan);flex-shrink:0;">info</span>
-      <span>
-        <strong>¿Sabías qué?</strong> El tiempo promedio de reacción humana ante imprevistos es de <strong>0.75 a 1.00 segundos</strong>. Mirar el celular 2 segundos equivale a recorrer casi media cuadra con los ojos cerrados.
-      </span>
+    <!-- MATRIZ DE DISTANCIA RECORRIDA A 40, 60 Y 100 KM/H -->
+    <div class="distance-matrix-card" id="distance-matrix-card">
+      <div class="distance-matrix-header">
+        <div class="distance-matrix-title">
+          <span class="material-symbols-outlined">straighten</span>
+          <span>Distancia recorrida durante la reacción</span>
+        </div>
+        <span class="distance-time-tag" id="distance-time-tag">Ref. 0.80 s</span>
+      </div>
+
+      <div class="distance-cols-grid">
+        <div class="distance-col-box">
+          <span class="dist-speed-lbl dist-speed-tag-40">40 km/h</span>
+          <span class="dist-val" id="dist-val-40" style="color:var(--accent-green)">8.9 m</span>
+          <span class="dist-sub">Calles</span>
+        </div>
+        <div class="distance-col-box">
+          <span class="dist-speed-lbl dist-speed-tag-60">60 km/h</span>
+          <span class="dist-val" id="dist-val-60" style="color:var(--accent-yellow)">13.3 m</span>
+          <span class="dist-sub">Avenidas</span>
+        </div>
+        <div class="distance-col-box">
+          <span class="dist-speed-lbl dist-speed-tag-100">100 km/h</span>
+          <span class="dist-val" id="dist-val-100" style="color:var(--accent-red)">22.2 m</span>
+          <span class="dist-sub">Autopistas</span>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -1257,7 +1345,25 @@
       const resAdviceText = document.getElementById('res-advice-text');
       const btnReplay = document.getElementById('btn-replay');
       const actionsGrid = document.getElementById('actions-grid');
-      const pedagogicalCard = document.getElementById('pedagogical-card');
+      const distanceMatrixCard = document.getElementById('distance-matrix-card');
+      const distVal40 = document.getElementById('dist-val-40');
+      const distVal60 = document.getElementById('dist-val-60');
+      const distVal100 = document.getElementById('dist-val-100');
+      const distanceTimeTag = document.getElementById('distance-time-tag');
+
+      function updateDistanceMatrix(timeSec, labelPrefix) {
+        const t = Math.max(0.1, Number(timeSec) || 0.80);
+        const d40 = +(11.11 * t).toFixed(1);
+        const d60 = +(16.67 * t).toFixed(1);
+        const d100 = +(27.78 * t).toFixed(1);
+
+        if (distVal40) distVal40.textContent = d40.toFixed(1) + ' m';
+        if (distVal60) distVal60.textContent = d60.toFixed(1) + ' m';
+        if (distVal100) distVal100.textContent = d100.toFixed(1) + ' m';
+        if (distanceTimeTag && labelPrefix) {
+          distanceTimeTag.textContent = `${labelPrefix}: ${t.toFixed(2)} s`;
+        }
+      }
 
       // ── PREPARAR JUEGO ──
       function initGame() {
@@ -1265,7 +1371,8 @@
         gameHistory.length = 0;
         resultsCard.style.display = 'none';
         actionsGrid.style.display = 'grid';
-        pedagogicalCard.style.display = 'flex';
+        if (distanceMatrixCard) distanceMatrixCard.style.display = 'flex';
+        updateDistanceMatrix(0.80, 'Ref.');
         setButtonsEnabled(false);
 
         // Seleccionar 8 estímulos de forma equilibrada (2 de cada acción) y mezclar
@@ -1461,6 +1568,11 @@
           feedbackText.textContent = `Elegiste ${chosenLabel} (${reactionTimeSec.toFixed(2)} s). Lo correcto era: ${currentStimulus.actionLabel}`;
         }
 
+        // Actualizar tarjeta de distancias con la reacción registrada
+        if (!isTimeout) {
+          updateDistanceMatrix(reactionTimeSec, 'Tu reacción');
+        }
+
         updateDots();
 
         // Avanzar a la siguiente señal o terminar
@@ -1493,6 +1605,9 @@
 
         // Distancia a ciegas a 40 km/h: V = 40 / 3.6 = 11.11 m/s * avgSec
         const blindMeters = +(11.11 * avgSec).toFixed(1);
+
+        // Actualizar tarjeta de distancias con el promedio final
+        updateDistanceMatrix(avgSec, 'Promedio');
 
         // Renderizar valores en la tarjeta de resultados (SIEMPRE EN SEGUNDOS)
         resAvgTime.textContent = avgSec.toFixed(2) + ' s';
