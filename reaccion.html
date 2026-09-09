@@ -536,12 +536,12 @@
   <header class="app-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="juegos.html" class="btn-back" title="Volver a Zona de Práctica">
+        <a href="index.html?screen=practice" class="btn-back" title="Volver a Zona de Práctica">
           <span class="material-symbols-outlined text-[20px]">arrow_back</span>
         </a>
         <div class="brand-logo-wrap">
           <img src="assets/brand/logo_ba.png" alt="Buenos Aires Ciudad" class="brand-logo-img">
-          <span class="header-title-text">Reflejos & Frenado</span>
+          <span class="header-title-text">Tiempo de Reacción</span>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -554,46 +554,6 @@
 
   <!-- ── CONTENEDOR PRINCIPAL ── -->
   <main class="main-wrap">
-
-    <!-- Configuración: Vehículo y Velocidad de Prueba -->
-    <div class="controls-card">
-      <div class="control-row">
-        <span class="control-label">Tipo de Vehículo:</span>
-        <div class="pills-group" id="vehicle-pills">
-          <button type="button" class="pill-btn active" data-veh="auto">
-            <img src="assets/brand/icon_auto.png" alt="Auto">
-            <span>Auto</span>
-          </button>
-          <button type="button" class="pill-btn" data-veh="moto">
-            <img src="assets/brand/icon_moto.png" alt="Moto">
-            <span>Moto</span>
-          </button>
-          <button type="button" class="pill-btn" data-veh="colectivo">
-            <img src="assets/brand/icon_colectivo.png" alt="Colectivo">
-            <span>Colectivo</span>
-          </button>
-          <button type="button" class="pill-btn" data-veh="bici">
-            <img src="assets/brand/icon_bici.png" alt="Bici">
-            <span>Bicicleta</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="control-row">
-        <span class="control-label">Velocidad Simulada:</span>
-        <div class="pills-group" id="speed-pills">
-          <button type="button" class="pill-btn active" data-speed="40">
-            <span>40 km/h (Calle)</span>
-          </button>
-          <button type="button" class="pill-btn" data-speed="60">
-            <span>60 km/h (Avenida)</span>
-          </button>
-          <button type="button" class="pill-btn" data-speed="100">
-            <span>100 km/h (Autopista)</span>
-          </button>
-        </div>
-      </div>
-    </div>
 
     <!-- Progreso de Rondas (3 Intentos para Promedio Oficial) -->
     <div class="rounds-tracker">
@@ -761,6 +721,10 @@
 
       let selectedSpeed = 40; // km/h
       let selectedVehicle = 'auto';
+      const savedRole = (localStorage.getItem('vialplay_player_role') || '').toLowerCase();
+      if (savedRole.includes('moto')) selectedVehicle = 'moto';
+      else if (savedRole.includes('colect')) selectedVehicle = 'colectivo';
+      else if (savedRole.includes('cicl') || savedRole.includes('bici')) selectedVehicle = 'bici';
 
       // Friction factor by vehicle
       const vehicleFriction = {
