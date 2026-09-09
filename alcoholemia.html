@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Límites de Alcoholemia en CABA — Seguridad Vial BA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0e1112;
+      --surface: #161a1b;
+      --surface-card: #1d2224;
+      --surface-hover: #262c2f;
+      --text: #f0f4f5;
+      --text-muted: #8c979a;
+      --accent-cyan: #8DE2D6;
+      --accent-yellow: #FFC600;
+      --accent-red: #FF4444;
+      --accent-green: #00E676;
+      --accent-blue: #38BDF8;
+      --accent-purple: #A855F7;
+      --outline: rgba(168, 85, 247, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg);
+      font-family: 'Archivo', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      width: 100%;
+      background: rgba(18, 22, 23, 0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--outline);
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-inner {
+      max-width: 660px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #202628;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-back:hover {
+      background: #2c3437;
+      transform: translateX(-2px);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo-img {
+      height: 24px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.95;
+    }
+
+    .header-title-text {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.4px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    .btn-sound {
+      background: #202628;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent-purple);
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-wrap {
+      flex: 1;
+      max-width: 660px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 10px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── STATUS / ROUND BAR ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(29, 34, 36, 0.7);
+      border: 1px solid var(--outline);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .round-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+    }
+
+    .round-badge {
+      background: var(--accent-purple);
+      color: #ffffff;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+    }
+
+    .dots-wrap {
+      display: flex;
+      gap: 5px;
+    }
+
+    .round-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #2a3134;
+      transition: all 0.25s ease;
+    }
+
+    .round-dot.done-correct {
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(0, 230, 118, 0.6);
+    }
+
+    .round-dot.done-wrong {
+      background: var(--accent-red);
+      box-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+    }
+
+    .round-dot.active {
+      background: var(--accent-yellow);
+      box-shadow: 0 0 10px rgba(255, 198, 0, 0.8);
+      transform: scale(1.25);
+    }
+
+    /* ── CENTRAL ACTOR DISPLAY (ARENA) ── */
+    .actor-card {
+      min-height: 205px;
+      background: linear-gradient(180deg, #181d1f 0%, #101415 100%);
+      border: 2px solid var(--outline);
+      border-radius: 20px;
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    /* Timer bar */
+    .card-timer-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .card-timer-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--accent-purple);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 0.05s linear;
+    }
+
+    /* States */
+    .actor-card.state-idle {
+      border-color: var(--accent-purple);
+      cursor: pointer;
+    }
+
+    .actor-card.state-waiting {
+      border-color: var(--accent-yellow);
+      animation: pulse-waiting 1.6s infinite ease-in-out;
+    }
+
+    @keyframes pulse-waiting {
+      0%, 100% { box-shadow: 0 0 15px rgba(255, 198, 0, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(255, 198, 0, 0.45); }
+    }
+
+    .actor-card.state-active {
+      border-color: #ffffff;
+      box-shadow: 0 0 35px rgba(255, 255, 255, 0.35);
+      animation: pop-in 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop-in {
+      0% { transform: scale(0.96); }
+      100% { transform: scale(1); }
+    }
+
+    .actor-card.state-correct {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 35px rgba(0, 230, 118, 0.4);
+    }
+
+    .actor-card.state-wrong {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 35px rgba(255, 68, 68, 0.4);
+    }
+
+    .actor-card.state-early {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 30px rgba(255, 68, 68, 0.4);
+    }
+
+    /* Category Pill */
+    .actor-category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .cat-zero { background: rgba(0, 230, 118, 0.18); color: #69f0ae; border: 1px solid rgba(0, 230, 118, 0.4); }
+    .cat-moto-acomp { background: rgba(255, 198, 0, 0.18); color: #ffd54f; border: 1px solid rgba(255, 198, 0, 0.4); }
+    .cat-particular { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4); }
+    .cat-no-aplica { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.4); }
+
+    /* Visual Actor Circle */
+    .actor-visual-wrap {
+      width: 78px;
+      height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .actor-avatar-circle {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: #252b2e;
+      border: 3px solid var(--accent-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+    }
+
+    .actor-avatar-circle .material-symbols-outlined {
+      font-size: 40px;
+      color: #fff;
+    }
+
+    .actor-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 19px;
+      line-height: 1.15;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .actor-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 440px;
+      line-height: 1.35;
+    }
+
+    /* Live reaction time timer badge */
+    .live-timer-badge {
+      display: none;
+      margin-top: 8px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 3px 12px;
+      border-radius: 9999px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-purple);
+      letter-spacing: 0.8px;
+    }
+
+    /* Feedback message banner */
+    .feedback-banner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .feedback-banner.correct {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid var(--accent-green);
+      color: #69f0ae;
+    }
+
+    .feedback-banner.wrong {
+      background: rgba(255, 68, 68, 0.15);
+      border: 1px solid var(--accent-red);
+      color: #ff8a80;
+    }
+
+    /* ── 4-ACTION CONTROLS GRID ── */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 560px) {
+      .actions-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .btn-action {
+        padding: 10px 6px;
+      }
+      .btn-action-icon-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+      }
+      .btn-action-title {
+        font-size: 12px;
+      }
+      .btn-action-sub {
+        font-size: 9px;
+      }
+    }
+
+    .btn-action {
+      background: var(--surface-card);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    .btn-action.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .btn-key-hint {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-action-icon-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: transform 0.15s ease;
+    }
+
+    .btn-action-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .btn-action-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    /* Option 1: 0,0 g/l */
+    .btn-action.btn-zero {
+      border-color: rgba(0, 230, 118, 0.35);
+      background: linear-gradient(180deg, #13241b 0%, #0d1712 100%);
+    }
+    .btn-action.btn-zero:hover {
+      border-color: var(--accent-green);
+      box-shadow: 0 4px 20px rgba(0, 230, 118, 0.35);
+    }
+    .btn-action.btn-zero .btn-action-icon-circle {
+      background: #00e676;
+      color: #0e1112;
+    }
+    .btn-action.btn-zero .btn-action-title {
+      color: #69f0ae;
+    }
+
+    /* Option 2: 0,2 g/l */
+    .btn-action.btn-moto {
+      border-color: rgba(255, 198, 0, 0.35);
+      background: linear-gradient(180deg, #262214 0%, #1a170d 100%);
+    }
+    .btn-action.btn-moto:hover {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 4px 20px rgba(255, 198, 0, 0.35);
+    }
+    .btn-action.btn-moto .btn-action-icon-circle {
+      background: #ffc107;
+      color: #121414;
+    }
+    .btn-action.btn-moto .btn-action-title {
+      color: #ffd54f;
+    }
+
+    /* Option 3: 0,5 g/l */
+    .btn-action.btn-particular {
+      border-color: rgba(56, 189, 248, 0.35);
+      background: linear-gradient(180deg, #13212b 0%, #0d161d 100%);
+    }
+    .btn-action.btn-particular:hover {
+      border-color: var(--accent-blue);
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
+    }
+    .btn-action.btn-particular .btn-action-icon-circle {
+      background: #38bdf8;
+      color: #0e1112;
+    }
+    .btn-action.btn-particular .btn-action-title {
+      color: #7dd3fc;
+    }
+
+    /* Option 4: No Corresponde */
+    .btn-action.btn-no-corresponde {
+      border-color: rgba(168, 85, 247, 0.35);
+      background: linear-gradient(180deg, #24172a 0%, #180f1c 100%);
+    }
+    .btn-action.btn-no-corresponde:hover {
+      border-color: var(--accent-purple);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+    }
+    .btn-action.btn-no-corresponde .btn-action-icon-circle {
+      background: #a855f7;
+      color: #ffffff;
+    }
+    .btn-action.btn-no-corresponde .btn-action-title {
+      color: #d8b4fe;
+    }
+
+    /* ── NORMATIVA CABA SUMMARY CARD (BOTTOM) ── */
+    .caba-norm-card {
+      background: rgba(22, 26, 27, 0.7);
+      border: 1px solid var(--outline);
+      border-radius: 16px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .caba-norm-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .caba-norm-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .caba-norm-title .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--accent-purple);
+    }
+
+    .caba-norm-law {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      padding: 1px 7px;
+      border-radius: 6px;
+    }
+
+    .caba-norm-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .caba-norm-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 6px 6px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+
+    .norm-lbl {
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    .norm-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .norm-desc {
+      font-size: 8px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* ── RESULTS SUMMARY CARD ── */
+    .results-card {
+      display: none;
+      background: linear-gradient(180deg, #1b2022 0%, #131718 100%);
+      border: 2px solid var(--accent-purple);
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+      animation: pop-in 0.25s ease-out;
+    }
+
+    .results-hero-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--accent-purple);
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    .results-hero-label {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+      margin-top: 4px;
+    }
+
+    .results-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin: 8px 0;
+    }
+
+    .stat-mini-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px 6px;
+      text-align: center;
+    }
+
+    .stat-mini-val {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 18px;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .stat-mini-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .results-advice-box {
+      background: rgba(168, 85, 247, 0.08);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #f3e8ff;
+      text-align: left;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .results-actions-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .btn-replay-primary {
+      flex: 1;
+      padding: 14px;
+      background: var(--accent-purple);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-replay-primary:hover {
+      transform: translateY(-2px);
+      background: #c084fc;
+    }
+
+    .btn-back-hub {
+      padding: 14px 18px;
+      background: #202628;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .btn-back-hub:hover {
+      background: #2a3236;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .main-wrap {
+        padding: 10px 12px 16px;
+      }
+      .actor-card {
+        min-height: 195px;
+        padding: 14px 12px;
+      }
+      .actor-title {
+        font-size: 17px;
+      }
+      .actor-desc {
+        font-size: 11px;
+      }
+      .btn-action-title {
+        font-size: 13px;
+      }
+      .caba-norm-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── CABECERA ── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="index.html?screen=practice" class="btn-back" title="Volver a Zona de Práctica" id="link-back">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div class="brand-logo-wrap">
+          <img src="assets/brand/logo_ba.png" alt="Buenos Aires Ciudad" class="brand-logo-img">
+          <span class="header-title-text">Límites de Alcoholemia CABA</span>
+        </div>
+      </div>
+      <button type="button" class="btn-sound" id="btn-sound" title="Alternar Sonido">
+        <span class="material-symbols-outlined text-[20px]" id="sound-icon">volume_up</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── CONTENEDOR PRINCIPAL ── -->
+  <main class="main-wrap">
+
+    <!-- BARRA DE ESTADO / RONDAS -->
+    <div class="status-bar" id="status-bar">
+      <div class="round-info">
+        <span class="round-badge" id="round-badge">ACTOR 1 / 8</span>
+        <span id="round-state-text">Listo para empezar</span>
+      </div>
+      <div class="dots-wrap" id="dots-wrap">
+        <div class="round-dot active" id="dot-0"></div>
+        <div class="round-dot" id="dot-1"></div>
+        <div class="round-dot" id="dot-2"></div>
+        <div class="round-dot" id="dot-3"></div>
+        <div class="round-dot" id="dot-4"></div>
+        <div class="round-dot" id="dot-5"></div>
+        <div class="round-dot" id="dot-6"></div>
+        <div class="round-dot" id="dot-7"></div>
+      </div>
+    </div>
+
+    <!-- ARENA CENTRAL DE ACTORES VIALES -->
+    <div class="actor-card state-idle" id="actor-card">
+      <div class="card-timer-bar">
+        <div class="card-timer-fill" id="card-timer-fill"></div>
+      </div>
+
+      <div class="actor-category-badge" id="actor-cat-badge">
+        <span class="material-symbols-outlined text-[16px]">no_drinks</span>
+        <span>DESAFÍO ALCOHOLEMIA CABA</span>
+      </div>
+
+      <div class="actor-visual-wrap" id="actor-visual">
+        <div class="actor-avatar-circle">
+          <span class="material-symbols-outlined">health_and_safety</span>
+        </div>
+      </div>
+
+      <h2 class="actor-title" id="actor-title">TOCÁ PARA INICIAR</h2>
+      <p class="actor-desc" id="actor-desc">
+        Aparecerán distintos actores viales de la Ciudad. Seleccioná su límite legal de alcohol en sangre en el menor tiempo en segundos.
+      </p>
+
+      <div class="live-timer-badge" id="live-timer-badge">
+        0.00 s
+      </div>
+
+      <div class="feedback-banner" id="feedback-banner">
+        <span class="material-symbols-outlined text-[18px]" id="feedback-icon">check_circle</span>
+        <span id="feedback-text">¡Correcto!</span>
+      </div>
+    </div>
+
+    <!-- 4 BOTONES DE LÍMITE DE ALCOHOL TÁCTILES -->
+    <div class="actions-grid" id="actions-grid">
+      <!-- BOTÓN 1: 0,0 g/l -->
+      <button type="button" class="btn-action btn-zero disabled" id="btn-action-zero" data-action="zero">
+        <span class="btn-key-hint">1</span>
+        <div class="btn-action-icon-circle">
+          <span class="material-symbols-outlined">shield</span>
+        </div>
+        <span class="btn-action-title">0,0 g/l</span>
+        <span class="btn-action-sub">Ambulancia • Colectivo • P</span>
+      </button>
+
+      <!-- BOTÓN 2: 0,2 g/l -->
+      <button type="button" class="btn-action btn-moto disabled" id="btn-action-moto" data-action="moto">
+        <span class="btn-key-hint">2</span>
+        <div class="btn-action-icon-circle">
+          <span class="material-symbols-outlined">two_wheeler</span>
+        </div>
+        <span class="btn-action-title">0,2 g/l</span>
+        <span class="btn-action-sub">Acompañante de Moto</span>
+      </button>
+
+      <!-- BOTÓN 3: 0,5 g/l -->
+      <button type="button" class="btn-action btn-particular disabled" id="btn-action-particular" data-action="particular">
+        <span class="btn-key-hint">3</span>
+        <div class="btn-action-icon-circle">
+          <span class="material-symbols-outlined">directions_car</span>
+        </div>
+        <span class="btn-action-title">0,5 g/l</span>
+        <span class="btn-action-sub">Auto • Conductor Moto</span>
+      </button>
+
+      <!-- BOTÓN 4: NO CORRESPONDE -->
+      <button type="button" class="btn-action btn-no-corresponde disabled" id="btn-action-no-corresponde" data-action="no_corresponde">
+        <span class="btn-key-hint">4</span>
+        <div class="btn-action-icon-circle">
+          <span class="material-symbols-outlined">block</span>
+        </div>
+        <span class="btn-action-title">No Corresponde</span>
+        <span class="btn-action-sub">Niño • Peatón</span>
+      </button>
+    </div>
+
+    <!-- TARJETA DE RESULTADOS FINALES -->
+    <div class="results-card" id="results-card">
+      <div style="width:54px;height:54px;border-radius:50%;background:rgba(168,85,247,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-purple);">
+        <span class="material-symbols-outlined text-[32px]">sports_score</span>
+      </div>
+
+      <div>
+        <div class="results-hero-val" id="res-avg-time">0.72 s</div>
+        <div class="results-hero-label">Tiempo Promedio de Respuesta</div>
+      </div>
+
+      <div class="results-stats-grid">
+        <div class="stat-mini-box">
+          <div class="stat-mini-val" id="res-best-time" style="color:var(--accent-purple);">0.55 s</div>
+          <div class="stat-mini-lbl">Mejor Respuesta</div>
+        </div>
+        <div class="stat-mini-box">
+          <div class="stat-mini-val" id="res-accuracy" style="color:var(--accent-green);">8 / 8</div>
+          <div class="stat-mini-lbl">Aciertos</div>
+        </div>
+        <div class="stat-mini-box">
+          <div class="stat-mini-val" id="res-score-pct" style="color:var(--accent-yellow);">100%</div>
+          <div class="stat-mini-lbl">Precisión Normativa</div>
+        </div>
+      </div>
+
+      <div class="results-advice-box">
+        <span class="material-symbols-outlined text-[20px]" style="color:var(--accent-purple);flex-shrink:0;">gavel</span>
+        <div id="res-advice-text">
+          ¡Excelente conocimiento del Código de Tránsito de la Ciudad! Recordá que ante la duda, al volante la única opción segura es alcohol cero.
+        </div>
+      </div>
+
+      <div class="results-actions-row">
+        <button type="button" class="btn-replay-primary" id="btn-replay">
+          <span class="material-symbols-outlined text-[20px]">refresh</span>
+          <span>Jugar de Nuevo</span>
+        </button>
+        <a href="index.html?screen=practice" class="btn-back-hub">
+          <span>Práctica</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- RESUMEN DE NORMATIVA CABA (LEY 2148) -->
+    <div class="caba-norm-card" id="caba-norm-card">
+      <div class="caba-norm-header">
+        <div class="caba-norm-title">
+          <span class="material-symbols-outlined">menu_book</span>
+          <span>Límites de Alcohol en Sangre en CABA</span>
+        </div>
+        <span class="caba-norm-law">Ley 2148 CABA</span>
+      </div>
+
+      <div class="caba-norm-grid">
+        <div class="caba-norm-box">
+          <span class="norm-lbl" style="color:var(--accent-green)">Profesional / P</span>
+          <span class="norm-val" style="color:var(--accent-green)">0,0 g/l</span>
+          <span class="norm-desc">SAME, bondi, taxi, principiante</span>
+        </div>
+        <div class="caba-norm-box">
+          <span class="norm-lbl" style="color:var(--accent-yellow)">Acomp. Moto</span>
+          <span class="norm-val" style="color:var(--accent-yellow)">0,2 g/l</span>
+          <span class="norm-desc">Pasajero motovehículo</span>
+        </div>
+        <div class="caba-norm-box">
+          <span class="norm-lbl" style="color:var(--accent-blue)">Particular</span>
+          <span class="norm-val" style="color:var(--accent-blue)">0,5 g/l</span>
+          <span class="norm-desc">Auto y conductor moto</span>
+        </div>
+        <div class="caba-norm-box">
+          <span class="norm-lbl" style="color:var(--accent-purple)">No Habilitado</span>
+          <span class="norm-val" style="color:var(--accent-purple)">N/A</span>
+          <span class="norm-desc">Niño, peatón, pasajero</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    (function() {
+      // ── SONIDO VIA WEB AUDIO API ──
+      let audioEnabled = true;
+      let audioCtx = null;
+
+      function getAudioContext() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      function playSound(type) {
+        if (!audioEnabled) return;
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+          const now = ctx.currentTime;
+
+          if (type === 'tick') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(450, now);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+            osc.start(now);
+            osc.stop(now + 0.04);
+          } else if (type === 'alert') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(600, now);
+            osc.frequency.exponentialRampToValueAtTime(900, now + 0.1);
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+            osc.start(now);
+            osc.stop(now + 0.16);
+          } else if (type === 'correct') {
+            [523.25, 659.25, 783.99].forEach((f, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.frequency.setValueAtTime(f, now + idx * 0.06);
+              gain.gain.setValueAtTime(0.18, now + idx * 0.06);
+              gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.06 + 0.1);
+              osc.start(now + idx * 0.06);
+              osc.stop(now + idx * 0.06 + 0.1);
+            });
+          } else if (type === 'wrong') {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.setValueAtTime(130, now + 0.12);
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+            osc.start(now);
+            osc.stop(now + 0.25);
+          } else if (type === 'finish') {
+            [440, 554.37, 659.25, 880].forEach((f, i) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.frequency.setValueAtTime(f, now + i * 0.08);
+              gain.gain.setValueAtTime(0.2, now + i * 0.08);
+              gain.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.15);
+              osc.start(now + i * 0.08);
+              osc.stop(now + i * 0.08 + 0.15);
+            });
+          }
+        } catch(e) {}
+      }
+
+      // Sound Toggle
+      const btnSound = document.getElementById('btn-sound');
+      const soundIcon = document.getElementById('sound-icon');
+      btnSound.addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        soundIcon.textContent = audioEnabled ? 'volume_up' : 'volume_off';
+      });
+
+      // ── BASE DE DATOS DE ACTORES VIALES Y LÍMITES EN CABA (Ley 2148) ──
+      const ACTORS_DATABASE = [
+        // ACCIÓN: ZERO (0,0 g/l)
+        {
+          id: 'ambulancia',
+          action: 'zero',
+          actionLabel: '0,0 g/l',
+          category: 'cat-zero',
+          categoryName: 'Vehículo de Emergencia',
+          title: 'CHOFER DE AMBULANCIA',
+          desc: 'Conductor de servicio médico o de emergencia (SAME).',
+          explanation: 'En CABA los servicios de emergencia tienen tolerancia cero absoluta: 0,0 g/l.',
+          icon: 'emergency'
+        },
+        {
+          id: 'principiante_p',
+          action: 'zero',
+          actionLabel: '0,0 g/l',
+          category: 'cat-zero',
+          categoryName: 'Licencia Principiante',
+          title: 'PRINCIPIANTE CON CARTEL "P"',
+          desc: 'Conductor novato durante sus primeros 2 años de licencia.',
+          explanation: 'En CABA los principiantes (cartel P) deben mantener 0,0 g/l durante sus primeros 2 años.',
+          icon: 'parking'
+        },
+        {
+          id: 'colectivo',
+          action: 'zero',
+          actionLabel: '0,0 g/l',
+          category: 'cat-zero',
+          categoryName: 'Transporte de Pasajeros',
+          title: 'CHOFER DE COLECTIVO',
+          desc: 'Conductor profesional de transporte público urbano.',
+          explanation: 'Los choferes profesionales de transporte de pasajeros tienen exigencia de 0,0 g/l.',
+          icon: 'directions_bus'
+        },
+        {
+          id: 'taxi',
+          action: 'zero',
+          actionLabel: '0,0 g/l',
+          category: 'cat-zero',
+          categoryName: 'Servicio Público',
+          title: 'CONDUCTOR DE TAXI / REMÍS',
+          desc: 'Conductor con registro profesional de transporte público comercial.',
+          explanation: 'Toda licencia profesional de transporte de personas exige 0,0 g/l de alcohol en sangre.',
+          icon: 'local_taxi'
+        },
+        {
+          id: 'camion',
+          action: 'zero',
+          actionLabel: '0,0 g/l',
+          category: 'cat-zero',
+          categoryName: 'Transporte de Cargas',
+          title: 'CHOFER DE CAMIÓN DE CARGAS',
+          desc: 'Transporte de carga pesada o sustancias en la vía pública.',
+          explanation: 'Los conductores profesionales de transporte de carga tienen tolerancia de 0,0 g/l.',
+          icon: 'local_shipping'
+        },
+
+        // ACCIÓN: MOTO (0,2 g/l - Acompañante de motovehículo en CABA)
+        {
+          id: 'acomp_moto',
+          action: 'moto',
+          actionLabel: '0,2 g/l',
+          category: 'cat-moto-acomp',
+          categoryName: 'Acompañante de Motovehículo',
+          title: 'ACOMPAÑANTE EN MOTOCICLETA',
+          desc: 'Pasajero que viaja en el asiento trasero de una moto.',
+          explanation: 'En CABA, el acompañante de moto tiene límite de 0,2 g/l para no alterar la estabilidad del rodado.',
+          icon: 'two_wheeler'
+        },
+        {
+          id: 'acomp_ciclomotor',
+          action: 'moto',
+          actionLabel: '0,2 g/l',
+          category: 'cat-moto-acomp',
+          categoryName: 'Acompañante de Ciclomotor',
+          title: 'ACOMPAÑANTE EN CICLOMOTOR',
+          desc: 'Pasajero en vehículo menor de dos ruedas en la Ciudad.',
+          explanation: 'La normativa porteña fija 0,2 g/l para el acompañante en motovehículos por razones de equilibrio dinámico.',
+          icon: 'moped'
+        },
+
+        // ACCIÓN: PARTICULAR (0,5 g/l - Auto particular y conductor moto en CABA)
+        {
+          id: 'conductor_auto',
+          action: 'particular',
+          actionLabel: '0,5 g/l',
+          category: 'cat-particular',
+          categoryName: 'Conductor Particular',
+          title: 'CONDUCTOR DE AUTO PARTICULAR',
+          desc: 'Conductor particular con licencia común (más de 2 años de antigüedad).',
+          explanation: 'En el ámbito de la Ciudad de Buenos Aires, el límite legal para autos particulares es de 0,5 g/l.',
+          icon: 'directions_car'
+        },
+        {
+          id: 'conductor_moto',
+          action: 'particular',
+          actionLabel: '0,5 g/l',
+          category: 'cat-particular',
+          categoryName: 'Conductor de Motovehículo',
+          title: 'CONDUCTOR DE MOTO PARTICULAR',
+          desc: 'Conductor habilitado de motocicleta particular (no principiante).',
+          explanation: 'En CABA, el conductor particular de moto tiene un límite legal de 0,5 g/l (Ley 2148).',
+          icon: 'sports_motorsports'
+        },
+        {
+          id: 'conductor_camioneta',
+          action: 'particular',
+          actionLabel: '0,5 g/l',
+          category: 'cat-particular',
+          categoryName: 'Conductor Particular',
+          title: 'CONDUCTOR DE CAMIONETA / SUV',
+          desc: 'Uso personal y recreativo no comercial en calles y avenidas.',
+          explanation: 'Como vehículo particular no comercial, aplica el límite de 0,5 g/l para conductores con antigüedad.',
+          icon: 'airport_shuttle'
+        },
+
+        // ACCIÓN: NO CORRESPONDE (Menores, peatones, pasajeros)
+        {
+          id: 'nino',
+          action: 'no_corresponde',
+          actionLabel: 'NO CORRESPONDE',
+          category: 'cat-no-aplica',
+          categoryName: 'Pasajero Infantil',
+          title: 'NIÑO / MENOR DE EDAD',
+          desc: 'Pasajero infantil en butaca de seguridad (SRI).',
+          explanation: 'Un menor no está habilitado para conducir; no corresponde test de alcoholemia de conductor.',
+          icon: 'child_care'
+        },
+        {
+          id: 'peaton',
+          action: 'no_corresponde',
+          actionLabel: 'NO CORRESPONDE',
+          category: 'cat-no-aplica',
+          categoryName: 'Transeúnte',
+          title: 'PEATÓN EN LA VEREDA',
+          desc: 'Persona que circula a pie o cruzando por la esquina.',
+          explanation: 'El peatón no conduce un vehículo; no le corresponde límite de alcoholemia al volante.',
+          icon: 'directions_walk'
+        },
+        {
+          id: 'pasajero_colectivo',
+          action: 'no_corresponde',
+          actionLabel: 'NO CORRESPONDE',
+          category: 'cat-no-aplica',
+          categoryName: 'Usuario de Transporte',
+          title: 'PASAJERO EN COLECTIVO',
+          desc: 'Usuario que viaja sentado en el transporte público.',
+          explanation: 'El pasajero es un usuario del servicio, no quien comanda la unidad.',
+          icon: 'airline_seat_recline_normal'
+        }
+      ];
+
+      // ── ESTADO DEL JUEGO ──
+      const TOTAL_ROUNDS = 8;
+      const TIMEOUT_SEC = 2.80;
+
+      let currentRoundIdx = 0;
+      let activeActorsQueue = [];
+      let currentActor = null;
+      let state = 'idle'; // 'idle', 'waiting', 'active', 'feedback', 'finished'
+      let actorStartTime = 0;
+      let liveTimerRaf = null;
+      let waitTimer = null;
+      let feedbackAdvanceTimer = null;
+
+      const gameHistory = []; // { actor, playerAction, correct, timeSec }
+
+      // Elementos del DOM
+      const actorCard = document.getElementById('actor-card');
+      const actorCatBadge = document.getElementById('actor-cat-badge');
+      const actorVisual = document.getElementById('actor-visual');
+      const actorTitle = document.getElementById('actor-title');
+      const actorDesc = document.getElementById('actor-desc');
+      const liveTimerBadge = document.getElementById('live-timer-badge');
+      const feedbackBanner = document.getElementById('feedback-banner');
+      const feedbackIcon = document.getElementById('feedback-icon');
+      const feedbackText = document.getElementById('feedback-text');
+      const cardTimerFill = document.getElementById('card-timer-fill');
+
+      const roundBadge = document.getElementById('round-badge');
+      const roundStateText = document.getElementById('round-state-text');
+      const dotsWrap = document.getElementById('dots-wrap');
+
+      const actionButtons = {
+        zero: document.getElementById('btn-action-zero'),
+        moto: document.getElementById('btn-action-moto'),
+        particular: document.getElementById('btn-action-particular'),
+        no_corresponde: document.getElementById('btn-action-no-corresponde')
+      };
+
+      const resultsCard = document.getElementById('results-card');
+      const resAvgTime = document.getElementById('res-avg-time');
+      const resBestTime = document.getElementById('res-best-time');
+      const resAccuracy = document.getElementById('res-accuracy');
+      const resScorePct = document.getElementById('res-score-pct');
+      const resAdviceText = document.getElementById('res-advice-text');
+      const btnReplay = document.getElementById('btn-replay');
+      const actionsGrid = document.getElementById('actions-grid');
+      const cabaNormCard = document.getElementById('caba-norm-card');
+
+      // ── INICIALIZAR JUEGO ──
+      function initGame() {
+        currentRoundIdx = 0;
+        gameHistory.length = 0;
+        resultsCard.style.display = 'none';
+        actionsGrid.style.display = 'grid';
+        if (cabaNormCard) cabaNormCard.style.display = 'flex';
+        setButtonsEnabled(false);
+
+        // Armar una cola de 8 actores equilibrada (2 de cada opción)
+        const zeroItems = ACTORS_DATABASE.filter(a => a.action === 'zero').sort(() => 0.5 - Math.random()).slice(0, 2);
+        const motoItems = ACTORS_DATABASE.filter(a => a.action === 'moto').sort(() => 0.5 - Math.random()).slice(0, 2);
+        const particularItems = ACTORS_DATABASE.filter(a => a.action === 'particular').sort(() => 0.5 - Math.random()).slice(0, 2);
+        const noItems = ACTORS_DATABASE.filter(a => a.action === 'no_corresponde').sort(() => 0.5 - Math.random()).slice(0, 2);
+
+        activeActorsQueue = [...zeroItems, ...motoItems, ...particularItems, ...noItems].sort(() => 0.5 - Math.random());
+
+        updateDots();
+        setIdleState();
+      }
+
+      function updateDots() {
+        for (let i = 0; i < TOTAL_ROUNDS; i++) {
+          const dot = document.getElementById('dot-' + i);
+          if (!dot) continue;
+          dot.className = 'round-dot';
+          if (i < gameHistory.length) {
+            dot.classList.add(gameHistory[i].correct ? 'done-correct' : 'done-wrong');
+          } else if (i === currentRoundIdx && state !== 'idle') {
+            dot.classList.add('active');
+          }
+        }
+        roundBadge.textContent = `ACTOR ${Math.min(currentRoundIdx + 1, TOTAL_ROUNDS)} / ${TOTAL_ROUNDS}`;
+      }
+
+      function setButtonsEnabled(enabled) {
+        Object.values(actionButtons).forEach(btn => {
+          if (enabled) {
+            btn.classList.remove('disabled');
+          } else {
+            btn.classList.add('disabled');
+          }
+        });
+      }
+
+      function setIdleState() {
+        state = 'idle';
+        actorCard.className = 'actor-card state-idle';
+        actorCatBadge.className = 'actor-category-badge';
+        actorCatBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">no_drinks</span><span>INICIAR DESAFÍO</span>';
+        actorVisual.innerHTML = '<div class="actor-avatar-circle"><span class="material-symbols-outlined">health_and_safety</span></div>';
+        actorTitle.textContent = 'TOCÁ PARA EMPEZAR';
+        actorDesc.innerHTML = 'Aparecerán distintos actores viales. Indicá su <strong>límite legal en CABA</strong> en el menor tiempo en segundos.';
+        liveTimerBadge.style.display = 'none';
+        feedbackBanner.style.display = 'none';
+        cardTimerFill.style.transform = 'scaleX(0)';
+        roundStateText.textContent = 'Tocá para arrancar';
+        setButtonsEnabled(false);
+      }
+
+      function startRoundWaiting() {
+        state = 'waiting';
+        updateDots();
+        roundStateText.textContent = 'Identificando actor vial...';
+
+        actorCard.className = 'actor-card state-waiting';
+        actorCatBadge.className = 'actor-category-badge';
+        actorCatBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">visibility</span><span>PRÓXIMO ACTOR</span>';
+        actorVisual.innerHTML = '<div style="width:72px;height:72px;border-radius:50%;background:rgba(168,85,247,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-purple);"><span class="material-symbols-outlined text-[36px] animate-pulse">radar</span></div>';
+        actorTitle.textContent = 'PREPARATE...';
+        actorDesc.textContent = '¿Cuál es su límite de alcohol en CABA? ¡No te adelantes!';
+        liveTimerBadge.style.display = 'none';
+        feedbackBanner.style.display = 'none';
+        cardTimerFill.style.transform = 'scaleX(0)';
+
+        setButtonsEnabled(true);
+        playSound('tick');
+
+        const waitMs = 1400 + Math.random() * 1600;
+        clearTimeout(waitTimer);
+        waitTimer = setTimeout(() => {
+          if (state === 'waiting') {
+            triggerActor();
+          }
+        }, waitMs);
+      }
+
+      function triggerActor() {
+        state = 'active';
+        currentActor = activeActorsQueue[currentRoundIdx];
+        actorStartTime = performance.now();
+
+        actorCard.className = 'actor-card state-active';
+        actorCatBadge.className = `actor-category-badge ${currentActor.category}`;
+        actorCatBadge.innerHTML = `<span class="material-symbols-outlined text-[16px]">badge</span><span>${currentActor.categoryName}</span>`;
+        actorVisual.innerHTML = `<div class="actor-avatar-circle" style="border-color:var(--accent-purple);"><span class="material-symbols-outlined">${currentActor.icon}</span></div>`;
+        actorTitle.textContent = currentActor.title;
+        actorDesc.textContent = currentActor.desc;
+
+        liveTimerBadge.style.display = 'inline-block';
+        liveTimerBadge.textContent = '0.00 s';
+        feedbackBanner.style.display = 'none';
+
+        roundStateText.textContent = '¡ELEGÍ EL LÍMITE YA!';
+        playSound('alert');
+
+        runLiveTimer();
+      }
+
+      function runLiveTimer() {
+        if (state !== 'active') return;
+
+        const elapsedSec = (performance.now() - actorStartTime) / 1000;
+        liveTimerBadge.textContent = elapsedSec.toFixed(2) + ' s';
+
+        const progress = Math.min(1, elapsedSec / TIMEOUT_SEC);
+        cardTimerFill.style.transform = `scaleX(${progress})`;
+
+        if (elapsedSec >= TIMEOUT_SEC) {
+          handlePlayerAction('timeout');
+          return;
+        }
+
+        liveTimerRaf = requestAnimationFrame(runLiveTimer);
+      }
+
+      function handlePlayerAction(selectedAction) {
+        if (state === 'waiting') {
+          clearTimeout(waitTimer);
+          cancelAnimationFrame(liveTimerRaf);
+          playSound('wrong');
+
+          state = 'feedback';
+          actorCard.className = 'actor-card state-early';
+          actorTitle.textContent = '¡TE ADELANTASTE!';
+          actorDesc.textContent = 'Presionaste una opción antes de que aparezca el actor vial en pantalla.';
+          feedbackBanner.className = 'feedback-banner wrong';
+          feedbackBanner.style.display = 'inline-flex';
+          feedbackIcon.textContent = 'warning';
+          feedbackText.textContent = 'Falsa salida. Reintentando el actor vial...';
+
+          setButtonsEnabled(false);
+
+          setTimeout(() => {
+            if (state === 'feedback') {
+              startRoundWaiting();
+            }
+          }, 2000);
+          return;
+        }
+
+        if (state !== 'active') return;
+
+        cancelAnimationFrame(liveTimerRaf);
+        state = 'feedback';
+        setButtonsEnabled(false);
+
+        const reactionTimeSec = +(Math.min(TIMEOUT_SEC, (performance.now() - actorStartTime) / 1000)).toFixed(2);
+        const isTimeout = selectedAction === 'timeout';
+        const isCorrect = !isTimeout && (selectedAction === currentActor.action);
+
+        gameHistory.push({
+          actor: currentActor,
+          playerAction: selectedAction,
+          correct: isCorrect,
+          timeSec: isTimeout ? TIMEOUT_SEC : reactionTimeSec
+        });
+
+        if (isCorrect) {
+          playSound('correct');
+          actorCard.className = 'actor-card state-correct';
+          feedbackBanner.className = 'feedback-banner correct';
+          feedbackBanner.style.display = 'inline-flex';
+          feedbackIcon.textContent = 'check_circle';
+          feedbackText.textContent = `¡CORRECTO (${reactionTimeSec.toFixed(2)} s)! ${currentActor.explanation}`;
+        } else if (isTimeout) {
+          playSound('wrong');
+          actorCard.className = 'actor-card state-wrong';
+          feedbackBanner.className = 'feedback-banner wrong';
+          feedbackBanner.style.display = 'inline-flex';
+          feedbackIcon.textContent = 'timer_off';
+          feedbackText.textContent = `¡TIEMPO AGOTADO! El límite correcto era: ${currentActor.actionLabel}. ${currentActor.explanation}`;
+        } else {
+          playSound('wrong');
+          actorCard.className = 'actor-card state-wrong';
+          feedbackBanner.className = 'feedback-banner wrong';
+          feedbackBanner.style.display = 'inline-flex';
+          feedbackIcon.textContent = 'cancel';
+          feedbackText.textContent = `Incorrecto (${reactionTimeSec.toFixed(2)} s). Para este actor corresponde: ${currentActor.actionLabel}.`;
+        }
+
+        updateDots();
+
+        clearTimeout(feedbackAdvanceTimer);
+        feedbackAdvanceTimer = setTimeout(() => {
+          currentRoundIdx++;
+          if (currentRoundIdx < TOTAL_ROUNDS) {
+            startRoundWaiting();
+          } else {
+            showFinalResults();
+          }
+        }, 1800);
+      }
+
+      function showFinalResults() {
+        state = 'finished';
+        playSound('finish');
+
+        const correctItems = gameHistory.filter(h => h.correct);
+        const correctCount = correctItems.length;
+
+        const timesToAverage = correctItems.length > 0 
+          ? correctItems.map(h => h.timeSec)
+          : gameHistory.map(h => h.timeSec);
+
+        const avgSec = +(timesToAverage.reduce((a, b) => a + b, 0) / timesToAverage.length).toFixed(2);
+        const bestSec = +(Math.min(...timesToAverage)).toFixed(2);
+        const scorePct = Math.round((correctCount / TOTAL_ROUNDS) * 100);
+
+        resAvgTime.textContent = avgSec.toFixed(2) + ' s';
+        resBestTime.textContent = bestSec.toFixed(2) + ' s';
+        resAccuracy.textContent = `${correctCount} / ${TOTAL_ROUNDS}`;
+        resScorePct.textContent = `${scorePct}%`;
+
+        let adviceHtml = '';
+        if (scorePct >= 85 && avgSec < 0.75) {
+          adviceHtml = `<strong>🏆 Conocimiento y reflejos de élite:</strong> Identificaste con gran rapidez y precisión (<strong>${avgSec.toFixed(2)} s</strong> de promedio) las exigencias del Código de Tránsito de CABA. ¡Excelente conocimiento normativo!`;
+        } else if (scorePct >= 60) {
+          adviceHtml = `<strong>👍 Buen dominio normativo:</strong> Acertaste <strong>${correctCount} de ${TOTAL_ROUNDS}</strong> en <strong>${avgSec.toFixed(2)} s</strong>. Recordá las particularidades en CABA: los acompañantes de moto tienen límite de 0,2 g/l y los principiantes tienen 0,0 g/l estricto.`;
+        } else {
+          adviceHtml = `<strong>⚠️ Repaso normativo necesario:</strong> Obtuviste <strong>${correctCount} de ${TOTAL_ROUNDS}</strong>. Recordá: Ambulancias/profesionales y principiantes P = 0,0 g/l; Acompañante de moto = 0,2 g/l; Autos y motos particulares = 0,5 g/l.`;
+        }
+        resAdviceText.innerHTML = adviceHtml;
+
+        actorCard.style.display = 'none';
+        actionsGrid.style.display = 'none';
+        resultsCard.style.display = 'flex';
+        roundBadge.textContent = 'DESAFÍO COMPLETADO';
+        roundStateText.textContent = `Aciertos: ${correctCount}/${TOTAL_ROUNDS}`;
+      }
+
+      function resetGameToPlayAgain() {
+        clearTimeout(waitTimer);
+        clearTimeout(feedbackAdvanceTimer);
+        cancelAnimationFrame(liveTimerRaf);
+        actorCard.style.display = 'flex';
+        initGame();
+        startRoundWaiting();
+      }
+
+      // ── EVENT LISTENERS ──
+      actorCard.addEventListener('click', () => {
+        if (state === 'idle') {
+          startRoundWaiting();
+        }
+      });
+
+      actionButtons.zero.addEventListener('click', () => handlePlayerAction('zero'));
+      actionButtons.moto.addEventListener('click', () => handlePlayerAction('moto'));
+      actionButtons.particular.addEventListener('click', () => handlePlayerAction('particular'));
+      actionButtons.no_corresponde.addEventListener('click', () => handlePlayerAction('no_corresponde'));
+
+      btnReplay.addEventListener('click', resetGameToPlayAgain);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        if (state === 'idle' && (e.code === 'Space' || e.code === 'Enter')) {
+          e.preventDefault();
+          startRoundWaiting();
+          return;
+        }
+
+        if (state === 'waiting' || state === 'active') {
+          if (e.key === '1' || e.code === 'KeyZ') {
+            e.preventDefault();
+            handlePlayerAction('zero');
+          } else if (e.key === '2' || e.code === 'KeyM') {
+            e.preventDefault();
+            handlePlayerAction('moto');
+          } else if (e.key === '3' || e.code === 'KeyA') {
+            e.preventDefault();
+            handlePlayerAction('particular');
+          } else if (e.key === '4' || e.code === 'KeyN') {
+            e.preventDefault();
+            handlePlayerAction('no_corresponde');
+          }
+        }
+      });
+
+      initGame();
+    })();
+  </script>
+</body>
+</html>
