@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update bottom nav state
     document.querySelectorAll('.nav-item').forEach(btn => {
       const isMatch = btn.dataset.target === name || 
-                      (btn.dataset.target === 'practice' && (name === 'hub' || name === 'practice'));
+                      (btn.dataset.target === 'practice' && (name === 'hub' || name === 'practice' || name === 'roulette' || name === 'quiz' || name === 'results'));
       btn.classList.toggle('active', isMatch);
     });
 
