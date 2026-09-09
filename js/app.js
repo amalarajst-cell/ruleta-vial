@@ -1484,20 +1484,124 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadCSV(`vialplay_respuestas_todas_${new Date().toISOString().slice(0,10)}.csv`, csv);
   });
 
-  btnAdminReset?.addEventListener('click', () => {
-    if (confirm('¿ATENCIÓN: Estás seguro de reiniciar los puntajes y participantes locales? Esta acción borrará el ranking actual.')) {
+  // ── REINICIAR DATOS ADMINISTRACIÓN (MODAL Y NUBE) ──────────
+  const modalAdminReset      = document.getElementById('modal-admin-reset');
+  const btnConfirmResetAll   = document.getElementById('btn-confirm-reset-all');
+  const btnConfirmResetFilter= document.getElementById('btn-confirm-reset-filter');
+  const btnCancelAdminReset  = document.getElementById('btn-cancel-admin-reset');
+  const labelResetFilter     = document.getElementById('label-reset-filter');
+  const btnConfirmResetAllText = document.getElementById('btn-confirm-reset-all-text');
+
+  function openAdminResetModal() {
+    if (!modalAdminReset) return;
+    const selectedGame = adminGameFilter?.value || 'all';
+    if (btnConfirmResetFilter && labelResetFilter) {
+      if (selectedGame === 'all') {
+        btnConfirmResetFilter.style.display = 'none';
+      } else {
+        btnConfirmResetFilter.style.display = 'flex';
+        let name = 'Juego seleccionado';
+        if (selectedGame === 'ruleta') name = 'Ruleta Vial';
+        else if (selectedGame === 'reaccion') name = 'Tiempo de Reacción';
+        else if (selectedGame === 'alcoholemia') name = 'Límites de Alcoholemia';
+        labelResetFilter.textContent = `Borrar solo ${name}`;
+      }
+    }
+    modalAdminReset.style.display = 'flex';
+  }
+  window.openAdminResetModal = openAdminResetModal;
+
+  function closeAdminResetModal() {
+    if (modalAdminReset) modalAdminReset.style.display = 'none';
+  }
+
+  async function pushCloudReset(targetGame = 'all') {
+    try {
+      const getRes = await fetch(GH_API_URL, {
+        headers: {
+          'Authorization': `token ${GH_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json'
+        },
+        cache: 'no-store'
+      });
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        const currentSha = fileData.sha;
+        const currentContent = JSON.parse(utf8B64Decode(fileData.content));
+
+        if (targetGame === 'all') {
+          currentContent.leaderboard = [];
+          currentContent.logins = [];
+          currentContent.completed = [];
+        } else {
+          currentContent.leaderboard = (currentContent.leaderboard || []).filter(e => {
+            const g = getEntryGame(e);
+            return g !== targetGame;
+          });
+        }
+
+        const putRes = await fetch(GH_API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `reset database (${targetGame})`,
+            content: utf8B64Encode(JSON.stringify(currentContent)),
+            sha: currentSha
+          })
+        });
+
+        if (putRes.ok) {
+          const resData = await putRes.json();
+          if (resData && resData.content) cloudSha = resData.content.sha;
+        }
+      }
+    } catch(err) {
+      console.warn('Error reiniciando en la nube:', err);
+    }
+  }
+
+  async function executeAdminReset(targetGame = 'all') {
+    if (btnConfirmResetAllText) btnConfirmResetAllText.textContent = 'BORRANDO Y SINCRONIZANDO...';
+
+    if (targetGame === 'all') {
       leaderboard = [];
       loginsHistory = [];
       responsesHistory = [];
       completedPlayers = [];
-      localStorage.removeItem('vex_leaderboard');
-      localStorage.removeItem('vex_logins_history');
-      localStorage.removeItem('vex_responses_history');
-      localStorage.removeItem('vex_completed_players');
-      renderAdminDashboard();
-      renderLeaderboardUI();
-      alert('Datos reiniciados con éxito.');
+      localStorage.setItem('vex_leaderboard', JSON.stringify([]));
+      localStorage.setItem('vex_logins_history', JSON.stringify([]));
+      localStorage.setItem('vex_responses_history', JSON.stringify([]));
+      localStorage.setItem('vex_completed_players', JSON.stringify([]));
+    } else {
+      leaderboard = leaderboard.filter(e => getEntryGame(e) !== targetGame);
+      responsesHistory = responsesHistory.filter(r => {
+        const g = r.game || (r.category === 'Tiempo de Reacción' ? 'reaccion' : (r.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'));
+        return g !== targetGame;
+      });
+      localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+      localStorage.setItem('vex_responses_history', JSON.stringify(responsesHistory));
     }
+
+    renderAdminDashboard(false);
+    renderLeaderboardUI();
+
+    // Sincronizar reinicio con GitHub en segundo plano
+    await pushCloudReset(targetGame);
+
+    if (btnConfirmResetAllText) btnConfirmResetAllText.textContent = 'REINICIAR TODO (TODOS LOS JUEGOS Y NUBE)';
+    closeAdminResetModal();
+  }
+
+  btnAdminReset?.addEventListener('click', openAdminResetModal);
+  btnCancelAdminReset?.addEventListener('click', closeAdminResetModal);
+  btnConfirmResetAll?.addEventListener('click', () => executeAdminReset('all'));
+  btnConfirmResetFilter?.addEventListener('click', () => {
+    const selectedGame = adminGameFilter?.value || 'all';
+    executeAdminReset(selectedGame);
   });
 
   // ── ADMIN QUESTION MANAGER LOGIC ──────────────────────────

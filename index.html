@@ -668,7 +668,7 @@
               <span class="material-symbols-outlined">search</span>
               <input class="text-input" id="admin-search-input" type="text" placeholder="Filtrar participante, email, rol..." style="padding-top:9px;padding-bottom:9px;font-size:13px;">
             </div>
-            <button id="btn-admin-reset" title="Reiniciar datos locales" style="padding:10px 14px;border-radius:10px;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;color:#FF4D4D;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
+            <button id="btn-admin-reset" type="button" onclick="if(window.openAdminResetModal)window.openAdminResetModal();" title="Reiniciar datos locales y en la nube" style="padding:10px 14px;border-radius:10px;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;color:#FF4D4D;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
               <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
               <span>Reiniciar</span>
             </button>
@@ -793,6 +793,41 @@
       </div>
     </div>
   </div>
+
+
+  <!-- ================================================
+       ADMIN RESET CONFIRMATION MODAL
+  ================================================ -->
+  <div class="modal-backdrop" id="modal-admin-reset" style="display:none;">
+    <div class="modal-dialog" style="max-width:440px;text-align:center;padding:26px;">
+      <div style="width:58px;height:58px;border-radius:50%;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#FF4D4D;">
+        <span class="material-symbols-outlined text-[32px]">delete_forever</span>
+      </div>
+      <h3 style="font-family:var(--font-display);font-size:18px;color:#FF4D4D;text-transform:uppercase;letter-spacing:0.5px;">
+        Reiniciar Estadísticas y Ranking
+      </h3>
+      <p style="font-size:12px;color:var(--on-surface-variant);margin:10px 0 18px;line-height:1.5;">
+        Esta acción eliminará registros de participantes, posiciones y respuestas tanto de forma local como en la base central.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+        <button id="btn-confirm-reset-all" type="button" style="padding:13px;border-radius:12px;background:#FF4D4D;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:900;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
+          <span id="btn-confirm-reset-all-text">REINICIAR TODO (TODOS LOS JUEGOS Y NUBE)</span>
+        </button>
+
+        <button id="btn-confirm-reset-filter" type="button" style="padding:11px;border-radius:12px;background:rgba(255,198,0,0.12);border:1.5px solid var(--secondary-container);color:var(--secondary-container);font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+          <span id="label-reset-filter">Reiniciar solo juego filtrado</span>
+        </button>
+      </div>
+
+      <button id="btn-cancel-admin-reset" class="btn-tactile-secondary" style="width:100%;height:38px;font-size:12px;" type="button">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
 
 
   <!-- ================================================
