@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const screens = {
     register:  document.getElementById('screen-register'),
     practice:  document.getElementById('screen-hub'),
+    hub:       document.getElementById('screen-hub'),
     roulette:  document.getElementById('screen-roulette'),
     quiz:      document.getElementById('screen-quiz'),
     results:   document.getElementById('screen-results'),
@@ -29,7 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update bottom nav state
     document.querySelectorAll('.nav-item').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.target === name);
+      const isMatch = btn.dataset.target === name || 
+                      (btn.dataset.target === 'practice' && (name === 'hub' || name === 'practice'));
+      btn.classList.toggle('active', isMatch);
     });
 
     if (name === 'roulette' && typeof roulette !== 'undefined' && roulette) {
@@ -225,8 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const regNameInput      = document.getElementById('reg-name');
   const regEmailInput     = document.getElementById('reg-email');
   const regSubmitBtn      = document.getElementById('btn-register-submit');
-  const btnQuickTestUser  = document.getElementById('btn-quick-test-user');
-  const btnFillTestUser   = document.getElementById('btn-fill-test-user');
 
   // Roulette screen
   const spinBtn           = document.getElementById('btn-spin-roulette');
@@ -566,42 +567,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audioSystem.init();
     updateHeaderDisplay();
-    showScreen('roulette');
+    showScreen('practice');
   }
-
-  // ── USUARIO DE PRUEBA (MODO TESTER PÚBLICO) ────────────────
-  function loginAsTestUser() {
-    const testName = 'Usuario de Prueba';
-    const testEmail = 'prueba@convivenciavial.gob.ar';
-    if (regNameInput) regNameInput.value = testName;
-    if (regEmailInput) regEmailInput.value = testEmail;
-
-    playerName = testName;
-    playerEmail = testEmail;
-    playerAvatar = getRoleIcon(playerRole);
-    localStorage.setItem('vialplay_player_name', playerName);
-    localStorage.setItem('vialplay_player_email', playerEmail);
-    localStorage.setItem('vialplay_player_avatar', playerAvatar);
-    localStorage.setItem('vialplay_player_role', playerRole);
-
-    const timestamp = new Date().toLocaleString('es-AR');
-    loginsHistory.push({ name: playerName, email: playerEmail, role: playerRole, timestamp });
-    localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
-    pushCloudState();
-
-    audioSystem.init();
-    updateHeaderDisplay();
-    showScreen('roulette');
-  }
-
-  function fillTestUserFields() {
-    if (regNameInput) regNameInput.value = 'Usuario de Prueba';
-    if (regEmailInput) regEmailInput.value = 'prueba@convivenciavial.gob.ar';
-    if (audioSystem && audioSystem.playClick) audioSystem.playClick();
-  }
-
-  btnQuickTestUser?.addEventListener('click', loginAsTestUser);
-  btnFillTestUser?.addEventListener('click', fillTestUserFields);
 
   regSubmitBtn?.addEventListener('click', handleRegistration);
   document.querySelector('#screen-register form')?.addEventListener('submit', (e) => {
@@ -1966,7 +1933,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = btn.dataset.target;
       if (target === 'admin') {
         handleAdminAccessRequest();
-      } else if (target === 'roulette' && !playerName) {
+      } else if ((target === 'roulette' || target === 'practice') && !playerName) {
         showScreen('register');
       } else {
         showScreen(target);
