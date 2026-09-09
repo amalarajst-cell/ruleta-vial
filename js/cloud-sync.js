@@ -47,6 +47,7 @@
       else displayCat = 'Ruleta Vial';
     }
 
+    const nowTimestamp = Date.now();
     const entry = {
       name: player.name,
       email: player.email,
@@ -57,7 +58,8 @@
       score: Math.round(sessionData.score || 0),
       time: Number(sessionData.time) || 0,
       accuracy: sessionData.accuracy || '',
-      date: formatCurrentDate()
+      date: formatCurrentDate(),
+      timestamp: nowTimestamp
     };
 
     // 1. Guardar en localStorage
@@ -74,15 +76,18 @@
     });
 
     if (existingIdx >= 0) {
-      if (entry.score >= (localLeaderboard[existingIdx].score || 0)) {
-        localLeaderboard[existingIdx] = entry;
-      }
+      const existing = localLeaderboard[existingIdx];
+      localLeaderboard[existingIdx] = {
+        ...entry,
+        score: Math.max(entry.score, Number(existing.score) || 0)
+      };
     } else {
       localLeaderboard.push(entry);
     }
     // Ordenar localLeaderboard por puntaje descendente
     localLeaderboard.sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0));
     localStorage.setItem('vex_leaderboard', JSON.stringify(localLeaderboard));
+    localStorage.setItem('vialplay_last_activity', JSON.stringify(entry));
 
     // Guardar historial de respuestas/estímulos en vex_responses_history
     if (sessionData.details && Array.isArray(sessionData.details)) {
@@ -133,9 +138,11 @@
         });
 
         if (cloudIdx >= 0) {
-          if (entry.score >= (cloudLeaderboard[cloudIdx].score || 0)) {
-            cloudLeaderboard[cloudIdx] = entry;
-          }
+          const existing = cloudLeaderboard[cloudIdx];
+          cloudLeaderboard[cloudIdx] = {
+            ...entry,
+            score: Math.max(entry.score, Number(existing.score) || 0)
+          };
         } else {
           cloudLeaderboard.push(entry);
         }

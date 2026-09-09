@@ -655,20 +655,30 @@
             </button>
           </div>
 
-          <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:580px;">
+          <div style="display:flex;align-items:center;gap:8px;flex:1;max-width:700px;">
+            <button id="btn-admin-refresh" type="button" title="Actualizar datos en vivo" style="padding:9px 13px;border-radius:10px;background:rgba(0,229,138,0.15);border:1px solid var(--success);color:var(--success);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">
+              <span class="material-symbols-outlined text-[16px]">refresh</span>
+              <span>Actualizar</span>
+            </button>
             <div style="display:flex;align-items:center;">
-              <select id="admin-game-filter" style="background:var(--surface-container-highest);color:var(--secondary-container);border:1.5px solid var(--secondary-container);padding:8px 12px;border-radius:10px;font-size:12px;font-weight:800;outline:none;cursor:pointer;">
+              <select id="admin-game-filter" style="background:var(--surface-container-highest);color:var(--secondary-container);border:1.5px solid var(--secondary-container);padding:8px 10px;border-radius:10px;font-size:12px;font-weight:800;outline:none;cursor:pointer;">
                 <option value="all">🎮 Todos los Juegos</option>
                 <option value="ruleta">🎡 Ruleta Vial</option>
                 <option value="reaccion">⚡ Tiempo de Reacción</option>
                 <option value="alcoholemia">🍷 Límites de Alcoholemia</option>
               </select>
             </div>
+            <div style="display:flex;align-items:center;">
+              <select id="admin-sort-order" style="background:var(--surface-container-highest);color:var(--tertiary);border:1px solid var(--tertiary);padding:8px 10px;border-radius:10px;font-size:12px;font-weight:800;outline:none;cursor:pointer;">
+                <option value="recent">🕒 Más Recientes</option>
+                <option value="score">🏆 Mayor Puntaje</option>
+              </select>
+            </div>
             <div class="input-field-wrap" style="flex:1;">
               <span class="material-symbols-outlined">search</span>
-              <input class="text-input" id="admin-search-input" type="text" placeholder="Filtrar participante, email, rol..." style="padding-top:9px;padding-bottom:9px;font-size:13px;">
+              <input class="text-input" id="admin-search-input" type="text" placeholder="Filtrar participante..." style="padding-top:8px;padding-bottom:8px;font-size:12px;">
             </div>
-            <button id="btn-admin-reset" type="button" onclick="if(window.openAdminResetModal)window.openAdminResetModal();" title="Reiniciar datos locales y en la nube" style="padding:10px 14px;border-radius:10px;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;color:#FF4D4D;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
+            <button id="btn-admin-reset" type="button" onclick="if(window.openAdminResetModal)window.openAdminResetModal();" title="Reiniciar datos locales y en la nube" style="padding:9px 12px;border-radius:10px;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;color:#FF4D4D;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
               <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
               <span>Reiniciar</span>
             </button>

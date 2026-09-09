@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (name === 'admin') {
       document.body.classList.add('admin-mode');
+      startAdminLivePolling();
       if (typeof updateQuestionsBadges === 'function') updateQuestionsBadges();
       if (adminTabQuestions && adminTabQuestions.style.display !== 'none') {
         if (typeof renderAdminQuestionsTab === 'function') renderAdminQuestionsTab();
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else {
       document.body.classList.remove('admin-mode');
+      stopAdminLivePolling();
     }
   }
 
@@ -121,15 +123,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = `${userKey}___${gameKey}`;
       const existing = map.get(key);
       if (!existing) {
-        map.set(key, { ...entry, game: gameKey });
+        map.set(key, { ...entry, game: gameKey, timestamp: Number(entry.timestamp) || Date.now() });
       } else {
         const existingScore = Number(existing.score) || 0;
         const entryScore    = Number(entry.score) || 0;
-        const existingTime  = Number(existing.time) || 999;
-        const entryTime     = Number(entry.time) || 999;
-        if (entryScore > existingScore || (entryScore === existingScore && entryTime < existingTime)) {
-          map.set(key, { ...entry, game: gameKey });
-        }
+        const maxScore      = Math.max(existingScore, entryScore);
+
+        const existingTimestamp = Number(existing.timestamp) || 0;
+        const entryTimestamp    = Number(entry.timestamp) || 0;
+        const isEntryNewer      = entryTimestamp >= existingTimestamp;
+        const mostRecentData    = isEntryNewer ? entry : existing;
+
+        map.set(key, {
+          ...mostRecentData,
+          game: gameKey,
+          score: maxScore,
+          timestamp: Math.max(existingTimestamp, entryTimestamp)
+        });
       }
     });
 
@@ -142,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return merged;
   }
 
-  function fetchCloudState() {
-    fetch(GH_API_URL, {
+  function fetchCloudState(isForAdmin = false) {
+    return fetch(GH_API_URL, {
       headers: {
         'Authorization': `token ${GH_TOKEN}`,
         'Accept': 'application/vnd.github.v3+json'
@@ -160,6 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
             leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
             localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
             renderLeaderboardUI();
+            if (isForAdmin || document.body.classList.contains('admin-mode') || window.location.search.includes('screen=admin')) {
+              renderAdminDashboard(false);
+            }
           }
           if (parsed && Array.isArray(parsed.completed)) {
             completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
@@ -169,6 +182,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
     .catch(() => {});
+  }
+
+  let adminPollTimer = null;
+  function startAdminLivePolling() {
+    if (adminPollTimer) clearInterval(adminPollTimer);
+    fetchCloudState(true);
+    adminPollTimer = setInterval(() => {
+      if (document.body.classList.contains('admin-mode') || window.location.search.includes('screen=admin')) {
+        fetchCloudState(true);
+      }
+    }, 3500);
+  }
+  function stopAdminLivePolling() {
+    if (adminPollTimer) {
+      clearInterval(adminPollTimer);
+      adminPollTimer = null;
+    }
   }
 
   function pushCloudState() {
@@ -296,6 +326,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnExportLogins   = document.getElementById('btn-export-logins');
   const btnExportAnswers  = document.getElementById('btn-export-responses');
   const btnAdminReset     = document.getElementById('btn-admin-reset');
+  const btnAdminRefresh   = document.getElementById('btn-admin-refresh');
+  const adminSortOrder    = document.getElementById('admin-sort-order');
 
   // Admin Tabs & Question Manager DOM References
   const tabBtnStats         = document.getElementById('tab-btn-stats');
@@ -1313,11 +1345,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const selectedGame = adminGameFilter?.value || 'all';
+    const sortMode     = adminSortOrder?.value || 'recent';
 
-    const gameFiltered = leaderboard.filter(e => {
+    let gameFiltered = leaderboard.filter(e => {
       if (selectedGame === 'all') return true;
       return getEntryGame(e) === selectedGame;
     });
+
+    if (sortMode === 'recent') {
+      gameFiltered.sort((a, b) => {
+        const timeB = Number(b.timestamp) || 0;
+        const timeA = Number(a.timestamp) || 0;
+        if (timeB !== timeA) return timeB - timeA;
+        return (Number(b.score) || 0) - (Number(a.score) || 0);
+      });
+    } else {
+      gameFiltered.sort((a, b) => {
+        const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
+        if (scoreDiff !== 0) return scoreDiff;
+        return (Number(a.time) || 0) - (Number(b.time) || 0);
+      });
+    }
 
     const totalUsers = gameFiltered.length;
     const perfectCount = gameFiltered.filter(e => {
@@ -1359,18 +1407,29 @@ document.addEventListener('DOMContentLoaded', () => {
           </tr>
         `;
       } else {
+        const now = Date.now();
         adminTableBody.innerHTML = filtered.map((e, idx) => {
           const originalIdx = gameFiltered.indexOf(e);
-          let medalBadge = `<span style="font-family:var(--font-display);font-weight:900;color:var(--on-surface-variant);font-size:14px;">#${originalIdx + 1}</span>`;
-          if (originalIdx === 0) medalBadge = `<img src="assets/medals/oro.png" class="medal-icon" alt="1°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
-          else if (originalIdx === 1) medalBadge = `<img src="assets/medals/plata.png" class="medal-icon" alt="2°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
-          else if (originalIdx === 2) medalBadge = `<img src="assets/medals/bronce.png" class="medal-icon" alt="3°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
+          let medalBadge = '';
+          if (sortMode === 'score') {
+            if (originalIdx === 0) medalBadge = `<img src="assets/medals/oro.png" class="medal-icon" alt="1°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
+            else if (originalIdx === 1) medalBadge = `<img src="assets/medals/plata.png" class="medal-icon" alt="2°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
+            else if (originalIdx === 2) medalBadge = `<img src="assets/medals/bronce.png" class="medal-icon" alt="3°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
+            else medalBadge = `<span style="font-family:var(--font-display);font-weight:900;color:var(--on-surface-variant);font-size:14px;">#${originalIdx + 1}</span>`;
+          } else {
+            medalBadge = `<span style="font-family:var(--font-display);font-weight:900;color:var(--on-surface-variant);font-size:14px;">#${originalIdx + 1}</span>`;
+          }
 
           const userIcon = getRoleIcon(e.role || e.category);
           const roleLabel = e.role || 'Auto (Cat B)';
           const catLabel = e.category || 'Vial General';
           const timeLabel = e.time ? Number(e.time).toFixed(2) + 's' : '0.00s';
           const dateLabel = e.date || new Date().toLocaleDateString('es-AR');
+
+          const isJustNow = e.timestamp && (now - Number(e.timestamp) < 15 * 60 * 1000);
+          const recentPill = isJustNow 
+            ? `<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:9999px;background:rgba(0,229,138,0.18);color:var(--success);border:1px solid var(--success);font-size:10px;font-weight:800;">🟢 Reciente</span>` 
+            : '';
 
           const g = getEntryGame(e);
           let gameBadge = '';
@@ -1385,14 +1444,19 @@ document.addEventListener('DOMContentLoaded', () => {
           const accuracyLabel = e.accuracy || (g === 'ruleta' ? (Number(e.score) >= 500 ? '5/5' : `${Math.min(5, Math.max(0, Math.round(Number(e.score)/100)))}/5`) : '—');
 
           return `
-            <tr>
+            <tr style="${isJustNow ? 'background:rgba(0,229,138,0.06);' : ''}">
               <td style="text-align:center;width:65px;">${medalBadge}</td>
               <td>
                 <div style="display:flex;align-items:center;gap:10px;">
                   <div style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--secondary-container);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <img src="${userIcon}" style="width:20px;height:20px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
                   </div>
-                  <span style="font-weight:700;color:var(--on-surface);font-size:14px;">${e.name}</span>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="font-weight:700;color:var(--on-surface);font-size:14px;">${e.name}</span>
+                      ${recentPill}
+                    </div>
+                  </div>
                 </div>
               </td>
               <td>
@@ -1426,17 +1490,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  btnAdminRefresh?.addEventListener('click', async () => {
+    const icon = btnAdminRefresh.querySelector('.material-symbols-outlined');
+    if (icon) icon.style.animation = 'spin 0.8s linear infinite';
+    await fetchCloudState(true);
+    renderAdminDashboard(true);
+    setTimeout(() => {
+      if (icon) icon.style.animation = '';
+    }, 600);
+  });
+
+  adminSortOrder?.addEventListener('change', () => renderAdminDashboard(false));
   adminSearchInput?.addEventListener('input', () => renderAdminDashboard(false));
   adminGameFilter?.addEventListener('change', () => renderAdminDashboard(false));
 
   // Escuchar sincronizaciones automáticas entre juegos
   window.addEventListener('vialplay:session_synced', () => {
-    fetchCloudState();
+    fetchCloudState(true);
     renderAdminDashboard(true);
     renderLeaderboardUI();
   });
   window.addEventListener('storage', (e) => {
-    if (e.key === 'vex_leaderboard' || e.key === 'vex_responses_history') {
+    if (e.key === 'vex_leaderboard' || e.key === 'vex_responses_history' || e.key === 'vialplay_last_activity') {
       try {
         leaderboard = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
         responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');

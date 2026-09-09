@@ -943,8 +943,8 @@
       </div>
 
       <div id="sync-status-box" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;border-radius:12px;background:rgba(0,229,138,0.12);border:1px solid rgba(0,229,138,0.35);color:var(--accent-green);font-size:12px;font-weight:700;">
-        <span class="material-symbols-outlined text-[18px]">cloud_sync</span>
-        <span id="sync-status-text">Sincronizando con Administración...</span>
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+        <span id="sync-status-text">Guardando resultado de actividad...</span>
       </div>
 
       <div class="results-actions-row">
@@ -953,10 +953,7 @@
           <span>Jugar de Nuevo</span>
         </button>
         <a href="index.html?screen=practice" class="btn-back-hub">
-          <span>Práctica</span>
-        </a>
-        <a href="index.html?screen=admin" class="btn-back-hub" style="background:rgba(255,198,0,0.12);border-color:var(--accent-yellow);color:var(--accent-yellow);" title="Ver Panel de Administración">
-          <span>Admin</span>
+          <span>Volver a Juegos</span>
         </a>
       </div>
     </div>
@@ -1576,7 +1573,7 @@
             details: gameDetails
           }).then(() => {
             if (syncStatusText) {
-              syncStatusText.innerHTML = `✅ ¡Sincronizado con Administración! (+${finalScore} XP)`;
+              syncStatusText.innerHTML = `✅ ¡Actividad registrada con éxito! (+${finalScore} XP)`;
             }
           }).catch(() => {
             if (syncStatusText) {
