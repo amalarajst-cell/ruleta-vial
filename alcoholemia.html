@@ -875,10 +875,10 @@
       <button type="button" class="btn-action btn-moto disabled" id="btn-action-moto" data-action="moto">
         <span class="btn-key-hint">2</span>
         <div class="btn-action-icon-circle">
-          <span class="material-symbols-outlined">two_wheeler</span>
+          <span class="material-symbols-outlined">sports_motorsports</span>
         </div>
         <span class="btn-action-title">0,2 g/l</span>
-        <span class="btn-action-sub">Acompañante de Moto</span>
+        <span class="btn-action-sub">Conductor de Moto</span>
       </button>
 
       <!-- BOTÓN 3: 0,5 g/l -->
@@ -888,7 +888,7 @@
           <span class="material-symbols-outlined">directions_car</span>
         </div>
         <span class="btn-action-title">0,5 g/l</span>
-        <span class="btn-action-sub">Auto • Conductor Moto</span>
+        <span class="btn-action-sub">Auto • Acomp. Moto</span>
       </button>
 
       <!-- BOTÓN 4: NO CORRESPONDE -->
@@ -963,14 +963,14 @@
           <span class="norm-desc">SAME, bondi, taxi, principiante</span>
         </div>
         <div class="caba-norm-box">
-          <span class="norm-lbl" style="color:var(--accent-yellow)">Acomp. Moto</span>
+          <span class="norm-lbl" style="color:var(--accent-yellow)">Conductor Moto</span>
           <span class="norm-val" style="color:var(--accent-yellow)">0,2 g/l</span>
-          <span class="norm-desc">Pasajero motovehículo</span>
+          <span class="norm-desc">Conductor motovehículo</span>
         </div>
         <div class="caba-norm-box">
-          <span class="norm-lbl" style="color:var(--accent-blue)">Particular</span>
+          <span class="norm-lbl" style="color:var(--accent-blue)">Auto / Acomp.</span>
           <span class="norm-val" style="color:var(--accent-blue)">0,5 g/l</span>
-          <span class="norm-desc">Auto y conductor moto</span>
+          <span class="norm-desc">Auto y acompañante moto</span>
         </div>
         <div class="caba-norm-box">
           <span class="norm-lbl" style="color:var(--accent-purple)">No Habilitado</span>
@@ -1135,31 +1135,31 @@
           icon: 'local_shipping'
         },
 
-        // ACCIÓN: MOTO (0,2 g/l - Acompañante de motovehículo en CABA)
+        // ACCIÓN: MOTO (0,2 g/l - Conductor de motovehículo en CABA)
         {
-          id: 'acomp_moto',
+          id: 'conductor_moto',
           action: 'moto',
           actionLabel: '0,2 g/l',
           category: 'cat-moto-acomp',
-          categoryName: 'Acompañante de Motovehículo',
-          title: 'ACOMPAÑANTE EN MOTOCICLETA',
-          desc: 'Pasajero que viaja en el asiento trasero de una moto.',
-          explanation: 'En CABA, el acompañante de moto tiene límite de 0,2 g/l para no alterar la estabilidad del rodado.',
+          categoryName: 'Conductor de Motovehículo',
+          title: 'CONDUCTOR DE MOTO PARTICULAR',
+          desc: 'Conductor habilitado de motocicleta particular en la Ciudad.',
+          explanation: 'En CABA, el límite legal de alcohol para conductores de motovehículos es de 0,2 g/l.',
+          icon: 'sports_motorsports'
+        },
+        {
+          id: 'conductor_ciclomotor',
+          action: 'moto',
+          actionLabel: '0,2 g/l',
+          category: 'cat-moto-acomp',
+          categoryName: 'Conductor de Ciclomotor',
+          title: 'CONDUCTOR DE CICLOMOTOR',
+          desc: 'Conductor de ciclomotor en la Ciudad de Buenos Aires.',
+          explanation: 'En CABA rige un límite de 0,2 g/l para conductores de ciclomotores y motovehículos.',
           icon: 'two_wheeler'
         },
-        {
-          id: 'acomp_ciclomotor',
-          action: 'moto',
-          actionLabel: '0,2 g/l',
-          category: 'cat-moto-acomp',
-          categoryName: 'Acompañante de Ciclomotor',
-          title: 'ACOMPAÑANTE EN CICLOMOTOR',
-          desc: 'Pasajero en vehículo menor de dos ruedas en la Ciudad.',
-          explanation: 'La normativa porteña fija 0,2 g/l para el acompañante en motovehículos por razones de equilibrio dinámico.',
-          icon: 'moped'
-        },
 
-        // ACCIÓN: PARTICULAR (0,5 g/l - Auto particular y conductor moto en CABA)
+        // ACCIÓN: PARTICULAR (0,5 g/l - Auto particular y Acompañante de moto en CABA)
         {
           id: 'conductor_auto',
           action: 'particular',
@@ -1172,15 +1172,15 @@
           icon: 'directions_car'
         },
         {
-          id: 'conductor_moto',
+          id: 'acomp_moto',
           action: 'particular',
           actionLabel: '0,5 g/l',
           category: 'cat-particular',
-          categoryName: 'Conductor de Motovehículo',
-          title: 'CONDUCTOR DE MOTO PARTICULAR',
-          desc: 'Conductor habilitado de motocicleta particular (no principiante).',
-          explanation: 'En CABA, el conductor particular de moto tiene un límite legal de 0,5 g/l (Ley 2148).',
-          icon: 'sports_motorsports'
+          categoryName: 'Acompañante de Motovehículo',
+          title: 'ACOMPAÑANTE EN MOTOCICLETA',
+          desc: 'Pasajero que viaja en el asiento trasero de una moto.',
+          explanation: 'En CABA, el límite legal para el acompañante en motovehículo es de 0,5 g/l.',
+          icon: 'moped'
         },
         {
           id: 'conductor_camioneta',
@@ -1192,6 +1192,17 @@
           desc: 'Uso personal y recreativo no comercial en calles y avenidas.',
           explanation: 'Como vehículo particular no comercial, aplica el límite de 0,5 g/l para conductores con antigüedad.',
           icon: 'airport_shuttle'
+        },
+        {
+          id: 'acomp_ciclomotor',
+          action: 'particular',
+          actionLabel: '0,5 g/l',
+          category: 'cat-particular',
+          categoryName: 'Acompañante de Ciclomotor',
+          title: 'ACOMPAÑANTE EN CICLOMOTOR',
+          desc: 'Pasajero en vehículo menor de dos ruedas en la Ciudad.',
+          explanation: 'En CABA, el límite de alcohol para acompañantes de motovehículos es de 0,5 g/l.',
+          icon: 'two_wheeler'
         },
 
         // ACCIÓN: NO CORRESPONDE (Menores, peatones, pasajeros)
@@ -1506,9 +1517,9 @@
         if (scorePct >= 85 && avgSec < 0.75) {
           adviceHtml = `<strong>🏆 Conocimiento y reflejos de élite:</strong> Identificaste con gran rapidez y precisión (<strong>${avgSec.toFixed(2)} s</strong> de promedio) las exigencias del Código de Tránsito de CABA. ¡Excelente conocimiento normativo!`;
         } else if (scorePct >= 60) {
-          adviceHtml = `<strong>👍 Buen dominio normativo:</strong> Acertaste <strong>${correctCount} de ${TOTAL_ROUNDS}</strong> en <strong>${avgSec.toFixed(2)} s</strong>. Recordá las particularidades en CABA: los acompañantes de moto tienen límite de 0,2 g/l y los principiantes tienen 0,0 g/l estricto.`;
+          adviceHtml = `<strong>👍 Buen dominio normativo:</strong> Acertaste <strong>${correctCount} de ${TOTAL_ROUNDS}</strong> en <strong>${avgSec.toFixed(2)} s</strong>. Recordá las particularidades en CABA: conductor de moto = 0,2 g/l, acompañante de moto = 0,5 g/l y principiantes = 0,0 g/l.`;
         } else {
-          adviceHtml = `<strong>⚠️ Repaso normativo necesario:</strong> Obtuviste <strong>${correctCount} de ${TOTAL_ROUNDS}</strong>. Recordá: Ambulancias/profesionales y principiantes P = 0,0 g/l; Acompañante de moto = 0,2 g/l; Autos y motos particulares = 0,5 g/l.`;
+          adviceHtml = `<strong>⚠️ Repaso normativo necesario:</strong> Obtuviste <strong>${correctCount} de ${TOTAL_ROUNDS}</strong>. Recordá: Ambulancias/profesionales y principiantes P = 0,0 g/l; Conductor de moto = 0,2 g/l; Autos particulares y acompañante de moto = 0,5 g/l.`;
         }
         resAdviceText.innerHTML = adviceHtml;
 
