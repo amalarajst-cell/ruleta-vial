@@ -198,20 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(() => {});
   }
 
-  // Check if player has already completed their turn
+  // Modo sin restricciones: los participantes pueden jugar todas las veces que quieran
   function hasPlayerCompleted(email) {
-    const cleanE = (email || playerEmail || '').toLowerCase().trim();
-    const cleanN = (playerName || '').toLowerCase().trim();
-    if (!cleanE && !cleanN) return false;
-
-    return completedPlayers.some(item => {
-      const it = (item || '').toLowerCase().trim();
-      return (cleanE && it === cleanE) || (cleanN && it === cleanN);
-    }) || leaderboard.some(e => {
-      const eEmail = (e.email || '').toLowerCase().trim();
-      const eName  = (e.name || '').toLowerCase().trim();
-      return (cleanE && eEmail === cleanE) || (cleanN && eName === cleanN);
-    });
+    return false;
   }
 
   function markPlayerCompleted(email) {
@@ -236,6 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const regNameInput      = document.getElementById('reg-name');
   const regEmailInput     = document.getElementById('reg-email');
   const regSubmitBtn      = document.getElementById('btn-register-submit');
+  const btnQuickTestUser  = document.getElementById('btn-quick-test-user');
+  const btnFillTestUser   = document.getElementById('btn-fill-test-user');
 
   // Roulette screen
   const spinBtn           = document.getElementById('btn-spin-roulette');
@@ -273,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resStatTime       = document.getElementById('res-stat-time');
   const resStatPoints     = document.getElementById('res-stat-points');
   const resBreakdownList  = document.getElementById('res-breakdown-list');
+  const btnResPlayAgain   = document.getElementById('btn-res-play-again');
   const btnResGoRanking   = document.getElementById('btn-res-go-ranking');
   const btnResNewPlayer   = document.getElementById('btn-res-new-player');
 
@@ -481,25 +473,13 @@ document.addEventListener('DOMContentLoaded', () => {
   updateRouletteMode();
 
   function updateRouletteLockState() {
-    const isCompleted = hasPlayerCompleted(playerEmail);
-    if (isCompleted) {
-      if (spinBtn) {
-        spinBtn.disabled = true;
-        spinBtn.innerHTML = '<span class="material-symbols-outlined">lock</span> GIRO COMPLETADO';
-        spinBtn.style.opacity = '0.6';
-      }
-      if (rouletteLockTag) {
-        rouletteLockTag.style.display = 'block';
-      }
-    } else {
-      if (spinBtn) {
-        spinBtn.disabled = false;
-        spinBtn.innerHTML = '<span class="material-symbols-outlined">cached</span> ¡GIRAR RULETA AHORA!';
-        spinBtn.style.opacity = '1';
-      }
-      if (rouletteLockTag) {
-        rouletteLockTag.style.display = 'none';
-      }
+    if (spinBtn) {
+      spinBtn.disabled = false;
+      spinBtn.innerHTML = '<span class="material-symbols-outlined">cached</span> ¡GIRAR RULETA AHORA!';
+      spinBtn.style.opacity = '1';
+    }
+    if (rouletteLockTag) {
+      rouletteLockTag.style.display = 'none';
     }
   }
 
@@ -586,15 +566,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audioSystem.init();
     updateHeaderDisplay();
-
-    if (hasPlayerCompleted(playerEmail)) {
-      alert(`Hola ${playerName}, ya participaste anteriormente con este correo. Te mostramos el Ranking de posiciones.`);
-      showScreen('ranking');
-    } else {
-      window.open('juegos.html', '_blank');
-      showScreen('roulette');
-    }
+    showScreen('roulette');
   }
+
+  // ── USUARIO DE PRUEBA (MODO TESTER PÚBLICO) ────────────────
+  function loginAsTestUser() {
+    const testName = 'Usuario de Prueba';
+    const testEmail = 'prueba@convivenciavial.gob.ar';
+    if (regNameInput) regNameInput.value = testName;
+    if (regEmailInput) regEmailInput.value = testEmail;
+
+    playerName = testName;
+    playerEmail = testEmail;
+    playerAvatar = getRoleIcon(playerRole);
+    localStorage.setItem('vialplay_player_name', playerName);
+    localStorage.setItem('vialplay_player_email', playerEmail);
+    localStorage.setItem('vialplay_player_avatar', playerAvatar);
+    localStorage.setItem('vialplay_player_role', playerRole);
+
+    const timestamp = new Date().toLocaleString('es-AR');
+    loginsHistory.push({ name: playerName, email: playerEmail, role: playerRole, timestamp });
+    localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+    pushCloudState();
+
+    audioSystem.init();
+    updateHeaderDisplay();
+    showScreen('roulette');
+  }
+
+  function fillTestUserFields() {
+    if (regNameInput) regNameInput.value = 'Usuario de Prueba';
+    if (regEmailInput) regEmailInput.value = 'prueba@convivenciavial.gob.ar';
+    if (audioSystem && audioSystem.playClick) audioSystem.playClick();
+  }
+
+  btnQuickTestUser?.addEventListener('click', loginAsTestUser);
+  btnFillTestUser?.addEventListener('click', fillTestUserFields);
 
   regSubmitBtn?.addEventListener('click', handleRegistration);
   document.querySelector('#screen-register form')?.addEventListener('submit', (e) => {
@@ -609,10 +616,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── SPIN WHEEL TRIGGER ────────────────────────────────────
   function triggerSpin() {
-    if (hasPlayerCompleted(playerEmail)) {
-      alert('Ya realizaste tu giro de bienvenida. Registrá a otro participante para jugar nuevamente.');
-      return;
-    }
     if (!roulette.isSpinning) {
       audioSystem.init();
       if (spinBtn) spinBtn.disabled = true;
@@ -741,6 +744,11 @@ document.addEventListener('DOMContentLoaded', () => {
       times: [],
       perQuestion: []
     };
+
+    sessionScore = 0;
+    sessionStreak = 0;
+    sessionCorrect = 0;
+    updateHeaderDisplay();
 
     showScreen('quiz');
     renderCurrentQuestion();
@@ -1067,6 +1075,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── RESULTS BUTTON ACTIONS ────────────────────────────────
+  btnResPlayAgain?.addEventListener('click', () => {
+    updateRouletteLockState();
+    showScreen('roulette');
+  });
   btnResGoRanking?.addEventListener('click', () => showScreen('ranking'));
   btnResNewPlayer?.addEventListener('click', () => {
     playerName = '';
@@ -1973,11 +1985,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showScreen(targetScreen);
   } else if (playerName) {
     updateHeaderDisplay();
-    if (hasPlayerCompleted(playerEmail)) {
-      showScreen('ranking');
-    } else {
-      showScreen('roulette');
-    }
+    showScreen('roulette');
   } else {
     showScreen('register');
   }
