@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="js/cloud-sync.js"></script>
 
   <style>
     :root {
@@ -856,9 +857,15 @@
           <span class="header-title-text">Tiempo de Reacción</span>
         </div>
       </div>
-      <button type="button" class="btn-sound" id="btn-sound" title="Alternar Sonido">
-        <span class="material-symbols-outlined text-[20px]" id="sound-icon">volume_up</span>
-      </button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="reaccion-player-pill" style="display:flex;align-items:center;gap:8px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);font-size:12px;color:var(--text-muted);">
+          <img id="reaccion-player-avatar" src="assets/brand/icon_auto.png" style="width:18px;height:18px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+          <span id="reaccion-player-name" style="color:#fff;font-weight:700;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Participante</span>
+        </div>
+        <button type="button" class="btn-sound" id="btn-sound" title="Alternar Sonido">
+          <span class="material-symbols-outlined text-[20px]" id="sound-icon">volume_up</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -991,6 +998,11 @@
         </div>
       </div>
 
+      <div id="sync-status-box" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;border-radius:12px;background:rgba(0,229,138,0.12);border:1px solid rgba(0,229,138,0.35);color:var(--accent-green);font-size:12px;font-weight:700;">
+        <span class="material-symbols-outlined text-[18px]">cloud_sync</span>
+        <span id="sync-status-text">Sincronizando con Administración...</span>
+      </div>
+
       <div class="results-actions-row">
         <button type="button" class="btn-replay-primary" id="btn-replay">
           <span class="material-symbols-outlined text-[20px]">refresh</span>
@@ -998,6 +1010,9 @@
         </button>
         <a href="index.html?screen=practice" class="btn-back-hub">
           <span>Práctica</span>
+        </a>
+        <a href="index.html?screen=admin" class="btn-back-hub" style="background:rgba(255,198,0,0.12);border-color:var(--accent-yellow);color:var(--accent-yellow);" title="Ver Panel de Administración">
+          <span>Admin</span>
         </a>
       </div>
     </div>
@@ -1035,6 +1050,13 @@
 
   <script>
     (function() {
+      // ── PARTICIPANTE ACTIVO ──
+      const activePlayer = window.VialCloudSync ? window.VialCloudSync.getActivePlayer() : { name: 'Participante', avatar: 'assets/brand/icon_auto.png' };
+      const reaccionPlayerName = document.getElementById('reaccion-player-name');
+      const reaccionPlayerAvatar = document.getElementById('reaccion-player-avatar');
+      if (reaccionPlayerName && activePlayer.name) reaccionPlayerName.textContent = activePlayer.name;
+      if (reaccionPlayerAvatar && activePlayer.avatar) reaccionPlayerAvatar.src = activePlayer.avatar;
+
       // ── SONIDO VIA WEB AUDIO API ──
       let audioEnabled = true;
       let audioCtx = null;
@@ -1632,6 +1654,40 @@
         resultsCard.style.display = 'flex';
         roundBadge.textContent = 'DESAFÍO COMPLETADO';
         roundStateText.textContent = `Puntaje: ${correctCount}/${TOTAL_ROUNDS}`;
+
+        // ── SINCRONIZACIÓN CON ADMINISTRACIÓN ──
+        const syncStatusBox = document.getElementById('sync-status-box');
+        const syncStatusText = document.getElementById('sync-status-text');
+        const speedBonus = Math.max(0, Math.round((2.2 - avgSec) * 100));
+        const finalScore = Math.max(50, Math.round((correctCount * 100) + speedBonus));
+
+        if (window.VialCloudSync) {
+          const gameDetails = gameHistory.map(h => ({
+            question: h.title || h.actionLabel,
+            selected: h.userAction,
+            expected: h.expectedAction,
+            isCorrect: h.correct,
+            timeSeconds: h.timeSec,
+            points: h.correct ? 100 : 0
+          }));
+
+          window.VialCloudSync.syncGameSession({
+            game: 'reaccion',
+            category: 'Tiempo de Reacción',
+            score: finalScore,
+            time: avgSec,
+            accuracy: `${correctCount}/${TOTAL_ROUNDS}`,
+            details: gameDetails
+          }).then(() => {
+            if (syncStatusText) {
+              syncStatusText.innerHTML = `✅ ¡Sincronizado con Administración! (+${finalScore} XP)`;
+            }
+          }).catch(() => {
+            if (syncStatusText) {
+              syncStatusText.textContent = 'Guardado localmente en el navegador';
+            }
+          });
+        }
       }
 
       function resetGameToPlayAgain() {

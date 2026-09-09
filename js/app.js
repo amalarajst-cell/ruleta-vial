@@ -116,17 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const map = new Map();
     [...(baseList || []), ...(incomingList || [])].forEach(entry => {
       if (!entry || (!entry.name && !entry.email)) return;
-      const key = (entry.email || entry.name).toLowerCase().trim();
+      const userKey = (entry.email || entry.name).toLowerCase().trim();
+      const gameKey = entry.game || (entry.category === 'Tiempo de Reacción' ? 'reaccion' : (entry.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'));
+      const key = `${userKey}___${gameKey}`;
       const existing = map.get(key);
       if (!existing) {
-        map.set(key, { ...entry });
+        map.set(key, { ...entry, game: gameKey });
       } else {
         const existingScore = Number(existing.score) || 0;
         const entryScore    = Number(entry.score) || 0;
         const existingTime  = Number(existing.time) || 999;
         const entryTime     = Number(entry.time) || 999;
         if (entryScore > existingScore || (entryScore === existingScore && entryTime < existingTime)) {
-          map.set(key, { ...entry });
+          map.set(key, { ...entry, game: gameKey });
         }
       }
     });
@@ -288,6 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminMaxScore     = document.getElementById('admin-metric-maxscore');
   const adminAvgTime      = document.getElementById('admin-metric-avgtime');
   const adminSearchInput  = document.getElementById('admin-search-input');
+  const adminGameFilter   = document.getElementById('admin-game-filter');
   const adminTableBody    = document.getElementById('admin-table-body');
   const btnExportRanking  = document.getElementById('btn-export-ranking');
   const btnExportLogins   = document.getElementById('btn-export-logins');
@@ -1021,13 +1024,19 @@ document.addEventListener('DOMContentLoaded', () => {
       email: playerEmail,
       avatar: playerAvatar,
       role: playerRole,
+      game: 'ruleta',
       score: points,
       category: catName,
       time: timeAvg,
+      accuracy: points >= 500 ? '5/5' : `${Math.min(5, Math.max(0, Math.round(points / 100)))}/5`,
       date: new Date().toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
     };
 
-    const existingIdx = leaderboard.findIndex(e => (e.email || '').toLowerCase().trim() === cleanEmail);
+    const existingIdx = leaderboard.findIndex(e => {
+      const eEmail = (e.email || e.name || '').toLowerCase().trim();
+      const eGame = e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'));
+      return eEmail === cleanEmail && eGame === 'ruleta';
+    });
     if (existingIdx >= 0) {
       if (points >= (leaderboard[existingIdx].score || 0)) {
         leaderboard[existingIdx] = entry;
@@ -1287,12 +1296,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function renderAdminDashboard() {
-    const totalUsers = leaderboard.length;
-    const perfectCount = leaderboard.filter(e => (Number(e.score) || 0) >= 500).length;
-    const maxScore = totalUsers > 0 ? Math.max(...leaderboard.map(e => Number(e.score) || 0)) : 0;
+  function getEntryGame(e) {
+    if (e.game) return e.game;
+    if (e.category === 'Tiempo de Reacción') return 'reaccion';
+    if (e.category === 'Límites de Alcoholemia') return 'alcoholemia';
+    return 'ruleta';
+  }
+
+  function renderAdminDashboard(forceReload = false) {
+    if (forceReload) {
+      try {
+        leaderboard = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+        loginsHistory = JSON.parse(localStorage.getItem('vex_logins_history') || '[]');
+        responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
+      } catch(e) {}
+    }
+
+    const selectedGame = adminGameFilter?.value || 'all';
+
+    const gameFiltered = leaderboard.filter(e => {
+      if (selectedGame === 'all') return true;
+      return getEntryGame(e) === selectedGame;
+    });
+
+    const totalUsers = gameFiltered.length;
+    const perfectCount = gameFiltered.filter(e => {
+      const g = getEntryGame(e);
+      if (g === 'reaccion' || g === 'alcoholemia') {
+        return (e.accuracy && e.accuracy.includes('8/8')) || (Number(e.score) || 0) >= 800;
+      }
+      return (Number(e.score) || 0) >= 500;
+    }).length;
+
+    const maxScore = totalUsers > 0 ? Math.max(...gameFiltered.map(e => Number(e.score) || 0)) : 0;
     const avgOverallTime = totalUsers > 0 
-      ? (leaderboard.reduce((a, b) => a + (Number(b.time) || 0), 0) / totalUsers).toFixed(2) 
+      ? (gameFiltered.reduce((a, b) => a + (Number(b.time) || 0), 0) / totalUsers).toFixed(2) 
       : '0.00';
 
     if (adminTotalUsers) adminTotalUsers.textContent = totalUsers;
@@ -1301,26 +1339,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminAvgTime) adminAvgTime.textContent = `${avgOverallTime}s`;
 
     const searchTerm = (adminSearchInput?.value || '').toLowerCase().trim();
-    const filtered = leaderboard.filter(e => {
+    const filtered = gameFiltered.filter(e => {
       if (!searchTerm) return true;
+      const g = getEntryGame(e);
       return (e.name || '').toLowerCase().includes(searchTerm) ||
              (e.email || '').toLowerCase().includes(searchTerm) ||
              (e.role || '').toLowerCase().includes(searchTerm) ||
-             (e.category || '').toLowerCase().includes(searchTerm);
+             (e.category || '').toLowerCase().includes(searchTerm) ||
+             g.toLowerCase().includes(searchTerm);
     });
 
     if (adminTableBody) {
       if (filtered.length === 0) {
         adminTableBody.innerHTML = `
           <tr>
-            <td colspan="8" style="text-align:center;padding:36px;color:var(--on-surface-variant);font-size:14px;">
-              No se encontraron registros de participantes.
+            <td colspan="9" style="text-align:center;padding:36px;color:var(--on-surface-variant);font-size:14px;">
+              No se encontraron registros de participantes para el filtro seleccionado.
             </td>
           </tr>
         `;
       } else {
         adminTableBody.innerHTML = filtered.map((e, idx) => {
-          const originalIdx = leaderboard.indexOf(e);
+          const originalIdx = gameFiltered.indexOf(e);
           let medalBadge = `<span style="font-family:var(--font-display);font-weight:900;color:var(--on-surface-variant);font-size:14px;">#${originalIdx + 1}</span>`;
           if (originalIdx === 0) medalBadge = `<img src="assets/medals/oro.png" class="medal-icon" alt="1°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
           else if (originalIdx === 1) medalBadge = `<img src="assets/medals/plata.png" class="medal-icon" alt="2°" style="width:28px;height:28px;vertical-align:middle;display:inline-block;">`;
@@ -1332,9 +1372,21 @@ document.addEventListener('DOMContentLoaded', () => {
           const timeLabel = e.time ? Number(e.time).toFixed(2) + 's' : '0.00s';
           const dateLabel = e.date || new Date().toLocaleDateString('es-AR');
 
+          const g = getEntryGame(e);
+          let gameBadge = '';
+          if (g === 'reaccion') {
+            gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(141,226,214,0.15);border:1px solid rgba(141,226,214,0.3);color:var(--tertiary);font-size:11px;font-weight:800;">⚡ Reacción</span>`;
+          } else if (g === 'alcoholemia') {
+            gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(179,136,255,0.15);border:1px solid rgba(179,136,255,0.3);color:#D1C4E9;font-size:11px;font-weight:800;">🍷 Alcoholemia</span>`;
+          } else {
+            gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(255,198,0,0.15);border:1px solid rgba(255,198,0,0.3);color:var(--secondary-container);font-size:11px;font-weight:800;">🎡 Ruleta</span>`;
+          }
+
+          const accuracyLabel = e.accuracy || (g === 'ruleta' ? (Number(e.score) >= 500 ? '5/5' : `${Math.min(5, Math.max(0, Math.round(Number(e.score)/100)))}/5`) : '—');
+
           return `
             <tr>
-              <td style="text-align:center;width:70px;">${medalBadge}</td>
+              <td style="text-align:center;width:65px;">${medalBadge}</td>
               <td>
                 <div style="display:flex;align-items:center;gap:10px;">
                   <div style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--secondary-container);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -1350,13 +1402,19 @@ document.addEventListener('DOMContentLoaded', () => {
               </td>
               <td style="font-size:13px;color:var(--on-surface-variant);">${e.email || '—'}</td>
               <td>
-                <span style="font-size:13px;font-weight:600;color:var(--tertiary);">${catLabel}</span>
+                <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+                  ${gameBadge}
+                  <span style="font-size:11px;color:var(--on-surface-variant);">${catLabel}</span>
+                </div>
               </td>
               <td style="text-align:right;font-family:var(--font-display);font-size:15px;color:var(--secondary-container);font-weight:900;">
                 ${e.score} XP
               </td>
               <td style="text-align:right;font-family:var(--font-display);font-size:14px;color:var(--on-surface);">
                 ${timeLabel}
+              </td>
+              <td style="text-align:center;font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--success);">
+                ${accuracyLabel}
               </td>
               <td style="text-align:right;font-size:12px;color:var(--on-surface-variant);white-space:nowrap;">
                 ${dateLabel}
@@ -1368,7 +1426,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  adminSearchInput?.addEventListener('input', renderAdminDashboard);
+  adminSearchInput?.addEventListener('input', () => renderAdminDashboard(false));
+  adminGameFilter?.addEventListener('change', () => renderAdminDashboard(false));
+
+  // Escuchar sincronizaciones automáticas entre juegos
+  window.addEventListener('vialplay:session_synced', () => {
+    fetchCloudState();
+    renderAdminDashboard(true);
+    renderLeaderboardUI();
+  });
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'vex_leaderboard' || e.key === 'vex_responses_history') {
+      try {
+        leaderboard = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+        responsesHistory = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
+      } catch(err) {}
+      renderAdminDashboard(false);
+      renderLeaderboardUI();
+    }
+  });
 
   // CSV Export functions
   function downloadCSV(filename, content) {
@@ -1382,11 +1458,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   btnExportRanking?.addEventListener('click', () => {
-    let csv = 'Posicion,Nombre,Email,Categoria,Puntaje,TiempoPromedio,Fecha\n';
+    let csv = 'Posicion,Juego,Nombre,Email,Rol,Categoria,Puntaje,TiempoPromedio,Aciertos,Fecha\n';
     leaderboard.forEach((e, i) => {
-      csv += `"${i+1}","${e.name}","${e.email}","${e.category}","${e.score}","${e.time}","${e.date || ''}"\n`;
+      const g = getEntryGame(e);
+      const acc = e.accuracy || (g === 'ruleta' ? (Number(e.score) >= 500 ? '5/5' : `${Math.min(5, Math.max(0, Math.round(Number(e.score)/100)))}/5`) : '');
+      csv += `"${i+1}","${g}","${e.name}","${e.email}","${e.role || ''}","${e.category}","${e.score}","${e.time}","${acc}","${e.date || ''}"\n`;
     });
-    downloadCSV(`vialplay_ranking_${new Date().toISOString().slice(0,10)}.csv`, csv);
+    downloadCSV(`vialplay_ranking_unificado_${new Date().toISOString().slice(0,10)}.csv`, csv);
   });
 
   btnExportLogins?.addEventListener('click', () => {
@@ -1398,11 +1476,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnExportAnswers?.addEventListener('click', () => {
-    let csv = 'FechaYHora,Nombre,Email,Categoria,Pregunta,RespuestaElegida,RespuestaCorrecta,Resultado,TiempoSegundos,Puntos\n';
+    let csv = 'FechaYHora,Juego,Nombre,Email,Categoria,PreguntaOEstimulo,RespuestaElegida,RespuestaCorrecta,Resultado,TiempoSegundos,Puntos\n';
     responsesHistory.forEach(r => {
-      csv += `"${r.timestamp}","${r.name}","${r.email}","${r.category}","${(r.question || '').replace(/"/g, '""')}","${(r.selectedAnswer || '').replace(/"/g, '""')}","${(r.correctAnswer || '').replace(/"/g, '""')}","${r.isCorrect}","${r.timeSeconds}","${r.pointsGained}"\n`;
+      const g = r.game || (r.category === 'Tiempo de Reacción' ? 'reaccion' : (r.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'));
+      csv += `"${r.timestamp}","${g}","${r.name}","${r.email}","${r.category}","${(r.question || '').replace(/"/g, '""')}","${(r.selectedAnswer || '').replace(/"/g, '""')}","${(r.correctAnswer || '').replace(/"/g, '""')}","${r.isCorrect}","${r.timeSeconds}","${r.pointsGained}"\n`;
     });
-    downloadCSV(`vialplay_respuestas_${new Date().toISOString().slice(0,10)}.csv`, csv);
+    downloadCSV(`vialplay_respuestas_todas_${new Date().toISOString().slice(0,10)}.csv`, csv);
   });
 
   btnAdminReset?.addEventListener('click', () => {

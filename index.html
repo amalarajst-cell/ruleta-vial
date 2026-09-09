@@ -655,10 +655,18 @@
             </button>
           </div>
 
-          <div style="display:flex;align-items:center;gap:12px;flex:1;max-width:440px;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:580px;">
+            <div style="display:flex;align-items:center;">
+              <select id="admin-game-filter" style="background:var(--surface-container-highest);color:var(--secondary-container);border:1.5px solid var(--secondary-container);padding:8px 12px;border-radius:10px;font-size:12px;font-weight:800;outline:none;cursor:pointer;">
+                <option value="all">🎮 Todos los Juegos</option>
+                <option value="ruleta">🎡 Ruleta Vial</option>
+                <option value="reaccion">⚡ Tiempo de Reacción</option>
+                <option value="alcoholemia">🍷 Límites de Alcoholemia</option>
+              </select>
+            </div>
             <div class="input-field-wrap" style="flex:1;">
               <span class="material-symbols-outlined">search</span>
-              <input class="text-input" id="admin-search-input" type="text" placeholder="Filtrar por participante, email, rol o categoría..." style="padding-top:9px;padding-bottom:9px;font-size:13px;">
+              <input class="text-input" id="admin-search-input" type="text" placeholder="Filtrar participante, email, rol..." style="padding-top:9px;padding-bottom:9px;font-size:13px;">
             </div>
             <button id="btn-admin-reset" title="Reiniciar datos locales" style="padding:10px 14px;border-radius:10px;background:rgba(255,77,77,0.15);border:1px solid #FF4D4D;color:#FF4D4D;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
               <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
@@ -673,13 +681,14 @@
             <table class="ranking-table">
               <thead>
                 <tr>
-                  <th style="width:70px;text-align:center;">Pos</th>
+                  <th style="width:65px;text-align:center;">Pos</th>
                   <th>Participante</th>
                   <th>Rol / Licencia</th>
                   <th>Email</th>
-                  <th>Categoría</th>
-                  <th style="text-align:right">XP</th>
+                  <th>Juego / Módulo</th>
+                  <th style="text-align:right">XP / Puntaje</th>
                   <th style="text-align:right">Tiempo Prom.</th>
+                  <th style="text-align:center">Aciertos</th>
                   <th style="text-align:right">Fecha</th>
                 </tr>
               </thead>
@@ -938,6 +947,7 @@
   <canvas id="confetti-canvas"></canvas>
 
   <!-- Scripts -->
+  <script src="js/cloud-sync.js?v=8"></script>
   <script src="js/questions.js?v=8"></script>
   <script src="js/colectivo_questions.js?v=8"></script>
   <script src="js/moto_questions.js?v=8"></script>
