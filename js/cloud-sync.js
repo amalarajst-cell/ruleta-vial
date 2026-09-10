@@ -36,6 +36,51 @@
     });
   }
 
+  function parseEntryAciertos(e) {
+    if (!e) return { correct: 0, total: 0, ratio: 0 };
+    if (e.accuracy && typeof e.accuracy === 'string') {
+      const m = e.accuracy.match(/(\d+)\s*\/\s*(\d+)/);
+      if (m) {
+        const c = parseInt(m[1], 10);
+        const t = parseInt(m[2], 10) || 1;
+        return { correct: c, total: t, ratio: c / t };
+      }
+    }
+    const g = e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'));
+    if (g === 'ruleta') {
+      const sc = Number(e.score) || 0;
+      const c = sc >= 500 ? 5 : Math.min(5, Math.max(0, Math.round(sc / 100)));
+      return { correct: c, total: 5, ratio: c / 5 };
+    }
+    return { correct: 0, total: 0, ratio: 0 };
+  }
+
+  function compareParticipants(a, b) {
+    const accA = parseEntryAciertos(a);
+    const accB = parseEntryAciertos(b);
+
+    // 1° Mayor cantidad / porcentaje de aciertos
+    if (Math.abs(accB.ratio - accA.ratio) > 0.0001) {
+      return accB.ratio - accA.ratio;
+    }
+    if (accB.correct !== accA.correct) {
+      return accB.correct - accA.correct;
+    }
+
+    // 2° Menor tiempo de reacción (menor tiempo = mejor reflejo)
+    const timeA = Number(a.time) > 0 ? Number(a.time) : 9999;
+    const timeB = Number(b.time) > 0 ? Number(b.time) : 9999;
+    if (Math.abs(timeA - timeB) > 0.0001) {
+      return timeA - timeB;
+    }
+
+    // 3° Desempate: mayor puntaje XP y luego más reciente
+    const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
+    if (scoreDiff !== 0) return scoreDiff;
+
+    return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
+  }
+
   async function syncGameSession(sessionData) {
     const player = getActivePlayer();
 
@@ -77,15 +122,13 @@
 
     if (existingIdx >= 0) {
       const existing = localLeaderboard[existingIdx];
-      localLeaderboard[existingIdx] = {
-        ...entry,
-        score: Math.max(entry.score, Number(existing.score) || 0)
-      };
+      const isEntryBetter = compareParticipants(entry, existing) < 0;
+      localLeaderboard[existingIdx] = isEntryBetter ? entry : existing;
     } else {
       localLeaderboard.push(entry);
     }
-    // Ordenar localLeaderboard por puntaje descendente
-    localLeaderboard.sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0));
+    // Ordenar localLeaderboard: 1° Más aciertos, 2° Menor tiempo de reacción
+    localLeaderboard.sort(compareParticipants);
     localStorage.setItem('vex_leaderboard', JSON.stringify(localLeaderboard));
     localStorage.setItem('vialplay_last_activity', JSON.stringify(entry));
 
@@ -139,15 +182,13 @@
 
         if (cloudIdx >= 0) {
           const existing = cloudLeaderboard[cloudIdx];
-          cloudLeaderboard[cloudIdx] = {
-            ...entry,
-            score: Math.max(entry.score, Number(existing.score) || 0)
-          };
+          const isEntryBetter = compareParticipants(entry, existing) < 0;
+          cloudLeaderboard[cloudIdx] = isEntryBetter ? entry : existing;
         } else {
           cloudLeaderboard.push(entry);
         }
 
-        cloudLeaderboard.sort((a, b) => (Number(b.score) || 0) - (Number(a.score) || 0));
+        cloudLeaderboard.sort(compareParticipants);
         currentContent.leaderboard = cloudLeaderboard;
 
         const putRes = await fetch(GH_API_URL, {

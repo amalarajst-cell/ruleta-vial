@@ -114,41 +114,85 @@ document.addEventListener('DOMContentLoaded', () => {
     return decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
   }
 
+  function getEntryGame(e) {
+    if (!e) return 'ruleta';
+    if (e.game) return e.game;
+    if (e.category === 'Tiempo de Reacción') return 'reaccion';
+    if (e.category === 'Límites de Alcoholemia') return 'alcoholemia';
+    return 'ruleta';
+  }
+
+  function parseEntryAciertos(e) {
+    if (!e) return { correct: 0, total: 0, ratio: 0 };
+    if (e.accuracy && typeof e.accuracy === 'string') {
+      const m = e.accuracy.match(/(\d+)\s*\/\s*(\d+)/);
+      if (m) {
+        const c = parseInt(m[1], 10);
+        const t = parseInt(m[2], 10) || 1;
+        return { correct: c, total: t, ratio: c / t };
+      }
+    }
+    const g = getEntryGame(e);
+    if (g === 'ruleta') {
+      const sc = Number(e.score) || 0;
+      const c = sc >= 500 ? 5 : Math.min(5, Math.max(0, Math.round(sc / 100)));
+      return { correct: c, total: 5, ratio: c / 5 };
+    }
+    return { correct: 0, total: 0, ratio: 0 };
+  }
+
+  function compareParticipants(a, b) {
+    const accA = parseEntryAciertos(a);
+    const accB = parseEntryAciertos(b);
+
+    // 1° El que más aciertos tiene (prioridad número 1)
+    if (Math.abs(accB.ratio - accA.ratio) > 0.0001) {
+      return accB.ratio - accA.ratio;
+    }
+    if (accB.correct !== accA.correct) {
+      return accB.correct - accA.correct;
+    }
+
+    // 2° Menor tiempo de reacción promedio (menor tiempo = mejor reflejo)
+    const timeA = Number(a.time) > 0 ? Number(a.time) : 9999;
+    const timeB = Number(b.time) > 0 ? Number(b.time) : 9999;
+    if (Math.abs(timeA - timeB) > 0.0001) {
+      return timeA - timeB;
+    }
+
+    // 3° Desempate: mayor puntaje XP y luego más reciente
+    const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
+    if (scoreDiff !== 0) return scoreDiff;
+
+    return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
+  }
+
   function mergeLeaderboards(baseList, incomingList) {
     const map = new Map();
     [...(baseList || []), ...(incomingList || [])].forEach(entry => {
       if (!entry || (!entry.name && !entry.email)) return;
       const userKey = (entry.email || entry.name).toLowerCase().trim();
-      const gameKey = entry.game || (entry.category === 'Tiempo de Reacción' ? 'reaccion' : (entry.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'));
+      const gameKey = getEntryGame(entry);
       const key = `${userKey}___${gameKey}`;
       const existing = map.get(key);
       if (!existing) {
         map.set(key, { ...entry, game: gameKey, timestamp: Number(entry.timestamp) || Date.now() });
       } else {
-        const existingScore = Number(existing.score) || 0;
-        const entryScore    = Number(entry.score) || 0;
-        const maxScore      = Math.max(existingScore, entryScore);
-
         const existingTimestamp = Number(existing.timestamp) || 0;
         const entryTimestamp    = Number(entry.timestamp) || 0;
-        const isEntryNewer      = entryTimestamp >= existingTimestamp;
-        const mostRecentData    = isEntryNewer ? entry : existing;
+        const isEntryBetter     = compareParticipants(entry, existing) < 0;
+        const bestData          = isEntryBetter ? entry : existing;
 
         map.set(key, {
-          ...mostRecentData,
+          ...bestData,
           game: gameKey,
-          score: maxScore,
           timestamp: Math.max(existingTimestamp, entryTimestamp)
         });
       }
     });
 
     const merged = Array.from(map.values());
-    merged.sort((a, b) => {
-      const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
-      if (scoreDiff !== 0) return scoreDiff;
-      return (Number(a.time) || 0) - (Number(b.time) || 0);
-    });
+    merged.sort(compareParticipants);
     return merged;
   }
 
@@ -1328,13 +1372,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function getEntryGame(e) {
-    if (e.game) return e.game;
-    if (e.category === 'Tiempo de Reacción') return 'reaccion';
-    if (e.category === 'Límites de Alcoholemia') return 'alcoholemia';
-    return 'ruleta';
-  }
-
   function renderAdminDashboard(forceReload = false) {
     if (forceReload) {
       try {
@@ -1345,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const selectedGame = adminGameFilter?.value || 'all';
-    const sortMode     = adminSortOrder?.value || 'recent';
+    const sortMode     = adminSortOrder?.value || 'score';
 
     let gameFiltered = leaderboard.filter(e => {
       if (selectedGame === 'all') return true;
@@ -1357,14 +1394,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeB = Number(b.timestamp) || 0;
         const timeA = Number(a.timestamp) || 0;
         if (timeB !== timeA) return timeB - timeA;
-        return (Number(b.score) || 0) - (Number(a.score) || 0);
+        return compareParticipants(a, b);
       });
     } else {
-      gameFiltered.sort((a, b) => {
-        const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
-        if (scoreDiff !== 0) return scoreDiff;
-        return (Number(a.time) || 0) - (Number(b.time) || 0);
-      });
+      // Ordenamiento oficial: 1° El que más aciertos tiene y 2° El menor tiempo de reacción
+      gameFiltered.sort(compareParticipants);
     }
 
     const totalUsers = gameFiltered.length;
@@ -1499,6 +1533,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (icon) icon.style.animation = '';
     }, 600);
   });
+
+  window.setAdminSort = function(mode) {
+    if (adminSortOrder) {
+      adminSortOrder.value = mode;
+    }
+    renderAdminDashboard(false);
+  };
 
   adminSortOrder?.addEventListener('change', () => renderAdminDashboard(false));
   adminSearchInput?.addEventListener('input', () => renderAdminDashboard(false));

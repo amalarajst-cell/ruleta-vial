@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Código QR — Ruleta Vial</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-screen: #0b1329;
+      --panel-bg: #131f3e;
+      --accent: #ffd000;
+      --accent-hover: #ffdf40;
+      --text-light: #f8fafc;
+      --text-dim: #94a3b8;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-screen);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    /* ── BARRA DE HERRAMIENTAS SUPERIOR (No se imprime) ── */
+    .toolbar {
+      position: fixed;
+      top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      padding: 8px 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      max-width: 95vw;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #334155;
+      transform: translateY(-1px);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #0b1329;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-hover);
+      color: #000;
+    }
+
+    .url-chip {
+      font-size: 12px;
+      color: var(--accent);
+      font-family: monospace;
+      padding: 4px 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 208, 0, 0.3);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── CONTENEDOR DEL QR ── */
+    .qr-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 50px;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s ease;
+    }
+
+    #qr-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+    }
+
+    #qr-container img,
+    #qr-container canvas,
+    #qr-container svg {
+      display: block !important;
+      width: min(75vmin, 680px) !important;
+      height: min(75vmin, 680px) !important;
+      max-width: 100%;
+      image-rendering: pixelated;
+    }
+
+    /* Subtítulo discreto opcional */
+    .qr-caption {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0b1329;
+      font-family: 'Barlow Condensed', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: none; /* Oculto por defecto para SOLO EL QR */
+    }
+
+    .show-caption .qr-caption {
+      display: block;
+    }
+
+    /* Modal de configuración de URL */
+    .url-input-popover {
+      display: none;
+      position: fixed;
+      top: 75px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      gap: 8px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      z-index: 101;
+    }
+
+    .url-input-popover.active {
+      display: flex;
+    }
+
+    .url-input-popover input {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      width: 320px;
+    }
+
+    /* Toast de aviso */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      background: #10b981;
+      color: #ffffff;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── REGLAS DE IMPRESIÓN (SOLO EL QR EN A4 / TAMAÑO GIGANTE) ── */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .toolbar,
+      .url-input-popover,
+      .toast {
+        display: none !important;
+      }
+
+      .qr-stage {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      #qr-container img,
+      #qr-container canvas,
+      #qr-container svg {
+        width: 175mm !important;
+        height: 175mm !important;
+        max-width: 100% !important;
+        margin: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA FLOTANTE -->
+  <div class="toolbar">
+    <span class="url-chip" id="currentUrlDisplay" title="URL codificada en el QR">https://amalarajst-cell.github.io/ruleta-vial/</span>
+    
+    <button class="btn btn-accent" onclick="window.print()" title="Imprimir o guardar como PDF">
+      🖨️ Imprimir / PDF
+    </button>
+
+    <button class="btn" onclick="descargarPNG()" title="Descargar como archivo de imagen PNG de 2000x2000 píxeles">
+      💾 Descargar PNG
+    </button>
+
+    <button class="btn" onclick="descargarSVG()" title="Descargar formato vectorial SVG para imprenta">
+      📐 Descargar SVG
+    </button>
+
+    <button class="btn" onclick="copiarAlPortapapeles()" title="Copiar imagen del QR al portapapeles">
+      📋 Copiar QR
+    </button>
+
+    <button class="btn" onclick="toggleEditUrl()" title="Modificar la dirección URL">
+      ✏️ Cambiar URL
+    </button>
+  </div>
+
+  <!-- POPOVER PARA CAMBIAR URL -->
+  <div class="url-input-popover" id="urlPopover">
+    <input type="text" id="urlInput" value="https://amalarajst-cell.github.io/ruleta-vial/" placeholder="https://..." onkeydown="if(event.key==='Enter') aplicarNuevaUrl()">
+    <button class="btn btn-accent" onclick="aplicarNuevaUrl()">Aplicar</button>
+  </div>
+
+  <!-- SOLO EL QR -->
+  <div class="qr-stage" id="qrStage">
+    <div id="qr-container"></div>
+    <div class="qr-caption" id="qrCaption">
+      amalarajst-cell.github.io/ruleta-vial/
+    </div>
+  </div>
+
+  <!-- AVISO TOAST -->
+  <div class="toast" id="toast">¡Copiado con éxito!</div>
+
+  <script>
+    let currentUrl = "https://amalarajst-cell.github.io/ruleta-vial/";
+    let qrInstance = null;
+
+    function renderQr(url) {
+      currentUrl = url;
+      document.getElementById('currentUrlDisplay').textContent = url;
+      document.getElementById('currentUrlDisplay').title = url;
+      document.getElementById('qrCaption').textContent = url.replace(/^https?:\/\//, '');
+
+      const container = document.getElementById('qr-container');
+      container.innerHTML = '';
+
+      if (typeof QRCode !== 'undefined') {
+        try {
+          qrInstance = new QRCode(container, {
+            text: url,
+            width: 1000,
+            height: 1000,
+            colorDark: "#000000",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        } catch (e) {
+          console.error("Error con QRCode.js, usando imagen estática:", e);
+          usarFallback();
+        }
+      } else {
+        usarFallback();
+      }
+    }
+
+    function usarFallback() {
+      const container = document.getElementById('qr-container');
+      container.innerHTML = `<img src="img/qr_grande.png" alt="Código QR Grande" style="width:100%;height:auto;aspect-ratio:1/1;">`;
+    }
+
+    function toggleEditUrl() {
+      const popover = document.getElementById('urlPopover');
+      popover.classList.toggle('active');
+      if (popover.classList.contains('active')) {
+        const input = document.getElementById('urlInput');
+        input.value = currentUrl;
+        input.focus();
+        input.select();
+      }
+    }
+
+    function aplicarNuevaUrl() {
+      const input = document.getElementById('urlInput');
+      let val = input.value.trim();
+      if (!val) return;
+      if (!/^https?:\/\//i.test(val)) {
+        val = 'https://' + val;
+      }
+      document.getElementById('urlPopover').classList.remove('active');
+      renderQr(val);
+      mostrarToast('QR actualizado a: ' + val);
+    }
+
+    function mostrarToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function descargarPNG() {
+      // Tomamos el canvas generado o la imagen existente
+      const canvas = document.querySelector('#qr-container canvas');
+      if (canvas) {
+        // Creamos un canvas de alta definición 2000x2000 con borde blanco
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = 2000;
+        exportCanvas.height = 2000;
+        const ctx = exportCanvas.getContext('2d');
+
+        // Fondo blanco
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, 2000, 2000);
+
+        // Dibujar el QR con margen armónico
+        const margin = 100;
+        const size = 2000 - (margin * 2);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(canvas, margin, margin, size, size);
+
+        const a = document.createElement('a');
+        a.download = 'QR_Ruleta_Vial_Grande_2000px.png';
+        a.href = exportCanvas.toDataURL('image/png');
+        a.click();
+        mostrarToast('Descargando QR en PNG (2000x2000 px)...');
+      } else {
+        const a = document.createElement('a');
+        a.download = 'QR_Ruleta_Vial_Grande.png';
+        a.href = 'img/qr_grande.png';
+        a.click();
+        mostrarToast('Descargando PNG...');
+      }
+    }
+
+    function descargarSVG() {
+      const a = document.createElement('a');
+      a.download = 'QR_Ruleta_Vial_Vectorial.svg';
+      a.href = 'img/qr_grande.svg';
+      a.click();
+      mostrarToast('Descargando SVG vectorial...');
+    }
+
+    async function copiarAlPortapapeles() {
+      const canvas = document.querySelector('#qr-container canvas');
+      if (canvas && navigator.clipboard && window.ClipboardItem) {
+        try {
+          canvas.toBlob(async (blob) => {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': blob })
+            ]);
+            mostrarToast('¡Imagen del QR copiada al portapapeles!');
+          });
+          return;
+        } catch (err) {
+          console.warn('Clipboard write image failed, fallback to copy URL', err);
+        }
+      }
+      
+      // Fallback: copiar la URL
+      try {
+        await navigator.clipboard.writeText(currentUrl);
+        mostrarToast('Enlace copiado al portapapeles: ' + currentUrl);
+      } catch (err) {
+        mostrarToast('No se pudo copiar automáticamente.');
+      }
+    }
+
+    // Inicializar al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      renderQr(currentUrl);
+    });
+  </script>
+</body>
+</html>

@@ -1655,7 +1655,7 @@
         // ── SINCRONIZACIÓN CON ADMINISTRACIÓN ──
         const syncStatusBox = document.getElementById('sync-status-box');
         const syncStatusText = document.getElementById('sync-status-text');
-        const speedBonus = Math.max(0, Math.round((2.2 - avgSec) * 100));
+        const speedBonus = Math.max(0, Math.min(80, Math.round((2.2 - avgSec) * 40)));
         const finalScore = Math.max(50, Math.round((correctCount * 100) + speedBonus));
 
         if (window.VialCloudSync) {

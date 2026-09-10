@@ -669,9 +669,9 @@
               </select>
             </div>
             <div style="display:flex;align-items:center;">
-              <select id="admin-sort-order" style="background:var(--surface-container-highest);color:var(--tertiary);border:1px solid var(--tertiary);padding:8px 10px;border-radius:10px;font-size:12px;font-weight:800;outline:none;cursor:pointer;">
-                <option value="recent">🕒 Más Recientes</option>
-                <option value="score">🏆 Mayor Puntaje</option>
+              <select id="admin-sort-order" style="background:var(--surface-container-highest);color:var(--secondary-container);border:1.5px solid var(--secondary-container);padding:8px 10px;border-radius:10px;font-size:12px;font-weight:800;outline:none;cursor:pointer;">
+                <option value="score" selected>🏆 Ranking (Más Aciertos / Menor Tiempo)</option>
+                <option value="recent">🕒 Más Recientes (Por Fecha)</option>
               </select>
             </div>
             <div class="input-field-wrap" style="flex:1;">
@@ -691,15 +691,15 @@
             <table class="ranking-table">
               <thead>
                 <tr>
-                  <th style="width:65px;text-align:center;">Pos</th>
+                  <th style="width:65px;text-align:center;cursor:pointer;" onclick="window.setAdminSort && window.setAdminSort('score')" title="Ordenar por Ranking (Más aciertos / Menor tiempo)">Pos ⬍</th>
                   <th>Participante</th>
                   <th>Rol / Licencia</th>
                   <th>Email</th>
                   <th>Juego / Módulo</th>
-                  <th style="text-align:right">XP / Puntaje</th>
-                  <th style="text-align:right">Tiempo Prom.</th>
-                  <th style="text-align:center">Aciertos</th>
-                  <th style="text-align:right">Fecha</th>
+                  <th style="text-align:right;cursor:pointer;" onclick="window.setAdminSort && window.setAdminSort('score')" title="Ordenar por Puntaje y Aciertos">XP / Puntaje ⬍</th>
+                  <th style="text-align:right;cursor:pointer;" onclick="window.setAdminSort && window.setAdminSort('score')" title="Ordenar por Menor Tiempo de Reacción">Tiempo Prom. ⬍</th>
+                  <th style="text-align:center;cursor:pointer;color:var(--secondary-container);" onclick="window.setAdminSort && window.setAdminSort('score')" title="Ordenar por Más Aciertos y Menor Tiempo">Aciertos ⬍</th>
+                  <th style="text-align:right;cursor:pointer;" onclick="window.setAdminSort && window.setAdminSort('recent')" title="Ordenar por Fecha Más Reciente">Fecha ⬍</th>
                 </tr>
               </thead>
               <tbody id="admin-table-body">
