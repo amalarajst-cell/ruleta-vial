@@ -42,6 +42,17 @@ class RouletteWheel {
       { id: 'normativa',  label: 'VTV & LEYES',     color: '#0891B2', darkColor: '#066E8E', name: 'Documentación, VTV y Leyes', icon: '📋' }
     ];
 
+    // 🚗 Dedicated Auto / Particular (Clase B) Categories
+    this.autoCategories = [
+      { id: 'prioridad',       label: 'PRIORIDADES',  color: '#D97706', darkColor: '#B05E04', name: 'Prioridades de Paso', icon: '🔶' },
+      { id: 'senales',         label: 'SEÑALES',      color: '#DC2626', darkColor: '#B01010', name: 'Señales y Demarcación', icon: '🛑' },
+      { id: 'velocidad',       label: 'VELOCIDADES',  color: '#0284C7', darkColor: '#0164A0', name: 'Límites de Velocidad', icon: '⚡' },
+      { id: 'seguridad',       label: 'SEGURIDAD',    color: '#059669', darkColor: '#037050', name: 'Elementos de Seguridad', icon: '🛡️' },
+      { id: 'clima',           label: 'CLIMA & VÍA',  color: '#7C3AED', darkColor: '#5E24CC', name: 'Situaciones Adversas', icon: '🌧️' },
+      { id: 'estacionamiento', label: 'ESTACIONAM.',  color: '#0891B2', darkColor: '#066E8E', name: 'Estacionamiento y Detención', icon: '🅿️' },
+      { id: 'normativa',       label: 'LEYES & DOC.', color: '#BE185D', darkColor: '#961047', name: 'Normativa y Documentación', icon: '📋' }
+    ];
+
     this.mode = 'default';
     this.categories = this.defaultCategories;
     this.centerText = { top: 'VIAL', bottom: 'PLAY' };
@@ -75,6 +86,9 @@ class RouletteWheel {
     } else if (mode === 'moto') {
       this.categories = this.motoCategories;
       this.centerText = { top: 'MOTO', bottom: 'CLASE A' };
+    } else if (mode === 'auto') {
+      this.categories = this.autoCategories;
+      this.centerText = { top: 'AUTO', bottom: 'CLASE B' };
     } else {
       this.categories = this.defaultCategories;
       this.centerText = { top: 'VIAL', bottom: 'PLAY' };

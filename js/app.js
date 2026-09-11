@@ -381,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const adminBankPills      = Array.from(document.querySelectorAll('.admin-bank-pill'));
   const badgeCountMoto      = document.getElementById('badge-count-moto');
+  const badgeCountAuto      = document.getElementById('badge-count-auto');
   const badgeCountColectivo = document.getElementById('badge-count-colectivo');
   const badgeCountGeneral   = document.getElementById('badge-count-general');
 
@@ -460,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hubStreakVal) hubStreakVal.textContent = `🔥 ${sessionStreak}`;
   }
 
-  // ── COLECTIVO & MOTO PROFILE CHECKS ──────────────────────
+  // ── COLECTIVO, MOTO & AUTO PROFILE CHECKS ────────────────
   function isColectivoProfile() {
     const role = (playerRole || '').toLowerCase();
     const avatar = (playerAvatar || '').toLowerCase();
@@ -471,6 +472,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = (playerRole || '').toLowerCase();
     const avatar = (playerAvatar || '').toLowerCase();
     return role.includes('moto') || avatar.includes('moto');
+  }
+
+  function isAutoProfile() {
+    const role = (playerRole || '').toLowerCase();
+    const avatar = (playerAvatar || '').toLowerCase();
+    return role.includes('auto') || role.includes('particular') || role.includes('clase b') || role.includes('conductor') || avatar.includes('auto');
   }
 
   // ── ROULETTE INSTANCE ─────────────────────────────────────
@@ -487,6 +494,8 @@ document.addEventListener('DOMContentLoaded', () => {
       mode = 'colectivo';
     } else if (isMotoProfile()) {
       mode = 'moto';
+    } else if (isAutoProfile()) {
+      mode = 'auto';
     } else {
       mode = 'default';
     }
@@ -496,7 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.role-pill-btn').forEach(btn => {
       const btnMode = btn.dataset.roleMode;
       const isActive = (btnMode === mode) || 
-                       (mode === 'default' && (btnMode === 'auto' || (playerRole || '').toLowerCase().includes(btnMode)));
+                       (mode === 'auto' && (btnMode === 'auto' || (playerRole || '').toLowerCase().includes(btnMode))) ||
+                       (mode === 'default' && (playerRole || '').toLowerCase().includes(btnMode));
       btn.classList.toggle('active', isActive);
     });
 
@@ -506,6 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
         userBannerRole.textContent = 'Clase A • Motociclista';
       } else if (mode === 'colectivo') {
         userBannerRole.textContent = 'Clase D1 • Colectivo';
+      } else if (mode === 'auto') {
+        userBannerRole.textContent = 'Clase B • Conductor Auto';
       } else if ((playerRole || '').toLowerCase().includes('cicl')) {
         userBannerRole.textContent = 'Ciclista Urbano';
       } else if ((playerRole || '').toLowerCase().includes('peat')) {
@@ -684,6 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error parsing custom questions', err);
       }
     }
+    if (bank === 'auto') return (typeof AUTO_QUESTIONS !== 'undefined') ? AUTO_QUESTIONS : [];
     if (bank === 'moto') return (typeof MOTO_QUESTIONS !== 'undefined') ? MOTO_QUESTIONS : [];
     if (bank === 'colectivo') return (typeof COLECTIVO_QUESTIONS !== 'undefined') ? COLECTIVO_QUESTIONS : [];
     return (typeof QUESTIONS !== 'undefined') ? QUESTIONS : [];
@@ -701,6 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function startQuizRound(category) {
     const isColectivo = isColectivoProfile();
     const isMoto = isMotoProfile();
+    const isAuto = isAutoProfile();
     let selectedQuestions = [];
 
     if (isColectivo) {
@@ -753,8 +767,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       selectedQuestions = shuffleArray(picked);
+    } else if (isAuto) {
+      // 🚗 EXCLUSIVO PERFIL AUTOMÓVIL (CLASE B / MANUAL CABA)
+      const autoPool = getActiveQuestions('auto');
+      const targetCatId = category.id; // 'prioridad', 'senales', 'velocidad', 'seguridad', 'clima', 'estacionamiento', 'normativa'
+      const catPool = autoPool.filter(q => q.category === targetCatId);
+      
+      let picked = [];
+      if (catPool.length >= 5) {
+        picked = shuffleArray([...catPool]).slice(0, 5);
+      } else {
+        picked = shuffleArray([...catPool]);
+        const otherAuto = shuffleArray(autoPool.filter(q => q.category !== targetCatId));
+        for (let i = 0; picked.length < 5 && i < otherAuto.length; i++) {
+          picked.push(otherAuto[i]);
+        }
+      }
+      // Priorizamos preguntas con imagen si existieran
+      const hasImg = picked.some(q => !!q.imageSrc);
+      if (!hasImg) {
+        const anyWithImg = autoPool.find(q => !!q.imageSrc && (q.category === targetCatId || true));
+        if (anyWithImg && picked.length > 0) {
+          picked[picked.length - 1] = anyWithImg;
+        }
+      }
+      selectedQuestions = shuffleArray(picked);
     } else {
-      // Perfiles estándar (Auto B, Ciclista, Peatón)
+      // Perfiles estándar (Ciclista, Peatón)
       const generalPool = getActiveQuestions('general');
       const catId = category.id;
       const catPool = generalPool.filter(q => q.category === catId);
@@ -783,7 +822,13 @@ document.addEventListener('DOMContentLoaded', () => {
         name: category.name || 'Motovehículos Clase A',
         icon: '🏍️',
         color: category.color || '#BE185D'
-      } : category),
+      } : (isAuto ? {
+        id: category.id,
+        label: category.label || 'AUTO CLASE B',
+        name: category.name || 'Conducción Particular (B)',
+        icon: '🚗',
+        color: category.color || '#D97706'
+      } : category)),
       questions: selectedQuestions,
       currentIndex: 0,
       correctCount: 0,
@@ -823,10 +868,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (quizCategoryBadge) {
       const isColectivo = isColectivoProfile();
       const isMoto = isMotoProfile();
+      const isAuto = isAutoProfile();
       if (isColectivo) {
         quizCategoryBadge.textContent = '🚌 TRANSPORTE DE PASAJEROS (D1)';
       } else if (isMoto) {
         quizCategoryBadge.textContent = `🏍️ MOTO EXTREME • ${category.label || category.name}`;
+      } else if (isAuto) {
+        quizCategoryBadge.textContent = `🚗 AUTO CLASE B • ${category.label || category.name}`;
       } else {
         quizCategoryBadge.textContent = `${category.icon || ''} ${category.label || category.name}`;
       }
@@ -1724,6 +1772,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentAdminBank = 'moto';
 
   const BANK_CATEGORY_NAMES = {
+    auto: {
+      'prioridad': '🔶 Prioridades de Paso',
+      'senales': '🛑 Señales y Demarcación',
+      'velocidad': '⚡ Límites de Velocidad',
+      'seguridad': '🛡️ Elementos de Seguridad',
+      'clima': '🌧️ Situaciones Adversas',
+      'estacionamiento': '🅿️ Estacionamiento y Detención',
+      'normativa': '📋 Normativa y Documentación'
+    },
     moto: {
       'casco': '🪖 Uso de Casco y Protección',
       'frenado': '🛑 Técnicas de Frenado',
@@ -1754,16 +1811,19 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const BANK_NAMES = {
+    auto: 'Automóviles (Clase B)',
     moto: 'Motociclistas (Clase A)',
     colectivo: 'Colectivo / Pasajeros (D1)',
     general: 'General / Multivehicular'
   };
 
   function updateQuestionsBadges() {
+    const autoCount = getActiveQuestions('auto').length;
     const motoCount = getActiveQuestions('moto').length;
     const colectivoCount = getActiveQuestions('colectivo').length;
     const generalCount = getActiveQuestions('general').length;
 
+    if (badgeCountAuto) badgeCountAuto.textContent = autoCount;
     if (badgeCountMoto) badgeCountMoto.textContent = motoCount;
     if (badgeCountColectivo) badgeCountColectivo.textContent = colectivoCount;
     if (badgeCountGeneral) badgeCountGeneral.textContent = generalCount;
