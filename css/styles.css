@@ -2910,14 +2910,18 @@ body.admin-mode .bottom-nav {
 }
 
 .btn-ruleta-menu {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 28px 40px;
+  gap: 14px;
+  width: 380px;
+  max-width: 92vw;
+  height: 280px;
+  padding: 22px 20px;
+  box-sizing: border-box;
   background: #1e2020;
-  border: 3px solid #FFC600;
+  border: 3.5px solid #FFC600;
   border-radius: 28px;
   box-shadow: 0 10px 0 #C99B00, 0 18px 36px rgba(0, 0, 0, 0.6);
   cursor: pointer;
@@ -2929,8 +2933,8 @@ body.admin-mode .bottom-nav {
 
 .btn-ruleta-menu:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 0 #C99B00, 0 24px 44px rgba(255, 198, 0, 0.25);
-  border-color: #ffe6ae;
+  box-shadow: 0 14px 0 #C99B00, 0 24px 44px rgba(255, 198, 0, 0.3);
+  border-color: #FFE6AE;
 }
 
 .btn-ruleta-menu:active {
@@ -2939,48 +2943,58 @@ body.admin-mode .bottom-nav {
 }
 
 .btn-ruleta-menu img {
-  width: 170px;
-  height: 170px;
+  width: 140px;
+  height: 140px;
   object-fit: contain;
   border-radius: 50%;
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
   pointer-events: none;
+  flex-shrink: 0;
 }
 
 .btn-ruleta-menu span {
   font-family: var(--font-display);
-  font-size: 26px;
-  letter-spacing: 1.5px;
+  font-size: 21px;
+  letter-spacing: 1px;
   color: #FFC600;
   text-transform: uppercase;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  line-height: 1.2;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
+/* 2. TIEMPO DE REACCIÓN: VERDE NEÓN (#00E676) */
 .btn-reaccion-menu {
-  border-color: #8DE2D6;
-  box-shadow: 0 10px 0 #009E8C, 0 18px 36px rgba(0, 0, 0, 0.6);
+  border-color: #00E676;
+  box-shadow: 0 10px 0 #00A352, 0 18px 36px rgba(0, 0, 0, 0.6);
 }
 
 .btn-reaccion-menu:hover {
-  border-color: #C0FFF6;
-  box-shadow: 0 14px 0 #009E8C, 0 24px 44px rgba(141, 226, 214, 0.3);
+  border-color: #B9F6CA;
+  box-shadow: 0 14px 0 #00A352, 0 24px 44px rgba(0, 230, 118, 0.35);
 }
 
 .btn-reaccion-menu:active {
-  box-shadow: 0 4px 0 #009E8C, 0 8px 18px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 0 #00A352, 0 8px 18px rgba(0, 0, 0, 0.4);
 }
 
 .btn-reaccion-menu span {
-  color: #8DE2D6;
+  color: #00E676;
 }
 
+/* 3. LÍMITES DE ALCOHOLEMIA: PÚRPURA / VIOLETA (#A855F7) */
 .btn-alcoholemia-menu {
   border-color: #A855F7;
   box-shadow: 0 10px 0 #6B21A8, 0 18px 36px rgba(0, 0, 0, 0.6);
 }
 
 .btn-alcoholemia-menu:hover {
-  border-color: #D8B4FE;
+  border-color: #E9D5FF;
   box-shadow: 0 14px 0 #6B21A8, 0 24px 44px rgba(168, 85, 247, 0.35);
 }
 
@@ -2992,6 +3006,7 @@ body.admin-mode .bottom-nav {
   color: #C084FC;
 }
 
+/* 4. SIMULADOR DE EXAMEN: AZUL ELÉCTRICO / CELESTE (#38BDF8) */
 .btn-simulador-menu {
   border-color: #38BDF8;
   box-shadow: 0 10px 0 #0284C7, 0 18px 36px rgba(0, 0, 0, 0.6);
@@ -3009,4 +3024,5 @@ body.admin-mode .bottom-nav {
 .btn-simulador-menu span {
   color: #38BDF8;
 }
+
 
