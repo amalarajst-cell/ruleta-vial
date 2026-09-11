@@ -77,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let playerName   = localStorage.getItem('vialplay_player_name') || '';
   let playerEmail  = localStorage.getItem('vialplay_player_email') || '';
   let playerRole   = localStorage.getItem('vialplay_player_role') || 'Auto B';
+  if (playerRole.toLowerCase().includes('cicl') || playerRole.toLowerCase().includes('peat')) {
+    playerRole = 'Auto B';
+    localStorage.setItem('vialplay_player_role', playerRole);
+  }
   let playerAvatar = localStorage.getItem('vialplay_player_avatar') || getRoleIcon(playerRole);
   if (!playerAvatar || playerAvatar.includes('assets/avatars/')) {
     playerAvatar = getRoleIcon(playerRole);
@@ -489,24 +493,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateRouletteMode() {
     if (!roulette) return;
-    let mode = 'default';
+    let mode = 'auto';
     if (isColectivoProfile()) {
       mode = 'colectivo';
     } else if (isMotoProfile()) {
       mode = 'moto';
-    } else if (isAutoProfile()) {
-      mode = 'auto';
     } else {
-      mode = 'default';
+      mode = 'auto';
     }
     roulette.setMode(mode);
 
     // Sync quick selector pills
     document.querySelectorAll('.role-pill-btn').forEach(btn => {
       const btnMode = btn.dataset.roleMode;
-      const isActive = (btnMode === mode) || 
-                       (mode === 'auto' && (btnMode === 'auto' || (playerRole || '').toLowerCase().includes(btnMode))) ||
-                       (mode === 'default' && (playerRole || '').toLowerCase().includes(btnMode));
+      const isActive = (btnMode === mode);
       btn.classList.toggle('active', isActive);
     });
 
@@ -516,14 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
         userBannerRole.textContent = 'Clase A • Motociclista';
       } else if (mode === 'colectivo') {
         userBannerRole.textContent = 'Clase D1 • Colectivo';
-      } else if (mode === 'auto') {
-        userBannerRole.textContent = 'Clase B • Conductor Auto';
-      } else if ((playerRole || '').toLowerCase().includes('cicl')) {
-        userBannerRole.textContent = 'Ciclista Urbano';
-      } else if ((playerRole || '').toLowerCase().includes('peat')) {
-        userBannerRole.textContent = 'Peatón';
       } else {
-        userBannerRole.textContent = playerRole || 'Clase B • Auto';
+        userBannerRole.textContent = 'Clase B • Conductor Auto';
       }
     }
     if (userBannerAvatar) {
@@ -540,10 +534,6 @@ document.addEventListener('DOMContentLoaded', () => {
         playerRole = 'Moto A';
       } else if (mode === 'colectivo') {
         playerRole = 'Colectivo D1';
-      } else if (mode === 'ciclista') {
-        playerRole = 'Ciclista';
-      } else if (mode === 'peaton') {
-        playerRole = 'Peatón';
       } else {
         playerRole = 'Auto B';
       }
