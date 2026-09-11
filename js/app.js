@@ -1333,7 +1333,7 @@ document.addEventListener('DOMContentLoaded', () => {
       history.replaceState(null, '', window.location.pathname);
     }
     if (playerName) {
-      showScreen('roulette');
+      showScreen('practice');
     } else {
       showScreen('register');
     }
@@ -2251,7 +2251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showScreen(targetScreen);
   } else if (playerName) {
     updateHeaderDisplay();
-    showScreen('roulette');
+    showScreen('practice');
   } else {
     showScreen('register');
   }
