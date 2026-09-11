@@ -3025,4 +3025,55 @@ body.admin-mode .bottom-nav {
   color: #38BDF8;
 }
 
+/* ── SUBTÍTULOS DE JUEGOS CON ESPACIADO SEGURO Y COLORES TEMÁTICOS ── */
+.game-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 380px;
+}
+
+.btn-hub-subtitle {
+  margin-top: 18px; /* Espacio de despeje debajo de la sombra 3D de 10px */
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  max-width: 360px;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.subtitle-ruleta {
+  color: #FFE082;
+  border: 1px solid rgba(255, 198, 0, 0.25);
+  background: rgba(255, 198, 0, 0.06);
+}
+
+.subtitle-reaccion {
+  color: #A7F3D0;
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  background: rgba(0, 230, 118, 0.06);
+}
+
+.subtitle-alcoholemia {
+  color: #E9D5FF;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  background: rgba(168, 85, 247, 0.06);
+}
+
+.subtitle-simulador {
+  color: #BAE6FD;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+
 

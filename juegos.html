@@ -206,12 +206,48 @@
     .btn-simulador span {
       color: #38BDF8;
     }
-    .btn-hint {
+    .game-card-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 380px;
+    }
+    .btn-hub-subtitle {
+      margin-top: 18px;
       font-size: 13px;
-      color: #8c9196;
+      font-weight: 600;
       text-align: center;
+      line-height: 1.4;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 16px;
+      border-radius: 9999px;
       max-width: 360px;
-      line-height: 1.35;
+      box-sizing: border-box;
+      transition: all 0.2s;
+    }
+    .subtitle-ruleta {
+      color: #FFE082;
+      border: 1px solid rgba(255, 198, 0, 0.25);
+      background: rgba(255, 198, 0, 0.06);
+    }
+    .subtitle-reaccion {
+      color: #A7F3D0;
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      background: rgba(0, 230, 118, 0.06);
+    }
+    .subtitle-alcoholemia {
+      color: #E9D5FF;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      background: rgba(168, 85, 247, 0.06);
+    }
+    .subtitle-simulador {
+      color: #BAE6FD;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(56, 189, 248, 0.06);
     }
   </style>
 </head>
@@ -236,7 +272,7 @@
   </header>
 
   <!-- Contenido con texto y botones de juegos -->
-  <main class="tab-main">
+  <main class="tab-main" style="gap:34px;padding:24px 20px 40px;">
     <div class="tab-description-card">
       <h2 class="tab-hero-title">El aula interactiva de la movilidad responsable.</h2>
       <p class="tab-hero-subtitle">
@@ -245,39 +281,47 @@
     </div>
 
     <!-- 1. JUEGO: RULETA VIAL -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <div class="game-card-wrapper">
       <button class="btn-ruleta" id="btn-ruleta" onclick="window.location.href='index.html?screen=roulette'">
         <img src="assets/ruleta_icono.jpg" alt="Ruleta">
         <span>RULETA VIAL</span>
       </button>
-      <span class="btn-hint">Tocá la ruleta para comenzar a jugar</span>
+      <div class="btn-hub-subtitle subtitle-ruleta">
+        <span>Tocá la ruleta para comenzar a jugar</span>
+      </div>
     </div>
 
     <!-- 2. JUEGO: TIEMPO DE REACCIÓN -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;">
+    <div class="game-card-wrapper">
       <button class="btn-ruleta btn-reaccion" id="btn-reaccion" onclick="window.location.href='reaccion.html'">
         <img src="assets/reaccion_icono.jpg" alt="Tiempo de Reacción">
         <span>TIEMPO DE REACCIÓN</span>
       </button>
-      <span class="btn-hint">Tocá para poner a prueba tus reflejos y frenado</span>
+      <div class="btn-hub-subtitle subtitle-reaccion">
+        <span>Poné a prueba tus reflejos y frenado</span>
+      </div>
     </div>
 
     <!-- 3. JUEGO: LÍMITES DE ALCOHOLEMIA -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;">
+    <div class="game-card-wrapper">
       <button class="btn-ruleta btn-alcoholemia" id="btn-alcoholemia" onclick="window.location.href='alcoholemia.html'">
         <img src="assets/alcoholemia_icono.jpg" alt="Límites de Alcoholemia">
         <span>LÍMITES DE ALCOHOLEMIA</span>
       </button>
-      <span class="btn-hint">Normativa CABA: Actores viales y tolerancia en sangre</span>
+      <div class="btn-hub-subtitle subtitle-alcoholemia">
+        <span>Normativa CABA y tolerancia cero en sangre</span>
+      </div>
     </div>
 
     <!-- 4. JUEGO: SIMULADOR DE EXAMEN -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;">
+    <div class="game-card-wrapper">
       <button class="btn-ruleta btn-simulador" id="btn-simulador" onclick="window.location.href='simulador.html'">
         <img src="assets/simulador_icono.jpg" alt="Simulador de Examen">
         <span>SIMULADOR DE EXAMEN</span>
       </button>
-      <span class="btn-hint">Elegí tu categoría (Auto, Moto, Colectivo) y cantidad de preguntas</span>
+      <div class="btn-hub-subtitle subtitle-simulador">
+        <span>Examen oficial por categoría (Auto, Moto, Colectivo)</span>
+      </div>
     </div>
   </main>
 

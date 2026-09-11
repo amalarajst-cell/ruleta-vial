@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=3">
+  <link rel="stylesheet" href="css/styles.css?v=10">
 </head>
 <body>
 
@@ -171,37 +171,49 @@
       </div>
 
       <!-- Botones de Juegos: RULETA VIAL y TIEMPO DE REACCIÓN -->
-      <div style="min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:10px 0;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
+      <div style="min-height:45vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;padding:16px 0 32px;">
+        <!-- 1. RULETA VIAL -->
+        <div class="game-card-wrapper">
           <button class="btn-ruleta-menu" id="btn-hub-roulette" type="button" onclick="showScreen('roulette')">
             <img src="assets/ruleta_icono.jpg" alt="Ruleta">
             <span>RULETA VIAL</span>
           </button>
-          <span style="font-size:13px;color:#8c9196;text-align:center;">Tocá la ruleta para comenzar a jugar</span>
+          <div class="btn-hub-subtitle subtitle-ruleta">
+            <span>Tocá la ruleta para comenzar a jugar</span>
+          </div>
         </div>
 
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
+        <!-- 2. TIEMPO DE REACCIÓN -->
+        <div class="game-card-wrapper">
           <button class="btn-ruleta-menu btn-reaccion-menu" id="btn-hub-reaccion" type="button" onclick="window.location.href='reaccion.html'">
             <img src="assets/reaccion_icono.jpg" alt="Tiempo de Reacción">
             <span>TIEMPO DE REACCIÓN</span>
           </button>
-          <span style="font-size:13px;color:#8c9196;text-align:center;">Tocá para poner a prueba tus reflejos y frenado</span>
+          <div class="btn-hub-subtitle subtitle-reaccion">
+            <span>Poné a prueba tus reflejos y frenado</span>
+          </div>
         </div>
 
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
+        <!-- 3. LÍMITES DE ALCOHOLEMIA -->
+        <div class="game-card-wrapper">
           <button class="btn-ruleta-menu btn-alcoholemia-menu" id="btn-hub-alcoholemia" type="button" onclick="window.location.href='alcoholemia.html'">
             <img src="assets/alcoholemia_icono.jpg" alt="Límites de Alcoholemia">
             <span>LÍMITES DE ALCOHOLEMIA</span>
           </button>
-          <span style="font-size:13px;color:#8c9196;text-align:center;">Normativa CABA: Actores viales y tolerancia en sangre</span>
+          <div class="btn-hub-subtitle subtitle-alcoholemia">
+            <span>Normativa CABA y tolerancia cero en sangre</span>
+          </div>
         </div>
 
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
+        <!-- 4. SIMULADOR DE EXAMEN -->
+        <div class="game-card-wrapper">
           <button class="btn-ruleta-menu btn-simulador-menu" id="btn-hub-simulador" type="button" onclick="window.location.href='simulador.html'">
             <img src="assets/simulador_icono.jpg" alt="Simulador de Examen">
             <span>SIMULADOR DE EXAMEN</span>
           </button>
-          <span style="font-size:13px;color:#8c9196;text-align:center;">Elegí tu categoría (Auto, Moto, Colectivo) y cantidad de preguntas</span>
+          <div class="btn-hub-subtitle subtitle-simulador">
+            <span>Examen oficial por categoría (Auto, Moto, Colectivo)</span>
+          </div>
         </div>
       </div>
     </div>
