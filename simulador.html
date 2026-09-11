@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Simulador de Examen Teórico — Seguridad Vial CABA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #0c0e0f;
+      --surface: #141718;
+      --surface-card: #1c2022;
+      --surface-elevated: #242a2d;
+      --text: #f0f4f5;
+      --text-muted: #8c979a;
+      --cyan: #8DE2D6;
+      --cyan-dark: #008B7A;
+      --yellow: #FFC600;
+      --yellow-dark: #B38600;
+      --blue: #38BDF8;
+      --blue-dark: #0284C7;
+      --purple: #A855F7;
+      --purple-dark: #7E22CE;
+      --green: #22C55E;
+      --red: #EF4444;
+      --border: rgba(255, 255, 255, 0.08);
+      --font-display: 'Archivo Black', sans-serif;
+      --font-body: 'Archivo', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg);
+      font-family: var(--font-body);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      width: 100%;
+      background: rgba(18, 22, 24, 0.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-btn {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .header-btn:hover {
+      background: var(--surface-elevated);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--blue);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 9999px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── MAIN CONTAINER ── */
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── SCREEN: SETUP CONFIG ── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      gap: 22px;
+      width: 100%;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(168, 85, 247, 0.08));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 20px;
+      padding: 22px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-banner h1 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      color: #fff;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .hero-banner p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    }
+    .setup-card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .setup-card-title span.material-symbols-outlined {
+      color: var(--blue);
+      font-size: 20px;
+    }
+
+    /* Category Selection Cards */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .cat-btn {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      position: relative;
+      text-align: left;
+    }
+    .cat-btn:hover {
+      background: var(--surface-elevated);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+    .cat-btn.active {
+      border-color: var(--blue);
+      background: rgba(56, 189, 248, 0.08);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+    }
+    .cat-btn.active-moto {
+      border-color: var(--yellow);
+      background: rgba(255, 198, 0, 0.08);
+      box-shadow: 0 0 16px rgba(255, 198, 0, 0.2);
+    }
+    .cat-btn.active-colectivo {
+      border-color: var(--purple);
+      background: rgba(168, 85, 247, 0.08);
+      box-shadow: 0 0 16px rgba(168, 85, 247, 0.2);
+    }
+
+    .cat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .cat-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .cat-icon-circle img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+    .cat-badge-questions {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .cat-btn.active .cat-badge-questions {
+      color: var(--blue);
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .cat-title {
+      font-family: var(--font-display);
+      font-size: 17px;
+      color: #fff;
+    }
+    .cat-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Question Quantity Chips */
+    .qty-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 520px) {
+      .qty-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .qty-btn {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .qty-btn:hover {
+      background: var(--surface-elevated);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .qty-btn.active {
+      border-color: var(--cyan);
+      background: rgba(141, 226, 214, 0.1);
+      box-shadow: 0 0 14px rgba(141, 226, 214, 0.25);
+    }
+    .qty-num {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: #fff;
+    }
+    .qty-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .qty-btn.active .qty-label {
+      color: var(--cyan);
+    }
+
+    /* Custom Quantity input */
+    .custom-qty-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-top: 4px;
+    }
+    .custom-qty-wrap label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+      flex: 1;
+    }
+    .custom-qty-input {
+      width: 70px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 16px;
+      text-align: center;
+      padding: 6px;
+      outline: none;
+    }
+    .custom-qty-input:focus {
+      border-color: var(--cyan);
+    }
+
+    /* Mode selector */
+    .mode-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 520px) {
+      .mode-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+    .mode-btn {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .mode-btn:hover {
+      background: var(--surface-elevated);
+    }
+    .mode-btn.active {
+      border-color: var(--blue);
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .mode-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mode-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Start CTA button */
+    .btn-start-exam {
+      background: var(--blue);
+      color: #0c0e0f;
+      border: none;
+      border-radius: 16px;
+      padding: 18px 24px;
+      font-family: var(--font-display);
+      font-size: 19px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 var(--blue-dark), 0 12px 24px rgba(56, 189, 248, 0.35);
+      transition: all 0.15s;
+      outline: none;
+      margin-top: 6px;
+    }
+    .btn-start-exam:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 var(--blue-dark), 0 16px 28px rgba(56, 189, 248, 0.45);
+      filter: brightness(1.05);
+    }
+    .btn-start-exam:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--blue-dark), 0 6px 12px rgba(56, 189, 248, 0.2);
+    }
+
+    /* ── SCREEN: ACTIVE EXAM ── */
+    .exam-top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .exam-badge-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 12px;
+      border-radius: 9999px;
+    }
+    .exam-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      color: var(--cyan);
+      background: rgba(141, 226, 214, 0.1);
+      border: 1px solid rgba(141, 226, 214, 0.3);
+      padding: 4px 14px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+    }
+    .exam-timer.urgent {
+      color: var(--red);
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--red);
+      animation: pulse 1s infinite alternate;
+    }
+    @keyframes pulse {
+      from { opacity: 0.8; }
+      to { opacity: 1; transform: scale(1.04); }
+    }
+
+    .btn-flag {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-flag.active {
+      border-color: var(--yellow);
+      color: var(--yellow);
+      background: rgba(255, 198, 0, 0.12);
+    }
+
+    /* Progress bar */
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-card);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Question Card */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+    .q-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .q-tag {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      color: var(--blue);
+    }
+    .q-text {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.45;
+      color: #fff;
+    }
+
+    /* Question Image */
+    .q-img-wrap {
+      width: 100%;
+      max-height: 280px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .q-img-wrap img {
+      max-width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      transition: transform 0.2s;
+    }
+    .q-img-wrap:hover img {
+      transform: scale(1.02);
+    }
+    .q-img-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Options */
+    .q-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .opt-btn {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text);
+      transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+    }
+    .opt-btn:hover {
+      background: var(--surface-elevated);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .opt-btn.selected {
+      border-color: var(--blue);
+      background: rgba(56, 189, 248, 0.12);
+      color: #fff;
+    }
+    .opt-btn.correct {
+      border-color: var(--green) !important;
+      background: rgba(34, 197, 94, 0.16) !important;
+      color: #fff !important;
+    }
+    .opt-btn.incorrect {
+      border-color: var(--red) !important;
+      background: rgba(239, 68, 68, 0.16) !important;
+      color: #fff !important;
+    }
+    .opt-letter {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .opt-btn.selected .opt-letter {
+      background: var(--blue);
+      color: #0c0e0f;
+    }
+    .opt-btn.correct .opt-letter {
+      background: var(--green);
+      color: #0c0e0f;
+    }
+    .opt-btn.incorrect .opt-letter {
+      background: var(--red);
+      color: #fff;
+    }
+
+    /* Explanation box (practice mode) */
+    .explanation-box {
+      background: rgba(141, 226, 214, 0.08);
+      border-left: 4px solid var(--cyan);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #c9e4e0;
+      line-height: 1.5;
+      display: none;
+    }
+
+    /* Exam Navigation footer */
+    .exam-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .nav-ctrl-btn {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-ctrl-btn:hover:not(:disabled) {
+      background: var(--surface-card);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .nav-ctrl-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-finish-exam {
+      background: var(--green);
+      color: #0c0e0f;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #15803d;
+      transition: all 0.15s;
+    }
+    .btn-finish-exam:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #15803d;
+    }
+
+    /* Grid Drawer Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+    .modal-head {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-head h3 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      color: #fff;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+    }
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .q-grid-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+      gap: 10px;
+    }
+    .grid-cell {
+      height: 44px;
+      border-radius: 10px;
+      background: var(--surface-card);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .grid-cell:hover {
+      border-color: var(--blue);
+      transform: scale(1.05);
+    }
+    .grid-cell.current {
+      border-color: var(--blue);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
+    .grid-cell.answered {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .grid-cell.flagged::after {
+      content: "🚩";
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      font-size: 11px;
+    }
+
+    /* ── SCREEN: RESULTS ── */
+    .results-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 28px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    .verdict-badge {
+      font-family: var(--font-display);
+      font-size: 26px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 10px 24px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .verdict-passed {
+      background: rgba(34, 197, 94, 0.15);
+      border: 2px solid var(--green);
+      color: var(--green);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+    }
+    .verdict-failed {
+      background: rgba(239, 68, 68, 0.15);
+      border: 2px solid var(--red);
+      color: var(--red);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .results-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin: 10px 0;
+    }
+    @media (max-width: 540px) {
+      .results-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .stat-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: #fff;
+    }
+    .stat-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Review filter tabs */
+    .review-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .review-tab {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .review-tab.active {
+      background: var(--blue);
+      color: #0c0e0f;
+      border-color: var(--blue);
+    }
+
+    /* Review list items */
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .review-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .review-item.is-correct {
+      border-left: 4px solid var(--green);
+    }
+    .review-item.is-incorrect {
+      border-left: 4px solid var(--red);
+    }
+
+    /* Image zoom modal */
+    .zoom-img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="index.html" class="header-btn" title="Volver a VialPlay">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span>Juegos</span>
+      </a>
+
+      <div class="header-title-box">
+        <span class="material-symbols-outlined" style="color:var(--blue);font-size:22px;">assignment</span>
+        <span style="font-family:var(--font-display);font-size:16px;color:#fff;text-transform:uppercase;letter-spacing:0.5px;">Simulador Teórico</span>
+      </div>
+
+      <div class="header-badge" id="app-badge-mode">CABA 2026</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ════════════════════════════════════════════════
+         SCREEN 1: SETUP & CONFIGURACIÓN DEL EXAMEN
+    ════════════════════════════════════════════════ -->
+    <div class="screen active" id="screen-setup">
+      <div class="hero-banner">
+        <h1>Simulador Oficial de Examen Teórico</h1>
+        <p>Entrená con el banco de preguntas oficial de la Ciudad de Buenos Aires (Ley 2148 / Ley 24449). Elegí tu categoría y cantidad de preguntas.</p>
+      </div>
+
+      <!-- Paso 1: Categoría -->
+      <div class="setup-card">
+        <div class="setup-card-title">
+          <span class="material-symbols-outlined">directions_car</span>
+          <span>1. Seleccioná la Categoría del Examen:</span>
+        </div>
+
+        <div class="category-grid">
+          <!-- Auto B -->
+          <button type="button" class="cat-btn active" data-category="auto" id="btn-cat-auto">
+            <div class="cat-top">
+              <div class="cat-icon-circle" style="border:1px solid rgba(56,189,248,0.3);background:rgba(56,189,248,0.1);">
+                <img src="assets/brand/icon_auto.png" alt="Auto">
+              </div>
+              <span class="cat-badge-questions" id="badge-total-auto">294 preguntas</span>
+            </div>
+            <div class="cat-title">Auto (Clase B)</div>
+            <div class="cat-desc">Automóviles, camionetas y vehículos particulares de hasta 3500 kg.</div>
+          </button>
+
+          <!-- Moto A -->
+          <button type="button" class="cat-btn" data-category="moto" id="btn-cat-moto">
+            <div class="cat-top">
+              <div class="cat-icon-circle" style="border:1px solid rgba(255,198,0,0.3);background:rgba(255,198,0,0.1);">
+                <img src="assets/brand/icon_moto.png" alt="Moto">
+              </div>
+              <span class="cat-badge-questions" id="badge-total-moto">207 preguntas</span>
+            </div>
+            <div class="cat-title">Moto (Clase A)</div>
+            <div class="cat-desc">Ciclomotores, motocicletas y triciclos motorizados (Formación Vial Extreme).</div>
+          </button>
+
+          <!-- Colectivo D1 -->
+          <button type="button" class="cat-btn" data-category="colectivo" id="btn-cat-colectivo">
+            <div class="cat-top">
+              <div class="cat-icon-circle" style="border:1px solid rgba(168,85,247,0.3);background:rgba(168,85,247,0.1);">
+                <img src="assets/brand/icon_colectivo.png" alt="Colectivo">
+              </div>
+              <span class="cat-badge-questions" id="badge-total-colectivo">203 preguntas</span>
+            </div>
+            <div class="cat-title">Colectivo (D1)</div>
+            <div class="cat-desc">Transporte automotor de pasajeros y conducción profesional.</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Paso 2: Cantidad de Preguntas -->
+      <div class="setup-card">
+        <div class="setup-card-title">
+          <span class="material-symbols-outlined">quiz</span>
+          <span>2. ¿Cuántas preguntas querés responder?</span>
+        </div>
+
+        <div class="qty-grid">
+          <button type="button" class="qty-btn" data-qty="10">
+            <span class="qty-num">10</span>
+            <span class="qty-label">Express</span>
+          </button>
+
+          <button type="button" class="qty-btn" data-qty="20">
+            <span class="qty-num">20</span>
+            <span class="qty-label">Práctica</span>
+          </button>
+
+          <button type="button" class="qty-btn active" data-qty="30">
+            <span class="qty-num">30</span>
+            <span class="qty-label">Oficial CABA</span>
+          </button>
+
+          <button type="button" class="qty-btn" data-qty="50">
+            <span class="qty-num">50</span>
+            <span class="qty-label">Intensivo</span>
+          </button>
+        </div>
+
+        <div class="custom-qty-wrap">
+          <label for="input-custom-qty">O personalizá el número exacto de preguntas:</label>
+          <input type="number" id="input-custom-qty" class="custom-qty-input" min="5" max="100" placeholder="30">
+        </div>
+      </div>
+
+      <!-- Paso 3: Modo de Examen -->
+      <div class="setup-card">
+        <div class="setup-card-title">
+          <span class="material-symbols-outlined">tune</span>
+          <span>3. Modalidad de Evaluación:</span>
+        </div>
+
+        <div class="mode-cards">
+          <button type="button" class="mode-btn active" data-mode="exam">
+            <div class="mode-title">
+              <span class="material-symbols-outlined text-[18px]" style="color:var(--cyan);">timer</span>
+              <span>Simulacro Real (Con Tiempo)</span>
+            </div>
+            <div class="mode-desc">Tiempo regresivo proporcional, entrega al final sin revelar respuestas y calificación oficial (85% para aprobar).</div>
+          </button>
+
+          <button type="button" class="mode-btn" data-mode="practice">
+            <div class="mode-title">
+              <span class="material-symbols-outlined text-[18px]" style="color:var(--yellow);">lightbulb</span>
+              <span>Modo Formativo (Con Devolución)</span>
+            </div>
+            <div class="mode-desc">Sin presión de tiempo. Ves inmediatamente la respuesta correcta y la explicación oficial luego de cada pregunta.</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- CTA Iniciar -->
+      <button type="button" class="btn-start-exam" id="btn-start-exam">
+        <span class="material-symbols-outlined text-[24px]">play_circle</span>
+        <span>¡COMENZAR SIMULADOR DE EXAMEN!</span>
+      </button>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════
+         SCREEN 2: EXAMEN EN CURSO
+    ════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-exam">
+      <!-- Barra superior de estado -->
+      <div class="exam-top-bar">
+        <div class="exam-badge-category" id="exam-cat-badge">
+          <span>🚗 Auto (B)</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="exam-timer" id="exam-timer-box">
+            <span class="material-symbols-outlined text-[18px]">alarm</span>
+            <span id="exam-timer-clock">22:30</span>
+          </div>
+
+          <button type="button" class="btn-flag" id="btn-flag-q" title="Marcar para revisar luego">
+            <span class="material-symbols-outlined text-[16px]">flag</span>
+            <span>Marcar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Progreso -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--text-muted);">
+          <span id="label-q-counter">Pregunta 1 de 30</span>
+          <span id="label-answered-counter">0 contestadas</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="exam-progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Pregunta -->
+      <div class="q-card">
+        <div class="q-meta">
+          <span class="q-tag" id="q-topic-tag">Prioridades de Paso</span>
+          <span id="q-id-tag" style="font-size:11px;opacity:0.8;">Q #1</span>
+        </div>
+
+        <div class="q-text" id="q-text-el">
+          En esta intersección sin semáforos, ¿quién tiene prioridad de paso?
+        </div>
+
+        <!-- Imagen si tiene -->
+        <div class="q-img-wrap" id="q-img-wrap" style="display:none;" onclick="openImageZoom()">
+          <img id="q-img-el" src="" alt="Situación Vial">
+          <div class="q-img-hint">
+            <span class="material-symbols-outlined text-[14px]">zoom_in</span>
+            <span>Tocar para ampliar</span>
+          </div>
+        </div>
+
+        <!-- Opciones A, B, C -->
+        <div class="q-options" id="q-options-wrap">
+          <!-- Dinámico -->
+        </div>
+
+        <!-- Explicación pedagógica (modo práctica) -->
+        <div class="explanation-box" id="q-explanation-box">
+          <!-- Dinámico -->
+        </div>
+      </div>
+
+      <!-- Barra de navegación del examen -->
+      <div class="exam-nav">
+        <button type="button" class="nav-ctrl-btn" id="btn-prev-q">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span>Anterior</span>
+        </button>
+
+        <button type="button" class="nav-ctrl-btn" id="btn-open-grid" style="border-color:rgba(56,189,248,0.4);">
+          <span class="material-symbols-outlined" style="color:var(--blue)">grid_view</span>
+          <span>Cuadrícula</span>
+        </button>
+
+        <button type="button" class="nav-ctrl-btn" id="btn-next-q">
+          <span>Siguiente</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+        <button type="button" class="btn-finish-exam" id="btn-finish-exam">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span>Finalizar Examen</span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════
+         SCREEN 3: RESULTADOS Y REVISIÓN DETALLADA
+    ════════════════════════════════════════════════ -->
+    <div class="screen" id="screen-results">
+      <div class="results-card">
+        <div class="verdict-badge verdict-passed" id="results-verdict-badge">
+          <span class="material-symbols-outlined text-[30px]">verified</span>
+          <span id="results-verdict-text">¡EXAMEN APROBADO!</span>
+        </div>
+
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.5;max-width:500px;" id="results-verdict-desc">
+          ¡Felicitaciones! Superaste el 85% de respuestas correctas requeridas por la normativa oficial de CABA.
+        </p>
+
+        <!-- Estadísticas -->
+        <div class="results-stats-row">
+          <div class="stat-box">
+            <span class="stat-val" style="color:var(--cyan);" id="stat-score">93%</span>
+            <span class="stat-lbl">Calificación</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" style="color:var(--green);" id="stat-correct">28</span>
+            <span class="stat-lbl">Correctas</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" style="color:var(--red);" id="stat-incorrect">2</span>
+            <span class="stat-lbl">Incorrectas</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" style="color:var(--yellow);" id="stat-time">14m 20s</span>
+            <span class="stat-lbl">Tiempo</span>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
+          <button type="button" class="header-btn" id="btn-retry-exam" style="padding:10px 18px;font-size:14px;background:var(--blue);color:#0c0e0f;border:none;">
+            <span class="material-symbols-outlined text-[18px]">replay</span>
+            <span>Reintentar con Preguntas Nuevas</span>
+          </button>
+          <button type="button" class="header-btn" id="btn-config-exam" style="padding:10px 18px;font-size:14px;">
+            <span class="material-symbols-outlined text-[18px]">settings</span>
+            <span>Cambiar Categoría / Opciones</span>
+          </button>
+          <a href="index.html" class="header-btn" style="padding:10px 18px;font-size:14px;">
+            <span class="material-symbols-outlined text-[18px]">home</span>
+            <span>Menú de Juegos</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Revisión Detallada -->
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <h2 style="font-family:var(--font-display);font-size:18px;color:#fff;text-transform:uppercase;letter-spacing:0.5px;">
+            Revisión Pedagógica Completa
+          </h2>
+          <div class="review-filter-bar">
+            <button type="button" class="review-tab active" data-filter="all">Todas (<span id="filter-count-all">30</span>)</button>
+            <button type="button" class="review-tab" data-filter="wrong">Solo Errores (<span id="filter-count-wrong">2</span>)</button>
+            <button type="button" class="review-tab" data-filter="correct">Aciertos (<span id="filter-count-correct">28</span>)</button>
+          </div>
+        </div>
+
+        <div class="review-list" id="review-list-container">
+          <!-- Tarjetas de revisión dinámicas -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════
+       MODAL: CUADRÍCULA DE PREGUNTAS (1..N)
+  ════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-grid">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Cuadrícula de Preguntas</h3>
+        <button type="button" class="modal-close" onclick="closeGridModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;gap:14px;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:14px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="width:12px;height:12px;border-radius:3px;background:rgba(56,189,248,0.2);border:1px solid var(--blue);"></div>
+            <span>Contestada</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="width:12px;height:12px;border-radius:3px;background:var(--surface-card);border:1px solid var(--border);"></div>
+            <span>Sin contestar</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <span>🚩</span>
+            <span>Marcada</span>
+          </div>
+        </div>
+        <div class="q-grid-items" id="modal-grid-items">
+          <!-- Celdas 1..N -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       MODAL: ZOOM DE IMAGEN
+  ════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-zoom" onclick="closeImageZoom()">
+    <div style="max-width:90vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <img id="modal-zoom-img" class="zoom-img" src="" alt="Ampliación">
+      <span style="font-size:12px;color:#fff;background:rgba(0,0,0,0.6);padding:4px 12px;border-radius:9999px;">Toca en cualquier parte para cerrar</span>
+    </div>
+  </div>
+
+
+  <!-- CARGA DE BANCOS OFICIALES -->
+  <script src="js/cloud-sync.js?v=9"></script>
+  <script src="js/questions.js?v=9"></script>
+  <script src="js/colectivo_questions.js?v=9"></script>
+  <script src="js/moto_questions.js?v=9"></script>
+  <script src="js/auto_questions.js?v=9"></script>
+  <script src="js/audio.js?v=9"></script>
+
+  <!-- LÓGICA DEL SIMULADOR -->
+  <script>
+    // Estado del simulador
+    let selectedCategory = 'auto'; // 'auto' | 'moto' | 'colectivo'
+    let selectedQuantity = 30;     // 10 | 20 | 30 | 50 | custom
+    let selectedMode = 'exam';     // 'exam' | 'practice'
+
+    let examQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = {};   // index -> chosenOptionIndex (0, 1, 2)
+    let flaggedQuestions = {}; // index -> boolean
+
+    let timerInterval = null;
+    let timeRemaining = 0; // segundos
+    let totalExamTime = 0;
+    let examStartTime = 0;
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      // Actualizar conteos en las tarjetas
+      if (typeof AUTO_QUESTIONS !== 'undefined') {
+        document.getElementById('badge-total-auto').textContent = `${AUTO_QUESTIONS.length} preguntas`;
+      }
+      if (typeof MOTO_QUESTIONS !== 'undefined') {
+        document.getElementById('badge-total-moto').textContent = `${MOTO_QUESTIONS.length} preguntas`;
+      }
+      if (typeof COLECTIVO_QUESTIONS !== 'undefined') {
+        document.getElementById('badge-total-colectivo').textContent = `${COLECTIVO_QUESTIONS.length} preguntas`;
+      }
+
+      setupCategoryButtons();
+      setupQuantityButtons();
+      setupModeButtons();
+      setupExamEvents();
+    });
+
+    // ── 1. SELECTOR DE CATEGORÍA ──
+    function setupCategoryButtons() {
+      const catBtns = document.querySelectorAll('.cat-btn');
+      catBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          catBtns.forEach(b => {
+            b.classList.remove('active', 'active-moto', 'active-colectivo');
+          });
+          const cat = btn.dataset.category;
+          selectedCategory = cat;
+          if (cat === 'moto') btn.classList.add('active', 'active-moto');
+          else if (cat === 'colectivo') btn.classList.add('active', 'active-colectivo');
+          else btn.classList.add('active');
+
+          if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
+        });
+      });
+    }
+
+    // ── 2. SELECTOR DE CANTIDAD ──
+    function setupQuantityButtons() {
+      const qtyBtns = document.querySelectorAll('.qty-btn');
+      const customInput = document.getElementById('input-custom-qty');
+
+      qtyBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          qtyBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedQuantity = parseInt(btn.dataset.qty, 10);
+          customInput.value = '';
+          if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
+        });
+      });
+
+      customInput.addEventListener('input', () => {
+        const val = parseInt(customInput.value, 10);
+        if (val && val >= 5) {
+          qtyBtns.forEach(b => b.classList.remove('active'));
+          selectedQuantity = val;
+        }
+      });
+    }
+
+    // ── 3. SELECTOR DE MODO ──
+    function setupModeButtons() {
+      const modeBtns = document.querySelectorAll('.mode-btn');
+      modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modeBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedMode = btn.dataset.mode;
+          if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
+        });
+      });
+    }
+
+    // ── 4. INICIAR EXAMEN ──
+    function setupExamEvents() {
+      document.getElementById('btn-start-exam').addEventListener('click', startExam);
+      document.getElementById('btn-prev-q').addEventListener('click', () => navigateQuestion(-1));
+      document.getElementById('btn-next-q').addEventListener('click', () => navigateQuestion(1));
+      document.getElementById('btn-open-grid').addEventListener('click', openGridModal);
+      document.getElementById('btn-flag-q').addEventListener('click', toggleFlagCurrentQuestion);
+      document.getElementById('btn-finish-exam').addEventListener('click', confirmFinishExam);
+
+      document.getElementById('btn-retry-exam').addEventListener('click', startExam);
+      document.getElementById('btn-config-exam').addEventListener('click', () => {
+        showScreen('screen-setup');
+      });
+
+      // Filtros de revisión
+      document.querySelectorAll('.review-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.review-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          renderReviewList(tab.dataset.filter);
+        });
+      });
+    }
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function startExam() {
+      // 1. Obtener banco de preguntas
+      let pool = [];
+      let catLabel = '🚗 Auto (Clase B)';
+      if (selectedCategory === 'moto') {
+        pool = typeof MOTO_QUESTIONS !== 'undefined' ? [...MOTO_QUESTIONS] : [];
+        catLabel = '🏍️ Moto (Clase A)';
+      } else if (selectedCategory === 'colectivo') {
+        pool = typeof COLECTIVO_QUESTIONS !== 'undefined' ? [...COLECTIVO_QUESTIONS] : [];
+        catLabel = '🚌 Colectivo (Clase D1)';
+      } else {
+        pool = typeof AUTO_QUESTIONS !== 'undefined' ? [...AUTO_QUESTIONS] : [];
+        catLabel = '🚗 Auto (Clase B)';
+      }
+
+      if (!pool.length) {
+        alert('No se pudieron cargar las preguntas de esta categoría.');
+        return;
+      }
+
+      // 2. Mezclar y tomar cantidad
+      const count = Math.min(selectedQuantity, pool.length);
+      examQuestions = shuffleArray(pool).slice(0, count);
+
+      // Priorizar que algunas tengan imágenes si el banco dispone
+      const hasImg = examQuestions.some(q => !!q.imageSrc);
+      if (!hasImg) {
+        const anyImg = pool.find(q => !!q.imageSrc);
+        if (anyImg) examQuestions[0] = anyImg;
+      }
+
+      currentIndex = 0;
+      userAnswers = {};
+      flaggedQuestions = {};
+
+      // 3. Configurar tiempo
+      // Oficial: 45 segundos por pregunta (en 30 preguntas = 22m 30s)
+      totalExamTime = count * 45;
+      timeRemaining = totalExamTime;
+      examStartTime = Date.now();
+
+      // UI
+      document.getElementById('exam-cat-badge').innerHTML = `<span>${catLabel}</span>`;
+      const timerBox = document.getElementById('exam-timer-box');
+      if (selectedMode === 'practice') {
+        timerBox.style.display = 'none';
+      } else {
+        timerBox.style.display = 'inline-flex';
+        startTimer();
+      }
+
+      showScreen('screen-exam');
+      renderCurrentQuestion();
+      if (window.audioSystem && audioSystem.playLevelUp) audioSystem.playLevelUp();
+    }
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // ── 5. TEMPORIZADOR ──
+    function startTimer() {
+      clearInterval(timerInterval);
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          alert('¡Tiempo cumplido! Se entregará el examen con las respuestas guardadas.');
+          finishExam();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const clockEl = document.getElementById('exam-timer-clock');
+      const timerBox = document.getElementById('exam-timer-box');
+      const m = Math.floor(timeRemaining / 60);
+      const s = timeRemaining % 60;
+      clockEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+      if (timeRemaining <= 120) {
+        timerBox.classList.add('urgent');
+      } else {
+        timerBox.classList.remove('urgent');
+      }
+    }
+
+    // ── 6. RENDER DE PREGUNTA ──
+    function renderCurrentQuestion() {
+      const q = examQuestions[currentIndex];
+      if (!q) return;
+
+      // Progreso
+      const total = examQuestions.length;
+      document.getElementById('label-q-counter').textContent = `Pregunta ${currentIndex + 1} de ${total}`;
+      const answeredCount = Object.keys(userAnswers).length;
+      document.getElementById('label-answered-counter').textContent = `${answeredCount} contestadas`;
+      document.getElementById('exam-progress-bar').style.width = `${((currentIndex + 1) / total) * 100}%`;
+
+      // Flag
+      const flagBtn = document.getElementById('btn-flag-q');
+      flagBtn.classList.toggle('active', !!flaggedQuestions[currentIndex]);
+
+      // Meta
+      document.getElementById('q-topic-tag').textContent = q.tema || q.manual || 'Normativa Vial';
+      document.getElementById('q-id-tag').textContent = `ID #${q.id || currentIndex + 1}`;
+      document.getElementById('q-text-el').textContent = q.question;
+
+      // Imagen
+      const imgWrap = document.getElementById('q-img-wrap');
+      const imgEl = document.getElementById('q-img-el');
+      if (q.imageSrc) {
+        imgEl.src = q.imageSrc;
+        imgWrap.style.display = 'flex';
+      } else {
+        imgWrap.style.display = 'none';
+      }
+
+      // Opciones
+      const optWrap = document.getElementById('q-options-wrap');
+      optWrap.innerHTML = '';
+
+      const letters = ['A', 'B', 'C', 'D'];
+      const currentChosen = userAnswers[currentIndex];
+      const isPractice = (selectedMode === 'practice');
+      const isAlreadyAnswered = (currentChosen !== undefined);
+
+      q.options.forEach((optText, optIdx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'opt-btn';
+
+        const isThisSelected = (currentChosen === optIdx);
+        if (isThisSelected) btn.classList.add('selected');
+
+        if (isPractice && isAlreadyAnswered) {
+          if (optIdx === q.correctAnswer) btn.classList.add('correct');
+          else if (isThisSelected) btn.classList.add('incorrect');
+        }
+
+        btn.innerHTML = `
+          <div class="opt-letter">${letters[optIdx]}</div>
+          <div style="flex:1;">${optText}</div>
+        `;
+
+        btn.addEventListener('click', () => {
+          selectOption(optIdx);
+        });
+
+        optWrap.appendChild(btn);
+      });
+
+      // Explicación en modo práctica
+      const expBox = document.getElementById('q-explanation-box');
+      if (isPractice && isAlreadyAnswered) {
+        expBox.style.display = 'block';
+        expBox.innerHTML = `<strong>Explicación Oficial:</strong> ${q.explanation || 'Respuesta reglamentaria según el manual del conductor.'}`;
+      } else {
+        expBox.style.display = 'none';
+      }
+
+      // Botones anterior / siguiente
+      document.getElementById('btn-prev-q').disabled = (currentIndex === 0);
+      document.getElementById('btn-next-q').disabled = (currentIndex === total - 1);
+    }
+
+    function selectOption(optIdx) {
+      userAnswers[currentIndex] = optIdx;
+
+      if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
+
+      renderCurrentQuestion();
+
+      // En modo práctica, si acertó sonido correcto
+      if (selectedMode === 'practice') {
+        const q = examQuestions[currentIndex];
+        if (optIdx === q.correctAnswer) {
+          if (window.audioSystem && audioSystem.playCorrect) audioSystem.playCorrect();
+        } else {
+          if (window.audioSystem && audioSystem.playWrong) audioSystem.playWrong();
+        }
+      }
+    }
+
+    function navigateQuestion(delta) {
+      const next = currentIndex + delta;
+      if (next >= 0 && next < examQuestions.length) {
+        currentIndex = next;
+        renderCurrentQuestion();
+        if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
+      }
+    }
+
+    function toggleFlagCurrentQuestion() {
+      flaggedQuestions[currentIndex] = !flaggedQuestions[currentIndex];
+      renderCurrentQuestion();
+      if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
+    }
+
+    // ── 7. MODAL CUADRÍCULA ──
+    function openGridModal() {
+      const container = document.getElementById('modal-grid-items');
+      container.innerHTML = '';
+
+      examQuestions.forEach((q, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell';
+        cell.textContent = idx + 1;
+
+        if (idx === currentIndex) cell.classList.add('current');
+        if (userAnswers[idx] !== undefined) cell.classList.add('answered');
+        if (flaggedQuestions[idx]) cell.classList.add('flagged');
+
+        cell.addEventListener('click', () => {
+          currentIndex = idx;
+          closeGridModal();
+          renderCurrentQuestion();
+        });
+
+        container.appendChild(cell);
+      });
+
+      document.getElementById('modal-grid').classList.add('active');
+    }
+
+    function closeGridModal() {
+      document.getElementById('modal-grid').classList.remove('active');
+    }
+
+    // Zoom imagen
+    function openImageZoom() {
+      const q = examQuestions[currentIndex];
+      if (!q || !q.imageSrc) return;
+      document.getElementById('modal-zoom-img').src = q.imageSrc;
+      document.getElementById('modal-zoom').classList.add('active');
+    }
+    function closeImageZoom() {
+      document.getElementById('modal-zoom').classList.remove('active');
+    }
+
+    // ── 8. FINALIZAR EXAMEN ──
+    function confirmFinishExam() {
+      const total = examQuestions.length;
+      const answered = Object.keys(userAnswers).length;
+      const unanswered = total - answered;
+
+      if (unanswered > 0) {
+        const confirmMsg = `Tenés ${unanswered} pregunta(s) sin responder de un total de ${total}.\n\n¿Querés entregar el examen de todas formas?`;
+        if (!confirm(confirmMsg)) return;
+      } else {
+        if (!confirm('¿Estás seguro de que querés entregar y calificar tu examen?')) return;
+      }
+
+      finishExam();
+    }
+
+    function finishExam() {
+      clearInterval(timerInterval);
+
+      // Calcular aciertos
+      let correct = 0;
+      examQuestions.forEach((q, idx) => {
+        if (userAnswers[idx] === q.correctAnswer) {
+          correct++;
+        }
+      });
+
+      const total = examQuestions.length;
+      const incorrect = total - correct;
+      const scorePct = Math.round((correct / total) * 100);
+      const isPassed = (scorePct >= 85); // 85% oficial CABA
+
+      const elapsedSeconds = Math.max(1, Math.floor((Date.now() - examStartTime) / 1000));
+      const m = Math.floor(elapsedSeconds / 60);
+      const s = elapsedSeconds % 60;
+      const timeStr = `${m}m ${s}s`;
+
+      // UI Resultados
+      const badge = document.getElementById('results-verdict-badge');
+      const title = document.getElementById('results-verdict-text');
+      const desc = document.getElementById('results-verdict-desc');
+
+      if (isPassed) {
+        badge.className = 'verdict-badge verdict-passed';
+        title.innerHTML = `<span class="material-symbols-outlined text-[30px]">verified</span> ¡EXAMEN APROBADO!`;
+        desc.textContent = `¡Felicitaciones! Lograste un ${scorePct}%, superando el 85% oficial requerido para la licencia en CABA.`;
+        if (window.audioSystem && audioSystem.playLevelUp) audioSystem.playLevelUp();
+      } else {
+        badge.className = 'verdict-badge verdict-failed';
+        title.innerHTML = `<span class="material-symbols-outlined text-[30px]">cancel</span> NO ALCANZADO`;
+        desc.textContent = `Obtuviste ${scorePct}% (${correct}/${total}). La normativa oficial exige al menos 85% de aciertos para aprobar. Podés repasar tus errores abajo.`;
+        if (window.audioSystem && audioSystem.playWrong) audioSystem.playWrong();
+      }
+
+      document.getElementById('stat-score').textContent = `${scorePct}%`;
+      document.getElementById('stat-correct').textContent = correct;
+      document.getElementById('stat-incorrect').textContent = incorrect;
+      document.getElementById('stat-time').textContent = timeStr;
+
+      // Conteos de filtros
+      document.getElementById('filter-count-all').textContent = total;
+      document.getElementById('filter-count-wrong').textContent = incorrect;
+      document.getElementById('filter-count-correct').textContent = correct;
+
+      renderReviewList('all');
+      showScreen('screen-results');
+    }
+
+    // ── 9. LISTA DE REVISIÓN PEDAGÓGICA ──
+    function renderReviewList(filter) {
+      const container = document.getElementById('review-list-container');
+      container.innerHTML = '';
+
+      examQuestions.forEach((q, idx) => {
+        const userChoice = userAnswers[idx];
+        const isCorrect = (userChoice === q.correctAnswer);
+
+        if (filter === 'wrong' && isCorrect) return;
+        if (filter === 'correct' && !isCorrect) return;
+
+        const letters = ['A', 'B', 'C', 'D'];
+        const userAnsText = (userChoice !== undefined) ? `${letters[userChoice]}. ${q.options[userChoice]}` : 'Sin responder';
+        const correctAnsText = `${letters[q.correctAnswer]}. ${q.options[q.correctAnswer]}`;
+
+        const item = document.createElement('div');
+        item.className = `review-item ${isCorrect ? 'is-correct' : 'is-incorrect'}`;
+
+        item.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <span style="font-size:12px;font-weight:800;color:${isCorrect ? 'var(--green)' : 'var(--red)'};display:flex;align-items:center;gap:4px;">
+              <span class="material-symbols-outlined text-[16px]">${isCorrect ? 'check_circle' : 'cancel'}</span>
+              ${isCorrect ? 'ACIERTO' : (userChoice === undefined ? 'OMITIDA / SIN RESPONDER' : 'ERROR')}
+            </span>
+            <span style="font-size:11px;color:var(--text-muted);font-weight:700;">#${idx + 1} • ${q.tema || q.manual || 'Vial'}</span>
+          </div>
+
+          <div style="font-weight:700;font-size:15px;color:#fff;line-height:1.4;">
+            ${q.question}
+          </div>
+
+          ${q.imageSrc ? `
+            <div style="max-width:260px;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin:4px 0;">
+              <img src="${q.imageSrc}" style="width:100%;height:auto;display:block;" alt="Referencia">
+            </div>
+          ` : ''}
+
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;">
+            <div style="color:${isCorrect ? 'var(--green)' : 'var(--red)'};">
+              <strong>Tu respuesta:</strong> ${userAnsText}
+            </div>
+            ${!isCorrect ? `
+              <div style="color:var(--green);">
+                <strong>Respuesta correcta:</strong> ${correctAnsText}
+              </div>
+            ` : ''}
+          </div>
+
+          <div style="background:rgba(255,255,255,0.04);padding:10px 12px;border-radius:8px;font-size:12px;color:#cbd5e1;line-height:1.45;">
+            <strong>Devolución Pedagógica:</strong> ${q.explanation || 'Pauta reglamentaria del Manual Oficial del Conductor.'}
+          </div>
+        `;
+
+        container.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>

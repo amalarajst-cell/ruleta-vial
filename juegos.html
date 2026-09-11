@@ -166,6 +166,34 @@
     .btn-reaccion span {
       color: #8DE2D6;
     }
+    .btn-alcoholemia {
+      border-color: #A855F7;
+      box-shadow: 0 10px 0 #6B21A8, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-alcoholemia:hover {
+      border-color: #D8B4FE;
+      box-shadow: 0 14px 0 #6B21A8, 0 24px 44px rgba(168, 85, 247, 0.35);
+    }
+    .btn-alcoholemia:active {
+      box-shadow: 0 4px 0 #6B21A8, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-alcoholemia span {
+      color: #C084FC;
+    }
+    .btn-simulador {
+      border-color: #38BDF8;
+      box-shadow: 0 10px 0 #0284C7, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-simulador:hover {
+      border-color: #BAE6FD;
+      box-shadow: 0 14px 0 #0284C7, 0 24px 44px rgba(56, 189, 248, 0.35);
+    }
+    .btn-simulador:active {
+      box-shadow: 0 4px 0 #0284C7, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-simulador span {
+      color: #38BDF8;
+    }
   </style>
 </head>
 <body>
@@ -213,6 +241,24 @@
         <span>TIEMPO DE REACCIÓN</span>
       </button>
       <span class="btn-hint">Tocá para poner a prueba tus reflejos y frenado</span>
+    </div>
+
+    <!-- 3. JUEGO: LÍMITES DE ALCOHOLEMIA -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;">
+      <button class="btn-ruleta btn-alcoholemia" id="btn-alcoholemia" onclick="window.location.href='alcoholemia.html'">
+        <img src="assets/alcoholemia_icono.jpg" alt="Límites de Alcoholemia">
+        <span>LÍMITES DE ALCOHOLEMIA</span>
+      </button>
+      <span class="btn-hint">Normativa CABA: Actores viales y tolerancia en sangre</span>
+    </div>
+
+    <!-- 4. JUEGO: SIMULADOR DE EXAMEN -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:10px;">
+      <button class="btn-ruleta btn-simulador" id="btn-simulador" onclick="window.location.href='simulador.html'">
+        <img src="assets/simulador_icono.jpg" alt="Simulador de Examen">
+        <span>SIMULADOR DE EXAMEN</span>
+      </button>
+      <span class="btn-hint">Elegí tu categoría (Auto, Moto, Colectivo) y cantidad de preguntas</span>
     </div>
   </main>
 

@@ -2991,3 +2991,22 @@ body.admin-mode .bottom-nav {
 .btn-alcoholemia-menu span {
   color: #C084FC;
 }
+
+.btn-simulador-menu {
+  border-color: #38BDF8;
+  box-shadow: 0 10px 0 #0284C7, 0 18px 36px rgba(0, 0, 0, 0.6);
+}
+
+.btn-simulador-menu:hover {
+  border-color: #BAE6FD;
+  box-shadow: 0 14px 0 #0284C7, 0 24px 44px rgba(56, 189, 248, 0.35);
+}
+
+.btn-simulador-menu:active {
+  box-shadow: 0 4px 0 #0284C7, 0 8px 18px rgba(0, 0, 0, 0.4);
+}
+
+.btn-simulador-menu span {
+  color: #38BDF8;
+}
+
