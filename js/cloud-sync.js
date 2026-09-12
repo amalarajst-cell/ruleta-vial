@@ -452,13 +452,13 @@
 
     const modalHtml = `
       <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
-        <div style="background:#16191b;border:2px solid #FFC600;border-radius:26px;box-shadow:0 24px 70px rgba(0,0,0,0.85),0 0 35px rgba(255,198,0,0.2);width:100%;max-width:760px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;">
+        <div style="background:#16191b;border:1px solid rgba(255,255,255,0.12);border-radius:24px;box-shadow:0 24px 70px rgba(0,0,0,0.9);width:100%;max-width:760px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;">
           
           <!-- 1. Cabecera del Perfil -->
           <div style="background:linear-gradient(135deg,#23282b 0%,#181c1e 100%);padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:14px;">
-              <div style="position:relative;width:56px;height:56px;border-radius:50%;background:rgba(255,198,0,0.15);border:2.5px solid #FFC600;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <img src="${player.avatar}" style="width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+              <div style="position:relative;width:54px;height:54px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <img src="${player.avatar}" style="width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
               </div>
               <div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -616,7 +616,13 @@
         modal.remove();
         openRegistrationModal({
           allowClose: true,
-          onSave: () => openUserProfileModal()
+          onSave: () => {
+            updateAllUserBadges();
+            if (!window.location.pathname.endsWith('juegos.html') && !window.location.search.includes('screen=practice')) {
+              if (typeof showScreen === 'function') showScreen('practice');
+              else window.location.href = 'juegos.html';
+            }
+          }
         });
       });
     }
@@ -626,7 +632,13 @@
         modal.remove();
         openRegistrationModal({
           allowClose: true,
-          onSave: () => updateAllUserBadges()
+          onSave: () => {
+            updateAllUserBadges();
+            if (!window.location.pathname.endsWith('juegos.html') && !window.location.search.includes('screen=practice')) {
+              if (typeof showScreen === 'function') showScreen('practice');
+              else window.location.href = 'juegos.html';
+            }
+          }
         });
       });
     }
@@ -643,11 +655,11 @@
 
     const modalHtml = `
       <div id="vialplay-global-reg-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
-        <div style="background:#181c1e;border:2px solid #FFC600;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.8),0 0 30px rgba(255,198,0,0.25);width:100%;max-width:440px;overflow:hidden;animation:vpPopIn 0.25s ease;">
+        <div style="background:#181c1e;border:1px solid rgba(255,255,255,0.12);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.85);width:100%;max-width:440px;overflow:hidden;animation:vpPopIn 0.25s ease;">
           
           <div style="background:linear-gradient(135deg,#23282b 0%,#1a1e20 100%);padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
-              <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,198,0,0.15);border:1.5px solid #FFC600;display:flex;align-items:center;justify-content:center;">
+              <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,198,0,0.15);border:1px solid rgba(255,198,0,0.5);display:flex;align-items:center;justify-content:center;">
                 <img src="assets/brand/logo_ba.png" style="height:20px;filter:brightness(0) invert(1);" alt="BA">
               </div>
               <div>
@@ -746,6 +758,15 @@
 
       if (typeof options.onSave === 'function') {
         options.onSave(playerRecord);
+      } else {
+        // Redirigir a la sección Juegos
+        if (window.location.pathname.endsWith('juegos.html')) {
+          if (typeof refreshHubStats === 'function') refreshHubStats();
+        } else if (typeof showScreen === 'function') {
+          showScreen('practice');
+        } else {
+          window.location.href = 'juegos.html';
+        }
       }
     });
 
