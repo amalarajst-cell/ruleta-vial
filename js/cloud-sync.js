@@ -89,6 +89,7 @@
     if (!displayCat) {
       if (sessionData.game === 'reaccion') displayCat = 'Tiempo de Reacción';
       else if (sessionData.game === 'alcoholemia') displayCat = 'Límites de Alcoholemia';
+      else if (sessionData.game === 'memotest') displayCat = 'Memotest Vial';
       else displayCat = 'Ruleta Vial';
     }
 

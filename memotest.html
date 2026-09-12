@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Memotest Vial — Señales de Tránsito y Reacción</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <script src="js/audio.js"></script>
+  <script src="js/senales-data.js"></script>
+  <script src="js/cloud-sync.js"></script>
+
+  <style>
+    :root {
+      --bg: #0e1112;
+      --surface: #161a1b;
+      --surface-card: #1c2123;
+      --surface-hover: #252b2e;
+      --surface-active: #2e363a;
+      --text: #f0f4f5;
+      --text-muted: #8c979a;
+      
+      --accent-cyan: #8DE2D6;
+      --accent-yellow: #FFC600;
+      --accent-orange: #FF7A00;
+      --accent-red: #FF4444;
+      --accent-green: #00E676;
+      --accent-blue: #38BDF8;
+      --accent-purple: #A855F7;
+      
+      --outline: rgba(141, 226, 214, 0.18);
+      --outline-glow: rgba(255, 122, 0, 0.35);
+      --card-radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg);
+      font-family: 'Archivo', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      width: 100%;
+      background: rgba(18, 22, 23, 0.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--outline);
+      padding: 10px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-inner {
+      max-width: 740px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #202628;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .btn-icon:hover {
+      background: #2b3336;
+      transform: translateY(-1px);
+    }
+    .btn-icon:active {
+      transform: translateY(1px);
+    }
+
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-main-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 17px;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    .header-sub {
+      font-size: 11px;
+      color: var(--accent-orange);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #191e20;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 5px 9px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .stat-badge .stat-icon { font-size: 15px; }
+    .stat-score { color: var(--accent-yellow); }
+    .stat-streak { color: var(--accent-orange); }
+    .stat-reaction { color: var(--accent-green); }
+
+    /* ── CONTENEDOR PRINCIPAL ── */
+    .game-container {
+      flex: 1;
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: space-between;
+    }
+
+    /* ── BARRA DE PROGRESO Y VIDAS ── */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 4px;
+    }
+    .round-indicator {
+      font-size: 13px;
+      font-weight: 800;
+      color: #c0cad0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .round-indicator span {
+      color: var(--accent-cyan);
+    }
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: #202628;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
+      border-radius: 999px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 122, 0, 0.5);
+    }
+    .lives-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .heart-icon {
+      font-size: 18px;
+      color: var(--accent-red);
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .heart-icon.lost {
+      opacity: 0.2;
+      transform: scale(0.8);
+      filter: grayscale(1);
+    }
+
+    /* ── TARJETA DE SEÑAL OBJETIVO (ARRIBA) ── */
+    .target-card-wrapper {
+      background: linear-gradient(180deg, #1d2326 0%, #171b1d 100%);
+      border: 2.5px solid var(--accent-orange);
+      border-radius: var(--card-radius);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 8px 28px rgba(255, 122, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.25s ease;
+      min-height: 215px;
+    }
+
+    .target-card-wrapper.waiting {
+      border-color: #526066;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .target-card-wrapper.ready-stimulus {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 32px rgba(255, 198, 0, 0.5);
+      animation: pulseGlow 0.5s ease;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.96); box-shadow: 0 0 40px rgba(255, 198, 0, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 24px rgba(255, 198, 0, 0.4); }
+    }
+
+    .target-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: rgba(255, 122, 0, 0.15);
+      color: #FFB366;
+      border: 1px solid rgba(255, 122, 0, 0.3);
+      margin-bottom: 8px;
+    }
+
+    .target-badge.waiting-badge {
+      background: rgba(140, 151, 154, 0.15);
+      color: #b0bac0;
+      border-color: rgba(140, 151, 154, 0.3);
+    }
+
+    .target-image-container {
+      width: 125px;
+      height: 125px;
+      max-width: 34vw;
+      max-height: 34vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .target-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Estado de espera con cuenta regresiva / alerta */
+    .waiting-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--accent-yellow);
+    }
+    .waiting-radar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 198, 0, 0.2);
+      border-top-color: var(--accent-yellow);
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .waiting-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #e0e6ea;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      animation: blinkText 0.8s ease infinite alternate;
+    }
+    @keyframes blinkText {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .target-info {
+      margin-top: 8px;
+      text-align: center;
+      min-height: 38px;
+    }
+    .target-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 16px;
+      color: #ffffff;
+      line-height: 1.2;
+      letter-spacing: 0.3px;
+    }
+    .target-category {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: capitalize;
+      margin-top: 2px;
+    }
+
+    /* ── BANDEJA INFERIOR DINÁMICA SEGÚN DIFICULTAD ── */
+    .options-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #c2cbd0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .options-section-header span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+    }
+
+    .options-grid {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    /* Modos de grilla según cantidad de cartas */
+    .grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-6 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .grid-8 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .grid-12 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .option-card {
+      background: #191f21;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--card-radius);
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    /* Ajuste de altura para grillas de 8 y 12 */
+    .grid-8 .option-card, .grid-12 .option-card {
+      height: 95px;
+      padding: 6px;
+    }
+
+    .option-card:hover {
+      background: #21282b;
+      border-color: rgba(255, 198, 0, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .option-card:active {
+      transform: scale(0.96);
+    }
+
+    .option-card img {
+      width: 75px;
+      height: 75px;
+      max-width: 85%;
+      max-height: 85%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+      pointer-events: none;
+      transition: transform 0.2s ease;
+    }
+    .grid-8 .option-card img, .grid-12 .option-card img {
+      width: 58px;
+      height: 58px;
+    }
+
+    .option-card.disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    /* Animaciones de acierto y error */
+    .option-card.correct-flash {
+      background: rgba(0, 230, 118, 0.25) !important;
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 24px rgba(0, 230, 118, 0.7) !important;
+      transform: scale(1.05) !important;
+    }
+
+    .option-card.wrong-flash {
+      background: rgba(255, 68, 68, 0.25) !important;
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 0 24px rgba(255, 68, 68, 0.7) !important;
+      animation: shake 0.4s ease;
+    }
+
+    .option-card.highlight-target {
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 16px rgba(0, 230, 118, 0.5) !important;
+      animation: pulseGreen 0.6s infinite alternate;
+    }
+
+    @keyframes pulseGreen {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.04); }
+    }
+
+    .card-enter {
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    .card-exit {
+      animation: popOut 0.25s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.6) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes popOut {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.4); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* ── BANNER EDUCATIVO FLOTANTE ── */
+    .feedback-banner {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120px);
+      width: calc(100% - 32px);
+      max-width: 640px;
+      background: #181d1f;
+      border: 2px solid var(--accent-cyan);
+      border-radius: 18px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .feedback-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .feedback-banner.success {
+      border-color: var(--accent-green);
+      background: #12221b;
+    }
+    .feedback-banner.error {
+      border-color: var(--accent-red);
+      background: #251417;
+    }
+    .feedback-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feedback-banner.success .feedback-icon-box {
+      background: var(--accent-green);
+      color: #000;
+    }
+    .feedback-banner.error .feedback-icon-box {
+      background: var(--accent-red);
+      color: #fff;
+    }
+    .feedback-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .feedback-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .feedback-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 14px;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .feedback-time-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-yellow);
+      background: rgba(255, 198, 0, 0.15);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .feedback-desc {
+      font-size: 12px;
+      color: #d0d8dc;
+      margin-top: 3px;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* ── MODAL DE INICIO / CONFIGURACIÓN ── */
+    .overlay-screen {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 13, 14, 0.94);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #191f21;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 26px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 94vh;
+      overflow-y: auto;
+      padding: 26px 22px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      animation: popIn 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .modal-hero-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF7A00, #FFC600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 24px rgba(255, 122, 0, 0.4);
+      color: #000;
+      font-size: 42px;
+    }
+
+    .modal-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 22px;
+      color: #ffffff;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .modal-desc {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: #b0bac0;
+    }
+
+    .settings-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+    .settings-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--accent-orange);
+      letter-spacing: 0.5px;
+    }
+
+    .mode-chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+    }
+    .mode-chip {
+      background: #232a2d;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 9px 6px;
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #e0e6ea;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-chip.active {
+      background: rgba(255, 122, 0, 0.2);
+      border-color: var(--accent-orange);
+      color: #FFB366;
+      box-shadow: 0 0 12px rgba(255, 122, 0, 0.3);
+    }
+
+    .category-select {
+      width: 100%;
+      background: #232a2d;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'Archivo', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-action-primary {
+      width: 100%;
+      background: linear-gradient(180deg, #FF9100 0%, #E06000 100%);
+      color: #ffffff;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 17px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 15px 20px;
+      border-radius: 16px;
+      border: none;
+      box-shadow: 0 6px 0 #A84200, 0 12px 24px rgba(255, 122, 0, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-action-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #A84200, 0 16px 30px rgba(255, 122, 0, 0.5);
+    }
+    .btn-action-primary:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #A84200, 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-action-secondary {
+      width: 100%;
+      background: #242c2f;
+      color: #e0e6ea;
+      font-family: 'Archivo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    /* Grilla de resultados */
+    .results-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+    .res-stat-card {
+      background: #202628;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .res-stat-val {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 20px;
+      color: var(--accent-yellow);
+    }
+    .res-stat-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .admin-sync-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-green);
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    @media (max-width: 480px) {
+      .mode-chips {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-8, .grid-12 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── CABECERA ── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="juegos.html" class="btn-icon" title="Volver a Juegos">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <div class="header-titles">
+          <h1 class="header-main-title">Memotest Vial</h1>
+          <span class="header-sub">Reconocimiento & Reacción</span>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="stat-badge stat-score" title="Puntos">
+          <span class="material-symbols-outlined stat-icon">military_tech</span>
+          <span id="txt-score">0</span>
+        </div>
+        <div class="stat-badge stat-reaction" title="Último tiempo de reacción">
+          <span class="material-symbols-outlined stat-icon">bolt</span>
+          <span id="txt-last-reaction">-- ms</span>
+        </div>
+        <div class="stat-badge stat-streak" title="Racha de aciertos">
+          <span class="material-symbols-outlined stat-icon">local_fire_department</span>
+          <span id="txt-streak">0</span>
+        </div>
+        <button class="btn-icon" id="btn-sound" title="Sonido" onclick="toggleSoundEffect()">
+          <span class="material-symbols-outlined" id="sound-icon">volume_up</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── CONTENEDOR DE JUEGO ── -->
+  <main class="game-container">
+    
+    <!-- 1. Estado y progreso -->
+    <div class="status-row">
+      <div class="round-indicator">
+        Ronda: <span id="txt-round">1 / 15</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="bar-progress"></div>
+      </div>
+      <div class="lives-indicator" id="lives-container" style="display:none;">
+        <span class="material-symbols-outlined heart-icon">favorite</span>
+        <span class="material-symbols-outlined heart-icon">favorite</span>
+        <span class="material-symbols-outlined heart-icon">favorite</span>
+      </div>
+    </div>
+
+    <!-- 2. SEÑAL OBJETIVO CON DELAY DE 1-2s (ARRIBA) -->
+    <section class="target-card-wrapper waiting" id="target-wrapper">
+      <div class="target-badge waiting-badge" id="target-badge">
+        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">hourglass_top</span>
+        <span id="target-badge-text">¡Atento a la señal!</span>
+      </div>
+
+      <div class="target-image-container">
+        <!-- Estado de espera mientras se prepara la señal (1 a 2s) -->
+        <div class="waiting-indicator" id="waiting-box">
+          <div class="waiting-radar"></div>
+          <span class="waiting-text">PREPARATE...</span>
+        </div>
+
+        <!-- Imagen de la señal cuando aparece -->
+        <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
+      </div>
+
+      <div class="target-info">
+        <div class="target-title" id="target-name">Esperando estímulo...</div>
+        <div class="target-category" id="target-cat">Reaccioná tan pronto aparezca</div>
+      </div>
+    </section>
+
+    <!-- 3. BANDEJA DE OPCIONES DINÁMICA (4, 6, 8 ó 12 IMÁGENES) -->
+    <section style="display:flex;flex-direction:column;gap:8px;">
+      <div class="options-section-header">
+        <span><span class="material-symbols-outlined" style="font-size:16px;">touch_app</span> Tocá la señal que corresponda</span>
+        <span id="txt-diff-badge" style="font-size:11px;color:var(--text-muted);">Dificultad: 4 Opciones</span>
+      </div>
+
+      <div class="options-grid grid-4" id="options-grid">
+        <!-- Generado dinámicamente según la dificultad -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── BANNER EDUCATIVO FLOTANTE ── -->
+  <div class="feedback-banner" id="feedback-banner">
+    <div class="feedback-icon-box" id="feedback-icon-box">
+      <span class="material-symbols-outlined" id="feedback-icon">check</span>
+    </div>
+    <div class="feedback-text">
+      <div class="feedback-title-row">
+        <div class="feedback-title" id="feedback-title">¡Correcto!</div>
+        <div class="feedback-time-tag" id="feedback-time">420 ms</div>
+      </div>
+      <div class="feedback-desc" id="feedback-desc">Descripción oficial de la norma vial.</div>
+    </div>
+  </div>
+
+  <!-- ── MODAL DE INICIO / CONFIGURACIÓN ── -->
+  <div class="overlay-screen" id="modal-start">
+    <div class="modal-card">
+      <div class="modal-hero-icon">
+        <span class="material-symbols-outlined">speed</span>
+      </div>
+
+      <div>
+        <h2 class="modal-title">MEMOTEST DE REACCIÓN</h2>
+        <p class="modal-desc" style="margin-top:4px;">
+          La señal aparecerá tras 1 o 2 segundos de espera para medir tus reflejos. Encontrala lo más rápido posible entre las opciones de abajo.
+        </p>
+      </div>
+
+      <!-- Selector de Dificultad (Cantidad de imágenes por debajo) -->
+      <div class="settings-group">
+        <div class="settings-label">Dificultad (Opciones por debajo)</div>
+        <div class="mode-chips">
+          <div class="mode-chip active" id="chip-diff-4" onclick="setOptionsCount(4, this)">Fácil (4)</div>
+          <div class="mode-chip" id="chip-diff-6" onclick="setOptionsCount(6, this)">Medio (6)</div>
+          <div class="mode-chip" id="chip-diff-8" onclick="setOptionsCount(8, this)">Difícil (8)</div>
+          <div class="mode-chip" id="chip-diff-12" onclick="setOptionsCount(12, this)">Extremo (12)</div>
+        </div>
+      </div>
+
+      <!-- Duración / Rondas -->
+      <div class="settings-group">
+        <div class="settings-label">Cantidad de Rondas</div>
+        <div class="mode-chips" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="mode-chip active" id="chip-round-10" onclick="setRoundsCount(10, this)">10 Rondas</div>
+          <div class="mode-chip" id="chip-round-15" onclick="setRoundsCount(15, this)">15 Rondas</div>
+          <div class="mode-chip" id="chip-round-20" onclick="setRoundsCount(20, this)">20 Rondas</div>
+        </div>
+      </div>
+
+      <!-- Categoría de Señales -->
+      <div class="settings-group">
+        <div class="settings-label">Categoría de Señales</div>
+        <select class="category-select" id="select-category" onchange="updateCategoryFilter(this.value)">
+          <option value="all">Todas las señales (60 oficiales)</option>
+          <option value="reglamentarias">Reglamentarias (Prohibición / Obligación)</option>
+          <option value="preventivas">Preventivas (Advertencia de peligro)</option>
+          <option value="informativas">Informativas (Servicios y destinos)</option>
+          <option value="transitorias">Transitorias y Horizontales (Obras y calzada)</option>
+        </select>
+      </div>
+
+      <button class="btn-action-primary" onclick="startGame()">
+        <span class="material-symbols-outlined">play_arrow</span>
+        COMENZAR DESAFÍO
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MODAL DE RESULTADOS ── -->
+  <div class="overlay-screen" id="modal-results" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-hero-icon" id="results-icon" style="background:linear-gradient(135deg, #00E676, #00B0FF);">
+        <span class="material-symbols-outlined" id="results-medal">emoji_events</span>
+      </div>
+
+      <div>
+        <h2 class="modal-title" id="results-title">¡EXCELENTE TIEMPO!</h2>
+        <p class="modal-desc" id="results-subtitle">Tus resultados fueron sincronizados con el Panel de Administración.</p>
+      </div>
+
+      <div class="admin-sync-tag">
+        <span class="material-symbols-outlined" style="font-size:16px;">cloud_done</span>
+        <span>Sincronizado con Panel de Administración y Ranking</span>
+      </div>
+
+      <div class="results-stats-grid">
+        <div class="res-stat-card">
+          <div class="res-stat-val" id="res-score">0</div>
+          <div class="res-stat-lbl">Puntaje Total</div>
+        </div>
+        <div class="res-stat-card">
+          <div class="res-stat-val" id="res-avg-time">0 ms</div>
+          <div class="res-stat-lbl">Reacción Promedio</div>
+        </div>
+        <div class="res-stat-card">
+          <div class="res-stat-val" id="res-accuracy">0%</div>
+          <div class="res-stat-lbl">Aciertos / Precisión</div>
+        </div>
+        <div class="res-stat-card">
+          <div class="res-stat-val" id="res-best-time">0 ms</div>
+          <div class="res-stat-lbl">Mejor Reflejo</div>
+        </div>
+      </div>
+
+      <button class="btn-action-primary" onclick="restartGame()">
+        <span class="material-symbols-outlined">replay</span>
+        JUGAR OTRA VEZ
+      </button>
+
+      <button class="btn-action-secondary" onclick="window.location.href='juegos.html'">
+        Volver a la Zona de Juegos
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SCRIPT DE LÓGICA DEL JUEGO ── -->
+  <script>
+    const soundSys = new SoundSystem();
+
+    function toggleSoundEffect() {
+      const isEnabled = soundSys.toggleSound();
+      document.getElementById('sound-icon').textContent = isEnabled ? 'volume_up' : 'volume_off';
+    }
+
+    // Configuración del juego
+    let optionsCount = 4; // 4, 6, 8 ó 12 opciones abajo
+    let maxRounds = 10;
+    let currentCategory = 'all';
+
+    // Estado de la partida
+    let activeSignalsPool = [];
+    let currentRound = 0;
+    let score = 0;
+    let streak = 0;
+    let maxStreak = 0;
+    let totalHits = 0;
+    let totalMisses = 0;
+    
+    // Tiempos de Reacción
+    let targetAppearedTime = 0;
+    let reactionTimesMs = [];
+    let roundDetails = [];
+    
+    let currentTarget = null;
+    let currentOptions = [];
+    let isTargetVisible = false; // Se activa tras el delay de 1-2s
+    let isProcessing = false;
+    let delayTimer = null;
+    let feedbackTimeout = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const soundEnabled = soundSys.enabled;
+      document.getElementById('sound-icon').textContent = soundEnabled ? 'volume_up' : 'volume_off';
+    });
+
+    function setOptionsCount(count, chipEl) {
+      optionsCount = count;
+      document.querySelectorAll('#modal-start .mode-chips:first-of-type .mode-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+    }
+
+    function setRoundsCount(rounds, chipEl) {
+      maxRounds = rounds;
+      document.querySelectorAll('#modal-start .settings-group:nth-of-type(2) .mode-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+    }
+
+    function updateCategoryFilter(cat) {
+      currentCategory = cat;
+    }
+
+    function startGame() {
+      document.getElementById('modal-start').style.display = 'none';
+      document.getElementById('modal-results').style.display = 'none';
+
+      // Filtrar señales según categoría
+      let filtered = SENALES_DATA;
+      if (currentCategory !== 'all') {
+        if (currentCategory === 'transitorias') {
+          filtered = SENALES_DATA.filter(s => s.category === 'transitorias' || s.category === 'horizontales');
+        } else {
+          filtered = SENALES_DATA.filter(s => s.category === currentCategory);
+        }
+      }
+
+      if (filtered.length < optionsCount + 2) {
+        filtered = SENALES_DATA;
+      }
+
+      activeSignalsPool = shuffleArray([...filtered]);
+
+      // Reiniciar métricas
+      currentRound = 0;
+      score = 0;
+      streak = 0;
+      maxStreak = 0;
+      totalHits = 0;
+      totalMisses = 0;
+      reactionTimesMs = [];
+      roundDetails = [];
+      isProcessing = false;
+
+      // Configurar grilla de opciones según dificultad
+      setupOptionsGridUI(optionsCount);
+
+      // Cargar N opciones iniciales
+      currentOptions = [];
+      for (let i = 0; i < optionsCount; i++) {
+        if (activeSignalsPool.length > 0) {
+          currentOptions.push(activeSignalsPool.shift());
+        } else {
+          currentOptions.push(filtered[Math.floor(Math.random() * filtered.length)]);
+        }
+      }
+
+      renderAllOptionCards();
+      updateStatsUI();
+
+      // Iniciar primera ronda
+      nextRound();
+    }
+
+    function setupOptionsGridUI(count) {
+      const grid = document.getElementById('options-grid');
+      grid.className = `options-grid grid-${count}`;
+      grid.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const card = document.createElement('div');
+        card.className = 'option-card';
+        card.id = `card-${i}`;
+        card.onclick = () => handleCardClick(i);
+
+        const img = document.createElement('img');
+        img.id = `opt-img-${i}`;
+        img.alt = `Opción ${i + 1}`;
+
+        card.appendChild(img);
+        grid.appendChild(card);
+      }
+
+      document.getElementById('txt-diff-badge').textContent = `Dificultad: ${count} Opciones`;
+    }
+
+    function renderAllOptionCards() {
+      for (let i = 0; i < optionsCount; i++) {
+        renderCard(i);
+      }
+    }
+
+    function renderCard(index) {
+      const cardEl = document.getElementById(`card-${index}`);
+      const imgEl = document.getElementById(`opt-img-${index}`);
+      const signal = currentOptions[index];
+
+      if (cardEl && imgEl && signal) {
+        imgEl.src = signal.image;
+        imgEl.alt = signal.name;
+        cardEl.className = 'option-card card-enter';
+      }
+    }
+
+    function nextRound() {
+      currentRound++;
+      
+      if (currentRound > maxRounds) {
+        endGame(true);
+        return;
+      }
+
+      updateStatsUI();
+      isTargetVisible = false;
+      isProcessing = false;
+
+      // 1. Seleccionar la nueva señal objetivo de entre las opciones activas de abajo
+      const targetIndex = Math.floor(Math.random() * optionsCount);
+      currentTarget = currentOptions[targetIndex];
+
+      // 2. Colocar tarjeta superior en modo "ESPERA" (ocultar imagen)
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+
+      wrapper.className = 'target-card-wrapper waiting';
+      badge.className = 'target-badge waiting-badge';
+      badgeIcon.textContent = 'hourglass_top';
+      badgeText.textContent = '¡Atento a la señal!';
+      waitingBox.style.display = 'flex';
+      targetImg.style.display = 'none';
+      targetName.textContent = 'Preparando estímulo...';
+      targetCat.textContent = 'Esperá a que aparezca la señal para reaccionar';
+
+      // Deshabilitar temporalmente las cartas para evitar clics antes de tiempo
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) {
+          card.className = 'option-card disabled';
+        }
+      }
+
+      // 3. RETARDO ALEATORIO DE 1 A 2 SEGUNDOS (1000ms a 2000ms)
+      const delayMs = 1000 + Math.floor(Math.random() * 1000);
+
+      if (delayTimer) clearTimeout(delayTimer);
+      delayTimer = setTimeout(() => {
+        // ¡APARECE LA SEÑAL OBJETIVO!
+        showTargetStimulus();
+      }, delayMs);
+    }
+
+    function showTargetStimulus() {
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+
+      soundSys.playTick();
+
+      waitingBox.style.display = 'none';
+      targetImg.src = currentTarget.image;
+      targetImg.style.display = 'block';
+      targetName.textContent = currentTarget.name;
+      targetCat.textContent = `Señal ${currentTarget.category}`;
+
+      wrapper.className = 'target-card-wrapper ready-stimulus';
+      badge.className = 'target-badge';
+      badgeIcon.textContent = 'bolt';
+      badgeText.textContent = '¡ENCONTRALA AHORA!';
+
+      // Habilitar las cartas de abajo
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) {
+          card.className = 'option-card';
+        }
+      }
+
+      // Iniciar medición precisa del tiempo de reacción
+      targetAppearedTime = performance.now();
+      isTargetVisible = true;
+    }
+
+    function handleCardClick(clickedIndex) {
+      if (!isTargetVisible || isProcessing) {
+        // Clic antes de que aparezca la señal (Falsa salida)
+        if (!isTargetVisible) {
+          soundSys.playTick();
+          showFeedback(false, '¡Esperá la señal!', 'Aguardá a que aparezca la imagen antes de tocar.', 0);
+        }
+        return;
+      }
+      isProcessing = true;
+
+      // Tiempo de reacción exacto en milisegundos
+      const reactionMs = Math.round(performance.now() - targetAppearedTime);
+      const reactionSec = Number((reactionMs / 1000).toFixed(3));
+      reactionTimesMs.push(reactionMs);
+
+      document.getElementById('txt-last-reaction').textContent = `${reactionMs} ms`;
+
+      const clickedSignal = currentOptions[clickedIndex];
+      const clickedCard = document.getElementById(`card-${clickedIndex}`);
+      const isCorrect = (clickedSignal && currentTarget && clickedSignal.id === currentTarget.id);
+
+      // Registrar detalle de ronda para admin sync
+      roundDetails.push({
+        round: currentRound,
+        title: currentTarget.name,
+        category: currentTarget.category,
+        selected: clickedSignal ? clickedSignal.name : '',
+        expected: currentTarget.name,
+        isCorrect: isCorrect,
+        timeSeconds: reactionSec,
+        timeMs: reactionMs,
+        points: isCorrect ? Math.round(100 + Math.max(0, 1500 - reactionMs) / 10) : 0
+      });
+
+      if (isCorrect) {
+        soundSys.playCorrect();
+        clickedCard.classList.add('correct-flash');
+
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+
+        // Bonificación: más rápido y mayor dificultad = más puntos
+        const speedBonus = Math.max(0, Math.round((2000 - reactionMs) / 8));
+        const diffMultiplier = optionsCount === 12 ? 1.8 : (optionsCount === 8 ? 1.5 : (optionsCount === 6 ? 1.2 : 1.0));
+        const roundScore = Math.round((100 + (streak * 20) + speedBonus) * diffMultiplier);
+        score += roundScore;
+        totalHits++;
+
+        showFeedback(true, `¡Excelente! ${clickedSignal.name}`, clickedSignal.description, reactionMs);
+
+        // TRANSICIÓN DINÁMICA:
+        // Sacar la carta acertada e ingresar una nueva del mazo manteniendo siempre N cartas
+        setTimeout(() => {
+          replaceCardWithNew(clickedIndex);
+          setTimeout(() => {
+            nextRound();
+          }, 350);
+        }, 650);
+
+      } else {
+        soundSys.playIncorrect();
+        clickedCard.classList.add('wrong-flash');
+
+        streak = 0;
+        totalMisses++;
+
+        // Resaltar la que era correcta
+        const correctIndex = currentOptions.findIndex(s => s && s.id === currentTarget.id);
+        if (correctIndex !== -1) {
+          const cCard = document.getElementById(`card-${correctIndex}`);
+          if (cCard) cCard.classList.add('highlight-target');
+        }
+
+        showFeedback(false, `Era: ${currentTarget.name}`, currentTarget.description, reactionMs);
+
+        // Sacar de abajo la imagen que debería haberse tocado e ingresar otra
+        setTimeout(() => {
+          if (correctIndex !== -1) {
+            replaceCardWithNew(correctIndex);
+          }
+          setTimeout(() => {
+            nextRound();
+          }, 450);
+        }, 900);
+      }
+
+      updateStatsUI();
+    }
+
+    function replaceCardWithNew(index) {
+      const cardEl = document.getElementById(`card-${index}`);
+      if (cardEl) {
+        cardEl.classList.add('card-exit');
+      }
+
+      setTimeout(() => {
+        let newSignal = getNextAvailableSignal();
+        currentOptions[index] = newSignal;
+        renderCard(index);
+      }, 200);
+    }
+
+    function getNextAvailableSignal() {
+      if (activeSignalsPool.length === 0) {
+        let poolSource = SENALES_DATA;
+        if (currentCategory !== 'all') {
+          poolSource = SENALES_DATA.filter(s => s.category === currentCategory);
+        }
+        activeSignalsPool = shuffleArray([...poolSource]);
+      }
+
+      for (let i = 0; i < activeSignalsPool.length; i++) {
+        const candidate = activeSignalsPool[i];
+        const isAlreadyVisible = currentOptions.some(opt => opt && opt.id === candidate.id);
+        if (!isAlreadyVisible) {
+          activeSignalsPool.splice(i, 1);
+          return candidate;
+        }
+      }
+
+      return activeSignalsPool.shift() || SENALES_DATA[0];
+    }
+
+    function showFeedback(isSuccess, title, desc, reactionMs) {
+      const banner = document.getElementById('feedback-banner');
+      const icon = document.getElementById('feedback-icon');
+      const titleEl = document.getElementById('feedback-title');
+      const descEl = document.getElementById('feedback-desc');
+      const timeEl = document.getElementById('feedback-time');
+
+      banner.className = `feedback-banner show ${isSuccess ? 'success' : 'error'}`;
+      icon.textContent = isSuccess ? 'check_circle' : 'cancel';
+      titleEl.textContent = title;
+      descEl.textContent = desc || 'Conocé y respetá siempre las señales de tránsito.';
+
+      if (reactionMs > 0) {
+        timeEl.style.display = 'block';
+        timeEl.textContent = `⚡ ${reactionMs} ms`;
+      } else {
+        timeEl.style.display = 'none';
+      }
+
+      if (feedbackTimeout) clearTimeout(feedbackTimeout);
+      feedbackTimeout = setTimeout(() => {
+        banner.className = 'feedback-banner';
+      }, 2200);
+    }
+
+    function updateStatsUI() {
+      document.getElementById('txt-score').textContent = score;
+      document.getElementById('txt-streak').textContent = streak;
+
+      document.getElementById('txt-round').textContent = `${Math.min(currentRound, maxRounds)} / ${maxRounds}`;
+      const pct = Math.min(100, Math.round(((currentRound - 1) / maxRounds) * 100));
+      document.getElementById('bar-progress').style.width = `${pct}%`;
+    }
+
+    function endGame(isVictory) {
+      if (isVictory) soundSys.playFanfare();
+      else soundSys.playGameOver();
+
+      const totalAttempts = totalHits + totalMisses;
+      const accuracy = totalAttempts > 0 ? Math.round((totalHits / totalAttempts) * 100) : 0;
+      
+      const avgReactionMs = reactionTimesMs.length > 0 
+        ? Math.round(reactionTimesMs.reduce((a, b) => a + b, 0) / reactionTimesMs.length) 
+        : 0;
+      
+      const bestReactionMs = reactionTimesMs.length > 0 ? Math.min(...reactionTimesMs) : 0;
+      const avgReactionSec = Number((avgReactionMs / 1000).toFixed(3));
+
+      document.getElementById('res-score').textContent = score;
+      document.getElementById('res-avg-time').textContent = `${avgReactionMs} ms`;
+      document.getElementById('res-accuracy').textContent = `${totalHits}/${totalAttempts} (${accuracy}%)`;
+      document.getElementById('res-best-time').textContent = `${bestReactionMs} ms`;
+
+      const titleEl = document.getElementById('results-title');
+      const subtitleEl = document.getElementById('results-subtitle');
+
+      if (avgReactionMs < 550 && accuracy >= 80) {
+        titleEl.textContent = '¡REFLEJOS DE PILOTO!';
+        subtitleEl.textContent = 'Impresionante tiempo de reacción y precisión en señales de tránsito.';
+      } else if (avgReactionMs < 900 && accuracy >= 60) {
+        titleEl.textContent = '¡MUY BUEN DESEMPEÑO!';
+        subtitleEl.textContent = 'Buen tiempo de respuesta ante los estímulos viales.';
+      } else {
+        titleEl.textContent = '¡A SEGUIR ENTRENANDO!';
+        subtitleEl.textContent = 'Practicá más para reducir tu tiempo de reacción y reconocer las señales más rápido.';
+      }
+
+      // ── SINCRONIZACIÓN AUTOMÁTICA CON EL PANEL DE ADMINISTRACIÓN Y LEADERBOARD ──
+      try {
+        if (window.VialPlayCloudSync && typeof window.VialPlayCloudSync.syncGameSession === 'function') {
+          window.VialPlayCloudSync.syncGameSession({
+            game: 'memotest',
+            category: 'Memotest de Señales',
+            score: score,
+            time: avgReactionSec, // Tiempo promedio de reacción en segundos
+            accuracy: `${totalHits}/${totalAttempts}`,
+            details: roundDetails
+          });
+        }
+      } catch (err) {
+        console.warn('Error al sincronizar con cloud sync:', err);
+      }
+
+      document.getElementById('modal-results').style.display = 'flex';
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+  </script>
+
+</body>
+</html>

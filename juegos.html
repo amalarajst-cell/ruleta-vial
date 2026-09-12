@@ -206,6 +206,20 @@
     .btn-simulador span {
       color: #38BDF8;
     }
+    .btn-memotest {
+      border-color: #FF9100;
+      box-shadow: 0 10px 0 #C45500, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-memotest:hover {
+      border-color: #FFE082;
+      box-shadow: 0 14px 0 #C45500, 0 24px 44px rgba(255, 145, 0, 0.35);
+    }
+    .btn-memotest:active {
+      box-shadow: 0 4px 0 #C45500, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-memotest span {
+      color: #FFB300;
+    }
     .game-card-wrapper {
       display: flex;
       flex-direction: column;
@@ -248,6 +262,11 @@
       color: #BAE6FD;
       border: 1px solid rgba(56, 189, 248, 0.25);
       background: rgba(56, 189, 248, 0.06);
+    }
+    .subtitle-memotest {
+      color: #FFE082;
+      border: 1px solid rgba(255, 145, 0, 0.25);
+      background: rgba(255, 145, 0, 0.06);
     }
   </style>
 </head>
@@ -302,7 +321,18 @@
       </div>
     </div>
 
-    <!-- 3. JUEGO: LÍMITES DE ALCOHOLEMIA -->
+    <!-- 3. JUEGO: MEMOTEST VIAL -->
+    <div class="game-card-wrapper">
+      <button class="btn-ruleta btn-memotest" id="btn-memotest" onclick="window.location.href='memotest.html'">
+        <img src="assets/memotest_icono.jpg" alt="Memotest Vial">
+        <span>MEMOTEST VIAL</span>
+      </button>
+      <div class="btn-hub-subtitle subtitle-memotest">
+        <span>Emparejá y reconocé las 60 señales de tránsito</span>
+      </div>
+    </div>
+
+    <!-- 4. JUEGO: LÍMITES DE ALCOHOLEMIA -->
     <div class="game-card-wrapper">
       <button class="btn-ruleta btn-alcoholemia" id="btn-alcoholemia" onclick="window.location.href='alcoholemia.html'">
         <img src="assets/alcoholemia_icono.jpg" alt="Límites de Alcoholemia">
@@ -313,7 +343,7 @@
       </div>
     </div>
 
-    <!-- 4. JUEGO: SIMULADOR DE EXAMEN -->
+    <!-- 5. JUEGO: SIMULADOR DE EXAMEN -->
     <div class="game-card-wrapper">
       <button class="btn-ruleta btn-simulador" id="btn-simulador" onclick="window.location.href='simulador.html'">
         <img src="assets/simulador_icono.jpg" alt="Simulador de Examen">
