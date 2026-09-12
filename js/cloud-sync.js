@@ -429,9 +429,9 @@
 
   /**
    * Modal COMPLETO: "Mi Perfil y Registro de Actividades"
-   * Con tarjetas interactivas idénticas a la Zona de Juegos y filtro de actividades por juego al hacer clic
+   * Con navegación en 2 niveles: Vista General con Tarjetas y Sección Detallada al hacer clic en cualquier tarjeta
    */
-  function openUserProfileModal(initialFilter = 'all') {
+  function openUserProfileModal(selectedGameKey = null) {
     let existingModal = document.getElementById('vialplay-user-profile-modal');
     if (existingModal) existingModal.remove();
 
@@ -452,7 +452,7 @@
         color: '#FFC600', 
         borderColor: '#FFC600',
         link: 'index.html?screen=roulette',
-        desc: 'Trivias interactivas por categorías viales'
+        desc: 'Trivias interactivas por categorías y normas viales'
       },
       reaccion: { 
         id: 'reaccion',
@@ -462,7 +462,7 @@
         color: '#00E676', 
         borderColor: '#00E676',
         link: 'reaccion.html',
-        desc: 'Medición de reflejos y distancia de frenado'
+        desc: 'Medición de reflejos y distancia de frenado ante imprevistos'
       },
       memotest: { 
         id: 'memotest',
@@ -472,7 +472,7 @@
         color: '#FF9100', 
         borderColor: '#FF9100',
         link: 'memotest.html',
-        desc: 'Emparejamiento de las 60 señales oficiales'
+        desc: 'Emparejamiento y reconocimiento de las 60 señales oficiales'
       },
       alcoholemia: { 
         id: 'alcoholemia',
@@ -482,7 +482,7 @@
         color: '#C084FC', 
         borderColor: '#A855F7',
         link: 'alcoholemia.html',
-        desc: 'Normativa CABA y tolerancia cero en sangre'
+        desc: 'Normativa CABA, mitos y tolerancia cero de alcohol en sangre'
       },
       simulador: { 
         id: 'simulador',
@@ -492,111 +492,19 @@
         color: '#38BDF8', 
         borderColor: '#38BDF8',
         link: 'simulador.html',
-        desc: 'Examen oficial teórico Auto, Moto y Colectivo'
+        desc: 'Examen teórico oficial para categorías Auto, Moto y Colectivo'
       }
     };
 
-    let currentFilter = initialFilter;
+    let activeGameDetail = selectedGameKey; // null = Vista General, 'ruleta'|'reaccion'|... = Sección Detallada
 
     const modalHtml = `
       <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
         <div style="background:#131516;border:none !important;border-radius:24px;box-shadow:0 24px 70px rgba(0,0,0,0.95);width:100%;max-width:880px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;outline:none !important;">
           
-          <!-- 1. Cabecera del Perfil -->
-          <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:14px;">
-              <div style="position:relative;width:52px;height:52px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <img src="${player.avatar}" style="width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
-              </div>
-              <div>
-                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                  <h2 style="font-size:19px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
-                  <span style="font-size:11px;font-weight:800;color:#000000;background:#FFC600;padding:2px 8px;border-radius:999px;text-transform:uppercase;">${player.role}</span>
-                </div>
-                <p style="font-size:12px;color:#8DE2D6;margin:3px 0 0;font-weight:600;">${player.email || 'Participante Activo'}</p>
-              </div>
-            </div>
-
-            <div style="display:flex;align-items:center;gap:8px;">
-              <button type="button" id="vp-btn-edit-profile" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#FFFFFF;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
-                <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
-                <span>Editar</span>
-              </button>
-              <button type="button" id="vp-btn-switch-user" style="background:rgba(255,77,77,0.12);border:1px solid rgba(255,77,77,0.25);color:#FF6B6B;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;" title="Cambiar a otro participante">
-                <span class="material-symbols-outlined" style="font-size:16px;">logout</span>
-                <span>Cambiar</span>
-              </button>
-              <button type="button" id="vp-profile-close-btn" style="background:rgba(255,255,255,0.08);border:none;color:#94a3b8;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;">✕</button>
-            </div>
-          </div>
-
-          <!-- 2. Cuerpo con scroll -->
-          <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:22px;">
-            
-            <!-- Resumen de Métricas (KPIs) -->
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-              <div style="background:#1a1d1f;border:1px solid rgba(255,198,0,0.25);border-radius:16px;padding:12px;text-align:center;">
-                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#FFC600;">${data.totalXP}</div>
-                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntos XP Totales</div>
-              </div>
-              <div style="background:#1a1d1f;border:1px solid rgba(141,226,214,0.25);border-radius:16px;padding:12px;text-align:center;">
-                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / 5</div>
-                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Juegos Registrados</div>
-              </div>
-              <div style="background:#1a1d1f;border:1px solid rgba(0,230,118,0.25);border-radius:16px;padding:12px;text-align:center;">
-                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#00E676;">${data.globalAccuracyPct}%</div>
-                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Precisión Global</div>
-              </div>
-              <div style="background:#1a1d1f;border:1px solid rgba(56,189,248,0.25);border-radius:16px;padding:12px;text-align:center;">
-                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#38BDF8;">${data.bestTime > 0 ? data.bestTime + 's' : '—'}</div>
-                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Mejor Reacción</div>
-              </div>
-            </div>
-
-            <!-- TARJETAS DE JUEGOS ESTILO ZONA DE JUEGOS -->
-            <div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
-                  <span class="material-symbols-outlined" style="color:#FFC600;font-size:18px;">sports_esports</span>
-                  <span>Rendimiento por Juego:</span>
-                </div>
-                <span style="font-size:11.5px;color:#8DE2D6;font-weight:700;">👆 Tocá cualquier tarjeta para filtrar sus actividades</span>
-              </div>
-              
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;" id="vp-game-cards-container">
-                <!-- Tarjetas dinámicas inyectadas -->
-              </div>
-            </div>
-
-            <!-- SECCIÓN: ACTIVIDADES REALIZADAS (FILTRADAS SEGÚN EL JUEGO SELECCIONADO) -->
-            <div style="background:#181b1d;border-radius:18px;padding:16px;border:1px solid rgba(255,255,255,0.06);">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span class="material-symbols-outlined" style="color:#8DE2D6;font-size:20px;">history</span>
-                  <span id="vp-activity-title" style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;">
-                    Historial de Actividades
-                  </span>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;">
-                  <button type="button" id="vp-btn-filter-all" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;">
-                    Ver Todas (<span id="vp-all-count">${data.myResponses.length}</span>)
-                  </button>
-                </div>
-              </div>
-
-              <div id="vp-activities-list-container" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding-right:4px;">
-                <!-- Lista de actividades dinámicas -->
-              </div>
-            </div>
-
-          </div>
-
-          <!-- 3. Pie del Modal -->
-          <div style="background:#101112;padding:14px 24px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;color:#64748b;">Registro sincronizado con el Panel de Administración</span>
-            <button type="button" id="vp-btn-done" style="background:#FFC600;color:#000000;border:none;padding:9px 22px;border-radius:10px;font-size:12.5px;font-weight:900;cursor:pointer;font-family:'Archivo Black',sans-serif;">
-              CERRAR
-            </button>
+          <!-- Contenedor dinámico (Vista General o Sección Detallada) -->
+          <div id="vp-profile-dynamic-content" style="display:flex;flex-direction:column;height:100%;overflow:hidden;">
+            <!-- Renderizado dinámicamente -->
           </div>
 
         </div>
@@ -606,20 +514,93 @@
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
     const modal = document.getElementById('vialplay-user-profile-modal');
-    const closeBtn = document.getElementById('vp-profile-close-btn');
-    const doneBtn = document.getElementById('vp-btn-done');
-    const editBtn = document.getElementById('vp-btn-edit-profile');
-    const switchBtn = document.getElementById('vp-btn-switch-user');
-    const cardsContainer = document.getElementById('vp-game-cards-container');
-    const activitiesContainer = document.getElementById('vp-activities-list-container');
-    const activityTitleEl = document.getElementById('vp-activity-title');
-    const filterAllBtn = document.getElementById('vp-btn-filter-all');
+    const dynamicContainer = document.getElementById('vp-profile-dynamic-content');
 
-    if (closeBtn) closeBtn.addEventListener('click', () => modal.remove());
-    if (doneBtn) doneBtn.addEventListener('click', () => modal.remove());
+    // ── VISTA 1: PRINCIPAL CON LAS TARJETAS DE LOS 5 JUEGOS ──
+    function renderMainView() {
+      dynamicContainer.innerHTML = `
+        <!-- 1. Cabecera del Perfil -->
+        <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="position:relative;width:52px;height:52px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <img src="${player.avatar}" style="width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <h2 style="font-size:19px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
+                <span style="font-size:11px;font-weight:800;color:#000000;background:#FFC600;padding:2px 8px;border-radius:999px;text-transform:uppercase;">${player.role}</span>
+              </div>
+              <p style="font-size:12px;color:#8DE2D6;margin:3px 0 0;font-weight:600;">${player.email || 'Participante Activo'}</p>
+            </div>
+          </div>
 
-    if (editBtn) {
-      editBtn.addEventListener('click', () => {
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" id="vp-btn-edit-profile" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#FFFFFF;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+              <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+              <span>Editar</span>
+            </button>
+            <button type="button" id="vp-btn-switch-user" style="background:rgba(255,77,77,0.12);border:1px solid rgba(255,77,77,0.25);color:#FF6B6B;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;" title="Cambiar a otro participante">
+              <span class="material-symbols-outlined" style="font-size:16px;">logout</span>
+              <span>Cambiar</span>
+            </button>
+            <button type="button" id="vp-profile-close-btn" style="background:rgba(255,255,255,0.08);border:none;color:#94a3b8;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;">✕</button>
+          </div>
+        </div>
+
+        <!-- 2. Cuerpo con scroll -->
+        <div style="flex:1;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:22px;">
+          
+          <!-- Resumen de Métricas (KPIs) -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+            <div style="background:#1a1d1f;border:1px solid rgba(255,198,0,0.25);border-radius:16px;padding:12px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#FFC600;">${data.totalXP}</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntos XP Totales</div>
+            </div>
+            <div style="background:#1a1d1f;border:1px solid rgba(141,226,214,0.25);border-radius:16px;padding:12px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / 5</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Juegos Registrados</div>
+            </div>
+            <div style="background:#1a1d1f;border:1px solid rgba(0,230,118,0.25);border-radius:16px;padding:12px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#00E676;">${data.globalAccuracyPct}%</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Precisión Global</div>
+            </div>
+            <div style="background:#1a1d1f;border:1px solid rgba(56,189,248,0.25);border-radius:16px;padding:12px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#38BDF8;">${data.bestTime > 0 ? data.bestTime + 's' : '—'}</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Mejor Reacción</div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN: TARJETAS DE LOS 5 JUEGOS ESTILO ZONA DE JUEGOS -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:15px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined" style="color:#FFC600;font-size:20px;">sports_esports</span>
+                <span>Rendimiento por Juego:</span>
+              </div>
+              <span style="font-size:11.5px;color:#8DE2D6;font-weight:700;">👆 Tocá una tarjeta para abrir su informe detallado</span>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;" id="vp-game-cards-container">
+              <!-- Tarjetas inyectadas abajo -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3. Pie del Modal -->
+        <div style="background:#101112;padding:14px 24px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:11px;color:#64748b;">Registro sincronizado con el Panel de Administración</span>
+          <button type="button" id="vp-btn-done" style="background:#FFC600;color:#000000;border:none;padding:9px 22px;border-radius:10px;font-size:12.5px;font-weight:900;cursor:pointer;font-family:'Archivo Black',sans-serif;">
+            CERRAR
+          </button>
+        </div>
+      `;
+
+      // Eventos de la vista 1
+      document.getElementById('vp-profile-close-btn')?.addEventListener('click', () => modal.remove());
+      document.getElementById('vp-btn-done')?.addEventListener('click', () => modal.remove());
+
+      document.getElementById('vp-btn-edit-profile')?.addEventListener('click', () => {
         modal.remove();
         openRegistrationModal({
           allowClose: true,
@@ -632,10 +613,8 @@
           }
         });
       });
-    }
 
-    if (switchBtn) {
-      switchBtn.addEventListener('click', () => {
+      document.getElementById('vp-btn-switch-user')?.addEventListener('click', () => {
         modal.remove();
         openRegistrationModal({
           allowClose: true,
@@ -648,164 +627,202 @@
           }
         });
       });
-    }
 
-    // Renderizar las 5 tarjetas de juego estilo "Zona de Juegos"
-    function renderGameCards() {
-      cardsContainer.innerHTML = '';
-
+      // Renderizar tarjetas de los 5 juegos
+      const cardsWrap = document.getElementById('vp-game-cards-container');
       Object.keys(gameCardsDef).forEach(key => {
         const def = gameCardsDef[key];
         const gameEntry = data.myGames.find(g => getEntryGame(g) === key);
         const isCompleted = !!gameEntry;
-        const isSelected = (currentFilter === key);
 
         const card = document.createElement('div');
         card.style.cssText = `
           background: #1c1f21;
-          border: 2px solid ${isSelected ? def.borderColor : (isCompleted ? def.borderColor : '#2b3033')};
+          border: 2px solid ${isCompleted ? def.borderColor : '#2b3033'};
           border-radius: 16px;
-          padding: 14px 10px;
+          padding: 16px 12px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
-          gap: 10px;
+          gap: 12px;
           cursor: pointer;
           transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-          box-shadow: ${isSelected ? `0 0 16px ${def.borderColor}55, inset 0 0 12px ${def.borderColor}22` : '0 6px 14px rgba(0,0,0,0.4)'};
-          transform: ${isSelected ? 'scale(1.02)' : 'scale(1)'};
+          box-shadow: 0 6px 16px rgba(0,0,0,0.45);
         `;
 
         card.innerHTML = `
           <div style="position:relative;">
-            <img src="${def.icon}" alt="${def.name}" style="width:58px;height:58px;object-fit:contain;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,0.5);border:2px solid ${def.borderColor};">
+            <img src="${def.icon}" alt="${def.name}" style="width:64px;height:64px;object-fit:contain;border-radius:50%;box-shadow:0 6px 16px rgba(0,0,0,0.6);border:2.5px solid ${def.borderColor};">
             ${isCompleted ? `
-              <span style="position:absolute;bottom:-3px;right:-3px;background:#00E676;color:#000;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;border:1.5px solid #131516;">✓</span>
+              <span style="position:absolute;bottom:-2px;right:-2px;background:#00E676;color:#000;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;border:1.5px solid #131516;">✓</span>
             ` : ''}
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:2px;width:100%;">
-            <div style="font-family:'Archivo Black',sans-serif;font-size:12px;color:${def.color};letter-spacing:0.3px;line-height:1.2;">
+          <div style="display:flex;flex-direction:column;gap:3px;width:100%;">
+            <div style="font-family:'Archivo Black',sans-serif;font-size:13px;color:${def.color};letter-spacing:0.3px;line-height:1.2;">
               ${def.name}
             </div>
-            <div style="font-size:10.5px;color:#94a3b8;font-weight:700;">
+            <div style="font-size:11px;color:#94a3b8;font-weight:700;">
               ${isCompleted ? `<strong style="color:#fff;">${gameEntry.score} XP</strong> • ${gameEntry.accuracy || 'Completado'}` : 'Sin partidas'}
             </div>
           </div>
 
-          <div style="width:100%;padding:4px;border-radius:8px;background:${isSelected ? def.borderColor : 'rgba(255,255,255,0.06)'};color:${isSelected ? '#000' : def.color};font-size:10.5px;font-weight:800;text-transform:uppercase;">
-            ${isSelected ? '● VIENDO ACTIVIDAD' : (isCompleted ? 'VER ACTIVIDADES' : 'PENDIENTE')}
-          </div>
+          <button type="button" style="width:100%;padding:6px 8px;border-radius:8px;background:${isCompleted ? def.borderColor : 'rgba(255,255,255,0.06)'};color:${isCompleted ? '#000' : def.color};border:1px solid ${def.borderColor};font-size:11px;font-weight:900;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;">
+            <span>${isCompleted ? 'VER ACTIVIDAD' : 'COMENZAR'}</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+          </button>
         `;
 
         card.addEventListener('mouseenter', () => {
-          if (currentFilter !== key) card.style.transform = 'translateY(-3px)';
+          card.style.transform = 'translateY(-4px)';
+          card.style.boxShadow = `0 10px 24px rgba(0,0,0,0.6), 0 0 16px ${def.borderColor}44`;
         });
         card.addEventListener('mouseleave', () => {
-          if (currentFilter !== key) card.style.transform = 'scale(1)';
+          card.style.transform = 'translateY(0)';
+          card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.45)';
         });
 
         card.addEventListener('click', () => {
-          currentFilter = key;
-          renderGameCards();
-          renderActivitiesList();
+          renderDetailView(key);
         });
 
-        cardsContainer.appendChild(card);
+        cardsWrap.appendChild(card);
       });
     }
 
-    // Renderizar la lista de actividades según el filtro seleccionado
-    function renderActivitiesList() {
-      let filteredResponses = data.myResponses;
-      if (currentFilter !== 'all') {
-        filteredResponses = data.myResponses.filter(r => (r.game || 'ruleta') === currentFilter);
-      }
+    // ── VISTA 2: SECCIÓN DETALLADA DE LA ACTIVIDAD SELECCIONADA ──
+    function renderDetailView(gameKey) {
+      const def = gameCardsDef[gameKey] || gameCardsDef.ruleta;
+      const gameEntry = data.myGames.find(g => getEntryGame(g) === gameKey);
+      const isCompleted = !!gameEntry;
+      const gameResponses = data.myResponses.filter(r => (r.game || 'ruleta') === gameKey);
 
-      if (currentFilter === 'all') {
-        activityTitleEl.textContent = `Todas las Actividades (${filteredResponses.length} registros)`;
-        filterAllBtn.style.background = '#FFC600';
-        filterAllBtn.style.color = '#000';
-      } else {
-        const def = gameCardsDef[currentFilter];
-        activityTitleEl.textContent = `Actividades en: ${def ? def.name : currentFilter} (${filteredResponses.length} registros)`;
-        filterAllBtn.style.background = 'rgba(255,255,255,0.07)';
-        filterAllBtn.style.color = '#fff';
-      }
-
-      activitiesContainer.innerHTML = '';
-
-      if (filteredResponses.length === 0) {
-        const def = gameCardsDef[currentFilter];
-        activitiesContainer.innerHTML = `
-          <div style="background:#131516;border:1px dashed #2d3336;border-radius:14px;padding:26px 16px;text-align:center;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:10px;">
-            <span class="material-symbols-outlined" style="font-size:32px;color:#64748b;">info</span>
-            <div>
-              ${currentFilter === 'all' 
-                ? 'Todavía no registraste actividades en los juegos.' 
-                : `Aún no registraste partidas en <strong>${def ? def.name : 'este juego'}</strong>.`}
+      dynamicContainer.innerHTML = `
+        <!-- 1. Cabecera con botón de regreso -->
+        <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button type="button" id="vp-btn-back-to-games" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#FFFFFF;padding:7px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+              <span>Volver a Mis Juegos</span>
+            </button>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <img src="${def.icon}" alt="${def.name}" style="width:34px;height:34px;border-radius:50%;border:1.5px solid ${def.borderColor};object-fit:contain;">
+              <div>
+                <h2 style="font-size:17px;font-weight:900;color:${def.color};margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${def.name}</h2>
+                <p style="font-size:11px;color:#8DE2D6;margin:1px 0 0;font-weight:600;">${def.desc}</p>
+              </div>
             </div>
-            ${def ? `
-              <a href="${def.link}" style="display:inline-flex;align-items:center;gap:6px;background:${def.borderColor};color:#000;text-decoration:none;padding:7px 16px;border-radius:10px;font-size:11.5px;font-weight:900;font-family:'Archivo Black',sans-serif;margin-top:4px;">
-                <span>COMENZAR A JUGAR AHORA</span>
-                <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
-              </a>
-            ` : ''}
           </div>
-        `;
-        return;
-      }
 
-      filteredResponses.forEach(r => {
-        const isOk = (r.isCorrect === 'SI' || r.isCorrect === true);
-        const gameKey = r.game || 'ruleta';
-        const def = gameCardsDef[gameKey] || { tag: '🎮 Juego', color: '#FFC600', borderColor: '#FFC600' };
+          <div style="display:flex;align-items:center;gap:8px;">
+            <a href="${def.link}" style="background:${def.borderColor};color:#000;text-decoration:none;padding:7px 16px;border-radius:12px;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:5px;font-family:'Archivo Black',sans-serif;">
+              <span class="material-symbols-outlined" style="font-size:16px;">play_arrow</span>
+              <span>${isCompleted ? 'JUGAR DE NUEVO' : 'COMENZAR JUEGO'}</span>
+            </a>
+            <button type="button" id="vp-detail-close-btn" style="background:rgba(255,255,255,0.08);border:none;color:#94a3b8;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;">✕</button>
+          </div>
+        </div>
 
-        const item = document.createElement('div');
-        item.style.cssText = `
-          background: #141617;
-          border-left: 4px solid ${isOk ? '#00E676' : '#FF4D4D'};
-          border-radius: 10px;
-          padding: 10px 14px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        `;
-
-        item.innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:10.5px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;">${def.tag}</span>
-              <span style="font-size:11.5px;font-weight:700;color:${isOk ? '#00E676' : '#FF4D4D'};">
-                ${isOk ? '✅ Acierto' : '❌ Error'} (+${r.pointsGained || 0} XP)
-              </span>
+        <!-- 2. Cuerpo con scroll del informe de actividad -->
+        <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:20px;">
+          
+          <!-- Resumen de Desempeño en este Juego -->
+          <div style="background:#191c1e;border-radius:18px;padding:16px;border:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:20px;color:${def.color};">${isCompleted ? `${gameEntry.score} XP` : '0 XP'}</div>
+              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntaje Máximo</div>
             </div>
-            <span style="font-size:11px;color:#64748b;">${r.timestamp || ''}</span>
+            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:20px;color:#00E676;">${isCompleted ? (gameEntry.accuracy || '—') : '—'}</div>
+              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Aciertos / Precisión</div>
+            </div>
+            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:20px;color:#38BDF8;">${isCompleted && gameEntry.time ? Number(gameEntry.time).toFixed(2) + 's' : '—'}</div>
+              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Tiempo Promedio</div>
+            </div>
+            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:13px;color:#fff;font-weight:800;padding-top:4px;">${isCompleted && gameEntry.date ? gameEntry.date : 'Pendiente'}</div>
+              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:4px;">Fecha de Registro</div>
+            </div>
           </div>
-          <div style="font-size:13px;font-weight:700;color:#FFFFFF;line-height:1.35;">
-            ${r.question}
-          </div>
-          <div style="font-size:12px;color:#cbd5e1;display:flex;gap:14px;flex-wrap:wrap;margin-top:2px;">
-            <span>Tu respuesta: <strong style="color:${isOk ? '#00E676' : '#FF6B6B'};">${r.selectedAnswer || '—'}</strong></span>
-            ${!isOk && r.correctAnswer ? `<span>Correcta: <strong style="color:#00E676;">${r.correctAnswer}</strong></span>` : ''}
-            ${r.timeSeconds ? `<span style="color:#8DE2D6;font-weight:700;">⚡ ${r.timeSeconds}s</span>` : ''}
-          </div>
-        `;
 
-        activitiesContainer.appendChild(item);
-      });
+          <!-- Lista de Respuestas y Estímulos Evaluados en este Juego -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined" style="color:${def.color};font-size:18px;">checklist</span>
+                <span>Registro de Preguntas y Señales (${gameResponses.length} intentos)</span>
+              </div>
+            </div>
+
+            ${gameResponses.length === 0 ? `
+              <div style="background:#181b1d;border:1px dashed #2e3336;border-radius:14px;padding:32px 16px;text-align:center;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+                <span class="material-symbols-outlined" style="font-size:36px;color:#64748b;">history_toggle_off</span>
+                <div>Todavía no realizaste actividades en <strong>${def.name}</strong>.</div>
+                <a href="${def.link}" style="display:inline-flex;align-items:center;gap:6px;background:${def.borderColor};color:#000;text-decoration:none;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:900;font-family:'Archivo Black',sans-serif;">
+                  <span>COMENZAR PARTIDA AHORA</span>
+                  <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+                </a>
+              </div>
+            ` : `
+              <div style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;padding-right:4px;">
+                ${gameResponses.map((r, idx) => {
+                  const isOk = (r.isCorrect === 'SI' || r.isCorrect === true);
+
+                  return `
+                    <div style="background:#181b1d;border-left:4px solid ${isOk ? '#00E676' : '#FF4D4D'};border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                          <span style="font-size:10.5px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;">${def.tag}</span>
+                          <span style="font-size:11.5px;font-weight:800;color:${isOk ? '#00E676' : '#FF4D4D'};">
+                            ${isOk ? '✅ Acierto' : '❌ Error'} (+${r.pointsGained || 0} XP)
+                          </span>
+                        </div>
+                        <span style="font-size:11px;color:#64748b;">${r.timestamp || ''}</span>
+                      </div>
+                      <div style="font-size:13px;font-weight:700;color:#FFFFFF;line-height:1.4;">
+                        ${r.question}
+                      </div>
+                      <div style="font-size:12px;color:#cbd5e1;display:flex;gap:14px;flex-wrap:wrap;margin-top:2px;">
+                        <span>Tu respuesta: <strong style="color:${isOk ? '#00E676' : '#FF6B6B'};">${r.selectedAnswer || '—'}</strong></span>
+                        ${!isOk && r.correctAnswer ? `<span>Correcta: <strong style="color:#00E676;">${r.correctAnswer}</strong></span>` : ''}
+                        ${r.timeSeconds ? `<span style="color:#8DE2D6;font-weight:700;">⚡ ${r.timeSeconds}s</span>` : ''}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `}
+          </div>
+
+        </div>
+
+        <!-- 3. Pie del Modal Detallado -->
+        <div style="background:#101112;padding:14px 24px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
+          <button type="button" id="vp-btn-back-footer" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+            <span>Volver a Mis Juegos</span>
+          </button>
+          <button type="button" id="vp-btn-detail-done" style="background:#FFC600;color:#000000;border:none;padding:9px 22px;border-radius:10px;font-size:12.5px;font-weight:900;cursor:pointer;font-family:'Archivo Black',sans-serif;">
+            CERRAR
+          </button>
+        </div>
+      `;
+
+      // Eventos de la vista 2
+      document.getElementById('vp-btn-back-to-games')?.addEventListener('click', renderMainView);
+      document.getElementById('vp-btn-back-footer')?.addEventListener('click', renderMainView);
+      document.getElementById('vp-detail-close-btn')?.addEventListener('click', () => modal.remove());
+      document.getElementById('vp-btn-detail-done')?.addEventListener('click', () => modal.remove());
     }
 
-    filterAllBtn.addEventListener('click', () => {
-      currentFilter = 'all';
-      renderGameCards();
-      renderActivitiesList();
-    });
-
-    // Inicializar vista
-    renderGameCards();
-    renderActivitiesList();
+    // Iniciar con la vista solicitada
+    if (activeGameDetail && gameCardsDef[activeGameDetail]) {
+      renderDetailView(activeGameDetail);
+    } else {
+      renderMainView();
+    }
   }
 
   /**
