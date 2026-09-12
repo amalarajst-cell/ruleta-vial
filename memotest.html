@@ -806,6 +806,7 @@
       </div>
       
       <div class="header-right">
+        <div id="vialplay-header-user-badge"></div>
         <div class="stat-badge stat-score" title="Puntos">
           <span class="material-symbols-outlined stat-icon">military_tech</span>
           <span id="txt-score">0</span>
@@ -1331,6 +1332,16 @@
         score += roundScore;
         totalHits++;
 
+        // Registrar detalle de actividad
+        roundDetails.push({
+          question: `Identificar: ${currentTarget.name}`,
+          selected: clickedSignal.name,
+          expected: currentTarget.name,
+          isCorrect: true,
+          timeSeconds: Number((reactionMs / 1000).toFixed(3)),
+          points: roundScore
+        });
+
         showFeedback(true, `¡Excelente! ${clickedSignal.name}`, clickedSignal.description, reactionMs);
 
         // TRANSICIÓN RÁPIDA Y CONTINUA:
@@ -1348,6 +1359,16 @@
 
         streak = 0;
         totalMisses++;
+
+        // Registrar error en detalle de actividad
+        roundDetails.push({
+          question: `Identificar: ${currentTarget.name}`,
+          selected: clickedSignal.name,
+          expected: currentTarget.name,
+          isCorrect: false,
+          timeSeconds: Number((reactionMs / 1000).toFixed(3)),
+          points: 0
+        });
 
         showFeedback(false, `Era: ${currentTarget.name}`, currentTarget.description, reactionMs);
 
@@ -1467,10 +1488,10 @@
 
       // Sincronización automática con cloud sync
       try {
-        if (window.VialPlayCloudSync && typeof window.VialPlayCloudSync.syncGameSession === 'function') {
-          window.VialPlayCloudSync.syncGameSession({
+        if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
+          window.VialCloudSync.syncGameSession({
             game: 'memotest',
-            category: 'Memotest de Señales',
+            category: 'Memotest Vial',
             score: score,
             time: avgReactionSec,
             accuracy: `${totalHits}/${totalAttempts}`,

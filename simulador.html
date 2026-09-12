@@ -944,7 +944,7 @@
   <!-- HEADER -->
   <header class="app-header">
     <div class="header-inner">
-      <a href="index.html" class="header-btn" title="Volver a VialPlay">
+      <a href="juegos.html" class="header-btn" title="Volver a Zona de Juegos">
         <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         <span>Juegos</span>
       </a>
@@ -954,7 +954,10 @@
         <span style="font-family:var(--font-display);font-size:16px;color:#fff;text-transform:uppercase;letter-spacing:0.5px;">Simulador Teórico</span>
       </div>
 
-      <div class="header-badge" id="app-badge-mode">CABA 2026</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="vialplay-header-user-badge"></div>
+        <div class="header-badge" id="app-badge-mode">CABA 2026</div>
+      </div>
     </div>
   </header>
 
@@ -1765,6 +1768,35 @@
       document.getElementById('filter-count-all').textContent = total;
       document.getElementById('filter-count-wrong').textContent = incorrect;
       document.getElementById('filter-count-correct').textContent = correct;
+
+      // Sincronizar actividad con Cloud Sync y Administrador
+      try {
+        if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
+          const examDetails = examQuestions.map((q, idx) => {
+            const userChoice = userAnswers[idx];
+            const isCorr = (userChoice === q.correctAnswer);
+            return {
+              question: q.question,
+              selected: (userChoice !== undefined && q.options[userChoice]) ? q.options[userChoice] : 'Sin responder',
+              expected: q.options[q.correctAnswer] || '',
+              isCorrect: isCorr,
+              timeSeconds: Number((elapsedSeconds / total).toFixed(1)),
+              points: isCorr ? 10 : 0
+            };
+          });
+
+          window.VialCloudSync.syncGameSession({
+            game: 'simulador',
+            category: `Simulador (${selectedCategory.toUpperCase()})`,
+            score: scorePct * 10,
+            time: Number((elapsedSeconds / total).toFixed(2)),
+            accuracy: `${correct}/${total}`,
+            details: examDetails
+          });
+        }
+      } catch(err) {
+        console.warn('Error sincronizando examen en la nube:', err);
+      }
 
       renderReviewList('all');
       showScreen('screen-results');

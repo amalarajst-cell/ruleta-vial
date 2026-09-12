@@ -280,12 +280,13 @@
           <img src="assets/brand/logo_ba.png" alt="Buenos Aires Ciudad" style="height:24px;filter:brightness(0) invert(1);opacity:0.95;object-fit:contain;">
           <h1 class="header-title">Zona de Práctica</h1>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="header-metric" id="metric-completed">Completados: 4/10</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div id="vialplay-header-user-badge"></div>
+          <span class="header-metric" id="metric-completed">Juegos: 0/5</span>
         </div>
       </div>
       <div class="progress-bar-track">
-        <div class="progress-bar-fill" id="progress-fill"></div>
+        <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
       </div>
     </div>
   </header>
@@ -301,59 +302,120 @@
 
     <!-- 1. JUEGO: RULETA VIAL -->
     <div class="game-card-wrapper">
-      <button class="btn-ruleta" id="btn-ruleta" onclick="window.location.href='index.html?screen=roulette'">
+      <button class="btn-ruleta" id="btn-ruleta" onclick="playGame('index.html?screen=roulette')">
         <img src="assets/ruleta_icono.jpg" alt="Ruleta">
         <span>RULETA VIAL</span>
       </button>
-      <div class="btn-hub-subtitle subtitle-ruleta">
+      <div class="btn-hub-subtitle subtitle-ruleta" id="sub-ruleta">
         <span>Tocá la ruleta para comenzar a jugar</span>
       </div>
     </div>
 
     <!-- 2. JUEGO: TIEMPO DE REACCIÓN -->
     <div class="game-card-wrapper">
-      <button class="btn-ruleta btn-reaccion" id="btn-reaccion" onclick="window.location.href='reaccion.html'">
+      <button class="btn-ruleta btn-reaccion" id="btn-reaccion" onclick="playGame('reaccion.html')">
         <img src="assets/reaccion_icono.jpg" alt="Tiempo de Reacción">
         <span>TIEMPO DE REACCIÓN</span>
       </button>
-      <div class="btn-hub-subtitle subtitle-reaccion">
+      <div class="btn-hub-subtitle subtitle-reaccion" id="sub-reaccion">
         <span>Poné a prueba tus reflejos y frenado</span>
       </div>
     </div>
 
     <!-- 3. JUEGO: MEMOTEST VIAL -->
     <div class="game-card-wrapper">
-      <button class="btn-ruleta btn-memotest" id="btn-memotest" onclick="window.location.href='memotest.html'">
+      <button class="btn-ruleta btn-memotest" id="btn-memotest" onclick="playGame('memotest.html')">
         <img src="assets/memotest_icono.jpg" alt="Memotest Vial">
         <span>MEMOTEST VIAL</span>
       </button>
-      <div class="btn-hub-subtitle subtitle-memotest">
+      <div class="btn-hub-subtitle subtitle-memotest" id="sub-memotest">
         <span>Emparejá y reconocé las 60 señales de tránsito</span>
       </div>
     </div>
 
     <!-- 4. JUEGO: LÍMITES DE ALCOHOLEMIA -->
     <div class="game-card-wrapper">
-      <button class="btn-ruleta btn-alcoholemia" id="btn-alcoholemia" onclick="window.location.href='alcoholemia.html'">
+      <button class="btn-ruleta btn-alcoholemia" id="btn-alcoholemia" onclick="playGame('alcoholemia.html')">
         <img src="assets/alcoholemia_icono.jpg" alt="Límites de Alcoholemia">
         <span>LÍMITES DE ALCOHOLEMIA</span>
       </button>
-      <div class="btn-hub-subtitle subtitle-alcoholemia">
+      <div class="btn-hub-subtitle subtitle-alcoholemia" id="sub-alcoholemia">
         <span>Normativa CABA y tolerancia cero en sangre</span>
       </div>
     </div>
 
     <!-- 5. JUEGO: SIMULADOR DE EXAMEN -->
     <div class="game-card-wrapper">
-      <button class="btn-ruleta btn-simulador" id="btn-simulador" onclick="window.location.href='simulador.html'">
+      <button class="btn-ruleta btn-simulador" id="btn-simulador" onclick="playGame('simulador.html')">
         <img src="assets/simulador_icono.jpg" alt="Simulador de Examen">
         <span>SIMULADOR DE EXAMEN</span>
       </button>
-      <div class="btn-hub-subtitle subtitle-simulador">
+      <div class="btn-hub-subtitle subtitle-simulador" id="sub-simulador">
         <span>Examen oficial por categoría (Auto, Moto, Colectivo)</span>
       </div>
     </div>
   </main>
 
+  <script src="js/cloud-sync.js"></script>
+  <script>
+    function playGame(url) {
+      if (window.VialCloudSync && typeof window.VialCloudSync.ensurePlayerRegistered === 'function') {
+        window.VialCloudSync.ensurePlayerRegistered(() => {
+          window.location.href = url;
+        });
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    function refreshHubStats() {
+      const player = window.VialCloudSync ? window.VialCloudSync.getActivePlayer() : { name: '' };
+      let leaderboard = [];
+      try {
+        leaderboard = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+      } catch(e) {}
+
+      const cleanId = (player.email || player.name).toLowerCase().trim();
+      const userEntries = leaderboard.filter(e => {
+        const eId = (e.email || e.name || '').toLowerCase().trim();
+        return cleanId && eId === cleanId;
+      });
+
+      const playedGames = new Set(userEntries.map(e => e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'))));
+      const count = playedGames.size;
+      const totalGames = 5;
+
+      const metricEl = document.getElementById('metric-completed');
+      const progressEl = document.getElementById('progress-fill');
+      if (metricEl) metricEl.textContent = `Juegos: ${count}/${totalGames}`;
+      if (progressEl) progressEl.style.width = `${Math.round((count / totalGames) * 100)}%`;
+
+      // Etiquetas dinámicas por juego
+      if (playedGames.has('ruleta')) {
+        const sub = document.getElementById('sub-ruleta');
+        if (sub) sub.innerHTML = '<span>✅ Partida completada • ¡Volvé a girar!</span>';
+      }
+      if (playedGames.has('reaccion')) {
+        const sub = document.getElementById('sub-reaccion');
+        if (sub) sub.innerHTML = '<span>✅ Reflejos medidos • ¡Superá tu récord!</span>';
+      }
+      if (playedGames.has('memotest')) {
+        const sub = document.getElementById('sub-memotest');
+        if (sub) sub.innerHTML = '<span>✅ Señales completadas • ¡Entrená de nuevo!</span>';
+      }
+      if (playedGames.has('alcoholemia')) {
+        const sub = document.getElementById('sub-alcoholemia');
+        if (sub) sub.innerHTML = '<span>✅ Trivia completada • ¡Repasá la norma!</span>';
+      }
+      if (playedGames.has('simulador')) {
+        const sub = document.getElementById('sub-simulador');
+        if (sub) sub.innerHTML = '<span>✅ Examen rendido • ¡Simulá otra categoría!</span>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', refreshHubStats);
+    window.addEventListener('vialplay:player_changed', refreshHubStats);
+    window.addEventListener('vialplay:session_synced', refreshHubStats);
+  </script>
 </body>
 </html>

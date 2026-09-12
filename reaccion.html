@@ -1047,12 +1047,24 @@
 
   <script>
     (function() {
-      // ── PARTICIPANTE ACTIVO ──
-      const activePlayer = window.VialCloudSync ? window.VialCloudSync.getActivePlayer() : { name: 'Participante', avatar: 'assets/brand/icon_auto.png' };
-      const reaccionPlayerName = document.getElementById('reaccion-player-name');
-      const reaccionPlayerAvatar = document.getElementById('reaccion-player-avatar');
-      if (reaccionPlayerName && activePlayer.name) reaccionPlayerName.textContent = activePlayer.name;
-      if (reaccionPlayerAvatar && activePlayer.avatar) reaccionPlayerAvatar.src = activePlayer.avatar;
+      function refreshPlayerUI() {
+        const p = window.VialCloudSync ? window.VialCloudSync.getActivePlayer() : { name: 'Participante', avatar: 'assets/brand/icon_auto.png' };
+        if (reaccionPlayerName) reaccionPlayerName.textContent = p.name || 'Participante';
+        if (reaccionPlayerAvatar) reaccionPlayerAvatar.src = p.avatar || 'assets/brand/icon_auto.png';
+      }
+      refreshPlayerUI();
+      window.addEventListener('vialplay:player_changed', refreshPlayerUI);
+
+      const playerPillEl = document.getElementById('reaccion-player-pill');
+      if (playerPillEl) {
+        playerPillEl.style.cursor = 'pointer';
+        playerPillEl.title = 'Tocar para registrar o cambiar participante';
+        playerPillEl.addEventListener('click', () => {
+          if (window.VialCloudSync && typeof window.VialCloudSync.openRegistrationModal === 'function') {
+            window.VialCloudSync.openRegistrationModal({ onSave: refreshPlayerUI });
+          }
+        });
+      }
 
       // ── SONIDO VIA WEB AUDIO API ──
       let audioEnabled = true;

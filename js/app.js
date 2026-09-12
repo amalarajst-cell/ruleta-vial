@@ -121,8 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function getEntryGame(e) {
     if (!e) return 'ruleta';
     if (e.game) return e.game;
-    if (e.category === 'Tiempo de Reacción') return 'reaccion';
-    if (e.category === 'Límites de Alcoholemia') return 'alcoholemia';
+    const cat = (e.category || '').toLowerCase();
+    if (cat.includes('reacción') || cat.includes('reaccion')) return 'reaccion';
+    if (cat.includes('alcohol')) return 'alcoholemia';
+    if (cat.includes('memotest') || cat.includes('señales') || cat.includes('senales')) return 'memotest';
+    if (cat.includes('simulador')) return 'simulador';
     return 'ruleta';
   }
 
@@ -141,6 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const sc = Number(e.score) || 0;
       const c = sc >= 500 ? 5 : Math.min(5, Math.max(0, Math.round(sc / 100)));
       return { correct: c, total: 5, ratio: c / 5 };
+    }
+    if (g === 'simulador') {
+      const sc = Number(e.score) || 0;
+      return { correct: Math.round(sc / 10), total: 100, ratio: sc / 1000 };
     }
     return { correct: 0, total: 0, ratio: 0 };
   }
@@ -1445,6 +1452,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (g === 'reaccion' || g === 'alcoholemia') {
         return (e.accuracy && e.accuracy.includes('8/8')) || (Number(e.score) || 0) >= 800;
       }
+      if (g === 'memotest') {
+        return (e.accuracy && (e.accuracy.includes('10/10') || e.accuracy.includes('15/15') || e.accuracy.includes('20/20'))) || (Number(e.score) || 0) >= 1000;
+      }
+      if (g === 'simulador') {
+        return (Number(e.score) || 0) >= 850;
+      }
       return (Number(e.score) || 0) >= 500;
     }).length;
 
@@ -1509,6 +1522,10 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(141,226,214,0.15);border:1px solid rgba(141,226,214,0.3);color:var(--tertiary);font-size:11px;font-weight:800;">⚡ Reacción</span>`;
           } else if (g === 'alcoholemia') {
             gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(179,136,255,0.15);border:1px solid rgba(179,136,255,0.3);color:#D1C4E9;font-size:11px;font-weight:800;">🍷 Alcoholemia</span>`;
+          } else if (g === 'memotest') {
+            gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(255,145,0,0.15);border:1px solid rgba(255,145,0,0.35);color:#FFB300;font-size:11px;font-weight:800;">🎴 Memotest</span>`;
+          } else if (g === 'simulador') {
+            gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.35);color:#38BDF8;font-size:11px;font-weight:800;">🚗 Simulador</span>`;
           } else {
             gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(255,198,0,0.15);border:1px solid rgba(255,198,0,0.3);color:var(--secondary-container);font-size:11px;font-weight:800;">🎡 Ruleta</span>`;
           }
@@ -1658,6 +1675,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedGame === 'ruleta') name = 'Ruleta Vial';
         else if (selectedGame === 'reaccion') name = 'Tiempo de Reacción';
         else if (selectedGame === 'alcoholemia') name = 'Límites de Alcoholemia';
+        else if (selectedGame === 'memotest') name = 'Memotest Vial';
+        else if (selectedGame === 'simulador') name = 'Simulador de Examen';
         labelResetFilter.textContent = `Borrar solo ${name}`;
       }
     }
