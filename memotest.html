@@ -1333,14 +1333,14 @@
 
         showFeedback(true, `¡Excelente! ${clickedSignal.name}`, clickedSignal.description, reactionMs);
 
-        // TRANSICIÓN AUTOMÁTICA CONTINUA:
-        // Sacar la carta acertada, ingresar nueva señal, y pasar DIRECTO a la siguiente ronda
+        // TRANSICIÓN RÁPIDA Y CONTINUA:
+        // Sacar la carta acertada, ingresar nueva señal y pasar inmediatamente a la siguiente ronda
         setTimeout(() => {
           replaceCardWithNew(clickedIndex);
           setTimeout(() => {
-            startAutoRound(); // CONTINUA SOLO
-          }, 350);
-        }, 650);
+            startAutoRound();
+          }, 200);
+        }, 300);
 
       } else {
         soundSys.playIncorrect();
@@ -1349,24 +1349,16 @@
         streak = 0;
         totalMisses++;
 
-        // Resaltar la que era correcta
-        const correctIndex = currentOptions.findIndex(s => s && s.id === currentTarget.id);
-        if (correctIndex !== -1) {
-          const cCard = document.getElementById(`card-${correctIndex}`);
-          if (cCard) cCard.classList.add('highlight-target');
-        }
-
         showFeedback(false, `Era: ${currentTarget.name}`, currentTarget.description, reactionMs);
 
-        // Sacar de abajo la imagen que debería haberse tocado e ingresar otra
+        // AL ERRAR: El juego CONTINÚA DE INMEDIATO sin frenarse ni congelarse
+        // Reemplaza la carta y avanza con el mismo ritmo fluido
         setTimeout(() => {
-          if (correctIndex !== -1) {
-            replaceCardWithNew(correctIndex);
-          }
+          replaceCardWithNew(clickedIndex);
           setTimeout(() => {
-            startAutoRound(); // CONTINUA SOLO
-          }, 450);
-        }, 900);
+            startAutoRound();
+          }, 200);
+        }, 300);
       }
 
       updateStatsUI();

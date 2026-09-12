@@ -130,6 +130,14 @@ class SoundSystem {
     } catch (e) {}
   }
 
+  playIncorrect() {
+    this.playWrong();
+  }
+
+  playGameOver() {
+    this.playWrong();
+  }
+
   playFanfare() {
     if (!this.enabled) return;
     this.init();
