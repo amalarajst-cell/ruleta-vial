@@ -1452,6 +1452,10 @@
         if (anyImg) examQuestions[0] = anyImg;
       }
 
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
       currentIndex = 0;
       userAnswers = {};
       flaggedQuestions = {};
@@ -1596,7 +1600,14 @@
       document.getElementById('btn-next-q').disabled = (currentIndex === total - 1);
     }
 
+    let autoAdvanceTimer = null;
+
     function selectOption(optIdx) {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+
       userAnswers[currentIndex] = optIdx;
 
       if (window.audioSystem && audioSystem.playClick) audioSystem.playClick();
@@ -1612,9 +1623,22 @@
           if (window.audioSystem && audioSystem.playWrong) audioSystem.playWrong();
         }
       }
+
+      // Avance automático a la siguiente pregunta
+      if (currentIndex < examQuestions.length - 1) {
+        const delay = (selectedMode === 'practice') ? 700 : 380;
+        autoAdvanceTimer = setTimeout(() => {
+          currentIndex++;
+          renderCurrentQuestion();
+        }, delay);
+      }
     }
 
     function navigateQuestion(delta) {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
       const next = currentIndex + delta;
       if (next >= 0 && next < examQuestions.length) {
         currentIndex = next;
@@ -1631,6 +1655,10 @@
 
     // ── 7. MODAL CUADRÍCULA ──
     function openGridModal() {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
       const container = document.getElementById('modal-grid-items');
       container.innerHTML = '';
 
@@ -1687,6 +1715,10 @@
     }
 
     function finishExam() {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
       clearInterval(timerInterval);
 
       // Calcular aciertos
