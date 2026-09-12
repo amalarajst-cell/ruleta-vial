@@ -191,21 +191,6 @@
       transition: width 0.3s ease;
       box-shadow: 0 0 10px rgba(255, 122, 0, 0.5);
     }
-    .lives-indicator {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .heart-icon {
-      font-size: 18px;
-      color: var(--accent-red);
-      transition: transform 0.2s, opacity 0.2s;
-    }
-    .heart-icon.lost {
-      opacity: 0.2;
-      transform: scale(0.8);
-      filter: grayscale(1);
-    }
 
     /* ── TARJETA DE SEÑAL OBJETIVO (ARRIBA) ── */
     .target-card-wrapper {
@@ -220,7 +205,13 @@
       position: relative;
       box-shadow: 0 8px 28px rgba(255, 122, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       transition: all 0.25s ease;
-      min-height: 215px;
+      min-height: 220px;
+    }
+
+    .target-card-wrapper.ready-to-click {
+      border-color: #FF9100;
+      box-shadow: 0 0 28px rgba(255, 145, 0, 0.35);
+      cursor: pointer;
     }
 
     .target-card-wrapper.waiting {
@@ -285,7 +276,51 @@
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Estado de espera con cuenta regresiva / alerta */
+    /* Botón COMENZAR interactivo dentro de la tarjeta objetivo */
+    .start-trigger-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #FF9100 0%, #FF5500 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255, 85, 0, 0.45);
+      animation: pulseBtn 1.2s infinite alternate;
+      transition: transform 0.15s ease;
+      padding: 10px;
+    }
+    .start-trigger-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.6);
+    }
+    .start-trigger-btn:active {
+      transform: scale(0.96);
+    }
+    .start-trigger-btn span.lbl-main {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+    .start-trigger-btn span.lbl-sub {
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFE0B2;
+    }
+
+    @keyframes pulseBtn {
+      0% { transform: scale(0.98); box-shadow: 0 4px 14px rgba(255, 85, 0, 0.35); }
+      100% { transform: scale(1.02); box-shadow: 0 8px 26px rgba(255, 145, 0, 0.6); }
+    }
+
+    /* Estado de espera (1 a 2s) */
     .waiting-indicator {
       display: flex;
       flex-direction: column;
@@ -295,12 +330,12 @@
       color: var(--accent-yellow);
     }
     .waiting-radar {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      border: 3px solid rgba(255, 198, 0, 0.2);
+      border: 3.5px solid rgba(255, 198, 0, 0.2);
       border-top-color: var(--accent-yellow);
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.75s linear infinite;
     }
     @keyframes spin {
       100% { transform: rotate(360deg); }
@@ -311,10 +346,10 @@
       color: #e0e6ea;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      animation: blinkText 0.8s ease infinite alternate;
+      animation: blinkText 0.75s ease infinite alternate;
     }
     @keyframes blinkText {
-      0% { opacity: 0.5; }
+      0% { opacity: 0.4; }
       100% { opacity: 1; }
     }
 
@@ -365,18 +400,10 @@
     }
 
     /* Modos de grilla según cantidad de cartas */
-    .grid-4 {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .grid-6 {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .grid-8 {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .grid-12 {
-      grid-template-columns: repeat(4, 1fr);
-    }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-6 { grid-template-columns: repeat(3, 1fr); }
+    .grid-8 { grid-template-columns: repeat(4, 1fr); }
+    .grid-12 { grid-template-columns: repeat(4, 1fr); }
 
     .option-card {
       background: #191f21;
@@ -396,7 +423,6 @@
       touch-action: manipulation;
     }
 
-    /* Ajuste de altura para grillas de 8 y 12 */
     .grid-8 .option-card, .grid-12 .option-card {
       height: 95px;
       padding: 6px;
@@ -430,7 +456,7 @@
 
     .option-card.disabled {
       pointer-events: none;
-      opacity: 0.7;
+      opacity: 0.6;
     }
 
     /* Animaciones de acierto y error */
@@ -761,12 +787,8 @@
     }
 
     @media (max-width: 480px) {
-      .mode-chips {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .grid-8, .grid-12 {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .mode-chips { grid-template-columns: repeat(2, 1fr); }
+      .grid-8, .grid-12 { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -811,39 +833,41 @@
     <!-- 1. Estado y progreso -->
     <div class="status-row">
       <div class="round-indicator">
-        Ronda: <span id="txt-round">1 / 15</span>
+        Ronda: <span id="txt-round">1 / 10</span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="bar-progress"></div>
       </div>
-      <div class="lives-indicator" id="lives-container" style="display:none;">
-        <span class="material-symbols-outlined heart-icon">favorite</span>
-        <span class="material-symbols-outlined heart-icon">favorite</span>
-        <span class="material-symbols-outlined heart-icon">favorite</span>
-      </div>
     </div>
 
-    <!-- 2. SEÑAL OBJETIVO CON DELAY DE 1-2s (ARRIBA) -->
-    <section class="target-card-wrapper waiting" id="target-wrapper">
-      <div class="target-badge waiting-badge" id="target-badge">
-        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">hourglass_top</span>
-        <span id="target-badge-text">¡Atento a la señal!</span>
+    <!-- 2. SEÑAL OBJETIVO CON BOTÓN COMENZAR Y DELAY 1-2s (ARRIBA) -->
+    <section class="target-card-wrapper ready-to-click" id="target-wrapper">
+      <div class="target-badge" id="target-badge">
+        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
+        <span id="target-badge-text">Tocá para iniciar la ronda</span>
       </div>
 
-      <div class="target-image-container">
-        <!-- Estado de espera mientras se prepara la señal (1 a 2s) -->
-        <div class="waiting-indicator" id="waiting-box">
+      <div class="target-image-container" id="target-box">
+        <!-- 1. BOTÓN COMENZAR INICIAL / ENTRE RONDAS -->
+        <button class="start-trigger-btn" id="btn-start-round" onclick="triggerRoundStart()">
+          <span class="material-symbols-outlined" style="font-size:32px;">play_circle</span>
+          <span class="lbl-main" id="lbl-btn-action">COMENZAR</span>
+          <span class="lbl-sub">Tocá para activar</span>
+        </button>
+
+        <!-- 2. Estado de espera mientras se prepara la señal (1 a 2s) -->
+        <div class="waiting-indicator" id="waiting-box" style="display:none;">
           <div class="waiting-radar"></div>
           <span class="waiting-text">PREPARATE...</span>
         </div>
 
-        <!-- Imagen de la señal cuando aparece -->
+        <!-- 3. Imagen de la señal cuando aparece -->
         <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
       </div>
 
       <div class="target-info">
-        <div class="target-title" id="target-name">Esperando estímulo...</div>
-        <div class="target-category" id="target-cat">Reaccioná tan pronto aparezca</div>
+        <div class="target-title" id="target-name">Tocá COMENZAR para jugar</div>
+        <div class="target-category" id="target-cat">Reaccioná tan pronto aparezca la señal</div>
       </div>
     </section>
 
@@ -885,7 +909,7 @@
       <div>
         <h2 class="modal-title">MEMOTEST DE REACCIÓN</h2>
         <p class="modal-desc" style="margin-top:4px;">
-          La señal aparecerá tras 1 o 2 segundos de espera para medir tus reflejos. Encontrala lo más rápido posible entre las opciones de abajo.
+          Tocá COMENZAR para iniciar la ronda. La señal aparecerá tras 1 o 2 segundos de espera. ¡Encontrala lo más rápido posible abajo!
         </p>
       </div>
 
@@ -1007,6 +1031,7 @@
     let currentTarget = null;
     let currentOptions = [];
     let isTargetVisible = false; // Se activa tras el delay de 1-2s
+    let isWaitingDelay = false;
     let isProcessing = false;
     let delayTimer = null;
     let feedbackTimeout = null;
@@ -1062,6 +1087,8 @@
       reactionTimesMs = [];
       roundDetails = [];
       isProcessing = false;
+      isTargetVisible = false;
+      isWaitingDelay = false;
 
       // Configurar grilla de opciones según dificultad
       setupOptionsGridUI(optionsCount);
@@ -1079,8 +1106,8 @@
       renderAllOptionCards();
       updateStatsUI();
 
-      // Iniciar primera ronda
-      nextRound();
+      // Mostrar estado listo para hacer clic en COMENZAR
+      prepareReadyState();
     }
 
     function setupOptionsGridUI(count) {
@@ -1090,7 +1117,7 @@
 
       for (let i = 0; i < count; i++) {
         const card = document.createElement('div');
-        card.className = 'option-card';
+        card.className = 'option-card disabled';
         card.id = `card-${i}`;
         card.onclick = () => handleCardClick(i);
 
@@ -1119,13 +1146,13 @@
       if (cardEl && imgEl && signal) {
         imgEl.src = signal.image;
         imgEl.alt = signal.name;
-        cardEl.className = 'option-card card-enter';
+        cardEl.className = isTargetVisible ? 'option-card card-enter' : 'option-card disabled card-enter';
       }
     }
 
-    function nextRound() {
+    // ── ESTADO: LISTO PARA HACER CLIC EN COMENZAR ──
+    function prepareReadyState() {
       currentRound++;
-      
       if (currentRound > maxRounds) {
         endGame(true);
         return;
@@ -1133,17 +1160,57 @@
 
       updateStatsUI();
       isTargetVisible = false;
+      isWaitingDelay = false;
       isProcessing = false;
 
-      // 1. Seleccionar la nueva señal objetivo de entre las opciones activas de abajo
-      const targetIndex = Math.floor(Math.random() * optionsCount);
-      currentTarget = currentOptions[targetIndex];
-
-      // 2. Colocar tarjeta superior en modo "ESPERA" (ocultar imagen)
       const wrapper = document.getElementById('target-wrapper');
       const badge = document.getElementById('target-badge');
       const badgeIcon = document.getElementById('target-badge-icon');
       const badgeText = document.getElementById('target-badge-text');
+      const btnStart = document.getElementById('btn-start-round');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+      const lblBtnAction = document.getElementById('lbl-btn-action');
+
+      wrapper.className = 'target-card-wrapper ready-to-click';
+      badge.className = 'target-badge';
+      badgeIcon.textContent = 'touch_app';
+      badgeText.textContent = `Ronda ${currentRound} de ${maxRounds}`;
+
+      btnStart.style.display = 'flex';
+      lblBtnAction.textContent = (currentRound === 1) ? 'COMENZAR' : 'SIGUIENTE';
+      waitingBox.style.display = 'none';
+      targetImg.style.display = 'none';
+
+      targetName.textContent = 'Tocá COMENZAR para activar la señal';
+      targetCat.textContent = 'Aguardá 1-2s y tocá la opción correcta lo más rápido posible';
+
+      // Deshabilitar temporalmente las opciones de abajo
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) card.className = 'option-card disabled';
+      }
+    }
+
+    // ── ACTIVACIÓN AL HACER CLIC EN COMENZAR ──
+    function triggerRoundStart() {
+      if (isWaitingDelay || isTargetVisible || isProcessing) return;
+      isWaitingDelay = true;
+
+      soundSys.playTick();
+
+      // 1. Elegir la nueva señal objetivo de entre las opciones de abajo
+      const targetIndex = Math.floor(Math.random() * optionsCount);
+      currentTarget = currentOptions[targetIndex];
+
+      // 2. Cambiar tarjeta superior a modo "PREPARATE..." (radar de 1 a 2s)
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const btnStart = document.getElementById('btn-start-round');
       const waitingBox = document.getElementById('waiting-box');
       const targetImg = document.getElementById('target-img');
       const targetName = document.getElementById('target-name');
@@ -1153,30 +1220,26 @@
       badge.className = 'target-badge waiting-badge';
       badgeIcon.textContent = 'hourglass_top';
       badgeText.textContent = '¡Atento a la señal!';
+
+      btnStart.style.display = 'none';
       waitingBox.style.display = 'flex';
       targetImg.style.display = 'none';
+
       targetName.textContent = 'Preparando estímulo...';
       targetCat.textContent = 'Esperá a que aparezca la señal para reaccionar';
-
-      // Deshabilitar temporalmente las cartas para evitar clics antes de tiempo
-      for (let i = 0; i < optionsCount; i++) {
-        const card = document.getElementById(`card-${i}`);
-        if (card) {
-          card.className = 'option-card disabled';
-        }
-      }
 
       // 3. RETARDO ALEATORIO DE 1 A 2 SEGUNDOS (1000ms a 2000ms)
       const delayMs = 1000 + Math.floor(Math.random() * 1000);
 
       if (delayTimer) clearTimeout(delayTimer);
       delayTimer = setTimeout(() => {
-        // ¡APARECE LA SEÑAL OBJETIVO!
         showTargetStimulus();
       }, delayMs);
     }
 
     function showTargetStimulus() {
+      isWaitingDelay = false;
+
       const wrapper = document.getElementById('target-wrapper');
       const badge = document.getElementById('target-badge');
       const badgeIcon = document.getElementById('target-badge-icon');
@@ -1214,10 +1277,9 @@
 
     function handleCardClick(clickedIndex) {
       if (!isTargetVisible || isProcessing) {
-        // Clic antes de que aparezca la señal (Falsa salida)
         if (!isTargetVisible) {
           soundSys.playTick();
-          showFeedback(false, '¡Esperá la señal!', 'Aguardá a que aparezca la imagen antes de tocar.', 0);
+          showFeedback(false, '¡Esperá la señal!', 'Tocá COMENZAR y aguardá a que aparezca la imagen antes de tocar.', 0);
         }
         return;
       }
@@ -1268,7 +1330,7 @@
         setTimeout(() => {
           replaceCardWithNew(clickedIndex);
           setTimeout(() => {
-            nextRound();
+            prepareReadyState();
           }, 350);
         }, 650);
 
@@ -1294,7 +1356,7 @@
             replaceCardWithNew(correctIndex);
           }
           setTimeout(() => {
-            nextRound();
+            prepareReadyState();
           }, 450);
         }, 900);
       }
@@ -1403,14 +1465,14 @@
         subtitleEl.textContent = 'Practicá más para reducir tu tiempo de reacción y reconocer las señales más rápido.';
       }
 
-      // ── SINCRONIZACIÓN AUTOMÁTICA CON EL PANEL DE ADMINISTRACIÓN Y LEADERBOARD ──
+      // Sincronización automática con cloud sync
       try {
         if (window.VialPlayCloudSync && typeof window.VialPlayCloudSync.syncGameSession === 'function') {
           window.VialPlayCloudSync.syncGameSession({
             game: 'memotest',
             category: 'Memotest de Señales',
             score: score,
-            time: avgReactionSec, // Tiempo promedio de reacción en segundos
+            time: avgReactionSec,
             accuracy: `${totalHits}/${totalAttempts}`,
             details: roundDetails
           });
