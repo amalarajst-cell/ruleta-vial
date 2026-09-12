@@ -429,8 +429,9 @@
 
   /**
    * Modal COMPLETO: "Mi Perfil y Registro de Actividades"
+   * Con tarjetas interactivas idénticas a la Zona de Juegos y filtro de actividades por juego al hacer clic
    */
-  function openUserProfileModal() {
+  function openUserProfileModal(initialFilter = 'all') {
     let existingModal = document.getElementById('vialplay-user-profile-modal');
     if (existingModal) existingModal.remove();
 
@@ -442,27 +443,74 @@
 
     const data = getPlayerFullActivity(player);
 
-    const gameBadgesDef = {
-      ruleta: { name: 'Ruleta Vial', icon: 'assets/ruleta_icono.jpg', tag: '🎡 Ruleta', color: '#FFC600', link: 'index.html?screen=roulette' },
-      reaccion: { name: 'Tiempo de Reacción', icon: 'assets/reaccion_icono.jpg', tag: '⚡ Reacción', color: '#00E676', link: 'reaccion.html' },
-      memotest: { name: 'Memotest Vial', icon: 'assets/memotest_icono.jpg', tag: '🎴 Memotest', color: '#FF9100', link: 'memotest.html' },
-      alcoholemia: { name: 'Límites de Alcoholemia', icon: 'assets/alcoholemia_icono.jpg', tag: '🍷 Alcoholemia', color: '#C084FC', link: 'alcoholemia.html' },
-      simulador: { name: 'Simulador de Examen', icon: 'assets/simulador_icono.jpg', tag: '🚗 Simulador', color: '#38BDF8', link: 'simulador.html' }
+    const gameCardsDef = {
+      ruleta: { 
+        id: 'ruleta',
+        name: 'RULETA VIAL', 
+        icon: 'assets/ruleta_icono.jpg', 
+        tag: '🎡 Ruleta', 
+        color: '#FFC600', 
+        borderColor: '#FFC600',
+        link: 'index.html?screen=roulette',
+        desc: 'Trivias interactivas por categorías viales'
+      },
+      reaccion: { 
+        id: 'reaccion',
+        name: 'TIEMPO DE REACCIÓN', 
+        icon: 'assets/reaccion_icono.jpg', 
+        tag: '⚡ Reacción', 
+        color: '#00E676', 
+        borderColor: '#00E676',
+        link: 'reaccion.html',
+        desc: 'Medición de reflejos y distancia de frenado'
+      },
+      memotest: { 
+        id: 'memotest',
+        name: 'MEMOTEST VIAL', 
+        icon: 'assets/memotest_icono.jpg', 
+        tag: '🎴 Memotest', 
+        color: '#FF9100', 
+        borderColor: '#FF9100',
+        link: 'memotest.html',
+        desc: 'Emparejamiento de las 60 señales oficiales'
+      },
+      alcoholemia: { 
+        id: 'alcoholemia',
+        name: 'LÍMITES DE ALCOHOLEMIA', 
+        icon: 'assets/alcoholemia_icono.jpg', 
+        tag: '🍷 Alcoholemia', 
+        color: '#C084FC', 
+        borderColor: '#A855F7',
+        link: 'alcoholemia.html',
+        desc: 'Normativa CABA y tolerancia cero en sangre'
+      },
+      simulador: { 
+        id: 'simulador',
+        name: 'SIMULADOR DE EXAMEN', 
+        icon: 'assets/simulador_icono.jpg', 
+        tag: '🚗 Simulador', 
+        color: '#38BDF8', 
+        borderColor: '#38BDF8',
+        link: 'simulador.html',
+        desc: 'Examen oficial teórico Auto, Moto y Colectivo'
+      }
     };
 
+    let currentFilter = initialFilter;
+
     const modalHtml = `
-      <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
-        <div style="background:#16191b;border:1px solid rgba(255,255,255,0.12);border-radius:24px;box-shadow:0 24px 70px rgba(0,0,0,0.9);width:100%;max-width:760px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;">
+      <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
+        <div style="background:#131516;border:none !important;border-radius:24px;box-shadow:0 24px 70px rgba(0,0,0,0.95);width:100%;max-width:880px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;outline:none !important;">
           
           <!-- 1. Cabecera del Perfil -->
-          <div style="background:linear-gradient(135deg,#23282b 0%,#181c1e 100%);padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+          <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
             <div style="display:flex;align-items:center;gap:14px;">
-              <div style="position:relative;width:54px;height:54px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <img src="${player.avatar}" style="width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+              <div style="position:relative;width:52px;height:52px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <img src="${player.avatar}" style="width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
               </div>
               <div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                  <h2 style="font-size:20px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
+                  <h2 style="font-size:19px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
                   <span style="font-size:11px;font-weight:800;color:#000000;background:#FFC600;padding:2px 8px;border-radius:999px;text-transform:uppercase;">${player.role}</span>
                 </div>
                 <p style="font-size:12px;color:#8DE2D6;margin:3px 0 0;font-weight:600;">${player.email || 'Participante Activo'}</p>
@@ -470,11 +518,11 @@
             </div>
 
             <div style="display:flex;align-items:center;gap:8px;">
-              <button type="button" id="vp-btn-edit-profile" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#FFFFFF;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+              <button type="button" id="vp-btn-edit-profile" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#FFFFFF;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
                 <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
                 <span>Editar</span>
               </button>
-              <button type="button" id="vp-btn-switch-user" style="background:rgba(255,77,77,0.12);border:1px solid rgba(255,77,77,0.3);color:#FF6B6B;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;" title="Cambiar a otro participante">
+              <button type="button" id="vp-btn-switch-user" style="background:rgba(255,77,77,0.12);border:1px solid rgba(255,77,77,0.25);color:#FF6B6B;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;" title="Cambiar a otro participante">
                 <span class="material-symbols-outlined" style="font-size:16px;">logout</span>
                 <span>Cambiar</span>
               </button>
@@ -483,115 +531,70 @@
           </div>
 
           <!-- 2. Cuerpo con scroll -->
-          <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:20px;">
+          <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:22px;">
             
             <!-- Resumen de Métricas (KPIs) -->
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-              <div style="background:#1f2426;border:1px solid rgba(255,198,0,0.3);border-radius:16px;padding:12px;text-align:center;">
+              <div style="background:#1a1d1f;border:1px solid rgba(255,198,0,0.25);border-radius:16px;padding:12px;text-align:center;">
                 <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#FFC600;">${data.totalXP}</div>
-                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntos XP Totales</div>
+                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntos XP Totales</div>
               </div>
-              <div style="background:#1f2426;border:1px solid rgba(141,226,214,0.3);border-radius:16px;padding:12px;text-align:center;">
+              <div style="background:#1a1d1f;border:1px solid rgba(141,226,214,0.25);border-radius:16px;padding:12px;text-align:center;">
                 <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / 5</div>
-                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Juegos Registrados</div>
+                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Juegos Registrados</div>
               </div>
-              <div style="background:#1f2426;border:1px solid rgba(0,230,118,0.3);border-radius:16px;padding:12px;text-align:center;">
+              <div style="background:#1a1d1f;border:1px solid rgba(0,230,118,0.25);border-radius:16px;padding:12px;text-align:center;">
                 <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#00E676;">${data.globalAccuracyPct}%</div>
-                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Precisión Global</div>
+                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Precisión Global</div>
               </div>
-              <div style="background:#1f2426;border:1px solid rgba(56,189,248,0.3);border-radius:16px;padding:12px;text-align:center;">
+              <div style="background:#1a1d1f;border:1px solid rgba(56,189,248,0.25);border-radius:16px;padding:12px;text-align:center;">
                 <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#38BDF8;">${data.bestTime > 0 ? data.bestTime + 's' : '—'}</div>
-                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Mejor Reacción</div>
+                <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Mejor Reacción</div>
               </div>
             </div>
 
-            <!-- Estado de los 5 Juegos -->
+            <!-- TARJETAS DE JUEGOS ESTILO ZONA DE JUEGOS -->
             <div>
-              <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-                <span class="material-symbols-outlined" style="color:#FFC600;font-size:18px;">sports_esports</span>
-                <span>Rendimiento por Juego:</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
+                  <span class="material-symbols-outlined" style="color:#FFC600;font-size:18px;">sports_esports</span>
+                  <span>Rendimiento por Juego:</span>
+                </div>
+                <span style="font-size:11.5px;color:#8DE2D6;font-weight:700;">👆 Tocá cualquier tarjeta para filtrar sus actividades</span>
               </div>
               
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
-                ${Object.keys(gameBadgesDef).map(key => {
-                  const def = gameBadgesDef[key];
-                  const gameEntry = data.myGames.find(g => getEntryGame(g) === key);
-                  const isCompleted = !!gameEntry;
-
-                  return `
-                    <div style="background:#1a1e20;border:1.5px solid ${isCompleted ? def.color : '#2d3336'};border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
-                      <div style="display:flex;align-items:center;justify-content:space-between;">
-                        <span style="font-size:11px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:6px;">${def.tag}</span>
-                        ${isCompleted ? '<span style="color:#00E676;font-size:11px;font-weight:800;">✅ Jugado</span>' : '<span style="color:#64748b;font-size:11px;font-weight:700;">Pendiente</span>'}
-                      </div>
-                      <div>
-                        <div style="font-size:13px;font-weight:800;color:#FFFFFF;">${def.name}</div>
-                        <div style="font-size:11px;color:#94a3b8;margin-top:2px;">
-                          ${isCompleted ? `Puntaje: <strong style="color:${def.color};">${gameEntry.score} XP</strong> • Precisión: <strong>${gameEntry.accuracy || '—'}</strong>` : 'Sin partidas registradas'}
-                        </div>
-                      </div>
-                      <a href="${def.link}" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,0.06);color:${def.color};border:1px solid ${def.color};text-decoration:none;padding:6px;border-radius:8px;font-size:11px;font-weight:800;">
-                        <span>${isCompleted ? 'Jugar de nuevo' : 'Comenzar juego'}</span>
-                        <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
-                      </a>
-                    </div>
-                  `;
-                }).join('')}
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;" id="vp-game-cards-container">
+                <!-- Tarjetas dinámicas inyectadas -->
               </div>
             </div>
 
-            <!-- Historial Detallado de Respuestas y Estímulos -->
-            <div>
-              <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+            <!-- SECCIÓN: ACTIVIDADES REALIZADAS (FILTRADAS SEGÚN EL JUEGO SELECCIONADO) -->
+            <div style="background:#181b1d;border-radius:18px;padding:16px;border:1px solid rgba(255,255,255,0.06);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="material-symbols-outlined" style="color:#8DE2D6;font-size:20px;">history</span>
+                  <span id="vp-activity-title" style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;">
+                    Historial de Actividades
+                  </span>
+                </div>
                 <div style="display:flex;align-items:center;gap:6px;">
-                  <span class="material-symbols-outlined" style="color:#8DE2D6;font-size:18px;">history</span>
-                  <span>Historial Completo de Actividades (${data.myResponses.length} registros)</span>
+                  <button type="button" id="vp-btn-filter-all" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#fff;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;">
+                    Ver Todas (<span id="vp-all-count">${data.myResponses.length}</span>)
+                  </button>
                 </div>
               </div>
 
-              ${data.myResponses.length === 0 ? `
-                <div style="background:#1a1e20;border:1px dashed #333a3d;border-radius:14px;padding:24px;text-align:center;color:#94a3b8;font-size:13px;">
-                  Todavía no registraste respuestas en los juegos. ¡Ingresá a la Zona de Práctica para empezar a acumular puntos!
-                </div>
-              ` : `
-                <div style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding-right:4px;">
-                  ${data.myResponses.map((r, idx) => {
-                    const isOk = (r.isCorrect === 'SI' || r.isCorrect === true);
-                    const gameKey = r.game || 'ruleta';
-                    const def = gameBadgesDef[gameKey] || { tag: '🎮 Juego', color: '#FFC600' };
-
-                    return `
-                      <div style="background:#1a1e20;border-left:3.5px solid ${isOk ? '#00E676' : '#FF4D4D'};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                          <div style="display:flex;align-items:center;gap:6px;">
-                            <span style="font-size:10px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;">${def.tag}</span>
-                            <span style="font-size:11px;font-weight:700;color:${isOk ? '#00E676' : '#FF4D4D'};">
-                              ${isOk ? '✅ Acierto' : '❌ Error'} (+${r.pointsGained || 0} XP)
-                            </span>
-                          </div>
-                          <span style="font-size:10.5px;color:#64748b;">${r.timestamp || ''}</span>
-                        </div>
-                        <div style="font-size:12.5px;font-weight:700;color:#FFFFFF;line-height:1.35;">
-                          ${r.question}
-                        </div>
-                        <div style="font-size:11.5px;color:#cbd5e1;display:flex;gap:12px;flex-wrap:wrap;">
-                          <span>Tu respuesta: <strong style="color:${isOk ? '#00E676' : '#FF6B6B'};">${r.selectedAnswer || '—'}</strong></span>
-                          ${!isOk && r.correctAnswer ? `<span>Correcta: <strong style="color:#00E676;">${r.correctAnswer}</strong></span>` : ''}
-                          ${r.timeSeconds ? `<span style="color:#8DE2D6;">⚡ ${r.timeSeconds}s</span>` : ''}
-                        </div>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              `}
+              <div id="vp-activities-list-container" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding-right:4px;">
+                <!-- Lista de actividades dinámicas -->
+              </div>
             </div>
 
           </div>
 
           <!-- 3. Pie del Modal -->
-          <div style="background:#121415;padding:14px 24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;color:#64748b;">Registro sincronizado en vivo con el Panel de Administración</span>
-            <button type="button" id="vp-btn-done" style="background:#FFC600;color:#000000;border:none;padding:8px 20px;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;font-family:'Archivo Black',sans-serif;">
+          <div style="background:#101112;padding:14px 24px;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:11px;color:#64748b;">Registro sincronizado con el Panel de Administración</span>
+            <button type="button" id="vp-btn-done" style="background:#FFC600;color:#000000;border:none;padding:9px 22px;border-radius:10px;font-size:12.5px;font-weight:900;cursor:pointer;font-family:'Archivo Black',sans-serif;">
               CERRAR
             </button>
           </div>
@@ -607,6 +610,10 @@
     const doneBtn = document.getElementById('vp-btn-done');
     const editBtn = document.getElementById('vp-btn-edit-profile');
     const switchBtn = document.getElementById('vp-btn-switch-user');
+    const cardsContainer = document.getElementById('vp-game-cards-container');
+    const activitiesContainer = document.getElementById('vp-activities-list-container');
+    const activityTitleEl = document.getElementById('vp-activity-title');
+    const filterAllBtn = document.getElementById('vp-btn-filter-all');
 
     if (closeBtn) closeBtn.addEventListener('click', () => modal.remove());
     if (doneBtn) doneBtn.addEventListener('click', () => modal.remove());
@@ -642,6 +649,163 @@
         });
       });
     }
+
+    // Renderizar las 5 tarjetas de juego estilo "Zona de Juegos"
+    function renderGameCards() {
+      cardsContainer.innerHTML = '';
+
+      Object.keys(gameCardsDef).forEach(key => {
+        const def = gameCardsDef[key];
+        const gameEntry = data.myGames.find(g => getEntryGame(g) === key);
+        const isCompleted = !!gameEntry;
+        const isSelected = (currentFilter === key);
+
+        const card = document.createElement('div');
+        card.style.cssText = `
+          background: #1c1f21;
+          border: 2px solid ${isSelected ? def.borderColor : (isCompleted ? def.borderColor : '#2b3033')};
+          border-radius: 16px;
+          padding: 14px 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 10px;
+          cursor: pointer;
+          transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+          box-shadow: ${isSelected ? `0 0 16px ${def.borderColor}55, inset 0 0 12px ${def.borderColor}22` : '0 6px 14px rgba(0,0,0,0.4)'};
+          transform: ${isSelected ? 'scale(1.02)' : 'scale(1)'};
+        `;
+
+        card.innerHTML = `
+          <div style="position:relative;">
+            <img src="${def.icon}" alt="${def.name}" style="width:58px;height:58px;object-fit:contain;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,0.5);border:2px solid ${def.borderColor};">
+            ${isCompleted ? `
+              <span style="position:absolute;bottom:-3px;right:-3px;background:#00E676;color:#000;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;border:1.5px solid #131516;">✓</span>
+            ` : ''}
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:2px;width:100%;">
+            <div style="font-family:'Archivo Black',sans-serif;font-size:12px;color:${def.color};letter-spacing:0.3px;line-height:1.2;">
+              ${def.name}
+            </div>
+            <div style="font-size:10.5px;color:#94a3b8;font-weight:700;">
+              ${isCompleted ? `<strong style="color:#fff;">${gameEntry.score} XP</strong> • ${gameEntry.accuracy || 'Completado'}` : 'Sin partidas'}
+            </div>
+          </div>
+
+          <div style="width:100%;padding:4px;border-radius:8px;background:${isSelected ? def.borderColor : 'rgba(255,255,255,0.06)'};color:${isSelected ? '#000' : def.color};font-size:10.5px;font-weight:800;text-transform:uppercase;">
+            ${isSelected ? '● VIENDO ACTIVIDAD' : (isCompleted ? 'VER ACTIVIDADES' : 'PENDIENTE')}
+          </div>
+        `;
+
+        card.addEventListener('mouseenter', () => {
+          if (currentFilter !== key) card.style.transform = 'translateY(-3px)';
+        });
+        card.addEventListener('mouseleave', () => {
+          if (currentFilter !== key) card.style.transform = 'scale(1)';
+        });
+
+        card.addEventListener('click', () => {
+          currentFilter = key;
+          renderGameCards();
+          renderActivitiesList();
+        });
+
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    // Renderizar la lista de actividades según el filtro seleccionado
+    function renderActivitiesList() {
+      let filteredResponses = data.myResponses;
+      if (currentFilter !== 'all') {
+        filteredResponses = data.myResponses.filter(r => (r.game || 'ruleta') === currentFilter);
+      }
+
+      if (currentFilter === 'all') {
+        activityTitleEl.textContent = `Todas las Actividades (${filteredResponses.length} registros)`;
+        filterAllBtn.style.background = '#FFC600';
+        filterAllBtn.style.color = '#000';
+      } else {
+        const def = gameCardsDef[currentFilter];
+        activityTitleEl.textContent = `Actividades en: ${def ? def.name : currentFilter} (${filteredResponses.length} registros)`;
+        filterAllBtn.style.background = 'rgba(255,255,255,0.07)';
+        filterAllBtn.style.color = '#fff';
+      }
+
+      activitiesContainer.innerHTML = '';
+
+      if (filteredResponses.length === 0) {
+        const def = gameCardsDef[currentFilter];
+        activitiesContainer.innerHTML = `
+          <div style="background:#131516;border:1px dashed #2d3336;border-radius:14px;padding:26px 16px;text-align:center;color:#94a3b8;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <span class="material-symbols-outlined" style="font-size:32px;color:#64748b;">info</span>
+            <div>
+              ${currentFilter === 'all' 
+                ? 'Todavía no registraste actividades en los juegos.' 
+                : `Aún no registraste partidas en <strong>${def ? def.name : 'este juego'}</strong>.`}
+            </div>
+            ${def ? `
+              <a href="${def.link}" style="display:inline-flex;align-items:center;gap:6px;background:${def.borderColor};color:#000;text-decoration:none;padding:7px 16px;border-radius:10px;font-size:11.5px;font-weight:900;font-family:'Archivo Black',sans-serif;margin-top:4px;">
+                <span>COMENZAR A JUGAR AHORA</span>
+                <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+              </a>
+            ` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      filteredResponses.forEach(r => {
+        const isOk = (r.isCorrect === 'SI' || r.isCorrect === true);
+        const gameKey = r.game || 'ruleta';
+        const def = gameCardsDef[gameKey] || { tag: '🎮 Juego', color: '#FFC600', borderColor: '#FFC600' };
+
+        const item = document.createElement('div');
+        item.style.cssText = `
+          background: #141617;
+          border-left: 4px solid ${isOk ? '#00E676' : '#FF4D4D'};
+          border-radius: 10px;
+          padding: 10px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        `;
+
+        item.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:10.5px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:4px;">${def.tag}</span>
+              <span style="font-size:11.5px;font-weight:700;color:${isOk ? '#00E676' : '#FF4D4D'};">
+                ${isOk ? '✅ Acierto' : '❌ Error'} (+${r.pointsGained || 0} XP)
+              </span>
+            </div>
+            <span style="font-size:11px;color:#64748b;">${r.timestamp || ''}</span>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:#FFFFFF;line-height:1.35;">
+            ${r.question}
+          </div>
+          <div style="font-size:12px;color:#cbd5e1;display:flex;gap:14px;flex-wrap:wrap;margin-top:2px;">
+            <span>Tu respuesta: <strong style="color:${isOk ? '#00E676' : '#FF6B6B'};">${r.selectedAnswer || '—'}</strong></span>
+            ${!isOk && r.correctAnswer ? `<span>Correcta: <strong style="color:#00E676;">${r.correctAnswer}</strong></span>` : ''}
+            ${r.timeSeconds ? `<span style="color:#8DE2D6;font-weight:700;">⚡ ${r.timeSeconds}s</span>` : ''}
+          </div>
+        `;
+
+        activitiesContainer.appendChild(item);
+      });
+    }
+
+    filterAllBtn.addEventListener('click', () => {
+      currentFilter = 'all';
+      renderGameCards();
+      renderActivitiesList();
+    });
+
+    // Inicializar vista
+    renderGameCards();
+    renderActivitiesList();
   }
 
   /**
@@ -654,10 +818,10 @@
     const currentPlayer = getActivePlayer();
 
     const modalHtml = `
-      <div id="vialplay-global-reg-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
-        <div style="background:#181c1e;border:1px solid rgba(255,255,255,0.12);border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.85);width:100%;max-width:440px;overflow:hidden;animation:vpPopIn 0.25s ease;">
+      <div id="vialplay-global-reg-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
+        <div style="background:#16181a;border:none !important;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.95);width:100%;max-width:440px;overflow:hidden;animation:vpPopIn 0.25s ease;outline:none !important;">
           
-          <div style="background:linear-gradient(135deg,#23282b 0%,#1a1e20 100%);padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+          <div style="background:linear-gradient(135deg,#23282b 0%,#181a1c 100%);padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,198,0,0.15);border:1px solid rgba(255,198,0,0.5);display:flex;align-items:center;justify-content:center;">
                 <img src="assets/brand/logo_ba.png" style="height:20px;filter:brightness(0) invert(1);" alt="BA">
