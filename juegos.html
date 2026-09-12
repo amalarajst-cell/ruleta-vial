@@ -282,7 +282,6 @@
         </div>
         <div style="display:flex;align-items:center;gap:12px;">
           <div id="vialplay-header-user-badge"></div>
-          <span class="header-metric" id="metric-completed">Juegos: 0/5</span>
         </div>
       </div>
       <div class="progress-bar-track">
@@ -385,9 +384,7 @@
       const count = playedGames.size;
       const totalGames = 5;
 
-      const metricEl = document.getElementById('metric-completed');
       const progressEl = document.getElementById('progress-fill');
-      if (metricEl) metricEl.textContent = `Juegos: ${count}/${totalGames}`;
       if (progressEl) progressEl.style.width = `${Math.round((count / totalGames) * 100)}%`;
 
       // Etiquetas dinámicas por juego
