@@ -499,7 +499,20 @@
     let activeGameDetail = selectedGameKey; // null = Vista General, 'ruleta'|'reaccion'|... = Sección Detallada
 
     const modalHtml = `
-      <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
+      <style>
+        .vp-profile-kpi-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+        @media (min-width: 640px) {
+          .vp-profile-kpi-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+          }
+        }
+      </style>
+      <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:12px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
         <div style="background:#131516;border:none !important;border-radius:24px;box-shadow:0 24px 70px rgba(0,0,0,0.95);width:100%;max-width:880px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;outline:none !important;">
           
           <!-- Contenedor dinámico (Vista General o Sección Detallada) -->
@@ -520,14 +533,14 @@
     function renderMainView() {
       dynamicContainer.innerHTML = `
         <!-- 1. Cabecera del Perfil -->
-        <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div style="position:relative;width:52px;height:52px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <img src="${player.avatar}" style="width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+        <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="position:relative;width:48px;height:48px;border-radius:50%;background:rgba(255,198,0,0.12);border:1.5px solid rgba(255,198,0,0.6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <img src="${player.avatar}" style="width:28px;height:28px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
             </div>
             <div>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <h2 style="font-size:19px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
+                <h2 style="font-size:18px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
                 <span style="font-size:11px;font-weight:800;color:#000000;background:#FFC600;padding:2px 8px;border-radius:999px;text-transform:uppercase;">${player.role}</span>
               </div>
               <p style="font-size:12px;color:#8DE2D6;margin:3px 0 0;font-weight:600;">${player.email || 'Participante Activo'}</p>
@@ -548,25 +561,25 @@
         </div>
 
         <!-- 2. Cuerpo con scroll -->
-        <div style="flex:1;overflow-y:auto;padding:22px 24px;display:flex;flex-direction:column;gap:22px;">
+        <div style="flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px;">
           
-          <!-- Resumen de Métricas (KPIs) -->
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-            <div style="background:#1a1d1f;border:1px solid rgba(255,198,0,0.25);border-radius:16px;padding:12px;text-align:center;">
+          <!-- Resumen de Métricas (KPIs) - Adaptable 2x2 en móviles / 4 columnas en desktop -->
+          <div class="vp-profile-kpi-grid">
+            <div style="background:#1a1d1f;border:1px solid rgba(255,198,0,0.25);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#FFC600;">${data.totalXP}</div>
-              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntos XP Totales</div>
+              <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Puntos XP Totales</div>
             </div>
-            <div style="background:#1a1d1f;border:1px solid rgba(141,226,214,0.25);border-radius:16px;padding:12px;text-align:center;">
+            <div style="background:#1a1d1f;border:1px solid rgba(141,226,214,0.25);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / 5</div>
-              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Juegos Registrados</div>
+              <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Juegos Registrados</div>
             </div>
-            <div style="background:#1a1d1f;border:1px solid rgba(0,230,118,0.25);border-radius:16px;padding:12px;text-align:center;">
+            <div style="background:#1a1d1f;border:1px solid rgba(0,230,118,0.25);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#00E676;">${data.globalAccuracyPct}%</div>
-              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Precisión Global</div>
+              <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Precisión Global</div>
             </div>
-            <div style="background:#1a1d1f;border:1px solid rgba(56,189,248,0.25);border-radius:16px;padding:12px;text-align:center;">
+            <div style="background:#1a1d1f;border:1px solid rgba(56,189,248,0.25);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#38BDF8;">${data.bestTime > 0 ? data.bestTime + 's' : '—'}</div>
-              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Mejor Reacción</div>
+              <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Mejor Reacción</div>
             </div>
           </div>
 
@@ -725,25 +738,25 @@
         </div>
 
         <!-- 2. Cuerpo con scroll del informe de actividad -->
-        <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:20px;">
+        <div style="flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px;">
           
-          <!-- Resumen de Desempeño en este Juego -->
-          <div style="background:#191c1e;border-radius:18px;padding:16px;border:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+          <!-- Resumen de Desempeño en este Juego - Adaptable 2x2 en móviles / 4 columnas en desktop -->
+          <div class="vp-profile-kpi-grid">
+            <div style="background:#191c1e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:20px;color:${def.color};">${isCompleted ? `${gameEntry.score} XP` : '0 XP'}</div>
-              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntaje Máximo</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Puntaje Máximo</div>
             </div>
-            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+            <div style="background:#191c1e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:20px;color:#00E676;">${isCompleted ? (gameEntry.accuracy || '—') : '—'}</div>
-              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Aciertos / Precisión</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Aciertos / Precisión</div>
             </div>
-            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+            <div style="background:#191c1e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:20px;color:#38BDF8;">${isCompleted && gameEntry.time ? Number(gameEntry.time).toFixed(2) + 's' : '—'}</div>
-              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Tiempo Promedio</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Tiempo Promedio</div>
             </div>
-            <div style="background:#131516;border-radius:12px;padding:10px;text-align:center;">
+            <div style="background:#191c1e;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:12px 8px;text-align:center;">
               <div style="font-family:'Archivo Black',sans-serif;font-size:13px;color:#fff;font-weight:800;padding-top:4px;">${isCompleted && gameEntry.date ? gameEntry.date : 'Pendiente'}</div>
-              <div style="font-size:9.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:4px;">Fecha de Registro</div>
+              <div style="font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:4px;">Fecha de Registro</div>
             </div>
           </div>
 
