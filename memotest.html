@@ -158,7 +158,7 @@
       justify-content: space-between;
     }
 
-    /* ── BARRA DE PROGRESO Y VIDAS ── */
+    /* ── BARRA DE PROGRESO ── */
     .status-row {
       display: flex;
       align-items: center;
@@ -206,12 +206,6 @@
       box-shadow: 0 8px 28px rgba(255, 122, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       transition: all 0.25s ease;
       min-height: 220px;
-    }
-
-    .target-card-wrapper.ready-to-click {
-      border-color: #FF9100;
-      box-shadow: 0 0 28px rgba(255, 145, 0, 0.35);
-      cursor: pointer;
     }
 
     .target-card-wrapper.waiting {
@@ -274,50 +268,6 @@
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    /* Botón COMENZAR interactivo dentro de la tarjeta objetivo */
-    .start-trigger-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #FF9100 0%, #FF5500 100%);
-      color: #ffffff;
-      border: none;
-      border-radius: 14px;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(255, 85, 0, 0.45);
-      animation: pulseBtn 1.2s infinite alternate;
-      transition: transform 0.15s ease;
-      padding: 10px;
-    }
-    .start-trigger-btn:hover {
-      transform: scale(1.04);
-      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.6);
-    }
-    .start-trigger-btn:active {
-      transform: scale(0.96);
-    }
-    .start-trigger-btn span.lbl-main {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 15px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      line-height: 1.1;
-    }
-    .start-trigger-btn span.lbl-sub {
-      font-size: 11px;
-      font-weight: 700;
-      color: #FFE0B2;
-    }
-
-    @keyframes pulseBtn {
-      0% { transform: scale(0.98); box-shadow: 0 4px 14px rgba(255, 85, 0, 0.35); }
-      100% { transform: scale(1.02); box-shadow: 0 8px 26px rgba(255, 145, 0, 0.6); }
     }
 
     /* Estado de espera (1 a 2s) */
@@ -840,33 +790,26 @@
       </div>
     </div>
 
-    <!-- 2. SEÑAL OBJETIVO CON BOTÓN COMENZAR Y DELAY 1-2s (ARRIBA) -->
-    <section class="target-card-wrapper ready-to-click" id="target-wrapper">
-      <div class="target-badge" id="target-badge">
-        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
-        <span id="target-badge-text">Tocá para iniciar la ronda</span>
+    <!-- 2. SEÑAL OBJETIVO CON DELAY AUTOMÁTICO 1-2s (ARRIBA) -->
+    <section class="target-card-wrapper waiting" id="target-wrapper">
+      <div class="target-badge waiting-badge" id="target-badge">
+        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">hourglass_top</span>
+        <span id="target-badge-text">¡Atento a la señal!</span>
       </div>
 
       <div class="target-image-container" id="target-box">
-        <!-- 1. BOTÓN COMENZAR INICIAL / ENTRE RONDAS -->
-        <button class="start-trigger-btn" id="btn-start-round" onclick="triggerRoundStart()">
-          <span class="material-symbols-outlined" style="font-size:32px;">play_circle</span>
-          <span class="lbl-main" id="lbl-btn-action">COMENZAR</span>
-          <span class="lbl-sub">Tocá para activar</span>
-        </button>
-
-        <!-- 2. Estado de espera mientras se prepara la señal (1 a 2s) -->
-        <div class="waiting-indicator" id="waiting-box" style="display:none;">
+        <!-- Estado de espera mientras se prepara la señal (1 a 2s) -->
+        <div class="waiting-indicator" id="waiting-box">
           <div class="waiting-radar"></div>
           <span class="waiting-text">PREPARATE...</span>
         </div>
 
-        <!-- 3. Imagen de la señal cuando aparece -->
+        <!-- Imagen de la señal cuando aparece -->
         <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
       </div>
 
       <div class="target-info">
-        <div class="target-title" id="target-name">Tocá COMENZAR para jugar</div>
+        <div class="target-title" id="target-name">Preparando estímulo...</div>
         <div class="target-category" id="target-cat">Reaccioná tan pronto aparezca la señal</div>
       </div>
     </section>
@@ -909,7 +852,7 @@
       <div>
         <h2 class="modal-title">MEMOTEST DE REACCIÓN</h2>
         <p class="modal-desc" style="margin-top:4px;">
-          Tocá COMENZAR para iniciar la ronda. La señal aparecerá tras 1 o 2 segundos de espera. ¡Encontrala lo más rápido posible abajo!
+          Tocá COMENZAR DESAFÍO para arrancar. A partir de allí el juego correrá de forma continua: la señal aparecerá tras 1-2s de espera y deberás encontrarla lo más rápido posible.
         </p>
       </div>
 
@@ -1031,7 +974,6 @@
     let currentTarget = null;
     let currentOptions = [];
     let isTargetVisible = false; // Se activa tras el delay de 1-2s
-    let isWaitingDelay = false;
     let isProcessing = false;
     let delayTimer = null;
     let feedbackTimeout = null;
@@ -1057,6 +999,7 @@
       currentCategory = cat;
     }
 
+    // ── INICIO DE PARTIDA (CLIC EN COMENZAR UNA SOLA VEZ) ──
     function startGame() {
       document.getElementById('modal-start').style.display = 'none';
       document.getElementById('modal-results').style.display = 'none';
@@ -1088,7 +1031,6 @@
       roundDetails = [];
       isProcessing = false;
       isTargetVisible = false;
-      isWaitingDelay = false;
 
       // Configurar grilla de opciones según dificultad
       setupOptionsGridUI(optionsCount);
@@ -1106,8 +1048,8 @@
       renderAllOptionCards();
       updateStatsUI();
 
-      // Mostrar estado listo para hacer clic en COMENZAR
-      prepareReadyState();
+      // INICIA EL JUEGO CONTINUO DE FORMA AUTOMÁTICA
+      startAutoRound();
     }
 
     function setupOptionsGridUI(count) {
@@ -1150,8 +1092,8 @@
       }
     }
 
-    // ── ESTADO: LISTO PARA HACER CLIC EN COMENZAR ──
-    function prepareReadyState() {
+    // ── INICIA CADA RONDA AUTOMÁTICAMENTE CON RETARDO DE 1 A 2 SEGUNDOS ──
+    function startAutoRound() {
       currentRound++;
       if (currentRound > maxRounds) {
         endGame(true);
@@ -1160,57 +1102,17 @@
 
       updateStatsUI();
       isTargetVisible = false;
-      isWaitingDelay = false;
       isProcessing = false;
 
-      const wrapper = document.getElementById('target-wrapper');
-      const badge = document.getElementById('target-badge');
-      const badgeIcon = document.getElementById('target-badge-icon');
-      const badgeText = document.getElementById('target-badge-text');
-      const btnStart = document.getElementById('btn-start-round');
-      const waitingBox = document.getElementById('waiting-box');
-      const targetImg = document.getElementById('target-img');
-      const targetName = document.getElementById('target-name');
-      const targetCat = document.getElementById('target-cat');
-      const lblBtnAction = document.getElementById('lbl-btn-action');
-
-      wrapper.className = 'target-card-wrapper ready-to-click';
-      badge.className = 'target-badge';
-      badgeIcon.textContent = 'touch_app';
-      badgeText.textContent = `Ronda ${currentRound} de ${maxRounds}`;
-
-      btnStart.style.display = 'flex';
-      lblBtnAction.textContent = (currentRound === 1) ? 'COMENZAR' : 'SIGUIENTE';
-      waitingBox.style.display = 'none';
-      targetImg.style.display = 'none';
-
-      targetName.textContent = 'Tocá COMENZAR para activar la señal';
-      targetCat.textContent = 'Aguardá 1-2s y tocá la opción correcta lo más rápido posible';
-
-      // Deshabilitar temporalmente las opciones de abajo
-      for (let i = 0; i < optionsCount; i++) {
-        const card = document.getElementById(`card-${i}`);
-        if (card) card.className = 'option-card disabled';
-      }
-    }
-
-    // ── ACTIVACIÓN AL HACER CLIC EN COMENZAR ──
-    function triggerRoundStart() {
-      if (isWaitingDelay || isTargetVisible || isProcessing) return;
-      isWaitingDelay = true;
-
-      soundSys.playTick();
-
-      // 1. Elegir la nueva señal objetivo de entre las opciones de abajo
+      // 1. Elegir la nueva señal objetivo de entre las opciones disponibles abajo
       const targetIndex = Math.floor(Math.random() * optionsCount);
       currentTarget = currentOptions[targetIndex];
 
-      // 2. Cambiar tarjeta superior a modo "PREPARATE..." (radar de 1 a 2s)
+      // 2. Colocar tarjeta superior en modo "PREPARATE..." (ocultar imagen durante 1-2s)
       const wrapper = document.getElementById('target-wrapper');
       const badge = document.getElementById('target-badge');
       const badgeIcon = document.getElementById('target-badge-icon');
       const badgeText = document.getElementById('target-badge-text');
-      const btnStart = document.getElementById('btn-start-round');
       const waitingBox = document.getElementById('waiting-box');
       const targetImg = document.getElementById('target-img');
       const targetName = document.getElementById('target-name');
@@ -1219,14 +1121,19 @@
       wrapper.className = 'target-card-wrapper waiting';
       badge.className = 'target-badge waiting-badge';
       badgeIcon.textContent = 'hourglass_top';
-      badgeText.textContent = '¡Atento a la señal!';
+      badgeText.textContent = `Ronda ${currentRound} de ${maxRounds}`;
 
-      btnStart.style.display = 'none';
       waitingBox.style.display = 'flex';
       targetImg.style.display = 'none';
 
       targetName.textContent = 'Preparando estímulo...';
       targetCat.textContent = 'Esperá a que aparezca la señal para reaccionar';
+
+      // Deshabilitar temporalmente las opciones de abajo mientras dura la espera
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) card.className = 'option-card disabled';
+      }
 
       // 3. RETARDO ALEATORIO DE 1 A 2 SEGUNDOS (1000ms a 2000ms)
       const delayMs = 1000 + Math.floor(Math.random() * 1000);
@@ -1237,9 +1144,8 @@
       }, delayMs);
     }
 
+    // ── APARECE LA SEÑAL OBJETIVO Y ARRANCA EL CRONÓMETRO ──
     function showTargetStimulus() {
-      isWaitingDelay = false;
-
       const wrapper = document.getElementById('target-wrapper');
       const badge = document.getElementById('target-badge');
       const badgeIcon = document.getElementById('target-badge-icon');
@@ -1275,11 +1181,12 @@
       isTargetVisible = true;
     }
 
+    // ── CUANDO EL PARTICIPANTE TOCA UNA DE LAS OPCIONES ──
     function handleCardClick(clickedIndex) {
       if (!isTargetVisible || isProcessing) {
         if (!isTargetVisible) {
           soundSys.playTick();
-          showFeedback(false, '¡Esperá la señal!', 'Tocá COMENZAR y aguardá a que aparezca la imagen antes de tocar.', 0);
+          showFeedback(false, '¡Esperá la señal!', 'Aguardá a que aparezca la imagen antes de tocar.', 0);
         }
         return;
       }
@@ -1325,12 +1232,12 @@
 
         showFeedback(true, `¡Excelente! ${clickedSignal.name}`, clickedSignal.description, reactionMs);
 
-        // TRANSICIÓN DINÁMICA:
-        // Sacar la carta acertada e ingresar una nueva del mazo manteniendo siempre N cartas
+        // TRANSICIÓN AUTOMÁTICA CONTINUA:
+        // Sacar la carta acertada, ingresar nueva señal, y pasar DIRECTO a la siguiente ronda
         setTimeout(() => {
           replaceCardWithNew(clickedIndex);
           setTimeout(() => {
-            prepareReadyState();
+            startAutoRound(); // CONTINUA SOLO SIN VOLVER A TOCAR COMENZAR
           }, 350);
         }, 650);
 
@@ -1356,7 +1263,7 @@
             replaceCardWithNew(correctIndex);
           }
           setTimeout(() => {
-            prepareReadyState();
+            startAutoRound(); // CONTINUA SOLO SIN VOLVER A TOCAR COMENZAR
           }, 450);
         }, 900);
       }
@@ -1420,7 +1327,7 @@
       if (feedbackTimeout) clearTimeout(feedbackTimeout);
       feedbackTimeout = setTimeout(() => {
         banner.className = 'feedback-banner';
-      }, 2200);
+      }, 2000);
     }
 
     function updateStatsUI() {
