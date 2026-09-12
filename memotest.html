@@ -208,6 +208,11 @@
       min-height: 220px;
     }
 
+    .target-card-wrapper.ready-to-start {
+      border-color: #FF9100;
+      box-shadow: 0 0 32px rgba(255, 145, 0, 0.4);
+    }
+
     .target-card-wrapper.waiting {
       border-color: #526066;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -247,10 +252,10 @@
     }
 
     .target-image-container {
-      width: 125px;
-      height: 125px;
-      max-width: 34vw;
-      max-height: 34vw;
+      width: 130px;
+      height: 130px;
+      max-width: 36vw;
+      max-height: 36vw;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -268,6 +273,50 @@
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Botón gigante de inicio de juego en el tablero */
+    .btn-big-start {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #FF9100 0%, #FF5500 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255, 85, 0, 0.5);
+      animation: pulseBigBtn 1.2s infinite alternate;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 10px;
+    }
+    .btn-big-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.7);
+    }
+    .btn-big-start:active {
+      transform: scale(0.95);
+    }
+    .btn-big-start .lbl-play {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+    .btn-big-start .lbl-click-hint {
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFE0B2;
+    }
+
+    @keyframes pulseBigBtn {
+      0% { transform: scale(0.98); box-shadow: 0 4px 14px rgba(255, 85, 0, 0.35); }
+      100% { transform: scale(1.02); box-shadow: 0 8px 26px rgba(255, 145, 0, 0.65); }
     }
 
     /* Estado de espera (1 a 2s) */
@@ -349,7 +398,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Modos de grilla según cantidad de cartas */
     .grid-4 { grid-template-columns: repeat(2, 1fr); }
     .grid-6 { grid-template-columns: repeat(3, 1fr); }
     .grid-8 { grid-template-columns: repeat(4, 1fr); }
@@ -543,7 +591,7 @@
       -webkit-box-orient: vertical;
     }
 
-    /* ── MODAL DE INICIO / CONFIGURACIÓN ── */
+    /* ── MODAL DE CONFIGURACIÓN INICIAL ── */
     .overlay-screen {
       position: fixed;
       inset: 0;
@@ -790,27 +838,34 @@
       </div>
     </div>
 
-    <!-- 2. SEÑAL OBJETIVO CON DELAY AUTOMÁTICO 1-2s (ARRIBA) -->
-    <section class="target-card-wrapper waiting" id="target-wrapper">
-      <div class="target-badge waiting-badge" id="target-badge">
-        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">hourglass_top</span>
-        <span id="target-badge-text">¡Atento a la señal!</span>
+    <!-- 2. SEÑAL OBJETIVO CON BOTÓN COMENZAR EN TABLERO (ARRIBA) -->
+    <section class="target-card-wrapper ready-to-start" id="target-wrapper">
+      <div class="target-badge" id="target-badge">
+        <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
+        <span id="target-badge-text">Preparado para jugar</span>
       </div>
 
       <div class="target-image-container" id="target-box">
-        <!-- Estado de espera mientras se prepara la señal (1 a 2s) -->
-        <div class="waiting-indicator" id="waiting-box">
+        <!-- 1. BOTÓN COMENZAR EN EL TABLERO (El participante hace clic aquí cuando está listo) -->
+        <button class="btn-big-start" id="btn-play-trigger" onclick="handleParticipantClickStart()">
+          <span class="material-symbols-outlined" style="font-size:36px;">play_circle</span>
+          <span class="lbl-play">COMENZAR</span>
+          <span class="lbl-click-hint">Tocá para empezar</span>
+        </button>
+
+        <!-- 2. Estado de espera mientras se prepara la señal (1 a 2s) -->
+        <div class="waiting-indicator" id="waiting-box" style="display:none;">
           <div class="waiting-radar"></div>
           <span class="waiting-text">PREPARATE...</span>
         </div>
 
-        <!-- Imagen de la señal cuando aparece -->
+        <!-- 3. Imagen de la señal cuando aparece -->
         <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
       </div>
 
       <div class="target-info">
-        <div class="target-title" id="target-name">Preparando estímulo...</div>
-        <div class="target-category" id="target-cat">Reaccioná tan pronto aparezca la señal</div>
+        <div class="target-title" id="target-name">Tocá COMENZAR cuando estés listo</div>
+        <div class="target-category" id="target-cat">Al tocar, aguardá 1-2s y reaccioná tan pronto aparezca la señal</div>
       </div>
     </section>
 
@@ -842,7 +897,7 @@
     </div>
   </div>
 
-  <!-- ── MODAL DE INICIO / CONFIGURACIÓN ── -->
+  <!-- ── MODAL DE CONFIGURACIÓN INICIAL ── -->
   <div class="overlay-screen" id="modal-start">
     <div class="modal-card">
       <div class="modal-hero-icon">
@@ -852,7 +907,7 @@
       <div>
         <h2 class="modal-title">MEMOTEST DE REACCIÓN</h2>
         <p class="modal-desc" style="margin-top:4px;">
-          Tocá COMENZAR DESAFÍO para arrancar. A partir de allí el juego correrá de forma continua: la señal aparecerá tras 1-2s de espera y deberás encontrarla lo más rápido posible.
+          Elegí la dificultad y cantidad de rondas. Al entrar al tablero, tocá <strong>COMENZAR</strong> para iniciar la partida. ¡A partir de allí el juego fluirá de forma continua!
         </p>
       </div>
 
@@ -889,9 +944,9 @@
         </select>
       </div>
 
-      <button class="btn-action-primary" onclick="startGame()">
-        <span class="material-symbols-outlined">play_arrow</span>
-        COMENZAR DESAFÍO
+      <button class="btn-action-primary" onclick="initGameBoard()">
+        <span class="material-symbols-outlined">login</span>
+        ENTRAR AL TABLERO
       </button>
     </div>
   </div>
@@ -965,6 +1020,7 @@
     let maxStreak = 0;
     let totalHits = 0;
     let totalMisses = 0;
+    let gameHasStarted = false;
     
     // Tiempos de Reacción
     let targetAppearedTime = 0;
@@ -999,8 +1055,8 @@
       currentCategory = cat;
     }
 
-    // ── INICIO DE PARTIDA (CLIC EN COMENZAR UNA SOLA VEZ) ──
-    function startGame() {
+    // ── 1. PREPARACIÓN DEL TABLERO (NO ARRANCA SOLO) ──
+    function initGameBoard() {
       document.getElementById('modal-start').style.display = 'none';
       document.getElementById('modal-results').style.display = 'none';
 
@@ -1031,6 +1087,7 @@
       roundDetails = [];
       isProcessing = false;
       isTargetVisible = false;
+      gameHasStarted = false;
 
       // Configurar grilla de opciones según dificultad
       setupOptionsGridUI(optionsCount);
@@ -1048,7 +1105,49 @@
       renderAllOptionCards();
       updateStatsUI();
 
-      // INICIA EL JUEGO CONTINUO DE FORMA AUTOMÁTICA
+      // MOSTRAR BOTÓN DE COMENZAR EN EL TABLERO (ESPERA QUE EL PARTICIPANTE TOQUE)
+      showParticipantStartButton();
+    }
+
+    function showParticipantStartButton() {
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const btnStart = document.getElementById('btn-play-trigger');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+
+      wrapper.className = 'target-card-wrapper ready-to-start';
+      badge.className = 'target-badge';
+      badgeIcon.textContent = 'touch_app';
+      badgeText.textContent = `Preparado para jugar (${maxRounds} Rondas)`;
+
+      btnStart.style.display = 'flex';
+      waitingBox.style.display = 'none';
+      targetImg.style.display = 'none';
+
+      targetName.textContent = 'Tocá COMENZAR cuando estés listo';
+      targetCat.textContent = 'Al tocar, aguardá 1-2s y reaccioná tan pronto aparezca la señal';
+
+      // Deshabilitar temporalmente las opciones de abajo
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) card.className = 'option-card disabled';
+      }
+    }
+
+    // ── 2. EL PARTICIPANTE HACE CLIC EN COMENZAR UNA SOLA VEZ ──
+    function handleParticipantClickStart() {
+      if (gameHasStarted) return;
+      gameHasStarted = true;
+      soundSys.playTick();
+
+      document.getElementById('btn-play-trigger').style.display = 'none';
+
+      // A partir de este momento, corre el juego continuo
       startAutoRound();
     }
 
@@ -1092,7 +1191,7 @@
       }
     }
 
-    // ── INICIA CADA RONDA AUTOMÁTICAMENTE CON RETARDO DE 1 A 2 SEGUNDOS ──
+    // ── 3. FLUJO AUTOMÁTICO DE CADA RONDA (1-2s -> SEÑAL -> CLIC -> SIGUIENTE) ──
     function startAutoRound() {
       currentRound++;
       if (currentRound > maxRounds) {
@@ -1113,6 +1212,7 @@
       const badge = document.getElementById('target-badge');
       const badgeIcon = document.getElementById('target-badge-icon');
       const badgeText = document.getElementById('target-badge-text');
+      const btnStart = document.getElementById('btn-play-trigger');
       const waitingBox = document.getElementById('waiting-box');
       const targetImg = document.getElementById('target-img');
       const targetName = document.getElementById('target-name');
@@ -1123,6 +1223,7 @@
       badgeIcon.textContent = 'hourglass_top';
       badgeText.textContent = `Ronda ${currentRound} de ${maxRounds}`;
 
+      btnStart.style.display = 'none';
       waitingBox.style.display = 'flex';
       targetImg.style.display = 'none';
 
@@ -1237,7 +1338,7 @@
         setTimeout(() => {
           replaceCardWithNew(clickedIndex);
           setTimeout(() => {
-            startAutoRound(); // CONTINUA SOLO SIN VOLVER A TOCAR COMENZAR
+            startAutoRound(); // CONTINUA SOLO
           }, 350);
         }, 650);
 
@@ -1263,7 +1364,7 @@
             replaceCardWithNew(correctIndex);
           }
           setTimeout(() => {
-            startAutoRound(); // CONTINUA SOLO SIN VOLVER A TOCAR COMENZAR
+            startAutoRound(); // CONTINUA SOLO
           }, 450);
         }, 900);
       }
@@ -1392,7 +1493,7 @@
     }
 
     function restartGame() {
-      startGame();
+      initGameBoard();
     }
 
     function shuffleArray(array) {
