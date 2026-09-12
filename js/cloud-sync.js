@@ -1,7 +1,7 @@
 /**
  * ── VIALPLAY CLOUD SYNC & UNIFIED PLAYER MODULE ──
- * Gestiona el registro unificado del participante y sincroniza las partidas,
- * estadísticas e historial de respuestas de TODOS los juegos:
+ * Gestiona el perfil completo del participante, su historial de actividades
+ * y sincroniza las partidas, estadísticas e historial de respuestas de TODOS los juegos:
  * 1. Ruleta Vial (index.html)
  * 2. Tiempo de Reacción (reaccion.html)
  * 3. Memotest Vial (memotest.html)
@@ -72,6 +72,11 @@
         const t = parseInt(m[2], 10) || 1;
         return { correct: c, total: t, ratio: c / t };
       }
+      const pctMatch = e.accuracy.match(/(\d+)\s*%/);
+      if (pctMatch) {
+        const p = parseInt(pctMatch[1], 10);
+        return { correct: p, total: 100, ratio: p / 100 };
+      }
     }
     const g = getEntryGame(e);
     if (g === 'ruleta') {
@@ -101,7 +106,6 @@
     const accA = parseEntryAciertos(a);
     const accB = parseEntryAciertos(b);
 
-    // 1° Mayor porcentaje / cantidad de aciertos
     if (Math.abs(accB.ratio - accA.ratio) > 0.0001) {
       return accB.ratio - accA.ratio;
     }
@@ -109,14 +113,12 @@
       return accB.correct - accA.correct;
     }
 
-    // 2° Menor tiempo de reacción (menor tiempo = mejores reflejos)
     const timeA = Number(a.time) > 0 ? Number(a.time) : 9999;
     const timeB = Number(b.time) > 0 ? Number(b.time) : 9999;
     if (Math.abs(timeA - timeB) > 0.0001) {
       return timeA - timeB;
     }
 
-    // 3° Desempate: mayor puntaje XP y luego más reciente
     const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
     if (scoreDiff !== 0) return scoreDiff;
 
@@ -200,7 +202,6 @@
       window.dispatchEvent(new CustomEvent('vialplay:player_changed', { detail: loginRecord }));
     } catch(e) {}
 
-    // Actualizar badges en la página
     updateAllUserBadges();
 
     return loginRecord;
@@ -298,7 +299,7 @@
           pointsGained: d.points || d.pointsGained || 0
         });
       });
-      localStorage.setItem('vex_responses_history', JSON.stringify(responsesHistory.slice(-1500)));
+      localStorage.setItem('vex_responses_history', JSON.stringify(responsesHistory.slice(-2000)));
     }
 
     // 3. Sincronizar en vivo con GitHub data.json
@@ -361,6 +362,274 @@
     } catch(e) {}
 
     return { success: true, entry };
+  }
+
+  /**
+   * Obtiene todas las actividades y estadísticas del jugador activo
+   */
+  function getPlayerFullActivity(player) {
+    const targetPlayer = player || getActivePlayer();
+    const cleanId = (targetPlayer.email || targetPlayer.name || '').toLowerCase().trim();
+
+    let leaderboard = [];
+    let responses = [];
+    let logins = [];
+
+    try {
+      leaderboard = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+      responses = JSON.parse(localStorage.getItem('vex_responses_history') || '[]');
+      logins = JSON.parse(localStorage.getItem('vex_logins_history') || '[]');
+    } catch(e) {}
+
+    const myGames = leaderboard.filter(e => {
+      const eId = (e.email || e.name || '').toLowerCase().trim();
+      return cleanId && eId === cleanId;
+    });
+
+    const myResponses = responses.filter(r => {
+      const rId = (r.email || r.name || '').toLowerCase().trim();
+      return cleanId && rId === cleanId;
+    }).reverse();
+
+    const myLogins = logins.filter(l => {
+      const lId = (l.email || l.name || '').toLowerCase().trim();
+      return cleanId && lId === cleanId;
+    }).reverse();
+
+    const totalXP = myGames.reduce((acc, g) => acc + (Number(g.score) || 0), 0);
+    const gamesPlayedCount = myGames.length;
+    
+    // Aciertos globales
+    let totalCorrectAnswers = 0;
+    let totalAttemptedAnswers = 0;
+    myResponses.forEach(r => {
+      totalAttemptedAnswers++;
+      if (r.isCorrect === 'SI' || r.isCorrect === true) totalCorrectAnswers++;
+    });
+
+    const globalAccuracyPct = totalAttemptedAnswers > 0 ? Math.round((totalCorrectAnswers / totalAttemptedAnswers) * 100) : 0;
+
+    // Mejor tiempo de reacción registrado
+    const validTimes = myGames.map(g => Number(g.time)).filter(t => t > 0);
+    const bestTime = validTimes.length > 0 ? Math.min(...validTimes) : 0;
+
+    return {
+      player: targetPlayer,
+      totalXP,
+      gamesPlayedCount,
+      totalCorrectAnswers,
+      totalAttemptedAnswers,
+      globalAccuracyPct,
+      bestTime,
+      myGames,
+      myResponses,
+      myLogins
+    };
+  }
+
+  /**
+   * Modal COMPLETO: "Mi Perfil y Registro de Actividades"
+   */
+  function openUserProfileModal() {
+    let existingModal = document.getElementById('vialplay-user-profile-modal');
+    if (existingModal) existingModal.remove();
+
+    const player = getActivePlayer();
+    if (!player.isRegistered) {
+      openRegistrationModal();
+      return;
+    }
+
+    const data = getPlayerFullActivity(player);
+
+    const gameBadgesDef = {
+      ruleta: { name: 'Ruleta Vial', icon: 'assets/ruleta_icono.jpg', tag: '🎡 Ruleta', color: '#FFC600', link: 'index.html?screen=roulette' },
+      reaccion: { name: 'Tiempo de Reacción', icon: 'assets/reaccion_icono.jpg', tag: '⚡ Reacción', color: '#00E676', link: 'reaccion.html' },
+      memotest: { name: 'Memotest Vial', icon: 'assets/memotest_icono.jpg', tag: '🎴 Memotest', color: '#FF9100', link: 'memotest.html' },
+      alcoholemia: { name: 'Límites de Alcoholemia', icon: 'assets/alcoholemia_icono.jpg', tag: '🍷 Alcoholemia', color: '#C084FC', link: 'alcoholemia.html' },
+      simulador: { name: 'Simulador de Examen', icon: 'assets/simulador_icono.jpg', tag: '🚗 Simulador', color: '#38BDF8', link: 'simulador.html' }
+    };
+
+    const modalHtml = `
+      <div id="vialplay-user-profile-modal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:999999;padding:16px;box-sizing:border-box;font-family:'Archivo',system-ui,sans-serif;">
+        <div style="background:#16191b;border:2px solid #FFC600;border-radius:26px;box-shadow:0 24px 70px rgba(0,0,0,0.85),0 0 35px rgba(255,198,0,0.2);width:100%;max-width:760px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;animation:vpPopIn 0.25s ease;">
+          
+          <!-- 1. Cabecera del Perfil -->
+          <div style="background:linear-gradient(135deg,#23282b 0%,#181c1e 100%);padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="position:relative;width:56px;height:56px;border-radius:50%;background:rgba(255,198,0,0.15);border:2.5px solid #FFC600;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <img src="${player.avatar}" style="width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+              </div>
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <h2 style="font-size:20px;font-weight:900;color:#FFFFFF;margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${player.name}</h2>
+                  <span style="font-size:11px;font-weight:800;color:#000000;background:#FFC600;padding:2px 8px;border-radius:999px;text-transform:uppercase;">${player.role}</span>
+                </div>
+                <p style="font-size:12px;color:#8DE2D6;margin:3px 0 0;font-weight:600;">${player.email || 'Participante Activo'}</p>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button type="button" id="vp-btn-edit-profile" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#FFFFFF;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+                <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                <span>Editar</span>
+              </button>
+              <button type="button" id="vp-btn-switch-user" style="background:rgba(255,77,77,0.12);border:1px solid rgba(255,77,77,0.3);color:#FF6B6B;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;" title="Cambiar a otro participante">
+                <span class="material-symbols-outlined" style="font-size:16px;">logout</span>
+                <span>Cambiar</span>
+              </button>
+              <button type="button" id="vp-profile-close-btn" style="background:rgba(255,255,255,0.08);border:none;color:#94a3b8;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:bold;">✕</button>
+            </div>
+          </div>
+
+          <!-- 2. Cuerpo con scroll -->
+          <div style="flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:20px;">
+            
+            <!-- Resumen de Métricas (KPIs) -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+              <div style="background:#1f2426;border:1px solid rgba(255,198,0,0.3);border-radius:16px;padding:12px;text-align:center;">
+                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#FFC600;">${data.totalXP}</div>
+                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Puntos XP Totales</div>
+              </div>
+              <div style="background:#1f2426;border:1px solid rgba(141,226,214,0.3);border-radius:16px;padding:12px;text-align:center;">
+                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / 5</div>
+                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Juegos Registrados</div>
+              </div>
+              <div style="background:#1f2426;border:1px solid rgba(0,230,118,0.3);border-radius:16px;padding:12px;text-align:center;">
+                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#00E676;">${data.globalAccuracyPct}%</div>
+                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Precisión Global</div>
+              </div>
+              <div style="background:#1f2426;border:1px solid rgba(56,189,248,0.3);border-radius:16px;padding:12px;text-align:center;">
+                <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#38BDF8;">${data.bestTime > 0 ? data.bestTime + 's' : '—'}</div>
+                <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:2px;">Mejor Reacción</div>
+              </div>
+            </div>
+
+            <!-- Estado de los 5 Juegos -->
+            <div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined" style="color:#FFC600;font-size:18px;">sports_esports</span>
+                <span>Rendimiento por Juego:</span>
+              </div>
+              
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
+                ${Object.keys(gameBadgesDef).map(key => {
+                  const def = gameBadgesDef[key];
+                  const gameEntry = data.myGames.find(g => getEntryGame(g) === key);
+                  const isCompleted = !!gameEntry;
+
+                  return `
+                    <div style="background:#1a1e20;border:1.5px solid ${isCompleted ? def.color : '#2d3336'};border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;">
+                      <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <span style="font-size:11px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:6px;">${def.tag}</span>
+                        ${isCompleted ? '<span style="color:#00E676;font-size:11px;font-weight:800;">✅ Jugado</span>' : '<span style="color:#64748b;font-size:11px;font-weight:700;">Pendiente</span>'}
+                      </div>
+                      <div>
+                        <div style="font-size:13px;font-weight:800;color:#FFFFFF;">${def.name}</div>
+                        <div style="font-size:11px;color:#94a3b8;margin-top:2px;">
+                          ${isCompleted ? `Puntaje: <strong style="color:${def.color};">${gameEntry.score} XP</strong> • Precisión: <strong>${gameEntry.accuracy || '—'}</strong>` : 'Sin partidas registradas'}
+                        </div>
+                      </div>
+                      <a href="${def.link}" style="display:inline-flex;align-items:center;justify-content:center;gap:4px;background:rgba(255,255,255,0.06);color:${def.color};border:1px solid ${def.color};text-decoration:none;padding:6px;border-radius:8px;font-size:11px;font-weight:800;">
+                        <span>${isCompleted ? 'Jugar de nuevo' : 'Comenzar juego'}</span>
+                        <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+                      </a>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Historial Detallado de Respuestas y Estímulos -->
+            <div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:14px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="material-symbols-outlined" style="color:#8DE2D6;font-size:18px;">history</span>
+                  <span>Historial Completo de Actividades (${data.myResponses.length} registros)</span>
+                </div>
+              </div>
+
+              ${data.myResponses.length === 0 ? `
+                <div style="background:#1a1e20;border:1px dashed #333a3d;border-radius:14px;padding:24px;text-align:center;color:#94a3b8;font-size:13px;">
+                  Todavía no registraste respuestas en los juegos. ¡Ingresá a la Zona de Práctica para empezar a acumular puntos!
+                </div>
+              ` : `
+                <div style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;padding-right:4px;">
+                  ${data.myResponses.map((r, idx) => {
+                    const isOk = (r.isCorrect === 'SI' || r.isCorrect === true);
+                    const gameKey = r.game || 'ruleta';
+                    const def = gameBadgesDef[gameKey] || { tag: '🎮 Juego', color: '#FFC600' };
+
+                    return `
+                      <div style="background:#1a1e20;border-left:3.5px solid ${isOk ? '#00E676' : '#FF4D4D'};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                          <div style="display:flex;align-items:center;gap:6px;">
+                            <span style="font-size:10px;font-weight:800;color:${def.color};background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;">${def.tag}</span>
+                            <span style="font-size:11px;font-weight:700;color:${isOk ? '#00E676' : '#FF4D4D'};">
+                              ${isOk ? '✅ Acierto' : '❌ Error'} (+${r.pointsGained || 0} XP)
+                            </span>
+                          </div>
+                          <span style="font-size:10.5px;color:#64748b;">${r.timestamp || ''}</span>
+                        </div>
+                        <div style="font-size:12.5px;font-weight:700;color:#FFFFFF;line-height:1.35;">
+                          ${r.question}
+                        </div>
+                        <div style="font-size:11.5px;color:#cbd5e1;display:flex;gap:12px;flex-wrap:wrap;">
+                          <span>Tu respuesta: <strong style="color:${isOk ? '#00E676' : '#FF6B6B'};">${r.selectedAnswer || '—'}</strong></span>
+                          ${!isOk && r.correctAnswer ? `<span>Correcta: <strong style="color:#00E676;">${r.correctAnswer}</strong></span>` : ''}
+                          ${r.timeSeconds ? `<span style="color:#8DE2D6;">⚡ ${r.timeSeconds}s</span>` : ''}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `}
+            </div>
+
+          </div>
+
+          <!-- 3. Pie del Modal -->
+          <div style="background:#121415;padding:14px 24px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:11px;color:#64748b;">Registro sincronizado en vivo con el Panel de Administración</span>
+            <button type="button" id="vp-btn-done" style="background:#FFC600;color:#000000;border:none;padding:8px 20px;border-radius:10px;font-size:12px;font-weight:900;cursor:pointer;font-family:'Archivo Black',sans-serif;">
+              CERRAR
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    const modal = document.getElementById('vialplay-user-profile-modal');
+    const closeBtn = document.getElementById('vp-profile-close-btn');
+    const doneBtn = document.getElementById('vp-btn-done');
+    const editBtn = document.getElementById('vp-btn-edit-profile');
+    const switchBtn = document.getElementById('vp-btn-switch-user');
+
+    if (closeBtn) closeBtn.addEventListener('click', () => modal.remove());
+    if (doneBtn) doneBtn.addEventListener('click', () => modal.remove());
+
+    if (editBtn) {
+      editBtn.addEventListener('click', () => {
+        modal.remove();
+        openRegistrationModal({
+          allowClose: true,
+          onSave: () => openUserProfileModal()
+        });
+      });
+    }
+
+    if (switchBtn) {
+      switchBtn.addEventListener('click', () => {
+        modal.remove();
+        openRegistrationModal({
+          allowClose: true,
+          onSave: () => updateAllUserBadges()
+        });
+      });
+    }
   }
 
   /**
@@ -507,21 +776,26 @@
    */
   function updateAllUserBadges() {
     const player = getActivePlayer();
-    const badges = document.querySelectorAll('.vialplay-user-pill, #vialplay-header-user-badge');
+    const badges = document.querySelectorAll('.vialplay-user-pill, #vialplay-header-user-badge, #header-player-pill');
 
     badges.forEach(badge => {
       if (player.isRegistered) {
+        badge.style.cursor = 'pointer';
+        badge.onclick = () => openUserProfileModal();
+        badge.title = 'Tocar para ver Mi Perfil y Registro de Actividades';
+        
         badge.innerHTML = `
-          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,198,0,0.35);padding:4px 10px 4px 6px;border-radius:999px;cursor:pointer;" onclick="window.VialCloudSync.openRegistrationModal()" title="Cambiar participante">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,198,0,0.35);padding:4px 10px 4px 6px;border-radius:999px;">
             <img src="${player.avatar}" style="width:20px;height:20px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
             <span style="font-size:12px;font-weight:800;color:#FFC600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${player.name}</span>
             <span style="font-size:10px;color:#8DE2D6;font-weight:700;">(${player.role.split(' ')[0]})</span>
-            <span class="material-symbols-outlined" style="font-size:14px;color:#94a3b8;">edit</span>
+            <span class="material-symbols-outlined" style="font-size:14px;color:#FFC600;">account_circle</span>
           </div>
         `;
       } else {
+        badge.onclick = () => openRegistrationModal();
         badge.innerHTML = `
-          <button type="button" onclick="window.VialCloudSync.openRegistrationModal()" style="background:rgba(255,198,0,0.15);border:1px solid #FFC600;color:#FFC600;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+          <button type="button" style="background:rgba(255,198,0,0.15);border:1px solid #FFC600;color:#FFC600;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
             <span class="material-symbols-outlined" style="font-size:14px;">person_add</span>
             <span>Registrarme</span>
           </button>
@@ -536,8 +810,10 @@
     isPlayerRegistered,
     setActivePlayer,
     openRegistrationModal,
+    openUserProfileModal,
     ensurePlayerRegistered,
     syncGameSession,
+    getPlayerFullActivity,
     updateAllUserBadges,
     getEntryGame,
     compareParticipants

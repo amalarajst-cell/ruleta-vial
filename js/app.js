@@ -664,9 +664,13 @@ document.addEventListener('DOMContentLoaded', () => {
     handleRegistration(e);
   });
   headerBtnPlayer?.addEventListener('click', () => {
-    if (regNameInput) regNameInput.value = playerName;
-    if (regEmailInput) regEmailInput.value = playerEmail;
-    showScreen('register');
+    if (window.VialCloudSync && typeof window.VialCloudSync.openUserProfileModal === 'function') {
+      window.VialCloudSync.openUserProfileModal();
+    } else {
+      if (regNameInput) regNameInput.value = playerName;
+      if (regEmailInput) regEmailInput.value = playerEmail;
+      showScreen('register');
+    }
   });
 
   // ── SPIN WHEEL TRIGGER ────────────────────────────────────
