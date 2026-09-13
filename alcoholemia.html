@@ -1625,6 +1625,14 @@
       window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
+        // Atajo secreto Administrador: Ctrl + Alt + A
+        if ((e.ctrlKey && e.altKey && (e.key.toLowerCase() === 'a' || e.code === 'KeyA')) ||
+            (e.altKey && e.key.toLowerCase() === 'a')) {
+          e.preventDefault();
+          window.location.href = 'index.html#admin';
+          return;
+        }
+
         if (state === 'idle' && (e.code === 'Space' || e.code === 'Enter')) {
           e.preventDefault();
           startRoundWaiting();

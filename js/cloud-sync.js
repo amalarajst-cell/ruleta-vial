@@ -1044,4 +1044,17 @@
     updateAllUserBadges();
   }
 
+  // ── ACCESO GLOBAL ADMINISTRADOR: Ctrl + Alt + A ──
+  window.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey && e.altKey && (e.key.toLowerCase() === 'a' || e.code === 'KeyA')) ||
+        (e.altKey && (e.key.toLowerCase() === 'a' || e.code === 'KeyA'))) {
+      e.preventDefault();
+      if (typeof window.openAdminPinModal === 'function') {
+        window.openAdminPinModal();
+      } else {
+        window.location.href = 'index.html#admin';
+      }
+    }
+  });
+
 })(window);

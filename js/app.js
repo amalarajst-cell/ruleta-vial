@@ -1389,9 +1389,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── SECRETO: ACCESO ADMINISTRADOR OCULTO (PARA QUE EL PÚBLICO NO LO VEA) ──
-  // 1. Atajo de teclado: Ctrl + Shift + A  ó  Alt + A
+  // 1. Atajo de teclado: Ctrl + Alt + A  ó  Ctrl + Shift + A  ó  Alt + A
+  window.openAdminPinModal = openAdminPinModal;
   window.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') || 
+    if ((e.ctrlKey && e.altKey && (e.key.toLowerCase() === 'a' || e.code === 'KeyA')) ||
+        (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') || 
         (e.altKey && e.key.toLowerCase() === 'a')) {
       e.preventDefault();
       openAdminPinModal();
