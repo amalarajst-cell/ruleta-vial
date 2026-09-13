@@ -320,7 +320,7 @@
       startTime = performance.now();
       const duration = 6000; // 6 seconds per scene
       
-      DOM.timerBar.style.transition = \`transform \${duration}ms linear\`;
+      DOM.timerBar.style.transition = 'transform ' + duration + 'ms linear';
       setTimeout(() => DOM.timerBar.style.transform = 'scaleX(1)', 50);
 
       const loop = (time) => {
@@ -419,16 +419,16 @@
       // Show Hotspot
       DOM.hotspotBox.style.display = 'block';
       const ar = DOM.arena.getBoundingClientRect().width / DOM.arena.getBoundingClientRect().height;
-      DOM.hotspotBox.style.left = \`calc(\${scene.hotspot.x}% - \${scene.hotspot.r / ar}%)\`;
-      DOM.hotspotBox.style.top = \`calc(\${scene.hotspot.y}% - \${scene.hotspot.r}%)\`;
-      DOM.hotspotBox.style.width = \`\${(scene.hotspot.r / ar) * 2}%\`;
-      DOM.hotspotBox.style.paddingTop = \`\${(scene.hotspot.r / ar) * 2}%\`;
+      DOM.hotspotBox.style.left = 'calc(' + scene.hotspot.x + '% - ' + (scene.hotspot.r / ar) + '%)';
+      DOM.hotspotBox.style.top = 'calc(' + scene.hotspot.y + '% - ' + scene.hotspot.r + '%)';
+      DOM.hotspotBox.style.width = ((scene.hotspot.r / ar) * 2) + '%';
+      DOM.hotspotBox.style.paddingTop = ((scene.hotspot.r / ar) * 2) + '%';
 
       DOM.img.style.filter = 'brightness(0.4)';
       DOM.fbOverlay.style.display = 'flex';
 
       sessionDetails.push({
-        question: \`Escenario \${scene.id}: \${scene.desc}\`,
+        question: 'Escenario ' + scene.id + ': ' + scene.desc,
         isCorrect: success,
         timeSeconds: timeSec || 0,
         pointsGained: pts
@@ -467,7 +467,7 @@
           category: 'Detector de Peligros',
           score: totalScore,
           time: avgTime,
-          accuracy: \`\${roundTimes.length}/5\`,
+          accuracy: roundTimes.length + '/5',
           details: sessionDetails
         });
       }

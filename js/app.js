@@ -493,11 +493,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── ROULETTE INSTANCE ─────────────────────────────────────
-  const roulette = new RouletteWheel('roulette-canvas', {
-    onSpinEnd: (category) => {
-      startQuizRound(category);
-    }
-  });
+  let roulette = null;
+  if (typeof RouletteWheel !== 'undefined') {
+    roulette = new RouletteWheel('roulette-canvas', {
+      onSpinEnd: (category) => {
+        startQuizRound(category);
+      }
+    });
+  }
 
   function updateRouletteMode() {
     if (!roulette) return;
