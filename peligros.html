@@ -301,12 +301,18 @@
         else d.classList.remove('active');
       });
 
-      DOM.intro.style.display = 'flex';
       DOM.fbOverlay.style.display = 'none';
       DOM.hotspotBox.style.display = 'none';
       DOM.timerBar.style.transform = 'scaleX(0)';
       DOM.timerBar.style.transition = 'none';
       DOM.img.style.filter = 'brightness(0.9)';
+
+      if (currentRound === 0) {
+        DOM.intro.style.display = 'flex';
+      } else {
+        DOM.intro.style.display = 'none';
+        setTimeout(startGameLoop, 100);
+      }
     }
 
     DOM.startBtn.addEventListener('click', () => {
