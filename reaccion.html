@@ -1048,9 +1048,11 @@
   <script>
     (function() {
       function refreshPlayerUI() {
+        const nameEl = document.getElementById('reaccion-player-name');
+        const avatarEl = document.getElementById('reaccion-player-avatar');
         const p = window.VialCloudSync ? window.VialCloudSync.getActivePlayer() : { name: 'Participante', avatar: 'assets/brand/icon_auto.png' };
-        if (reaccionPlayerName) reaccionPlayerName.textContent = p.name || 'Participante';
-        if (reaccionPlayerAvatar) reaccionPlayerAvatar.src = p.avatar || 'assets/brand/icon_auto.png';
+        if (nameEl) nameEl.textContent = p.name || 'Participante';
+        if (avatarEl) avatarEl.src = p.avatar || 'assets/brand/icon_auto.png';
       }
       refreshPlayerUI();
       window.addEventListener('vialplay:player_changed', refreshPlayerUI);
@@ -1672,9 +1674,9 @@
 
         if (window.VialCloudSync) {
           const gameDetails = gameHistory.map(h => ({
-            question: h.title || h.actionLabel,
-            selected: h.userAction,
-            expected: h.expectedAction,
+            question: h.stimulus ? (h.stimulus.title || h.stimulus.actionLabel) : '',
+            selected: h.playerAction,
+            expected: h.stimulus ? h.stimulus.action : '',
             isCorrect: h.correct,
             timeSeconds: h.timeSec,
             points: h.correct ? 100 : 0
