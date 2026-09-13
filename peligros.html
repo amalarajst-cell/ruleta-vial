@@ -104,7 +104,7 @@
           <span class="material-symbols-outlined" style="font-size:22px;">arrow_back</span>
         </a>
         <div class="brand-logo-wrap">
-          <img src="assets/brand/BA_logo_blanco.png" alt="BA Logo" class="brand-logo-img">
+          <img src="assets/brand/logo_ba.png" alt="BA Logo" class="brand-logo-img">
           <span class="header-title-text">DETECTOR DE PELIGROS</span>
         </div>
       </div>
@@ -433,9 +433,23 @@
         timeSeconds: timeSec || 0,
         pointsGained: pts
       });
+
+      // Hide the next button since it auto-advances
+      if (DOM.nextBtn) DOM.nextBtn.style.display = 'none';
+      
+      // Auto-advance after 3.5 seconds
+      setTimeout(() => {
+        currentRound++;
+        if (currentRound < scenarios.length) {
+          loadScenario();
+        } else {
+          showResults();
+        }
+      }, 3500);
     }
 
     DOM.nextBtn.addEventListener('click', () => {
+      // Fallback in case they somehow click it
       sfx.click();
       currentRound++;
       if (currentRound < scenarios.length) {
