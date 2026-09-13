@@ -99,6 +99,7 @@
     if (cat.includes('alcohol')) return 'alcoholemia';
     if (cat.includes('memotest') || cat.includes('señales') || cat.includes('senales')) return 'memotest';
     if (cat.includes('simulador')) return 'simulador';
+    if (cat.includes('peligros') || cat.includes('detector')) return 'peligros';
     return 'ruleta';
   }
 
@@ -223,6 +224,7 @@
       else if (sessionData.game === 'alcoholemia') displayCat = 'Límites de Alcoholemia';
       else if (sessionData.game === 'memotest') displayCat = 'Memotest Vial';
       else if (sessionData.game === 'simulador') displayCat = 'Simulador de Examen';
+      else if (sessionData.game === 'peligros') displayCat = 'Detector de Peligros';
       else displayCat = 'Ruleta Vial';
     }
 
@@ -493,6 +495,16 @@
         borderColor: '#38BDF8',
         link: 'simulador.html',
         desc: 'Examen teórico oficial para categorías Auto, Moto y Colectivo'
+      },
+      peligros: {
+        id: 'peligros',
+        name: 'DETECTOR DE PELIGROS', 
+        icon: 'assets/peligros_icono.jpg', 
+        tag: '⚠️ Peligros', 
+        color: '#FF4444', 
+        borderColor: '#FF4444',
+        link: 'peligros.html',
+        desc: 'Anticipación y detección de puntos ciegos en la vía pública'
       }
     };
 

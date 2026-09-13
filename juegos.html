@@ -268,6 +268,25 @@
       border: 1px solid rgba(255, 145, 0, 0.25);
       background: rgba(255, 145, 0, 0.06);
     }
+    .btn-peligros {
+      border-color: #FF4444;
+      box-shadow: 0 10px 0 #CC0000, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-peligros:hover {
+      border-color: #FF8888;
+      box-shadow: 0 14px 0 #CC0000, 0 24px 44px rgba(255, 68, 68, 0.35);
+    }
+    .btn-peligros:active {
+      box-shadow: 0 4px 0 #CC0000, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-peligros span {
+      color: #FF4444;
+    }
+    .subtitle-peligros {
+      color: #FF8888;
+      border: 1px solid rgba(255, 68, 68, 0.25);
+      background: rgba(255, 68, 68, 0.06);
+    }
   </style>
 </head>
 <body>
@@ -353,6 +372,17 @@
         <span>Examen oficial por categoría (Auto, Moto, Colectivo)</span>
       </div>
     </div>
+
+    <!-- 6. JUEGO: DETECTOR DE PELIGROS -->
+    <div class="game-card-wrapper">
+      <button class="btn-ruleta btn-peligros" id="btn-peligros" onclick="playGame('peligros.html')">
+        <img src="assets/peligros_icono.jpg" alt="Detector de Peligros">
+        <span>DETECTOR DE PELIGROS</span>
+      </button>
+      <div class="btn-hub-subtitle subtitle-peligros" id="sub-peligros">
+        <span>Anticipación y detección de puntos ciegos</span>
+      </div>
+    </div>
   </main>
 
   <script src="js/cloud-sync.js?v=21"></script>
@@ -382,7 +412,7 @@
 
       const playedGames = new Set(userEntries.map(e => e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'))));
       const count = playedGames.size;
-      const totalGames = 5;
+      const totalGames = 6;
 
       const progressEl = document.getElementById('progress-fill');
       if (progressEl) progressEl.style.width = `${Math.round((count / totalGames) * 100)}%`;
@@ -407,6 +437,10 @@
       if (playedGames.has('simulador')) {
         const sub = document.getElementById('sub-simulador');
         if (sub) sub.innerHTML = '<span>✅ Examen rendido • ¡Simulá otra categoría!</span>';
+      }
+      if (playedGames.has('peligros')) {
+        const sub = document.getElementById('sub-peligros');
+        if (sub) sub.innerHTML = '<span>✅ Anticipación medida • ¡Mejorá tu tiempo!</span>';
       }
     }
 

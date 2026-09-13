@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Detector de Peligros — Seguridad Vial BA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="js/cloud-sync.js?v=3"></script>
+
+  <style>
+    :root {
+      --bg: #0e1112;
+      --surface: #161a1b;
+      --surface-card: #1d2224;
+      --surface-hover: #262c2f;
+      --text: #f0f4f5;
+      --text-muted: #8c979a;
+      --accent-cyan: #8DE2D6;
+      --accent-yellow: #FFC600;
+      --accent-red: #FF4444;
+      --accent-green: #00E676;
+      --accent-amber: #FFA000;
+      --accent-purple: #A855F7;
+      --outline: rgba(141, 226, 214, 0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body { min-height: 100vh; display: flex; flex-direction: column; background-color: var(--bg); font-family: 'Archivo', sans-serif; color: var(--text); overflow-x: hidden; }
+
+    /* HEADER */
+    .app-header {
+      width: 100%; background: rgba(18, 22, 23, 0.95); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--outline); padding: 12px 20px; position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 12px; background: #202628; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer; text-decoration: none; transition: background 0.15s ease, transform 0.1s ease; }
+    .btn-back:hover { background: #2c3437; transform: translateX(-2px); }
+    .brand-logo-wrap { display: flex; align-items: center; gap: 10px; }
+    .brand-logo-img { height: 24px; width: auto; filter: brightness(0) invert(1); opacity: 0.95; }
+    .header-title-text { font-family: 'Archivo Black', sans-serif; font-size: 16px; letter-spacing: 0.4px; color: #ffffff; text-transform: uppercase; }
+
+    /* MAIN */
+    .main-wrap { flex: 1; max-width: 660px; margin: 0 auto; width: 100%; padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    
+    /* STATUS BAR */
+    .status-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(29, 34, 36, 0.7); border: 1px solid var(--outline); border-radius: 12px; padding: 8px 14px; font-size: 12px; font-weight: 700; }
+    .round-info { display: flex; align-items: center; gap: 8px; color: #fff; }
+    .round-badge { background: var(--accent-red); color: #fff; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 900; letter-spacing: 0.4px; }
+    .dots-wrap { display: flex; gap: 5px; }
+    .round-dot { width: 9px; height: 9px; border-radius: 50%; background: #2a3134; transition: all 0.25s ease; }
+    .round-dot.done-correct { background: var(--accent-green); box-shadow: 0 0 8px rgba(0, 230, 118, 0.6); }
+    .round-dot.done-medium { background: var(--accent-yellow); box-shadow: 0 0 8px rgba(255, 198, 0, 0.6); }
+    .round-dot.done-late { background: var(--accent-amber); box-shadow: 0 0 8px rgba(255, 160, 0, 0.6); }
+    .round-dot.done-missed { background: var(--accent-red); box-shadow: 0 0 8px rgba(255, 68, 68, 0.6); }
+    .round-dot.active { background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); transform: scale(1.25); }
+
+    /* GAME ARENA */
+    .game-arena { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--outline); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); cursor: crosshair; }
+    .game-img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); transition: filter 0.3s ease; }
+    
+    /* OVERLAYS */
+    .intro-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; text-align: center; padding: 20px; }
+    .btn-start { margin-top: 15px; padding: 12px 24px; background: var(--accent-red); color: #fff; border: none; border-radius: 12px; font-family: 'Archivo Black', sans-serif; font-size: 16px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255, 68, 68, 0.4); }
+    
+    /* TIMER BAR */
+    .timer-bar-wrap { position: absolute; bottom: 0; left: 0; width: 100%; height: 6px; background: rgba(255,255,255,0.2); z-index: 5; }
+    .timer-bar-fill { height: 100%; background: var(--accent-cyan); width: 100%; transform-origin: left; }
+    
+    /* FEEDBACK OVERLAY (Congelamiento) */
+    .feedback-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none; flex-direction: column; align-items: center; justify-content: flex-end; z-index: 15; padding: 15px; }
+    .feedback-box { background: rgba(20, 24, 26, 0.95); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; width: 100%; text-align: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+    .feedback-title { font-family: 'Archivo Black', sans-serif; font-size: 16px; margin-bottom: 4px; }
+    .feedback-desc { font-size: 12px; color: var(--text-muted); }
+    .btn-next-round { margin-top: 10px; width: 100%; padding: 10px; background: #fff; color: #000; border: none; border-radius: 8px; font-family: 'Archivo Black', sans-serif; font-size: 14px; cursor: pointer; }
+    
+    /* HOTSPOT HIGHLIGHT (Shown in feedback) */
+    .hotspot-box { position: absolute; border: 3px solid var(--accent-red); box-shadow: 0 0 15px rgba(255,68,68,0.8), inset 0 0 15px rgba(255,68,68,0.5); background: rgba(255,68,68,0.2); border-radius: 50%; display: none; z-index: 12; pointer-events: none; animation: pulse-ring 1s infinite alternate; }
+    @keyframes pulse-ring { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.1); opacity: 1; } }
+    
+    /* RIPPLE EFFECT */
+    .ripple { position: absolute; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.5); border: 2px solid #fff; border-radius: 50%; transform: translate(-50%, -50%) scale(0); animation: ripple-anim 0.5s ease-out forwards; pointer-events: none; z-index: 11; }
+    @keyframes ripple-anim { 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
+
+    /* RESULTS CARD */
+    .results-card { display: none; background: linear-gradient(180deg, #1b2022 0%, #131718 100%); border: 2px solid var(--accent-red); border-radius: 24px; padding: 24px 20px; text-align: center; flex-direction: column; align-items: center; gap: 16px; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6); }
+    .results-hero-val { font-family: 'Barlow Condensed', sans-serif; font-size: 48px; font-weight: 900; color: var(--accent-red); line-height: 1; }
+    .results-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin: 8px 0; }
+    .stat-mini-box { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 6px; text-align: center; }
+    .stat-mini-val { font-family: 'Archivo Black', sans-serif; font-size: 18px; color: #ffffff; }
+    .stat-mini-lbl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .btn-replay-primary { width: 100%; padding: 14px; background: var(--accent-red); color: #fff; border: none; border-radius: 14px; font-family: 'Archivo Black', sans-serif; font-size: 14px; cursor: pointer; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="juegos.html" class="btn-back">
+          <span class="material-symbols-outlined" style="font-size:22px;">arrow_back</span>
+        </a>
+        <div class="brand-logo-wrap">
+          <img src="assets/brand/BA_logo_blanco.png" alt="BA Logo" class="brand-logo-img">
+          <span class="header-title-text">DETECTOR DE PELIGROS</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-wrap">
+    
+    <!-- STATUS BAR -->
+    <div class="status-bar" id="status-bar">
+      <div class="round-info">
+        <span class="round-badge">RONDA <span id="round-num">1</span>/5</span>
+        <div class="dots-wrap" id="dots-container">
+          <div class="round-dot active" id="dot-1"></div>
+          <div class="round-dot" id="dot-2"></div>
+          <div class="round-dot" id="dot-3"></div>
+          <div class="round-dot" id="dot-4"></div>
+          <div class="round-dot" id="dot-5"></div>
+        </div>
+      </div>
+      <div style="color:var(--accent-red); font-family:'Archivo Black';">PTS: <span id="score-display">0</span></div>
+    </div>
+
+    <!-- GAME ARENA -->
+    <div class="game-arena" id="arena" style="display: none;">
+      <img src="" id="scenario-img" class="game-img">
+      
+      <div class="timer-bar-wrap">
+        <div class="timer-bar-fill" id="timer-bar"></div>
+      </div>
+
+      <div class="intro-overlay" id="intro-overlay">
+        <span class="material-symbols-outlined" style="font-size:48px; color:var(--accent-red); margin-bottom:10px;">warning</span>
+        <h2 style="font-family:'Archivo Black'; font-size:20px; margin-bottom:5px;">ANTICIPÁ EL PELIGRO</h2>
+        <p style="font-size:13px; color:#ccc; max-width:80%;">Identificá la amenaza tocando la pantalla antes de que sea tarde.</p>
+        <button class="btn-start" id="btn-start">INICIAR ESCENARIO</button>
+      </div>
+
+      <div class="hotspot-box" id="hotspot-box"></div>
+
+      <div class="feedback-overlay" id="feedback-overlay">
+        <div class="feedback-box">
+          <div class="feedback-title" id="fb-title">¡EXCELENTE ANTICIPACIÓN!</div>
+          <div class="feedback-desc" id="fb-desc">Detectaste al peatón oculto a tiempo.</div>
+          <button class="btn-next-round" id="btn-next">SIGUIENTE ESCENARIO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-card" id="results-card">
+      <div>
+        <span class="material-symbols-outlined" style="font-size:48px; color:var(--accent-red);">health_and_safety</span>
+        <div class="results-hero-val" id="final-score">0</div>
+        <div style="font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">PUNTOS XP OBTENIDOS</div>
+      </div>
+      <div class="results-stats-grid">
+        <div class="stat-mini-box">
+          <div class="stat-mini-val" id="final-avg-time">0.0s</div>
+          <div class="stat-mini-lbl">Tiempo Promedio</div>
+        </div>
+        <div class="stat-mini-box">
+          <div class="stat-mini-val" id="final-level" style="color:var(--accent-cyan);">EXPERTO</div>
+          <div class="stat-mini-lbl">Nivel de Visión</div>
+        </div>
+      </div>
+      <button class="btn-replay-primary" id="btn-replay">JUGAR DE NUEVO</button>
+    </div>
+
+  </main>
+
+  <script src="js/app.js?v=2"></script>
+  <script>
+    // Audio Context (Synthesized sounds)
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const actx = new AudioContext();
+    function playTone(freq, type, duration) {
+      if(actx.state === 'suspended') actx.resume();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      osc.connect(gain); gain.connect(actx.destination);
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.00001, actx.currentTime + duration);
+      osc.stop(actx.currentTime + duration);
+    }
+    const sfx = {
+      click: () => playTone(600, 'sine', 0.1),
+      correct: () => playTone(880, 'sine', 0.2),
+      wrong: () => playTone(150, 'sawtooth', 0.3),
+      tick: () => playTone(1000, 'square', 0.05),
+      end: () => playTone(300, 'sine', 0.5)
+    };
+
+    // Scenarios config
+    const scenarios = [
+      {
+        id: 1,
+        img: 'assets/peligros/escenario_1_colectivo.jpg',
+        dangerStart: 1.0, // seconds when danger starts evolving
+        hotspot: { x: 73, y: 55, r: 15 }, // percentage x, y, radius
+        desc: "El peatón asomaba por delante del colectivo detenido.",
+        rule: "Reducir velocidad al pasar a un vehículo de transporte público."
+      },
+      {
+        id: 2,
+        img: 'assets/peligros/escenario_2_puerta.jpg',
+        dangerStart: 1.5,
+        hotspot: { x: 55, y: 40, r: 12 },
+        desc: "Apertura imprevista de puerta (Dooring).",
+        rule: "Mantener 1.5m de distancia al circular cerca de autos estacionados."
+      },
+      {
+        id: 3,
+        img: 'assets/peligros/escenario_3_ciclovia.jpg',
+        dangerStart: 1.0,
+        hotspot: { x: 45, y: 50, r: 18 }, // mirror area
+        desc: "Ciclista en punto ciego al girar a la derecha.",
+        rule: "Mirar dos veces los espejos antes de maniobrar."
+      },
+      {
+        id: 4,
+        img: 'assets/peligros/escenario_4_garaje.jpg',
+        dangerStart: 1.5,
+        hotspot: { x: 60, y: 55, r: 15 },
+        desc: "Vehículo saliendo marcha atrás del garaje.",
+        rule: "Prestar especial atención a portones abiertos y salidas de vehículos."
+      },
+      {
+        id: 5,
+        img: 'assets/peligros/escenario_5_pelota.jpg',
+        dangerStart: 1.5,
+        hotspot: { x: 58, y: 58, r: 10 },
+        desc: "Pelota rodando a la calle, posible niño detrás.",
+        rule: "Frenar inmediatamente ante elementos rodando a la calzada."
+      }
+    ];
+
+    // State
+    let currentRound = 0;
+    let score = 0;
+    let totalScore = 0;
+    let roundTimes = [];
+    let state = 'intro'; // intro, playing, feedback, results
+    let arenaRect;
+    let startTime;
+    let gameLoopReq;
+    let dangerActive = false;
+    let clickCount = 0;
+    let sessionDetails = [];
+
+    const DOM = {
+      arena: document.getElementById('arena'),
+      img: document.getElementById('scenario-img'),
+      intro: document.getElementById('intro-overlay'),
+      startBtn: document.getElementById('btn-start'),
+      timerBar: document.getElementById('timer-bar'),
+      fbOverlay: document.getElementById('feedback-overlay'),
+      fbTitle: document.getElementById('fb-title'),
+      fbDesc: document.getElementById('fb-desc'),
+      nextBtn: document.getElementById('btn-next'),
+      hotspotBox: document.getElementById('hotspot-box'),
+      score: document.getElementById('score-display'),
+      roundNum: document.getElementById('round-num'),
+      resultsCard: document.getElementById('results-card'),
+      statusBar: document.getElementById('status-bar')
+    };
+
+    function initGame() {
+      currentRound = 0;
+      totalScore = 0;
+      roundTimes = [];
+      sessionDetails = [];
+      DOM.score.innerText = '0';
+      DOM.resultsCard.style.display = 'none';
+      DOM.arena.style.display = 'block';
+      DOM.statusBar.style.display = 'flex';
+      
+      document.querySelectorAll('.round-dot').forEach(d => d.className = 'round-dot');
+      loadScenario();
+    }
+
+    function loadScenario() {
+      state = 'intro';
+      clickCount = 0;
+      dangerActive = false;
+      const scene = scenarios[currentRound];
+      DOM.img.src = scene.img;
+      DOM.roundNum.innerText = currentRound + 1;
+      
+      document.querySelectorAll('.round-dot').forEach((d, i) => {
+        if(i === currentRound) d.classList.add('active');
+        else d.classList.remove('active');
+      });
+
+      DOM.intro.style.display = 'flex';
+      DOM.fbOverlay.style.display = 'none';
+      DOM.hotspotBox.style.display = 'none';
+      DOM.timerBar.style.transform = 'scaleX(0)';
+      DOM.timerBar.style.transition = 'none';
+      DOM.img.style.filter = 'brightness(0.9)';
+    }
+
+    DOM.startBtn.addEventListener('click', () => {
+      sfx.click();
+      DOM.intro.style.display = 'none';
+      startGameLoop();
+    });
+
+    function startGameLoop() {
+      state = 'playing';
+      startTime = performance.now();
+      const duration = 6000; // 6 seconds per scene
+      
+      DOM.timerBar.style.transition = \`transform \${duration}ms linear\`;
+      setTimeout(() => DOM.timerBar.style.transform = 'scaleX(1)', 50);
+
+      const loop = (time) => {
+        if (state !== 'playing') return;
+        const elapsed = time - startTime;
+        const scene = scenarios[currentRound];
+        
+        if (elapsed > scene.dangerStart * 1000 && !dangerActive) {
+          dangerActive = true; // danger zone is now active
+        }
+        
+        if (elapsed >= duration) {
+          handleResult(false, null);
+        } else {
+          gameLoopReq = requestAnimationFrame(loop);
+        }
+      };
+      gameLoopReq = requestAnimationFrame(loop);
+    }
+
+    DOM.arena.addEventListener('mousedown', handleClick);
+    DOM.arena.addEventListener('touchstart', (e) => { e.preventDefault(); handleClick(e.touches[0]); }, {passive: false});
+
+    function handleClick(e) {
+      if (state !== 'playing') return;
+      if (e.target === DOM.intro || DOM.intro.contains(e.target)) return;
+
+      clickCount++;
+      const rect = DOM.arena.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Ripple
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      DOM.arena.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 500);
+
+      if(clickCount > 3) {
+        // Spam penalty
+        handleResult(false, 'spam');
+        return;
+      }
+
+      if (!dangerActive) return; // ignore clicks before danger starts
+
+      const scene = scenarios[currentRound];
+      const px = (x / rect.width) * 100;
+      const py = (y / rect.height) * 100;
+      
+      const dx = px - scene.hotspot.x;
+      const dy = py - scene.hotspot.y;
+      
+      // Since it's 16:9, a circle in percentages needs aspect ratio correction
+      // We scale dx by 16/9 to treat the 100% width and 100% height equally
+      const ar = rect.width / rect.height;
+      const dist = Math.sqrt((dx*ar)*(dx*ar) + dy*dy);
+
+      if (dist <= scene.hotspot.r) {
+        const reactTime = (performance.now() - startTime - (scene.dangerStart*1000)) / 1000;
+        handleResult(true, Math.max(0, reactTime));
+      } else {
+        sfx.tick(); // wrong area
+      }
+    }
+
+    function handleResult(success, timeSec) {
+      state = 'feedback';
+      cancelAnimationFrame(gameLoopReq);
+      DOM.timerBar.style.transition = 'none';
+      const scene = scenarios[currentRound];
+      let pts = 0;
+      let fbType = 'missed';
+
+      if (success) {
+        roundTimes.push(timeSec);
+        if (timeSec < 1.5) { pts = 100; fbType = 'correct'; DOM.fbTitle.innerText = "¡EXCELENTE ANTICIPACIÓN!"; DOM.fbTitle.style.color = "var(--accent-green)"; sfx.correct(); }
+        else if (timeSec < 2.5) { pts = 60; fbType = 'medium'; DOM.fbTitle.innerText = "BUENA DETECCIÓN"; DOM.fbTitle.style.color = "var(--accent-yellow)"; sfx.correct(); }
+        else { pts = 30; fbType = 'late'; DOM.fbTitle.innerText = "DETECCIÓN TARDÍA"; DOM.fbTitle.style.color = "var(--accent-amber)"; sfx.tick(); }
+      } else {
+        if (timeSec === 'spam') { DOM.fbTitle.innerText = "CLICS EXCESIVOS"; DOM.fbDesc.innerText = "No toques al azar."; }
+        else { DOM.fbTitle.innerText = "¡PELIGRO NO DETECTADO!"; }
+        DOM.fbTitle.style.color = "var(--accent-red)";
+        sfx.wrong();
+      }
+
+      totalScore += pts;
+      DOM.score.innerText = totalScore;
+      DOM.fbDesc.innerText = scene.desc + " " + scene.rule;
+      
+      const dot = document.getElementById('dot-' + (currentRound+1));
+      dot.className = 'round-dot done-' + fbType;
+
+      // Show Hotspot
+      DOM.hotspotBox.style.display = 'block';
+      const ar = DOM.arena.getBoundingClientRect().width / DOM.arena.getBoundingClientRect().height;
+      DOM.hotspotBox.style.left = \`calc(\${scene.hotspot.x}% - \${scene.hotspot.r / ar}%)\`;
+      DOM.hotspotBox.style.top = \`calc(\${scene.hotspot.y}% - \${scene.hotspot.r}%)\`;
+      DOM.hotspotBox.style.width = \`\${(scene.hotspot.r / ar) * 2}%\`;
+      DOM.hotspotBox.style.paddingTop = \`\${(scene.hotspot.r / ar) * 2}%\`;
+
+      DOM.img.style.filter = 'brightness(0.4)';
+      DOM.fbOverlay.style.display = 'flex';
+
+      sessionDetails.push({
+        question: \`Escenario \${scene.id}: \${scene.desc}\`,
+        isCorrect: success,
+        timeSeconds: timeSec || 0,
+        pointsGained: pts
+      });
+    }
+
+    DOM.nextBtn.addEventListener('click', () => {
+      sfx.click();
+      currentRound++;
+      if (currentRound < scenarios.length) {
+        loadScenario();
+      } else {
+        showResults();
+      }
+    });
+
+    function showResults() {
+      DOM.arena.style.display = 'none';
+      DOM.statusBar.style.display = 'none';
+      DOM.resultsCard.style.display = 'flex';
+      sfx.end();
+
+      const avgTime = roundTimes.length ? (roundTimes.reduce((a,b)=>a+b,0)/roundTimes.length).toFixed(2) : 0;
+      let level = "ALERTA ROJA"; let color = "var(--accent-red)";
+      if (totalScore >= 400) { level = "EXPERTO"; color = "var(--accent-green)"; }
+      else if (totalScore >= 200) { level = "INTERMEDIO"; color = "var(--accent-yellow)"; }
+
+      document.getElementById('final-score').innerText = totalScore;
+      document.getElementById('final-avg-time').innerText = avgTime + 's';
+      document.getElementById('final-level').innerText = level;
+      document.getElementById('final-level').style.color = color;
+
+      if(window.VialCloudSync) {
+        VialCloudSync.syncGameSession({
+          game: 'peligros',
+          category: 'Detector de Peligros',
+          score: totalScore,
+          time: avgTime,
+          accuracy: \`\${roundTimes.length}/5\`,
+          details: sessionDetails
+        });
+      }
+    }
+
+    document.getElementById('btn-replay').addEventListener('click', () => { sfx.click(); initGame(); });
+
+    // Start game on load
+    window.addEventListener('load', () => {
+      scenarios.forEach(s => { const img = new Image(); img.src = s.img; });
+      initGame();
+    });
+
+  </script>
+</body>
+</html>
