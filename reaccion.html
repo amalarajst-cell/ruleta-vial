@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Tiempo de Reacción — Seguridad Vial BA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <script src="js/cloud-sync.js?v=21"></script>
+  <script src="js/cloud-sync.js?v=22"></script>
 
   <style>
     :root {
@@ -480,9 +479,8 @@
     }
 
     .btn-action.disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      pointer-events: none;
+      opacity: 0.55;
+      cursor: pointer;
     }
 
     .btn-key-hint {
@@ -911,6 +909,11 @@
       <p class="stimulus-desc" id="stimulus-desc">
         Aparecerán situaciones viales imprevistas. Elegí el botón correcto lo más rápido posible.
       </p>
+
+      <button type="button" id="btn-start-game-cta" style="margin-top:14px;background:var(--accent-cyan);color:#0e1112;font-family:'Archivo Black',sans-serif;font-size:14px;letter-spacing:0.5px;padding:10px 24px;border:none;border-radius:999px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 0 20px rgba(141,226,214,0.6);cursor:pointer;transition:transform 0.15s ease;">
+        <span class="material-symbols-outlined text-[20px]">play_arrow</span>
+        <span>INICIAR DESAFÍO</span>
+      </button>
 
       <div class="live-timer-badge" id="live-timer-badge">
         0.00 s
@@ -1444,6 +1447,8 @@
         });
       }
 
+      const btnStartGameCta = document.getElementById('btn-start-game-cta');
+
       // ── ESTADOS DE LA PANTALLA ──
       function setIdleState() {
         state = 'idle';
@@ -1453,6 +1458,7 @@
         stimulusVisual.innerHTML = '<div class="sign-pare"><span>PARE</span></div>';
         stimulusTitle.textContent = 'TOCÁ PARA EMPEZAR';
         stimulusDesc.innerHTML = 'Aparecerán 8 situaciones viales. Presioná el botón correspondiente <strong>en el menor tiempo en segundos</strong>.';
+        if (btnStartGameCta) btnStartGameCta.style.display = 'inline-flex';
         liveTimerBadge.style.display = 'none';
         feedbackBanner.style.display = 'none';
         cardTimerFill.style.transform = 'scaleX(0)';
@@ -1471,6 +1477,7 @@
         stimulusVisual.innerHTML = '<div style="width:72px;height:72px;border-radius:50%;background:rgba(255,160,0,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-amber);"><span class="material-symbols-outlined text-[36px] animate-pulse">explore</span></div>';
         stimulusTitle.textContent = 'PREPARATE...';
         stimulusDesc.textContent = 'Esperá la señal o situación vial. ¡No te adelantes!';
+        if (btnStartGameCta) btnStartGameCta.style.display = 'none';
         liveTimerBadge.style.display = 'none';
         feedbackBanner.style.display = 'none';
         cardTimerFill.style.transform = 'scaleX(0)';
@@ -1533,6 +1540,12 @@
 
       // ── EVALUAR ACCIÓN DEL JUGADOR ──
       function handlePlayerAction(selectedAction) {
+        if (state === 'idle') {
+          startRoundWaiting();
+          return;
+        }
+        if (state === 'feedback' || state === 'finished') return;
+
         if (state === 'waiting') {
           // Falsa largada / se adelantó
           clearTimeout(waitTimer);
@@ -1718,6 +1731,15 @@
           startRoundWaiting();
         }
       });
+
+      if (btnStartGameCta) {
+        btnStartGameCta.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (state === 'idle') {
+            startRoundWaiting();
+          }
+        });
+      }
 
       // Botones de acción táctiles
       actionButtons.frenar.addEventListener('click', () => handlePlayerAction('frenar'));

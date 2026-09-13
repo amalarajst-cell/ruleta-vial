@@ -432,9 +432,8 @@
     }
 
     .btn-action.disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      pointer-events: none;
+      opacity: 0.55;
+      cursor: pointer;
     }
 
     .btn-key-hint {
@@ -1450,6 +1449,12 @@
       }
 
       function handlePlayerAction(selectedAction) {
+        if (state === 'idle') {
+          startRoundWaiting();
+          return;
+        }
+        if (state === 'feedback' || state === 'finished') return;
+
         if (state === 'waiting') {
           clearTimeout(waitTimer);
           cancelAnimationFrame(liveTimerRaf);
