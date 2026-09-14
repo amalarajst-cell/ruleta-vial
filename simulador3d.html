@@ -23,88 +23,111 @@
     /* HEADER */
     .app-header {
       position: absolute; top: 0; left: 0; width: 100%;
-      background: rgba(5, 5, 16, 0.75); backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding: 10px 16px; z-index: 50;
+      background: rgba(5, 5, 16, 0.8); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 243, 255, 0.25); padding: 10px 16px; z-index: 50;
     }
     .header-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
     .header-left { display: flex; align-items: center; gap: 10px; }
     .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; text-decoration: none; }
-    .header-title-text { font-family: 'Archivo Black', sans-serif; font-size: 15px; letter-spacing: 0.5px; color: var(--neon-blue); text-transform: uppercase; }
+    .header-title-text { font-family: 'Archivo Black', sans-serif; font-size: 15px; letter-spacing: 0.5px; color: #fff; text-transform: uppercase; }
 
-    /* MISSION HUD */
+    /* HAZARD HUD */
     .hud { position: absolute; top: 60px; left: 16px; right: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 20; pointer-events: none; }
-    .hud-top-row { width: 100%; max-width: 600px; display: flex; justify-content: space-between; align-items: center; }
-    
-    .vial-badge {
-      background: rgba(10, 12, 24, 0.85); backdrop-filter: blur(8px);
-      padding: 6px 14px; border-radius: 20px; font-family: 'Archivo Black'; font-size: 13px;
-      letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5); border: 1px solid #fff;
-      transition: all 0.3s ease;
+    .hud-top-bar {
+      width: 100%; max-width: 620px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(10, 14, 28, 0.85); backdrop-filter: blur(10px);
+      padding: 8px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    .badge-forbidden { border-color: var(--danger); color: #fff; background: rgba(255, 51, 68, 0.25); box-shadow: 0 0 20px rgba(255, 51, 68, 0.4); }
-    .badge-allowed { border-color: var(--neon-green); color: #fff; background: rgba(0, 255, 136, 0.25); box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
-    .badge-warning { border-color: var(--neon-yellow); color: #fff; background: rgba(255, 204, 0, 0.25); box-shadow: 0 0 20px rgba(255, 204, 0, 0.4); }
+    .round-indicator { display: flex; align-items: center; gap: 8px; font-family: 'Archivo Black'; font-size: 13px; color: #fff; }
+    .round-badge { background: var(--danger); color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+    .dots-container { display: flex; gap: 6px; }
+    .round-dot { width: 10px; height: 10px; border-radius: 50%; background: #2a3134; transition: all 0.25s ease; }
+    .round-dot.active { background: #fff; box-shadow: 0 0 10px #fff; transform: scale(1.2); }
+    .round-dot.done-5 { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+    .round-dot.done-3 { background: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
+    .round-dot.done-1 { background: #ff9900; box-shadow: 0 0 8px #ff9900; }
+    .round-dot.done-0 { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
 
-    .telemetry-box {
-      background: rgba(5, 7, 18, 0.75); backdrop-filter: blur(8px);
-      padding: 6px 14px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.4);
-      color: #fff; font-family: 'Archivo Black'; font-size: 14px;
-    }
+    .score-telemetry { font-family: 'Archivo Black'; font-size: 14px; color: var(--neon-yellow); }
 
-    .mission-banner {
-      width: 100%; max-width: 550px; background: rgba(5, 7, 20, 0.85); backdrop-filter: blur(8px);
+    .mission-prompt {
+      width: 100%; max-width: 580px; background: rgba(5, 7, 20, 0.85); backdrop-filter: blur(8px);
       border-radius: 12px; border-left: 4px solid var(--neon-blue); padding: 8px 14px;
       color: #fff; font-size: 13px; line-height: 1.35; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
-    .mission-banner b { color: var(--neon-blue); }
 
-    /* INFRACTION TOAST */
-    .infraction-toast {
-      position: absolute; top: 180px; left: 50%; transform: translateX(-50%);
-      background: rgba(230, 0, 40, 0.95); color: #fff; padding: 12px 24px;
-      border-radius: 30px; font-family: 'Archivo Black'; font-size: 15px;
-      box-shadow: 0 0 30px rgba(255,0,0,0.8); z-index: 30; pointer-events: none;
-      display: none; animation: pulse 0.5s infinite alternate; text-align: center;
+    /* REACTION RATING POPUP */
+    .reaction-popup {
+      position: absolute; top: 160px; left: 50%; transform: translateX(-50%) scale(0.8);
+      background: rgba(0, 230, 118, 0.95); color: #000; padding: 12px 28px;
+      border-radius: 30px; font-family: 'Archivo Black'; font-size: 18px;
+      box-shadow: 0 0 35px rgba(0, 230, 118, 0.8); z-index: 35; pointer-events: none;
+      display: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    @keyframes pulse { from { transform: translateX(-50%) scale(1); } to { transform: translateX(-50%) scale(1.04); } }
+    .reaction-popup.show { display: block; transform: translateX(-50%) scale(1); }
+    .reaction-popup.warn { background: rgba(255, 204, 0, 0.95); box-shadow: 0 0 30px rgba(255, 204, 0, 0.8); color: #000; }
+    .reaction-popup.bad { background: rgba(255, 51, 68, 0.95); box-shadow: 0 0 30px rgba(255, 51, 68, 0.8); color: #fff; }
 
-    /* DRIVING PEDALS & CONTROLS */
+    /* CONTROLS OVERLAY */
     .controls-overlay {
       position: absolute; bottom: 20px; left: 16px; right: 16px;
       display: flex; justify-content: space-between; align-items: flex-end;
       z-index: 25; pointer-events: none;
     }
-    .steering-group { display: flex; gap: 12px; pointer-events: auto; }
-    .pedals-group { display: flex; gap: 12px; pointer-events: auto; }
-    
-    .ctrl-btn {
-      width: 62px; height: 62px; border-radius: 18px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(15, 18, 35, 0.85); backdrop-filter: blur(8px);
-      border: 2px solid rgba(255, 255, 255, 0.2); color: #fff;
-      font-family: 'Archivo Black'; font-size: 11px; cursor: pointer;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.5); transition: transform 0.1s, border-color 0.2s;
-    }
-    .ctrl-btn:active, .ctrl-btn.active { transform: scale(0.92); }
-    .btn-gas { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px rgba(0,255,136,0.3); }
-    .btn-gas:active, .btn-gas.active { background: rgba(0, 255, 136, 0.25); }
-    .btn-brake { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 15px rgba(255,51,68,0.3); }
-    .btn-brake:active, .btn-brake.active { background: rgba(255, 51, 68, 0.25); }
-    .btn-steer { border-color: var(--neon-blue); color: var(--neon-blue); width: 56px; height: 56px; }
+    .steering-group { display: flex; gap: 10px; pointer-events: auto; }
+    .hazard-group { pointer-events: auto; }
 
-    /* MODAL OVERLAYS */
+    .ctrl-btn {
+      width: 58px; height: 58px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(15, 18, 35, 0.85); backdrop-filter: blur(8px);
+      border: 2px solid rgba(0, 243, 255, 0.3); color: var(--neon-blue);
+      cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.5); transition: transform 0.1s;
+    }
+    .ctrl-btn:active { transform: scale(0.92); }
+
+    /* BIG PROMINENT HAZARD ACTION BUTTON */
+    .btn-hazard-action {
+      width: 140px; height: 75px; border-radius: 22px;
+      background: linear-gradient(135deg, #ff0044 0%, #ff5500 100%);
+      border: 3px solid #ffffff; color: #ffffff;
+      font-family: 'Archivo Black'; font-size: 13px; letter-spacing: 0.5px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+      cursor: pointer; box-shadow: 0 0 25px rgba(255, 0, 68, 0.6), 0 8px 20px rgba(0,0,0,0.5);
+      animation: pulse-btn 1.5s infinite alternate; transition: transform 0.1s;
+    }
+    .btn-hazard-action:active { transform: scale(0.92); box-shadow: 0 0 10px rgba(255, 0, 68, 0.9); }
+    @keyframes pulse-btn {
+      from { box-shadow: 0 0 20px rgba(255, 0, 68, 0.5); }
+      to { box-shadow: 0 0 32px rgba(255, 0, 68, 0.85); }
+    }
+
+    /* FEEDBACK CARD BETWEEN ROUNDS */
+    .feedback-modal {
+      position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);
+      width: 90%; max-width: 500px; background: rgba(12, 16, 28, 0.92); backdrop-filter: blur(14px);
+      border: 2px solid var(--neon-green); border-radius: 20px; padding: 20px; text-align: center;
+      z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: none;
+    }
+    .feedback-title { font-family: 'Archivo Black'; font-size: 20px; margin-bottom: 6px; }
+    .feedback-desc { font-size: 14px; color: #ccc; line-height: 1.45; margin-bottom: 16px; }
+    .btn-next-round {
+      padding: 12px 32px; background: var(--neon-green); color: #000;
+      border: none; border-radius: 25px; font-family: 'Archivo Black'; font-size: 15px;
+      cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(0,255,136,0.4);
+    }
+
+    /* OVERLAYS (Start & Final Results) */
     .overlay { 
       position: absolute; inset: 0; background: rgba(5,5,16,0.92); z-index: 60; 
       display: flex; flex-direction: column; align-items: center; justify-content: center; 
-      text-align: center; padding: 24px; backdrop-filter: blur(8px); 
+      text-align: center; padding: 24px; backdrop-filter: blur(10px); 
     }
-    .overlay h1 { font-family: 'Archivo Black'; margin-bottom: 12px; font-size: 26px; }
-    .overlay p { color: #ccc; font-size: 15px; margin-bottom: 24px; max-width: 420px; line-height: 1.5; }
-    
+    .overlay h1 { font-family: 'Archivo Black'; margin-bottom: 10px; font-size: 26px; }
     .mission-card {
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 16px; padding: 18px; max-width: 420px; text-align: left;
+      border-radius: 16px; padding: 18px; max-width: 440px; text-align: left;
       margin-bottom: 24px; font-size: 14px; line-height: 1.5; color: #e0e0e0;
     }
     .mission-card ul { margin-left: 20px; margin-top: 8px; }
@@ -128,90 +151,93 @@
     <div class="header-inner">
       <div class="header-left">
         <a href="juegos.html" class="btn-back"><span class="material-symbols-outlined">arrow_back</span></a>
-        <span class="header-title-text">Misiones Viales 3D</span>
+        <span class="header-title-text">Hazard Perception 3D</span>
       </div>
-      <div id="license-points" style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-green);">
-        LICENCIA: 20 PTS
+      <div style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-green);">
+        SEGURIDAD VIAL BA
       </div>
     </div>
   </header>
 
-  <!-- HUD EN PANTALLA -->
+  <!-- HUD DEL JUEGO -->
   <div class="hud" id="hud" style="display:none;">
-    <div class="hud-top-row">
-      <div class="vial-badge badge-forbidden" id="vial-badge">
-        <span class="material-symbols-outlined" style="font-size:18px;">do_not_disturb_on</span>
-        <span id="vial-badge-text">LÍNEA CONTINUA — NO ADELANTAR</span>
+    <div class="hud-top-bar">
+      <div class="round-indicator">
+        <span class="round-badge">PELIGRO <span id="round-num">1</span>/3</span>
+        <div class="dots-container">
+          <div class="round-dot active" id="dot-1"></div>
+          <div class="round-dot" id="dot-2"></div>
+          <div class="round-dot" id="dot-3"></div>
+        </div>
       </div>
-      <div class="telemetry-box">
-        <span id="speed-val">40</span> km/h | <span id="dist-val">0</span>m
+      <div class="score-telemetry">
+        PUNTOS: <span id="score-val">0</span> / 15
       </div>
     </div>
-    <div class="mission-banner" id="mission-banner">
-      <b>Objetivo:</b> Marcha detrás del colectivo. Espera a que la línea sea discontinua y el carril contrario esté libre para sobrepasar.
+    <div class="mission-prompt" id="mission-prompt">
+      👀 <b>Atención en la vía:</b> Circula con precaución. Al ver un peligro formándose, pulsa <b>¡PELIGRO!</b> de inmediato.
     </div>
   </div>
 
-  <div class="infraction-toast" id="infraction-toast">
-    🚨 ¡INFRACCIÓN GRAVE! PROHIBIDO ADELANTAR EN LÍNEA CONTINUA
+  <!-- REACTION SCORE RATING POPUP -->
+  <div class="reaction-popup" id="reaction-popup">
+    ⚡ ¡ANTICIPACIÓN EXCELENTE! (+5 PTS)
   </div>
 
-  <!-- CONTROLES TÁCTILES Y PEDALES -->
+  <!-- TARJETA PEDAGÓGICA INTERMEDIA ENTRE RONDAS -->
+  <div class="feedback-modal" id="feedback-modal">
+    <div class="feedback-title" id="feedback-title" style="color:var(--neon-green);">¡EXCELENTE REACCIÓN!</div>
+    <div class="feedback-desc" id="feedback-desc">
+      Detectaste la frenada del colectivo a tiempo. Mantener la distancia de 2 segundos te da el campo visual y el margen para frenar sin colisionar.
+    </div>
+    <button class="btn-next-round" id="btn-next-round">SIGUIENTE PELIGRO ➡️</button>
+  </div>
+
+  <!-- CONTROLES EN PANTALLA -->
   <div class="controls-overlay" id="controls-overlay" style="display:none;">
     <div class="steering-group">
-      <button class="ctrl-btn btn-steer" id="btn-left"><span class="material-symbols-outlined" style="font-size:28px;">arrow_back</span></button>
-      <button class="ctrl-btn btn-steer" id="btn-right"><span class="material-symbols-outlined" style="font-size:28px;">arrow_forward</span></button>
+      <button class="ctrl-btn" id="btn-left"><span class="material-symbols-outlined" style="font-size:30px;">arrow_back</span></button>
+      <button class="ctrl-btn" id="btn-right"><span class="material-symbols-outlined" style="font-size:30px;">arrow_forward</span></button>
     </div>
-    <div class="pedals-group">
-      <button class="ctrl-btn btn-brake" id="btn-brake"><span class="material-symbols-outlined" style="font-size:24px;">e99d</span>FRENO</button>
-      <button class="ctrl-btn btn-gas" id="btn-gas"><span class="material-symbols-outlined" style="font-size:24px;">speed</span>GAS</button>
+    <div class="hazard-group">
+      <button class="btn-hazard-action" id="btn-hazard">
+        <span class="material-symbols-outlined" style="font-size:26px;">warning</span>
+        ¡PELIGRO!
+      </button>
     </div>
   </div>
 
   <div id="canvas-container"></div>
 
-  <!-- PANTALLA DE INICIO (BRIEFING DE MISIÓN) -->
+  <!-- PANTALLA DE INICIO (TEST BRIEFING) -->
   <div class="overlay" id="start-screen">
-    <h1 style="color:var(--neon-blue); text-shadow: 0 0 20px var(--neon-blue);">ESCENARIO 1</h1>
-    <h2 style="color:#fff; font-size:18px; margin-bottom:15px; font-family:'Archivo Black';">SOBREPASO REGLAMENTARIO</h2>
+    <span class="material-symbols-outlined" style="font-size:54px; color:var(--neon-yellow); margin-bottom:12px;">visibility</span>
+    <h1 style="color:#fff;">PERCEPCIÓN DE PELIGROS 3D</h1>
+    <h2 style="color:var(--neon-blue); font-size:17px; margin-bottom:15px; font-family:'Archivo Black';">HAZARD PERCEPTION TEST</h2>
     <div class="mission-card">
-      <p><b>Situación cotidiana:</b> Conduces tu moto en una avenida detrás de un colectivo que circula a baja velocidad.</p>
+      <p>Conducirás tu moto en la ciudad. A lo largo del recorrido se presentarán <b>3 situaciones de riesgo vial</b> imprevistas.</p>
       <ul>
-        <li>🟡 <b>Línea continua:</b> Mantén la distancia detrás del colectivo. <b>¡Prohibido adelantar!</b></li>
-        <li>⚪ <b>Línea discontinua:</b> Cuando se habilite el sobrepaso y el carril izquierdo esté libre, acelera a fondo y rebasa.</li>
-        <li>➡️ <b>Retorno:</b> Vuelve al carril derecho una vez completado el sobrepaso.</li>
+        <li>👁️ <b>Observa el entorno:</b> Presta atención a vehículos, peatones y maniobras indebidas.</li>
+        <li>🚨 <b>Reacciona rápido:</b> Pulsa el botón rojo <b>¡PELIGRO!</b> (o la Barra Espaciadora) apenas veas que la amenaza comienza a formarse.</li>
+        <li>🎯 <b>Puntuación de 5 a 1 pts:</b> Cuanto antes anticipes el peligro, más puntos obtendrás.</li>
       </ul>
     </div>
-    <button class="btn-action" id="btn-start">COMENZAR DESAFÍO</button>
+    <button class="btn-action" id="btn-start">INICIAR TEST DE RIESGOS</button>
   </div>
 
-  <!-- PANTALLA DE VICTORIA (MISIÓN CUMPLIDA) -->
-  <div class="overlay" id="victory-screen" style="display:none;">
-    <h1 style="color:var(--neon-green); text-shadow: 0 0 25px var(--neon-green);">🏆 ¡MISIÓN CUMPLIDA!</h1>
-    <h2 style="color:#fff; font-size:18px; margin-bottom:14px; font-family:'Archivo Black';">MANIOBRA REGLAMENTARIA PERFECTA</h2>
-    <div class="mission-card" style="border-color: rgba(0,255,136,0.4);">
-      <p style="color:var(--neon-green); font-weight:bold; margin-bottom:8px;">Ley Nacional de Tránsito (Art. 47):</p>
-      <p>Has ejecutado el adelantamiento según la normativa vigente:</p>
-      <ul>
-        <li>✅ Tuviste la paciencia de esperar la <b>línea discontinua</b>.</li>
-        <li>✅ Verificaste la ausencia de vehículos en sentido contrario.</li>
-        <li>✅ Aceleraste con decisión durante el tramo permitido.</li>
-        <li>✅ Regresaste de inmediato al carril derecho con distancia de seguridad.</li>
-      </ul>
+  <!-- PANTALLA FINAL DE RESULTADOS -->
+  <div class="overlay" id="results-screen" style="display:none;">
+    <span class="material-symbols-outlined" style="font-size:56px; color:var(--neon-green); margin-bottom:10px;">verified</span>
+    <h1 style="color:#fff;" id="results-hero-title">¡EVALUACIÓN COMPLETADA!</h1>
+    <div style="font-family:'Archivo Black'; font-size:42px; color:var(--neon-green); margin-bottom:10px;" id="results-score">
+      15 / 15
     </div>
-    <button class="btn-action" onclick="location.reload()">REPETIR MISIÓN</button>
-    <a href="juegos.html" class="btn-action btn-secondary" style="text-decoration:none; display:inline-block;">VOLVER AL MENÚ</a>
-  </div>
-
-  <!-- PANTALLA DE COLISIÓN / FRACASO -->
-  <div class="overlay" id="game-over-screen" style="display:none;">
-    <h1 style="color:var(--danger); text-shadow: 0 0 20px var(--danger);" id="game-over-title">¡MISIÓN FALLIDA!</h1>
-    <p id="game-over-desc">Has colisionado mientras intentabas la maniobra.</p>
-    <div class="mission-card" id="game-over-tip">
-      <b>Consejo de Seguridad Vial:</b> En tramos con doble línea amarilla está estrictamente prohibido adelantarse, ya que no existe suficiente visibilidad y puedes encontrar tránsito en sentido contrario.
+    <div class="mission-card" style="text-align:center;">
+      <h3 id="results-rank" style="color:var(--neon-blue); font-size:18px; margin-bottom:8px;">CONDUCTOR DEFENSIVO EXPERTO</h3>
+      <p id="results-text">Has demostrado una capacidad sobresaliente para anticipar amenazas y reaccionar a tiempo, reduciendo a cero el riesgo de siniestros viales.</p>
     </div>
-    <button class="btn-action" onclick="location.reload()">REINTENTAR</button>
-    <a href="juegos.html" class="btn-action btn-secondary" style="text-decoration:none; display:inline-block;">VOLVER AL MENÚ</a>
+    <button class="btn-action" onclick="location.reload()">REINTENTAR TEST</button>
+    <a href="juegos.html" class="btn-action btn-secondary" style="text-decoration:none; display:inline-block;">VOLVER AL MENÚ DE JUEGOS</a>
   </div>
 
   <!-- Three.js from CDN -->
@@ -227,27 +253,59 @@
     let roadChunks = [];
     let windowTexture = null;
 
-    // SCENARIO STATE & TELEMETRY
+    // HAZARD PERCEPTION TEST DEFINITION
+    const HAZARDS = [
+      {
+        round: 1,
+        title: "Frenada Imprevista del Colectivo",
+        prompt: "Circulas detrás del colectivo en la avenida. Mantente alerta por si frena de golpe.",
+        triggerDistance: 35,
+        type: 'bus_brake',
+        pedagogicTip: "¡Excelente reflejo! Detectaste las luces de freno a tiempo. Mantener 2 segundos de distancia con vehículos grandes te otorga el campo visual y el margen para frenar sin colisionar (Ley 24.449, Art. 48).",
+        missedTip: "No anticipaste la frenada. Los vehículos pesados bloquean tu visión: mantén siempre distancia de seguridad para no quedar atrapado."
+      },
+      {
+        round: 2,
+        title: "Peatón Cruzando en la Senda",
+        prompt: "Te aproximas a una senda peatonal cebra. Observa si alguien inicia el cruce.",
+        triggerDistance: 80,
+        type: 'pedestrian_cross',
+        pedagogicTip: "¡Anticipación perfecta! Viste al peatón antes de llegar al cruce. En las sendas peatonales, la prioridad de paso es SIEMPRE del peatón (Ley 24.449, Art. 41).",
+        missedTip: "Cuidado con las sendas peatonales. En áreas urbanas los peatones pueden aparecer detrás de postes o árboles; disminuye la velocidad en cruces."
+      },
+      {
+        round: 3,
+        title: "Invasión de Carril Contrario",
+        prompt: "Tramo con doble línea amarilla. Observa con atención el tráfico que viene de frente.",
+        triggerDistance: 135,
+        type: 'oncoming_swerve',
+        pedagogicTip: "¡Gran visión preventiva! Detectaste la invasión de carril a la distancia. La conducción defensiva implica anticipar los errores de otros conductores.",
+        missedTip: "Peligro omitido. Las invasiones en contramano son letales: debes mirar lejos hacia el horizonte de la ruta para anticiparte a tiempo."
+      }
+    ];
+
+    // GAME & HAZARD STATE
     let isPlaying = false;
-    let distanceTraveled = 0; // in meters
-    let playerSpeed = 0.40;   // 0.15 (brake) to 0.85 (boost)
-    let targetSpeed = 0.40;
-    let targetX = 3.6;        // Start centered in right lane
+    let isPaused = false;
+    let currentRoundIndex = 0;
+    let totalScore = 0;
+    let distanceTraveled = 0;
+    let playerSpeed = 0.42;
+    let targetX = 3.6;
     const rightLaneX = 3.6;
     const leftLaneX = -3.6;
-    
-    let missionStage = 'following'; // 'following' | 'overtaking' | 'returning' | 'completed'
-    let currentZone = 'continuous'; // 'continuous' | 'discontinuous'
-    let licensePoints = 20;
-    let infractionTimer = 0;
 
-    // VEHICLES
+    let activeHazard = null;
+    let hazardStartTime = 0;
+    let hazardTriggered = false;
+    let roundResolved = false;
+
+    // VEHICLES & ACTORS
     let busGroup = null;
-    let oncomingCars = [];
-    let oncomingSpawnTimer = 0;
-
-    // Controls state
-    const input = { gas: false, brake: false, left: false, right: false };
+    let busBrakeLight = null;
+    let pedestrianGroup = null;
+    let oncomingCar = null;
+    let hazardMarker = null;
 
     // Models Cache
     let loadedModels = { moto: null, auto: null, colectivo: null };
@@ -255,27 +313,22 @@
     // DOM Elements
     const container = document.getElementById('canvas-container');
     const startScreen = document.getElementById('start-screen');
-    const victoryScreen = document.getElementById('victory-screen');
-    const gameOverScreen = document.getElementById('game-over-screen');
-    const gameOverTitle = document.getElementById('game-over-title');
-    const gameOverDesc = document.getElementById('game-over-desc');
-    const gameOverTip = document.getElementById('game-over-tip');
+    const resultsScreen = document.getElementById('results-screen');
     const hud = document.getElementById('hud');
     const controlsOverlay = document.getElementById('controls-overlay');
-    const vialBadge = document.getElementById('vial-badge');
-    const vialBadgeText = document.getElementById('vial-badge-text');
-    const speedVal = document.getElementById('speed-val');
-    const distVal = document.getElementById('dist-val');
-    const missionBanner = document.getElementById('mission-banner');
-    const licenseDisplay = document.getElementById('license-points');
-    const infractionToast = document.getElementById('infraction-toast');
+    const roundNumDisplay = document.getElementById('round-num');
+    const scoreValDisplay = document.getElementById('score-val');
+    const missionPrompt = document.getElementById('mission-prompt');
+    const reactionPopup = document.getElementById('reaction-popup');
+    const feedbackModal = document.getElementById('feedback-modal');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const feedbackDesc = document.getElementById('feedback-desc');
+    const btnNextRound = document.getElementById('btn-next-round');
 
     // WEB AUDIO API SYNTHESIZER
     let audioCtx = null;
     function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
     function playTone(freq, type, duration, vol = 0.15) {
       if (!audioCtx) return;
@@ -292,30 +345,29 @@
         osc.stop(audioCtx.currentTime + duration);
       } catch(e){}
     }
-    function playInfractionAlarm() {
-      playTone(400, 'sawtooth', 0.2, 0.25);
-      setTimeout(() => playTone(300, 'sawtooth', 0.25, 0.25), 140);
+    function playSuccessChime() {
+      playTone(587.33, 'triangle', 0.2, 0.2);
+      setTimeout(() => playTone(880.00, 'triangle', 0.35, 0.25), 120);
+    }
+    function playWarnBuzzer() {
+      playTone(220, 'sawtooth', 0.3, 0.2);
     }
     function playVictoryFanfare() {
-      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-        setTimeout(() => playTone(freq, 'triangle', 0.45, 0.25), i * 140);
+      [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+        setTimeout(() => playTone(f, 'triangle', 0.45, 0.25), i * 140);
       });
     }
 
     // Procedural Window Texture for Skyscrapers
     function createWindowTexture() {
       const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 512;
+      canvas.width = 256; canvas.height = 512;
       const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#10121d';
-      ctx.fillRect(0, 0, 256, 512);
-
+      ctx.fillStyle = '#10121d'; ctx.fillRect(0, 0, 256, 512);
       const rows = 16, cols = 8, padX = 8, padY = 8;
       const winW = (256 - (cols + 1) * padX) / cols;
       const winH = (512 - (rows + 1) * padY) / rows;
-      const colors = ['rgba(255,220,110,0.9)', 'rgba(180,240,255,0.85)', 'rgba(255,255,255,0.8)', '#191c2a', '#191c2a', '#191c2a'];
-
+      const colors = ['rgba(255,220,110,0.9)', 'rgba(180,240,255,0.85)', 'rgba(255,255,255,0.8)', '#191c2a', '#191c2a'];
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
@@ -323,33 +375,21 @@
         }
       }
       const texture = new THREE.CanvasTexture(canvas);
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
+      texture.wrapS = THREE.RepeatWrapping; texture.wrapT = THREE.RepeatWrapping;
       return texture;
     }
 
-    // Procedural Highway Safety Signboard
+    // Procedural Signboard
     function createSignTexture(text, subtitle) {
       const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 140;
+      canvas.width = 512; canvas.height = 140;
       const ctx = canvas.getContext('2d');
-
-      ctx.fillStyle = '#0a6332';
-      ctx.fillRect(0, 0, 512, 140);
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 6;
-      ctx.strokeRect(10, 10, 492, 120);
-
-      ctx.fillStyle = '#ffde59';
-      ctx.font = 'bold 22px Archivo, sans-serif';
-      ctx.textAlign = 'center';
+      ctx.fillStyle = '#0a6332'; ctx.fillRect(0, 0, 512, 140);
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6; ctx.strokeRect(10, 10, 492, 120);
+      ctx.fillStyle = '#ffde59'; ctx.font = 'bold 22px Archivo, sans-serif'; ctx.textAlign = 'center';
       ctx.fillText(subtitle.toUpperCase(), 256, 42);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '900 28px "Archivo Black", sans-serif';
+      ctx.fillStyle = '#ffffff'; ctx.font = '900 28px "Archivo Black", sans-serif';
       ctx.fillText(text.toUpperCase(), 256, 92);
-
       return new THREE.CanvasTexture(canvas);
     }
 
@@ -359,13 +399,14 @@
       chunk.position.z = -chunkIndex * CHUNK_LENGTH;
 
       // 1. Asphalt Road
-      const roadGeo = new THREE.BoxGeometry(22, 0.3, CHUNK_LENGTH);
-      const roadMat = new THREE.MeshStandardMaterial({ color: 0x161821, roughness: 0.85, metalness: 0.1 });
-      const road = new THREE.Mesh(roadGeo, roadMat);
+      const road = new THREE.Mesh(
+        new THREE.BoxGeometry(22, 0.3, CHUNK_LENGTH),
+        new THREE.MeshStandardMaterial({ color: 0x161821, roughness: 0.85, metalness: 0.1 })
+      );
       road.position.y = -0.15;
       chunk.add(road);
 
-      // 2. Continuous White Side Borders
+      // 2. White Borders
       const borderMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const borderGeo = new THREE.BoxGeometry(0.35, 0.05, CHUNK_LENGTH);
       const leftBorder = new THREE.Mesh(borderGeo, borderMat);
@@ -375,139 +416,88 @@
       rightBorder.position.set(9.8, 0.03, 0);
       chunk.add(rightBorder);
 
-      // 3. Center Markings: Double Yellow (Continuous) AND Dashed White (Discontinuous)
-      const doubleYellowGroup = new THREE.Group();
+      // 3. Center Double Yellow Line
       const yellowMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
       const lineGeo = new THREE.BoxGeometry(0.22, 0.04, CHUNK_LENGTH);
       const yLine1 = new THREE.Mesh(lineGeo, yellowMat);
       yLine1.position.set(-0.25, 0.03, 0);
-      doubleYellowGroup.add(yLine1);
+      chunk.add(yLine1);
       const yLine2 = new THREE.Mesh(lineGeo, yellowMat);
       yLine2.position.set(0.25, 0.03, 0);
-      doubleYellowGroup.add(yLine2);
-      chunk.add(doubleYellowGroup);
-      chunk.doubleYellow = doubleYellowGroup;
+      chunk.add(yLine2);
 
-      const dashedWhiteGroup = new THREE.Group();
-      const dashMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const dashGeo = new THREE.BoxGeometry(0.3, 0.04, 4);
-      const numDashes = Math.floor(CHUNK_LENGTH / 8);
-      for (let i = 0; i < numDashes; i++) {
-        const dash = new THREE.Mesh(dashGeo, dashMat);
-        dash.position.set(0, 0.03, -CHUNK_LENGTH / 2 + (i * 8) + 2);
-        dashedWhiteGroup.add(dash);
+      // 4. Zebra Crosswalk (at center of chunk)
+      const zebraMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const zebraGeo = new THREE.BoxGeometry(0.9, 0.04, 5);
+      for (let x = -8.5; x <= 8.5; x += 1.8) {
+        const zebra = new THREE.Mesh(zebraGeo, zebraMat);
+        zebra.position.set(x, 0.035, 0);
+        chunk.add(zebra);
       }
-      chunk.add(dashedWhiteGroup);
-      chunk.dashedWhite = dashedWhiteGroup;
 
-      // Initial visibility: Chunk 0 is continuous, others discontinuous
-      doubleYellowGroup.visible = (chunkIndex === 0);
-      dashedWhiteGroup.visible = (chunkIndex !== 0);
-
-      // 4. Sidewalks & Curbs
-      const sidewalkGeo = new THREE.BoxGeometry(10, 0.5, CHUNK_LENGTH);
+      // 5. Sidewalks & Curbs
       const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x3a3d4d, roughness: 0.9 });
-      const leftSidewalk = new THREE.Mesh(sidewalkGeo, sidewalkMat);
+      const leftSidewalk = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, CHUNK_LENGTH), sidewalkMat);
       leftSidewalk.position.set(-16, 0.1, 0);
       chunk.add(leftSidewalk);
-      const rightSidewalk = new THREE.Mesh(sidewalkGeo, sidewalkMat);
+      const rightSidewalk = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, CHUNK_LENGTH), sidewalkMat);
       rightSidewalk.position.set(16, 0.1, 0);
       chunk.add(rightSidewalk);
 
-      const curbGeo = new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH);
       const curbMat = new THREE.MeshStandardMaterial({ color: 0x6e7382, roughness: 0.7 });
-      const leftCurb = new THREE.Mesh(curbGeo, curbMat);
+      const leftCurb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH), curbMat);
       leftCurb.position.set(-11.1, 0.12, 0);
       chunk.add(leftCurb);
-      const rightCurb = new THREE.Mesh(curbGeo, curbMat);
+      const rightCurb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH), curbMat);
       rightCurb.position.set(11.1, 0.12, 0);
       chunk.add(rightCurb);
 
-      // 5. Streetlights & Trees
+      // 6. Streetlights
       const poleMat = new THREE.MeshStandardMaterial({ color: 0x252834, metalness: 0.8, roughness: 0.3 });
       const lampGlowMat = new THREE.MeshBasicMaterial({ color: 0xffea94 });
-      const lightPuddleMat = new THREE.MeshBasicMaterial({ color: 0xffea94, transparent: true, opacity: 0.14, blending: THREE.AdditiveBlending });
-      const lightPuddleGeo = new THREE.CircleGeometry(5, 16);
-      lightPuddleGeo.rotateX(-Math.PI / 2);
-
-      const lampSpacing = 35;
-      for (let z = -CHUNK_LENGTH / 2 + 10; z < CHUNK_LENGTH / 2; z += lampSpacing) {
+      for (let z = -CHUNK_LENGTH / 2 + 10; z < CHUNK_LENGTH / 2; z += 35) {
         [-11.6, 11.6].forEach(poleX => {
           const lampGroup = new THREE.Group();
           lampGroup.position.set(poleX, 0, z);
-
           const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 6.5, 8), poleMat);
           pole.position.y = 3.25;
           lampGroup.add(pole);
-
           const armDir = poleX < 0 ? 1 : -1;
           const arm = new THREE.Mesh(new THREE.BoxGeometry(2, 0.12, 0.12), poleMat);
           arm.position.set(armDir * 0.9, 6.4, 0);
           lampGroup.add(arm);
-
-          const lampHead = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.2, 0.5), poleMat);
-          lampHead.position.set(armDir * 1.8, 6.35, 0);
-          lampGroup.add(lampHead);
-
           const bulb = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.05, 0.4), lampGlowMat);
           bulb.position.set(armDir * 1.8, 6.25, 0);
           lampGroup.add(bulb);
-
-          const puddle = new THREE.Mesh(lightPuddleGeo, lightPuddleMat);
-          puddle.position.set(armDir * 3, 0.04, 0);
-          lampGroup.add(puddle);
-
           chunk.add(lampGroup);
-        });
-
-        [-13.5, 13.5].forEach(treeX => {
-          const treeGroup = new THREE.Group();
-          treeGroup.position.set(treeX, 0, z + lampSpacing / 2);
-          const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 2, 6), new THREE.MeshLambertMaterial({ color: 0x3d2714 }));
-          trunk.position.y = 1;
-          treeGroup.add(trunk);
-          const foliage = new THREE.Mesh(new THREE.ConeGeometry(1.6, 3.5, 6), new THREE.MeshLambertMaterial({ color: 0x1b4d2e }));
-          foliage.position.y = 3.2;
-          treeGroup.add(foliage);
-          chunk.add(treeGroup);
         });
       }
 
-      // 6. Modern City Skyscrapers
+      // 7. Skyscrapers
       const buildingConfigs = [
         { x: -26, w: 14, d: 18, h: 44, z: -20 },
         { x: -30, w: 18, d: 24, h: 68, z: -55 },
         { x: -25, w: 12, d: 16, h: 38, z: -90 },
-        { x: -32, w: 20, d: 22, h: 54, z: -125 },
         { x: 26, w: 14, d: 18, h: 48, z: -15 },
         { x: 30, w: 18, d: 22, h: 74, z: -50 },
-        { x: 25, w: 13, d: 15, h: 40, z: -85 },
-        { x: 31, w: 19, d: 25, h: 60, z: -120 }
+        { x: 25, w: 13, d: 15, h: 40, z: -85 }
       ];
-
       buildingConfigs.forEach(b => {
-        const bGeo = new THREE.BoxGeometry(b.w, b.h, b.d);
-        const bMat = new THREE.MeshLambertMaterial({ map: windowTexture, color: 0xcccccc });
-        const building = new THREE.Mesh(bGeo, bMat);
+        const building = new THREE.Mesh(
+          new THREE.BoxGeometry(b.w, b.h, b.d),
+          new THREE.MeshLambertMaterial({ map: windowTexture, color: 0xcccccc })
+        );
         building.position.set(b.x, b.h / 2, b.z + (CHUNK_LENGTH / 2));
         chunk.add(building);
-
-        const roofTrim = new THREE.Mesh(
-          new THREE.BoxGeometry(b.w + 0.4, 0.8, b.d + 0.4),
-          new THREE.MeshBasicMaterial({ color: Math.random() > 0.5 ? 0x00f3ff : 0xff007f })
-        );
-        roofTrim.position.set(b.x, b.h, b.z + (CHUNK_LENGTH / 2));
-        chunk.add(roofTrim);
       });
 
-      // 7. Overhead Gantry
+      // 8. Overhead Highway Gantry
       const signsList = [
-        { text: "DOBLE LÍNEA AMARILLA", sub: "Prohibido el Sobrepaso" },
-        { text: "INICIO ZONA DE SOBREPASO", sub: "Línea Discontinua Habilitada" },
-        { text: "BUENOS AIRES", sub: "Seguridad Vial es Compromiso de Todos" }
+        { text: "ATENCIÓN A LA VÍA", sub: "Anticipación de Peligros" },
+        { text: "PRIORIDAD PEATONAL", sub: "Disminuya la Velocidad" },
+        { text: "CONDUCCIÓN DEFENSIVA", sub: "Seguridad Vial BA" }
       ];
       const signInfo = signsList[chunkIndex % signsList.length];
-
       const gantryGroup = new THREE.Group();
       const trussMat = new THREE.MeshStandardMaterial({ color: 0x4a5060, metalness: 0.9, roughness: 0.3 });
       const leftPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
@@ -519,9 +509,10 @@
       const crossbar = new THREE.Mesh(new THREE.BoxGeometry(22.6, 0.4, 0.4), trussMat);
       crossbar.position.set(0, 7.4, 0);
       gantryGroup.add(crossbar);
-
-      const signTex = createSignTexture(signInfo.text, signInfo.sub);
-      const signMesh = new THREE.Mesh(new THREE.BoxGeometry(13, 3.2, 0.2), new THREE.MeshBasicMaterial({ map: signTex }));
+      const signMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(13, 3.2, 0.2),
+        new THREE.MeshBasicMaterial({ map: createSignTexture(signInfo.text, signInfo.sub) })
+      );
       signMesh.position.set(0, 5.8, 0);
       gantryGroup.add(signMesh);
       chunk.add(gantryGroup);
@@ -543,15 +534,15 @@
     function init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 4.5, 11);
-      camera.lookAt(0, 1.8, -20);
+      camera.position.set(0, 4.3, 10.5);
+      camera.lookAt(0, 1.7, -20);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
       scene.add(ambientLight);
       const hemiLight = new THREE.HemisphereLight(0xffffff, 0x111625, 0.85);
       hemiLight.position.set(0, 30, 0);
@@ -565,17 +556,16 @@
 
       initCityEnvironment();
 
-      // Fallback Player
-      const geometry = new THREE.BoxGeometry(1.5, 1.2, 3);
-      const material = new THREE.MeshLambertMaterial({ color: 0x00f3ff, emissive: 0x00f3ff, emissiveIntensity: 0.5 });
-      playerFallback = new THREE.Mesh(geometry, material);
-      
+      // Player Motorcycle Setup
+      playerFallback = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 1.2, 2.8),
+        new THREE.MeshLambertMaterial({ color: 0x00f3ff, emissive: 0x00f3ff, emissiveIntensity: 0.5 })
+      );
       player = new THREE.Group();
-      player.position.set(rightLaneX, 0, 5); // Start in Right Lane
-      targetX = rightLaneX;
+      player.position.set(rightLaneX, 0, 5);
       player.add(playerFallback);
 
-      // Moto Headlights
+      // Headlight
       const motoLight = new THREE.SpotLight(0xffffff, 3, 45, Math.PI / 6, 0.5, 1);
       motoLight.position.set(0, 1, -1);
       motoLight.target.position.set(0, 0, -20);
@@ -583,8 +573,11 @@
       player.add(motoLight.target);
       scene.add(player);
 
-      // Initialize Bus Leader
-      initBusLeader();
+      // Create Actors
+      createBusActor();
+      createPedestrianActor();
+      createOncomingCarActor();
+      createHazardMarker();
 
       // Load 3D Models
       loadModels();
@@ -594,103 +587,84 @@
       animate();
     }
 
-    // PERSISTENT BUS LEADER
-    function initBusLeader() {
+    // BUS ACTOR WITH BRAKE LIGHTS
+    function createBusActor() {
       busGroup = new THREE.Group();
-      busGroup.position.set(rightLaneX, 0, -22); // ~27m ahead of player
+      busGroup.position.set(rightLaneX, 0, -26);
 
-      // Fallback bus mesh
-      const busGeo = new THREE.BoxGeometry(3.2, 3.2, 8);
-      const busMat = new THREE.MeshLambertMaterial({ color: 0x0066cc });
-      const fallbackBus = new THREE.Mesh(busGeo, busMat);
+      const fallbackBus = new THREE.Mesh(
+        new THREE.BoxGeometry(3.2, 3.2, 8),
+        new THREE.MeshLambertMaterial({ color: 0x0066cc })
+      );
       fallbackBus.position.y = 1.6;
       busGroup.add(fallbackBus);
       busGroup.fallback = fallbackBus;
 
+      // Brake lights on back of bus
+      const brakeLightMat = new THREE.MeshBasicMaterial({ color: 0x330000 });
+      busBrakeLight = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.35, 0.2), brakeLightMat);
+      busBrakeLight.position.set(0, 1.5, 4.1);
+      busGroup.add(busBrakeLight);
+
       scene.add(busGroup);
     }
 
-    // ONCOMING CAR GENERATOR
-    function spawnOncomingCar() {
-      const carGroup = new THREE.Group();
-      carGroup.position.set(leftLaneX, 0, -130);
+    // PEDESTRIAN 3D ACTOR
+    function createPedestrianActor() {
+      pedestrianGroup = new THREE.Group();
+      pedestrianGroup.position.set(11, 0, -100); // starts waiting on sidewalk
 
-      if (loadedModels.auto) {
-        carGroup.add(loadedModels.auto.clone());
-      } else {
-        const carGeo = new THREE.BoxGeometry(2.4, 1.5, 4.5);
-        const carMat = new THREE.MeshLambertMaterial({ color: 0xff0055 });
-        const carMesh = new THREE.Mesh(carGeo, carMat);
-        carMesh.position.y = 0.75;
-        carGroup.add(carMesh);
-      }
+      // Body
+      const bodyMat = new THREE.MeshLambertMaterial({ color: 0xffaa00 }); // bright safety hoodie
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 1.1, 8), bodyMat);
+      body.position.y = 1.1;
+      pedestrianGroup.add(body);
 
-      scene.add(carGroup);
-      oncomingCars.push(carGroup);
+      // Head
+      const headMat = new THREE.MeshLambertMaterial({ color: 0xffdbac });
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), headMat);
+      head.position.y = 1.85;
+      pedestrianGroup.add(head);
+
+      // Legs
+      const legMat = new THREE.MeshLambertMaterial({ color: 0x223344 });
+      const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.65, 0.18), legMat);
+      leg1.position.set(-0.15, 0.35, 0);
+      pedestrianGroup.add(leg1);
+      const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.65, 0.18), legMat);
+      leg2.position.set(0.15, 0.35, 0);
+      pedestrianGroup.add(leg2);
+
+      scene.add(pedestrianGroup);
     }
 
-    // CONTROLS & LISTENERS
-    function setupControls() {
-      // Drag/touch steering
-      let isDragging = false;
-      let startX = 0, startPlayerX = 0;
+    // ONCOMING SWERVING CAR ACTOR
+    function createOncomingCarActor() {
+      oncomingCar = new THREE.Group();
+      oncomingCar.position.set(leftLaneX, 0, -200);
 
-      const onStart = (e) => {
-        if (!isPlaying) return;
-        initAudio();
-        isDragging = true;
-        startX = e.clientX || (e.touches && e.touches[0].clientX);
-        startPlayerX = targetX;
-      };
-      const onMove = (e) => {
-        if (!isDragging || !isPlaying) return;
-        let clientX = e.clientX || (e.touches && e.touches[0].clientX);
-        let deltaX = clientX - startX;
-        let movement = (deltaX / window.innerWidth) * 16;
-        targetX = Math.max(-6.5, Math.min(6.5, startPlayerX + movement));
-      };
-      const onEnd = () => { isDragging = false; };
+      const carMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(2.4, 1.5, 4.5),
+        new THREE.MeshLambertMaterial({ color: 0xff0055 })
+      );
+      carMesh.position.y = 0.75;
+      oncomingCar.add(carMesh);
+      oncomingCar.fallback = carMesh;
 
-      document.addEventListener('mousedown', onStart);
-      document.addEventListener('touchstart', onStart, {passive: true});
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('touchmove', onMove, {passive: true});
-      document.addEventListener('mouseup', onEnd);
-      document.addEventListener('touchend', onEnd);
-
-      // Keyboard Controls
-      window.addEventListener('keydown', (e) => {
-        initAudio();
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') input.gas = true;
-        if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') input.brake = true;
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = true;
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = true;
-      });
-      window.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') input.gas = false;
-        if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') input.brake = false;
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') input.left = false;
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') input.right = false;
-      });
-
-      // Touch Buttons
-      const bindBtn = (id, key) => {
-        const btn = document.getElementById(id);
-        const start = (e) => { e.preventDefault(); initAudio(); input[key] = true; btn.classList.add('active'); };
-        const end = (e) => { e.preventDefault(); input[key] = false; btn.classList.remove('active'); };
-        btn.addEventListener('mousedown', start);
-        btn.addEventListener('touchstart', start, {passive: false});
-        btn.addEventListener('mouseup', end);
-        btn.addEventListener('mouseleave', end);
-        btn.addEventListener('touchend', end);
-      };
-      bindBtn('btn-gas', 'gas');
-      bindBtn('btn-brake', 'brake');
-      bindBtn('btn-left', 'left');
-      bindBtn('btn-right', 'right');
+      scene.add(oncomingCar);
     }
 
-    // 3D MODELS LOADER
+    // FLOATING HAZARD MARKER TARGET
+    function createHazardMarker() {
+      const ringGeo = new THREE.RingGeometry(1.4, 1.8, 24);
+      ringGeo.rotateX(-Math.PI / 2);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0044, side: THREE.DoubleSide });
+      hazardMarker = new THREE.Mesh(ringGeo, ringMat);
+      hazardMarker.visible = false;
+      scene.add(hazardMarker);
+    }
+
+    // LOAD 3D GLTF MODELS
     function loadModels() {
       const loader = new THREE.GLTFLoader();
       
@@ -705,26 +679,20 @@
           rawModel.position.y = -rawBox.min.y;
           rawModel.position.z = -rawCenter.z;
 
-          if (rawSize.x > rawSize.z * 1.15) {
-            rawModel.rotation.y = Math.PI / 2;
-          }
-          
           const maxDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
-          let targetDim = key === 'moto' ? 2.5 : (key === 'colectivo' ? 7.8 : 4.6);
+          let targetDim = key === 'moto' ? 2.4 : (key === 'colectivo' ? 7.8 : 4.6);
           const scale = targetDim / maxDim;
 
           const container = new THREE.Group();
           container.add(rawModel);
           container.scale.set(scale, scale, scale);
 
-          // Moto faces forward down road (-Z)
+          // Moto faces forward down road (-Z) with completely straight handlebar
           if (key === 'moto') {
             container.rotation.y = Math.PI;
           } else if (key === 'colectivo') {
-            // Bus faces forward in same direction as player (-Z)
             container.rotation.y = Math.PI;
           } else {
-            // Oncoming cars face oncoming towards player (+Z)
             container.rotation.y = 0;
           }
           
@@ -747,7 +715,186 @@
           busGroup.add(loadedModels.colectivo);
         }
       });
-      loadModel('assets/models/auto.glb', 'auto');
+      loadModel('assets/models/auto.glb', 'auto', () => {
+        if (oncomingCar) {
+          oncomingCar.remove(oncomingCar.fallback);
+          oncomingCar.add(loadedModels.auto);
+        }
+      });
+    }
+
+    // CONTROLS AND EVENT LISTENERS
+    function setupControls() {
+      // Button steering
+      document.getElementById('btn-left').addEventListener('click', () => {
+        targetX = Math.max(-5.5, targetX - 1.6);
+      });
+      document.getElementById('btn-right').addEventListener('click', () => {
+        targetX = Math.min(5.5, targetX + 1.6);
+      });
+
+      // BIG HAZARD ACTION BUTTON
+      const onHazardPress = (e) => {
+        if (e) e.preventDefault();
+        initAudio();
+        handleHazardReaction();
+      };
+      const btnHazard = document.getElementById('btn-hazard');
+      btnHazard.addEventListener('click', onHazardPress);
+      btnHazard.addEventListener('touchstart', onHazardPress, {passive: false});
+
+      // Keyboard Controls
+      window.addEventListener('keydown', (e) => {
+        initAudio();
+        if (e.code === 'Space' || e.key === ' ') {
+          handleHazardReaction();
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+          targetX = Math.max(-5.5, targetX - 0.8);
+        }
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+          targetX = Math.min(5.5, targetX + 0.8);
+        }
+      });
+
+      // Next Round Button
+      btnNextRound.addEventListener('click', advanceToNextRound);
+    }
+
+    // HAZARD REACTION LOGIC (Anticipation Window)
+    function handleHazardReaction() {
+      if (!isPlaying || isPaused) return;
+
+      if (activeHazard && hazardTriggered && !roundResolved) {
+        // Player reacted during active hazard!
+        roundResolved = true;
+        const elapsed = performance.now() - hazardStartTime;
+        let points = 0;
+        let ratingClass = 'warn';
+        let ratingText = '';
+
+        if (elapsed < 1200) {
+          points = 5;
+          ratingClass = '';
+          ratingText = `⚡ ¡ANTICIPACIÓN EXCELENTE! ${Math.floor(elapsed)}ms (+5 PTS)`;
+        } else if (elapsed < 2100) {
+          points = 3;
+          ratingClass = 'warn';
+          ratingText = `⚡ ¡BUENA REACCIÓN! ${Math.floor(elapsed)}ms (+3 PTS)`;
+        } else if (elapsed < 3200) {
+          points = 1;
+          ratingClass = 'warn';
+          ratingText = `⚠️ REACCIÓN TARDÍA ${Math.floor(elapsed)}ms (+1 PT)`;
+        } else {
+          points = 0;
+          ratingClass = 'bad';
+          ratingText = `❌ FUERA DE TIEMPO (0 PTS)`;
+        }
+
+        totalScore += points;
+        scoreValDisplay.innerText = totalScore;
+        playSuccessChime();
+
+        // Update dot
+        const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
+        if (dot) dot.className = `round-dot done-${points}`;
+
+        // Show popup
+        reactionPopup.className = `reaction-popup show ${ratingClass}`;
+        reactionPopup.innerText = ratingText;
+
+        // Pause scene and show feedback modal
+        freezeSceneForFeedback(points > 0, HAZARDS[currentRoundIndex].pedagogicTip);
+      } else {
+        // False Alarm (clicked when no hazard was developing)
+        playWarnBuzzer();
+        reactionPopup.className = 'reaction-popup show warn';
+        reactionPopup.innerText = '⚠️ CUIDADO: No hay ningún peligro desarrollándose';
+        setTimeout(() => { reactionPopup.className = 'reaction-popup'; }, 1500);
+      }
+    }
+
+    function freezeSceneForFeedback(success, explanation) {
+      isPaused = true;
+      setTimeout(() => { reactionPopup.className = 'reaction-popup'; }, 2200);
+
+      // Position Hazard Marker on the active threat
+      if (activeHazard.type === 'bus_brake') {
+        hazardMarker.position.set(busGroup.position.x, 0.1, busGroup.position.z + 2);
+      } else if (activeHazard.type === 'pedestrian_cross') {
+        hazardMarker.position.set(pedestrianGroup.position.x, 0.1, pedestrianGroup.position.z);
+      } else if (activeHazard.type === 'oncoming_swerve') {
+        hazardMarker.position.set(oncomingCar.position.x, 0.1, oncomingCar.position.z);
+      }
+      hazardMarker.visible = true;
+
+      feedbackTitle.innerText = success ? "¡PELIGRO ANTICIPADO!" : "PELIGRO OMITIDO";
+      feedbackTitle.style.color = success ? "var(--neon-green)" : "var(--danger)";
+      feedbackDesc.innerText = explanation;
+      feedbackModal.style.display = 'block';
+    }
+
+    function advanceToNextRound() {
+      feedbackModal.style.display = 'none';
+      hazardMarker.visible = false;
+      currentRoundIndex++;
+
+      if (currentRoundIndex < HAZARDS.length) {
+        // Prepare next round
+        activeHazard = HAZARDS[currentRoundIndex];
+        hazardTriggered = false;
+        roundResolved = false;
+        roundNumDisplay.innerText = currentRoundIndex + 1;
+        missionPrompt.innerHTML = `👀 <b>Peligro ${currentRoundIndex + 1}:</b> ${activeHazard.prompt}`;
+        
+        const nextDot = document.getElementById(`dot-${currentRoundIndex + 1}`);
+        if (nextDot) nextDot.className = 'round-dot active';
+
+        // Reset positions for next scenario
+        resetActorsForRound(currentRoundIndex);
+        isPaused = false;
+      } else {
+        // End of test - Show Final Results
+        finishTest();
+      }
+    }
+
+    function resetActorsForRound(idx) {
+      if (idx === 1) {
+        // Round 2: Pedestrian crossing
+        busGroup.position.set(rightLaneX, 0, -80); // bus is far ahead
+        busBrakeLight.material.color.setHex(0x330000);
+        pedestrianGroup.position.set(10.5, 0, -45); // waiting on sidewalk ahead
+      } else if (idx === 2) {
+        // Round 3: Oncoming swerving car
+        busGroup.position.set(rightLaneX, 0, -120);
+        pedestrianGroup.position.set(10.5, 0, -200);
+        oncomingCar.position.set(leftLaneX, 0, -90); // approaching
+      }
+    }
+
+    function finishTest() {
+      isPlaying = false;
+      playVictoryFanfare();
+      hud.style.display = 'none';
+      controlsOverlay.style.display = 'none';
+      
+      document.getElementById('results-score').innerText = `${totalScore} / 15`;
+      const rankTitle = document.getElementById('results-rank');
+      const rankText = document.getElementById('results-text');
+
+      if (totalScore >= 13) {
+        rankTitle.innerText = "🏆 CONDUCTOR PREVENTIVO EXPERTO";
+        rankText.innerText = "Has demostrado una capacidad sobresaliente para anticipar amenazas y reaccionar con máximo margen de seguridad.";
+      } else if (totalScore >= 8) {
+        rankTitle.innerText = "🟡 CONDUCTOR EN FORMACIÓN";
+        rankText.innerText = "Buenos reflejos, pero necesitas prestar mayor atención visual temprana para frenar con mayor distancia de seguridad.";
+      } else {
+        rankTitle.innerText = "⚠️ RIESGO AL VOLANTE";
+        rankText.innerText = "No lograste anticipar las amenazas a tiempo. Recuerda que la vista siempre debe estar varios metros por delante del vehículo.";
+      }
+
+      resultsScreen.style.display = 'flex';
     }
 
     function onWindowResize() {
@@ -756,190 +903,88 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    // AABB Collision check
-    function checkCollision(obj1, obj2) {
-      const box1 = new THREE.Box3().setFromObject(obj1);
-      const box2 = new THREE.Box3().setFromObject(obj2);
-      box1.expandByScalar(-0.35);
-      box2.expandByScalar(-0.35);
-      return box1.intersectsBox(box2);
-    }
-
-    function triggerInfraction() {
-      if (infractionTimer > 0) return;
-      infractionTimer = 75; // ~1.2s cooldown
-      licensePoints = Math.max(0, licensePoints - 5);
-      licenseDisplay.innerText = `LICENCIA: ${licensePoints} PTS`;
-      
-      infractionToast.style.display = 'block';
-      playInfractionAlarm();
-      setTimeout(() => { infractionToast.style.display = 'none'; }, 2000);
-
-      if (licensePoints <= 0) {
-        showGameOver(
-          "¡LICENCIA SUSPENDIDA!",
-          "Has acumulado faltas graves por invadir repetidamente el carril contrario en zona de doble línea amarilla."
-        );
-      }
-    }
-
-    function showGameOver(title, desc) {
-      isPlaying = false;
-      gameOverTitle.innerText = title;
-      gameOverDesc.innerText = desc;
-      gameOverScreen.style.display = 'flex';
-      hud.style.display = 'none';
-      controlsOverlay.style.display = 'none';
-    }
-
-    function showVictory() {
-      isPlaying = false;
-      playVictoryFanfare();
-      victoryScreen.style.display = 'flex';
-      hud.style.display = 'none';
-      controlsOverlay.style.display = 'none';
-    }
-
-    // MAIN GAME LOOP & SCENARIO ENGINE
+    // MAIN GAME LOOP
     function animate() {
       requestAnimationFrame(animate);
 
-      if (isPlaying) {
-        // 1. Process Speed & Inputs
-        if (input.gas) {
-          targetSpeed = 0.85; // Accelerate for overtake
-        } else if (input.brake) {
-          targetSpeed = 0.18; // Slow down
-        } else {
-          targetSpeed = 0.42; // Normal cruising behind bus
-        }
-        playerSpeed += (targetSpeed - playerSpeed) * 0.08;
-
-        // Button Steering
-        if (input.left) targetX = Math.max(-6.5, targetX - 0.22);
-        if (input.right) targetX = Math.min(6.5, targetX + 0.22);
-
-        // Update Distance Traveled
+      if (isPlaying && !isPaused) {
         distanceTraveled += playerSpeed * 0.85;
-        const currentMeters = Math.floor(distanceTraveled);
-        distVal.innerText = currentMeters;
-        speedVal.innerText = Math.floor(playerSpeed * 100);
 
-        if (infractionTimer > 0) infractionTimer--;
-
-        // 2. Road Chunks Scrolling & Dynamic Center Lines
-        const isNowContinuous = distanceTraveled < 115;
-        currentZone = isNowContinuous ? 'continuous' : 'discontinuous';
-
+        // Move Road Chunks for infinite city
         roadChunks.forEach(chunk => {
           chunk.position.z += playerSpeed;
           if (chunk.position.z > CHUNK_LENGTH) {
             chunk.position.z -= CHUNK_LENGTH * NUM_CHUNKS;
-            // Update line visibility on recycled chunk based on track distance
-            if (chunk.doubleYellow && chunk.dashedWhite) {
-              chunk.doubleYellow.visible = isNowContinuous;
-              chunk.dashedWhite.visible = !isNowContinuous;
-            }
           }
         });
 
-        // 3. Smooth Player Steering & Lean
+        // Smooth player steering & tilt
         player.position.x += (targetX - player.position.x) * 0.12;
-        player.rotation.z = -(targetX - player.position.x) * 0.06;
+        player.rotation.z = -(targetX - player.position.x) * 0.05;
 
-        // 4. Move Bus Leader (Relative to player speed)
-        // Bus drives at 0.38
-        const busBaseSpeed = 0.38;
-        busGroup.position.z += (playerSpeed - busBaseSpeed);
-
-        // Keep bus in right lane
-        busGroup.position.x = rightLaneX;
-
-        // Prevent bus from moving unrealistically far ahead when braking
-        if (busGroup.position.z < -65) {
-          busGroup.position.z = -65;
-        }
-
-        // 5. Oncoming Traffic Management
-        oncomingSpawnTimer++;
-        // In continuous zone: spawn oncoming cars frequently to punish reckless lane invasion
-        if (currentZone === 'continuous' && oncomingSpawnTimer > 120) {
-          spawnOncomingCar();
-          oncomingSpawnTimer = 0;
-        } else if (distanceTraveled >= 115 && distanceTraveled < 130 && oncomingCars.length === 0) {
-          // Last oncoming car clearing the lane right before overtake window
-          spawnOncomingCar();
-        }
-
-        for (let i = oncomingCars.length - 1; i >= 0; i--) {
-          const car = oncomingCars[i];
-          car.position.z += playerSpeed + 0.45; // Approaching at high speed
-
-          // Check Head-on Collision
-          if (checkCollision(player, car)) {
-            showGameOver(
-              "¡COLISIÓN FRONTAL EN CONTRAMANO!",
-              "Invadir el carril contrario con tráfico de frente es la causa de los siniestros viales más graves. Respeta siempre la señalización."
-            );
-            return;
+        // SCENARIO EVENT MANAGEMENT
+        const hazard = HAZARDS[currentRoundIndex];
+        if (hazard) {
+          // Trigger condition
+          if (!hazardTriggered && distanceTraveled >= hazard.triggerDistance) {
+            hazardTriggered = true;
+            hazardStartTime = performance.now();
+            activeHazard = hazard;
           }
 
-          // Remove if passed behind camera
-          if (car.position.z > 25) {
-            scene.remove(car);
-            oncomingCars.splice(i, 1);
-          }
-        }
+          // Execute developing hazard in 3D
+          if (hazardTriggered && !roundResolved) {
+            const elapsed = performance.now() - hazardStartTime;
 
-        // Check Rear/Side Collision with Bus
-        if (checkCollision(player, busGroup)) {
-          showGameOver(
-            "¡COLISIÓN CON EL COLECTIVO!",
-            "Has impactado al colectivo. Mantén siempre una distancia prudencial de seguimiento (mínimo 2 segundos de separación)."
-          );
-          return;
-        }
+            if (hazard.type === 'bus_brake') {
+              // Bus brake lights flash bright red
+              busBrakeLight.material.color.setHex(0xff0000);
+              // Bus decelerates rapidly towards player
+              busGroup.position.z += (playerSpeed - 0.12);
 
-        // 6. SCENARIO RULES & STAGE STATE MACHINE
-        if (currentZone === 'continuous') {
-          // Continuous Zone
-          vialBadge.className = 'vial-badge badge-forbidden';
-          vialBadgeText.innerText = 'LÍNEA CONTINUA — PROHIBIDO ADELANTAR';
+              // Timeout check: if player never reacts and gets dangerously close
+              if (busGroup.position.z > player.position.z - 3.5 || elapsed > 3500) {
+                roundResolved = true;
+                const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
+                if (dot) dot.className = 'round-dot done-0';
+                playWarnBuzzer();
+                freezeSceneForFeedback(false, hazard.missedTip);
+              }
+            } else if (hazard.type === 'pedestrian_cross') {
+              // Pedestrian steps onto the zebra crossing across lanes
+              pedestrianGroup.position.z += playerSpeed;
+              pedestrianGroup.position.x -= 0.065; // walks from right to left
 
-          // Infraction rule: If player invades the left lane (x < 0.2)
-          if (player.position.x < 0.2) {
-            triggerInfraction();
-          }
-        } else {
-          // Discontinuous Zone
-          if (missionStage === 'following') {
-            vialBadge.className = 'vial-badge badge-allowed';
-            vialBadgeText.innerText = 'LÍNEA DISCONTINUA — HABILITADO';
-            missionBanner.innerHTML = '<b>¡Oportunidad de sobrepaso!</b> Verifica carril libre, acelera con GAS y rebasa por la izquierda.';
-            
-            // If player steers into left lane to overtake
-            if (player.position.x < -1.0) {
-              missionStage = 'overtaking';
-            }
-          } else if (missionStage === 'overtaking') {
-            vialBadge.className = 'vial-badge badge-warning';
-            vialBadgeText.innerText = 'SOBREPASANDO — MANTÉN VELOCIDAD';
-            missionBanner.innerHTML = '<b>Rebasando al colectivo:</b> Mantén el acelerador presionado hasta superar completamente al vehículo.';
+              // Leg walk animation
+              const walkPhase = Math.sin(Date.now() * 0.012);
+              if (pedestrianGroup.children[2] && pedestrianGroup.children[3]) {
+                pedestrianGroup.children[2].rotation.x = walkPhase * 0.4;
+                pedestrianGroup.children[3].rotation.x = -walkPhase * 0.4;
+              }
 
-            // Check if player has safely passed the bus
-            // Player is at z = 5. When bus is behind the player (z > 12)
-            if (busGroup.position.z > player.position.z + 6) {
-              missionStage = 'returning';
-            }
-          } else if (missionStage === 'returning') {
-            vialBadge.className = 'vial-badge badge-allowed';
-            vialBadgeText.innerText = 'RETORNO SEGURO AL CARRIL';
-            missionBanner.innerHTML = '<b>¡Completado!</b> Regresa de inmediato a tu carril derecho con seguridad.';
+              // Timeout check
+              if (pedestrianGroup.position.z > player.position.z - 2 || elapsed > 3500) {
+                roundResolved = true;
+                const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
+                if (dot) dot.className = 'round-dot done-0';
+                playWarnBuzzer();
+                freezeSceneForFeedback(false, hazard.missedTip);
+              }
+            } else if (hazard.type === 'oncoming_swerve') {
+              // Oncoming car swerves across double yellow into player lane
+              oncomingCar.position.z += playerSpeed + 0.45;
+              if (oncomingCar.position.x < rightLaneX) {
+                oncomingCar.position.x += 0.045; // invading right lane
+              }
 
-            // Player returns to right lane (x > 1.8)
-            if (player.position.x > 1.8) {
-              missionStage = 'completed';
-              showVictory();
+              // Timeout check
+              if (oncomingCar.position.z > player.position.z - 4 || elapsed > 3500) {
+                roundResolved = true;
+                const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
+                if (dot) dot.className = 'round-dot done-0';
+                playWarnBuzzer();
+                freezeSceneForFeedback(false, hazard.missedTip);
+              }
             }
           }
         }
@@ -948,39 +993,36 @@
       renderer.render(scene, camera);
     }
 
-    // START BUTTON LISTENER
+    // START TEST BUTTON LISTENER
     document.getElementById('btn-start').addEventListener('click', () => {
       initAudio();
       startScreen.style.display = 'none';
       hud.style.display = 'flex';
       controlsOverlay.style.display = 'flex';
-      
+
+      currentRoundIndex = 0;
+      totalScore = 0;
       distanceTraveled = 0;
-      playerSpeed = 0.40;
-      targetSpeed = 0.40;
-      targetX = rightLaneX;
-      player.position.x = rightLaneX;
-      licensePoints = 20;
-      missionStage = 'following';
-      currentZone = 'continuous';
-      infractionTimer = 0;
+      scoreValDisplay.innerText = '0';
+      roundNumDisplay.innerText = '1';
+      activeHazard = HAZARDS[0];
+      hazardTriggered = false;
+      roundResolved = false;
+      isPaused = false;
 
-      // Reset Bus
-      busGroup.position.set(rightLaneX, 0, -22);
+      // Reset dots
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) dot.className = i === 1 ? 'round-dot active' : 'round-dot';
+      }
 
-      // Clear Oncoming
-      oncomingCars.forEach(car => scene.remove(car));
-      oncomingCars = [];
-      oncomingSpawnTimer = 0;
+      missionPrompt.innerHTML = `👀 <b>Peligro 1:</b> ${activeHazard.prompt}`;
 
-      // Reset chunks to continuous at start
-      roadChunks.forEach((chunk, idx) => {
-        chunk.position.z = -idx * CHUNK_LENGTH;
-        if (chunk.doubleYellow && chunk.dashedWhite) {
-          chunk.doubleYellow.visible = (idx === 0);
-          chunk.dashedWhite.visible = (idx !== 0);
-        }
-      });
+      // Reset actor positions
+      busGroup.position.set(rightLaneX, 0, -26);
+      busBrakeLight.material.color.setHex(0x330000);
+      pedestrianGroup.position.set(11, 0, -100);
+      oncomingCar.position.set(leftLaneX, 0, -200);
 
       isPlaying = true;
     });
