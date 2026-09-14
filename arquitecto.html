@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Arquitecto Vial — Seguridad Vial BA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #07090a;
+      --road: #14181a;
+      --neon-blue: #00f3ff;
+      --neon-pink: #ff007f;
+      --neon-green: #00ff66;
+      --text: #f0f4f5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; }
+    body { height: 100vh; display: flex; flex-direction: column; background-color: var(--bg); font-family: 'Archivo', sans-serif; color: var(--text); overflow: hidden; }
+
+    /* HEADER */
+    .app-header {
+      width: 100%; background: rgba(7, 9, 10, 0.85); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding: 12px 20px; z-index: 50;
+    }
+    .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; }
+    .header-title-text { font-family: 'Archivo Black', sans-serif; font-size: 16px; letter-spacing: 0.5px; color: var(--neon-blue); text-transform: uppercase; text-shadow: 0 0 10px rgba(0,243,255,0.4); }
+
+    /* HUD */
+    .hud { position: absolute; top: 70px; left: 16px; right: 16px; display: flex; justify-content: space-between; z-index: 10; pointer-events: none; }
+    .score-box { background: rgba(20,24,26,0.7); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; }
+    .score-val { font-family: 'Archivo Black'; font-size: 18px; color: var(--neon-green); }
+
+    /* GAME ARENA */
+    .game-arena { flex: 1; position: relative; width: 100%; display: flex; justify-content: center; align-items: center; }
+    canvas { background: var(--bg); width: 100%; height: 100%; }
+
+    /* TOOLBOX */
+    .toolbox { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(20, 24, 26, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 12px 20px; display: flex; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 20; pointer-events: auto; }
+    .tool-item { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: grab; transition: all 0.2s; }
+    .tool-item .material-symbols-outlined { color: #fff; font-size: 28px; }
+    .tool-item:active { transform: scale(1.1); background: rgba(255,255,255,0.1); }
+    .tool-count { font-size: 10px; font-weight: 800; margin-top: -5px; }
+
+    /* DRAG GHOST */
+    .drag-ghost { position: absolute; pointer-events: none; z-index: 100; transform: translate(-50%, -50%); opacity: 0.8; display: none; }
+    .drag-ghost .material-symbols-outlined { font-size: 40px; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+
+    /* FX */
+    .screen-shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+
+    /* OVERLAY */
+    .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+    .overlay h1 { color: var(--neon-blue); font-family: 'Archivo Black'; margin-bottom: 10px; }
+    .btn-start { margin-top: 20px; padding: 14px 30px; background: var(--neon-blue); color: #000; border: none; border-radius: 12px; font-family: 'Archivo Black'; font-size: 16px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="juegos.html" class="btn-back"><span class="material-symbols-outlined">arrow_back</span></a>
+        <span class="header-title-text">Arquitecto Vial</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="game-arena" id="arena">
+    <div class="hud">
+      <div class="score-box">
+        <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">people</span>
+        <span class="score-val" id="score-display">0</span>
+      </div>
+      <div class="score-box" style="border-color: rgba(255,68,68,0.3);">
+        <span class="material-symbols-outlined" style="color:var(--neon-pink); font-size:18px;">car_crash</span>
+        <span class="score-val" id="crashes-display" style="color:var(--neon-pink);">0</span>/3
+      </div>
+    </div>
+
+    <canvas id="sim-canvas"></canvas>
+
+    <div class="toolbox">
+      <div class="tool-item" id="tool-stop" data-type="stop">
+        <span class="material-symbols-outlined" style="color:#ff4444;">front_hand</span>
+        <span class="tool-count" id="count-stop">∞</span>
+      </div>
+    </div>
+
+    <div class="drag-ghost" id="drag-ghost">
+      <span class="material-symbols-outlined" style="color:#ff4444;">front_hand</span>
+    </div>
+
+    <div class="overlay" id="start-screen">
+      <h1>GESTIÓN DE TRÁFICO</h1>
+      <p style="color:#aaa; font-size:14px; max-width: 300px;">Arrastra señales de PARE hacia la intersección para evitar que los vehículos choquen.</p>
+      <button class="btn-start" id="btn-start">INICIAR SIMULACIÓN</button>
+    </div>
+
+    <div class="overlay" id="game-over-screen" style="display:none;">
+      <h1 style="color:var(--neon-pink);">¡DEMASIADOS CHOQUES!</h1>
+      <p style="color:#aaa;">Puntos finales: <span id="final-score" style="color:#fff; font-weight:bold;"></span></p>
+      <button class="btn-start" onclick="location.reload()">REINTENTAR</button>
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('sim-canvas');
+    const ctx = canvas.getContext('2d');
+    const arena = document.getElementById('arena');
+    
+    let width, height;
+    let cars = [];
+    let signs = [];
+    let particles = [];
+    
+    let score = 0;
+    let crashes = 0;
+    let isPlaying = false;
+    let spawnRate = 2000;
+    let lastSpawn = 0;
+
+    // Resize canvas
+    function resize() {
+      const rect = arena.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      width = canvas.width;
+      height = canvas.height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Game Objects
+    class Car {
+      constructor() {
+        const routes = [
+          { axis: 'x', dir: 1, x: -40, y: height/2 - 25, w: 40, h: 20 }, // Left to Right
+          { axis: 'x', dir: -1, x: width + 40, y: height/2 + 5, w: 40, h: 20 }, // Right to Left
+          { axis: 'y', dir: 1, x: width/2 - 25, y: -40, w: 20, h: 40 }, // Top to Bottom
+          { axis: 'y', dir: -1, x: width/2 + 5, y: height + 40, w: 20, h: 40 } // Bottom to Top
+        ];
+        const route = routes[Math.floor(Math.random() * routes.length)];
+        this.axis = route.axis;
+        this.dir = route.dir;
+        this.x = route.x;
+        this.y = route.y;
+        this.w = route.w;
+        this.h = route.h;
+        this.baseSpeed = 2 + Math.random() * 1.5;
+        this.speed = this.baseSpeed;
+        this.color = Math.random() > 0.5 ? '#00f3ff' : '#00ff66';
+        this.stoppedTime = 0;
+        this.hasScored = false;
+        this.dead = false;
+      }
+
+      update(dt) {
+        if (this.dead) return;
+
+        // Check Signs
+        let inSignZone = false;
+        for (let s of signs) {
+          const dx = (this.x + this.w/2) - s.x;
+          const dy = (this.y + this.h/2) - s.y;
+          if (Math.sqrt(dx*dx + dy*dy) < s.radius) {
+            inSignZone = true;
+            if (this.stoppedTime === 0) this.stoppedTime = performance.now();
+          }
+        }
+
+        if (inSignZone && performance.now() - this.stoppedTime < 1500) {
+          this.speed = 0; // Stop for 1.5s
+        } else {
+          // Accelerate back to base speed smoothly
+          this.speed += (this.baseSpeed - this.speed) * 0.1;
+        }
+
+        // Avoid rear-ending
+        for (let other of cars) {
+          if (other === this || other.dead || other.axis !== this.axis || other.dir !== this.dir) continue;
+          const dist = this.axis === 'x' ? (other.x - this.x) * this.dir : (other.y - this.y) * this.dir;
+          if (dist > 0 && dist < (this.axis === 'x' ? this.w : this.h) + 20) {
+            this.speed = Math.min(this.speed, other.speed); // match speed of car in front
+          }
+        }
+
+        if (this.axis === 'x') this.x += this.speed * this.dir;
+        if (this.axis === 'y') this.y += this.speed * this.dir;
+
+        // Score
+        if (!this.hasScored) {
+          if ((this.axis === 'x' && this.dir === 1 && this.x > width) ||
+              (this.axis === 'x' && this.dir === -1 && this.x < -this.w) ||
+              (this.axis === 'y' && this.dir === 1 && this.y > height) ||
+              (this.axis === 'y' && this.dir === -1 && this.y < -this.h)) {
+            this.hasScored = true;
+            score += 10;
+            document.getElementById('score-display').innerText = score;
+          }
+        }
+      }
+
+      draw(ctx) {
+        if (this.dead) return;
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    // Particle system for crashes
+    function createExplosion(x, y) {
+      for(let i=0; i<15; i++) {
+        particles.push({
+          x: x, y: y,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10,
+          life: 1.0,
+          color: '#ff007f'
+        });
+      }
+    }
+
+    // Main Loop
+    let lastTime = 0;
+    function loop(time) {
+      if (!isPlaying) return;
+      const dt = time - lastTime;
+      lastTime = time;
+
+      // Clear
+      ctx.fillStyle = 'var(--bg)';
+      ctx.fillRect(0, 0, width, height);
+
+      // Draw Roads
+      ctx.fillStyle = 'var(--road)';
+      ctx.fillRect(0, height/2 - 40, width, 80); // Horizontal
+      ctx.fillRect(width/2 - 40, 0, 80, height); // Vertical
+      
+      // Dashed lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.setLineDash([15, 15]);
+      ctx.beginPath();
+      ctx.moveTo(0, height/2); ctx.lineTo(width, height/2);
+      ctx.moveTo(width/2, 0); ctx.lineTo(width/2, height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw Signs
+      for (let s of signs) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255, 68, 68, 0.15)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 68, 68, 0.5)';
+        ctx.stroke();
+        
+        ctx.fillStyle = '#ff4444';
+        ctx.font = '20px "Material Symbols Outlined"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('front_hand', s.x, s.y);
+      }
+
+      // Spawner
+      if (time - lastSpawn > spawnRate) {
+        cars.push(new Car());
+        lastSpawn = time;
+        if(spawnRate > 800) spawnRate -= 50; // Gets harder
+      }
+
+      // Update & Draw Cars
+      for (let i = 0; i < cars.length; i++) {
+        cars[i].update(dt);
+        cars[i].draw(ctx);
+      }
+
+      // Collisions
+      for (let i = 0; i < cars.length; i++) {
+        for (let j = i + 1; j < cars.length; j++) {
+          let a = cars[i], b = cars[j];
+          if (a.dead || b.dead) continue;
+          if (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y) {
+            a.dead = true; b.dead = true;
+            createExplosion(a.x + a.w/2, a.y + a.h/2);
+            crashes++;
+            document.getElementById('crashes-display').innerText = crashes;
+            arena.classList.add('screen-shake');
+            setTimeout(() => arena.classList.remove('screen-shake'), 400);
+            
+            if (crashes >= 3) {
+              isPlaying = false;
+              document.getElementById('final-score').innerText = score;
+              document.getElementById('game-over-screen').style.display = 'flex';
+            }
+          }
+        }
+      }
+
+      // Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.life -= 0.02;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        ctx.fillStyle = `rgba(255, 0, 127, ${p.life})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI*2); ctx.fill();
+      }
+
+      // Clean up offscreen cars
+      cars = cars.filter(c => !c.hasScored && !c.dead);
+
+      requestAnimationFrame(loop);
+    }
+
+    // Start
+    document.getElementById('btn-start').addEventListener('click', () => {
+      document.getElementById('start-screen').style.display = 'none';
+      isPlaying = true;
+      lastTime = performance.now();
+      requestAnimationFrame(loop);
+    });
+
+    // Drag & Drop Logic for Touch & Mouse
+    const ghost = document.getElementById('drag-ghost');
+    const toolStop = document.getElementById('tool-stop');
+    let isDragging = false;
+
+    function startDrag(e) {
+      if(!isPlaying) return;
+      isDragging = true;
+      ghost.style.display = 'block';
+      moveDrag(e);
+    }
+
+    function moveDrag(e) {
+      if (!isDragging) return;
+      let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      let clientY = e.clientY || (e.touches && e.touches[0].clientY);
+      ghost.style.left = clientX + 'px';
+      ghost.style.top = clientY + 'px';
+    }
+
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      ghost.style.display = 'none';
+      
+      let clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+      let clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      // Add Stop Sign to game world
+      signs.push({ x: x, y: y, radius: 45 });
+      
+      // Auto-remove sign after 5 seconds to prevent spam
+      setTimeout(() => signs.shift(), 5000);
+    }
+
+    toolStop.addEventListener('mousedown', startDrag);
+    toolStop.addEventListener('touchstart', startDrag);
+    document.addEventListener('mousemove', moveDrag);
+    document.addEventListener('touchmove', moveDrag, {passive: false});
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+
+  </script>
+</body>
+</html>
