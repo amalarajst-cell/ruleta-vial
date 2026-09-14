@@ -78,10 +78,13 @@
 
   <!-- Three.js from CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- GLTFLoader from CDN -->
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
   
   <script>
     let scene, camera, renderer;
-    let player, gridHelper;
+    let player, playerFallback;
+    let gridHelper;
     let obstacles = [];
     let isPlaying = false;
     let score = 0;
@@ -89,6 +92,13 @@
     let targetX = 0; // for smooth movement
     const laneWidth = 4;
     const maxLanes = 2; // -2, -1, 0, 1, 2
+    
+    // Models Cache
+    let loadedModels = {
+      moto: null,
+      auto: null,
+      colectivo: null
+    };
 
     // DOM Elements
     const container = document.getElementById('canvas-container');
@@ -133,7 +143,7 @@
       gridHelper.material.opacity = 0.5;
       scene.add(gridHelper);
 
-      // 6. Player Car (Glowing Box)
+      // 6. Player Car (Glowing Box Fallback)
       const geometry = new THREE.BoxGeometry(2, 1, 4);
       const material = new THREE.MeshLambertMaterial({ 
         color: 0x00f3ff, 
@@ -141,18 +151,25 @@
         emissiveIntensity: 0.5,
         wireframe: false 
       });
-      player = new THREE.Mesh(geometry, material);
-      player.position.set(0, -0.5, 5);
-      scene.add(player);
-
-      // 7. Add wireframe to player for cool effect
+      playerFallback = new THREE.Mesh(geometry, material);
+      playerFallback.position.set(0, 0, 0);
+      
       const wireframe = new THREE.WireframeGeometry(geometry);
       const line = new THREE.LineSegments(wireframe);
       line.material.depthTest = false;
       line.material.opacity = 0.8;
       line.material.transparent = true;
       line.material.color = new THREE.Color(0xffffff);
-      player.add(line);
+      playerFallback.add(line);
+
+      // Wrapper for player to hold either fallback or loaded model
+      player = new THREE.Group();
+      player.position.set(0, -0.5, 5);
+      player.add(playerFallback);
+      scene.add(player);
+
+      // Load 3D Models
+      loadModels();
 
       // Resize handler
       window.addEventListener('resize', onWindowResize, false);
@@ -202,27 +219,79 @@
       document.addEventListener('touchend', onEnd);
     }
 
-    function spawnObstacle() {
-      const geometry = new THREE.BoxGeometry(3, 2, 3);
-      const material = new THREE.MeshLambertMaterial({ 
-        color: 0xff007f, 
-        emissive: 0xff007f,
-        emissiveIntensity: 0.8
+    function loadModels() {
+      const loader = new THREE.GLTFLoader();
+      
+      const loadModel = (url, key, callback) => {
+        loader.load(url, (gltf) => {
+          const model = gltf.scene;
+          
+          // Center and scale model properly
+          const box = new THREE.Box3().setFromObject(model);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          
+          model.position.x = -center.x;
+          model.position.y = -box.min.y;
+          model.position.z = -center.z;
+          
+          // Normalizing scale
+          const maxDim = Math.max(size.x, size.y, size.z);
+          // Auto should be ~4 units long, moto ~2, colectivo ~8
+          let targetDim = key === 'moto' ? 2.5 : (key === 'colectivo' ? 7 : 4);
+          const scale = targetDim / maxDim;
+          model.scale.set(scale, scale, scale);
+          
+          loadedModels[key] = new THREE.Group();
+          loadedModels[key].add(model);
+          
+          if(callback) callback();
+        }, undefined, (e) => {
+          console.log(`Modelo no encontrado o error: ${url}`);
+        });
+      };
+
+      loadModel('assets/models/moto.glb', 'moto', () => {
+        player.remove(playerFallback);
+        player.add(loadedModels.moto);
       });
-      const obs = new THREE.Mesh(geometry, material);
+      loadModel('assets/models/auto.glb', 'auto');
+      loadModel('assets/models/colectivo.glb', 'colectivo');
+    }
+
+    function spawnObstacle() {
+      let obsGroup = new THREE.Group();
+      
+      // Select random model or fallback
+      let keys = ['auto', 'colectivo'];
+      let randomKey = keys[Math.floor(Math.random() * keys.length)];
+      
+      if (loadedModels[randomKey]) {
+        let modelClone = loadedModels[randomKey].clone();
+        obsGroup.add(modelClone);
+      } else {
+        // Fallback cube
+        const geometry = new THREE.BoxGeometry(3, 2, 3);
+        const material = new THREE.MeshLambertMaterial({ 
+          color: 0xff007f, 
+          emissive: 0xff007f,
+          emissiveIntensity: 0.8
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        const wireframe = new THREE.WireframeGeometry(geometry);
+        const line = new THREE.LineSegments(wireframe);
+        line.material.color = new THREE.Color(0xffffff);
+        mesh.add(line);
+        mesh.position.y = 1;
+        obsGroup.add(mesh);
+      }
       
       // Random lane
       const lane = Math.floor(Math.random() * (maxLanes * 2 + 1)) - maxLanes;
-      obs.position.set(lane * laneWidth, 0, -100);
-      
-      // Add wireframe
-      const wireframe = new THREE.WireframeGeometry(geometry);
-      const line = new THREE.LineSegments(wireframe);
-      line.material.color = new THREE.Color(0xffffff);
-      obs.add(line);
+      obsGroup.position.set(lane * laneWidth, -0.5, -100);
 
-      scene.add(obs);
-      obstacles.push(obs);
+      scene.add(obsGroup);
+      obstacles.push(obsGroup);
     }
 
     function onWindowResize() {
