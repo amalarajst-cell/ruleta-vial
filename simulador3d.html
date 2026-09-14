@@ -84,7 +84,10 @@
   <script>
     let scene, camera, renderer;
     let player, playerFallback;
-    let gridHelper;
+    const CHUNK_LENGTH = 140;
+    const NUM_CHUNKS = 3;
+    let roadChunks = [];
+    let windowTexture = null;
     let obstacles = [];
     let isPlaying = false;
     let score = 0;
@@ -108,15 +111,316 @@
     const scoreVal = document.getElementById('score-val');
     const hint = document.getElementById('controls-hint');
 
+    // Procedural Window Texture for Skyscrapers
+    function createWindowTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#10121d';
+      ctx.fillRect(0, 0, 256, 512);
+
+      const rows = 16;
+      const cols = 8;
+      const padX = 8;
+      const padY = 8;
+      const winW = (256 - (cols + 1) * padX) / cols;
+      const winH = (512 - (rows + 1) * padY) / rows;
+
+      const colors = [
+        'rgba(255, 220, 110, 0.9)', // Warm gold
+        'rgba(180, 240, 255, 0.85)', // Cyan blue
+        'rgba(255, 255, 255, 0.8)', // Cool white
+        'rgba(25, 28, 42, 1)',      // Dark unlit
+        'rgba(25, 28, 42, 1)',      // Dark unlit
+        'rgba(25, 28, 42, 1)'       // Dark unlit
+      ];
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          ctx.fillStyle = color;
+          ctx.fillRect(padX + c * (winW + padX), padY + r * (winH + padY), winW, winH);
+        }
+      }
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      return texture;
+    }
+
+    // Procedural Highway Safety Signboard
+    function createSignTexture(text, subtitle) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 140;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#0a6332'; // Highway green
+      ctx.fillRect(0, 0, 512, 140);
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(10, 10, 492, 120);
+
+      ctx.fillStyle = '#ffde59';
+      ctx.font = 'bold 22px Archivo, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(subtitle.toUpperCase(), 256, 42);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 30px "Archivo Black", sans-serif';
+      ctx.fillText(text.toUpperCase(), 256, 92);
+
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    // Build single road & city segment
+    function createRoadChunk(chunkIndex) {
+      const chunk = new THREE.Group();
+      chunk.position.z = -chunkIndex * CHUNK_LENGTH;
+
+      // 1. Asphalt Road
+      const roadGeo = new THREE.BoxGeometry(22, 0.3, CHUNK_LENGTH);
+      const roadMat = new THREE.MeshStandardMaterial({ 
+        color: 0x161821, 
+        roughness: 0.85, 
+        metalness: 0.1 
+      });
+      const road = new THREE.Mesh(roadGeo, roadMat);
+      road.position.y = -0.15;
+      chunk.add(road);
+
+      // 2. White side borders (Continuous outer lines)
+      const borderLineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const borderLineGeo = new THREE.BoxGeometry(0.35, 0.05, CHUNK_LENGTH);
+      
+      const leftBorder = new THREE.Mesh(borderLineGeo, borderLineMat);
+      leftBorder.position.set(-9.8, 0.03, 0);
+      chunk.add(leftBorder);
+
+      const rightBorder = new THREE.Mesh(borderLineGeo, borderLineMat);
+      rightBorder.position.set(9.8, 0.03, 0);
+      chunk.add(rightBorder);
+
+      // 3. Dashed Lane Lines (4 Lanes dividing at -4.9, 0, 4.9)
+      const dashMat = new THREE.MeshBasicMaterial({ color: 0xfbd000 });
+      const dashGeo = new THREE.BoxGeometry(0.25, 0.04, 4);
+      const numDashes = Math.floor(CHUNK_LENGTH / 8);
+
+      [-4.9, 0, 4.9].forEach(laneX => {
+        for (let i = 0; i < numDashes; i++) {
+          const dash = new THREE.Mesh(dashGeo, dashMat);
+          const zPos = -CHUNK_LENGTH / 2 + (i * 8) + 2;
+          dash.position.set(laneX, 0.03, zPos);
+          chunk.add(dash);
+        }
+      });
+
+      // 4. Zebra Pedestrian Crosswalk (at center of chunk)
+      const zebraMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const zebraGeo = new THREE.BoxGeometry(0.9, 0.04, 5);
+      for (let x = -8.5; x <= 8.5; x += 1.8) {
+        const zebra = new THREE.Mesh(zebraGeo, zebraMat);
+        zebra.position.set(x, 0.035, -CHUNK_LENGTH / 2);
+        chunk.add(zebra);
+      }
+
+      // 5. Sidewalks & Curbs
+      const sidewalkGeo = new THREE.BoxGeometry(10, 0.5, CHUNK_LENGTH);
+      const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x3a3d4d, roughness: 0.9 });
+      
+      const leftSidewalk = new THREE.Mesh(sidewalkGeo, sidewalkMat);
+      leftSidewalk.position.set(-16, 0.1, 0);
+      chunk.add(leftSidewalk);
+
+      const rightSidewalk = new THREE.Mesh(sidewalkGeo, sidewalkMat);
+      rightSidewalk.position.set(16, 0.1, 0);
+      chunk.add(rightSidewalk);
+
+      // Concrete Curb Edges
+      const curbGeo = new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH);
+      const curbMat = new THREE.MeshStandardMaterial({ color: 0x6e7382, roughness: 0.7 });
+      
+      const leftCurb = new THREE.Mesh(curbGeo, curbMat);
+      leftCurb.position.set(-11.1, 0.12, 0);
+      chunk.add(leftCurb);
+
+      const rightCurb = new THREE.Mesh(curbGeo, curbMat);
+      rightCurb.position.set(11.1, 0.12, 0);
+      chunk.add(rightCurb);
+
+      // 6. Streetlights & Trees
+      const poleMat = new THREE.MeshStandardMaterial({ color: 0x252834, metalness: 0.8, roughness: 0.3 });
+      const lampGlowMat = new THREE.MeshBasicMaterial({ color: 0xffea94 });
+      const lightPuddleMat = new THREE.MeshBasicMaterial({ 
+        color: 0xffea94, 
+        transparent: true, 
+        opacity: 0.14,
+        blending: THREE.AdditiveBlending 
+      });
+      const lightPuddleGeo = new THREE.CircleGeometry(5, 16);
+      lightPuddleGeo.rotateX(-Math.PI / 2);
+
+      const lampSpacing = 35;
+      for (let z = -CHUNK_LENGTH / 2 + 10; z < CHUNK_LENGTH / 2; z += lampSpacing) {
+        [-11.6, 11.6].forEach(poleX => {
+          const lampGroup = new THREE.Group();
+          lampGroup.position.set(poleX, 0, z);
+
+          // Vertical Pole
+          const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 6.5, 8), poleMat);
+          pole.position.y = 3.25;
+          lampGroup.add(pole);
+
+          // Overhang Arm
+          const armDir = poleX < 0 ? 1 : -1;
+          const arm = new THREE.Mesh(new THREE.BoxGeometry(2, 0.12, 0.12), poleMat);
+          arm.position.set(armDir * 0.9, 6.4, 0);
+          lampGroup.add(arm);
+
+          // Lamp Fixture
+          const lampHead = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.2, 0.5), poleMat);
+          lampHead.position.set(armDir * 1.8, 6.35, 0);
+          lampGroup.add(lampHead);
+
+          // Glowing Bulb
+          const bulb = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.05, 0.4), lampGlowMat);
+          bulb.position.set(armDir * 1.8, 6.25, 0);
+          lampGroup.add(bulb);
+
+          // Soft light circle on road
+          const puddle = new THREE.Mesh(lightPuddleGeo, lightPuddleMat);
+          puddle.position.set(armDir * 3, 0.04, 0);
+          lampGroup.add(puddle);
+
+          chunk.add(lampGroup);
+        });
+
+        // City Trees between lamps
+        [-13.5, 13.5].forEach(treeX => {
+          const treeGroup = new THREE.Group();
+          treeGroup.position.set(treeX, 0, z + lampSpacing / 2);
+          
+          const trunk = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.2, 0.3, 2, 6),
+            new THREE.MeshLambertMaterial({ color: 0x3d2714 })
+          );
+          trunk.position.y = 1;
+          treeGroup.add(trunk);
+
+          const foliage = new THREE.Mesh(
+            new THREE.ConeGeometry(1.6, 3.5, 6),
+            new THREE.MeshLambertMaterial({ color: 0x1b4d2e })
+          );
+          foliage.position.y = 3.2;
+          treeGroup.add(foliage);
+
+          chunk.add(treeGroup);
+        });
+      }
+
+      // 7. Modern City Skyscrapers
+      const buildingConfigs = [
+        { x: -26, w: 14, d: 18, h: 44, z: -20 },
+        { x: -30, w: 18, d: 24, h: 68, z: -55 },
+        { x: -25, w: 12, d: 16, h: 38, z: -90 },
+        { x: -32, w: 20, d: 22, h: 54, z: -125 },
+        { x: 26, w: 14, d: 18, h: 48, z: -15 },
+        { x: 30, w: 18, d: 22, h: 74, z: -50 },
+        { x: 25, w: 13, d: 15, h: 40, z: -85 },
+        { x: 31, w: 19, d: 25, h: 60, z: -120 }
+      ];
+
+      buildingConfigs.forEach(b => {
+        const bGeo = new THREE.BoxGeometry(b.w, b.h, b.d);
+        const bMat = new THREE.MeshLambertMaterial({ 
+          map: windowTexture, 
+          color: 0xcccccc 
+        });
+        const building = new THREE.Mesh(bGeo, bMat);
+        building.position.set(b.x, b.h / 2, b.z + (CHUNK_LENGTH / 2));
+        chunk.add(building);
+
+        // Rooftop neon glow trim
+        const roofTrimGeo = new THREE.BoxGeometry(b.w + 0.4, 0.8, b.d + 0.4);
+        const roofTrimMat = new THREE.MeshBasicMaterial({ 
+          color: Math.random() > 0.5 ? 0x00f3ff : 0xff007f 
+        });
+        const roofTrim = new THREE.Mesh(roofTrimGeo, roofTrimMat);
+        roofTrim.position.set(b.x, b.h, b.z + (CHUNK_LENGTH / 2));
+        chunk.add(roofTrim);
+
+        // Antenna Spire on tallest buildings
+        if (b.h > 50) {
+          const antenna = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.08, 0.15, 8, 4),
+            new THREE.MeshBasicMaterial({ color: 0x00f3ff })
+          );
+          antenna.position.set(b.x, b.h + 4, b.z + (CHUNK_LENGTH / 2));
+          chunk.add(antenna);
+        }
+      });
+
+      // 8. Overhead Highway Safety Gantry
+      const signsList = [
+        { text: "USÁ SIEMPRE CASCO", sub: "Seguridad Vial BA" },
+        { text: "MÁXIMA 60 km/h", sub: "Respetá los Límites" },
+        { text: "ALCOHOL CERO", sub: "Cuidá Tu Vida y la de Todos" }
+      ];
+      const signInfo = signsList[chunkIndex % signsList.length];
+
+      const gantryGroup = new THREE.Group();
+      gantryGroup.position.set(0, 0, 0);
+
+      const trussMat = new THREE.MeshStandardMaterial({ color: 0x4a5060, metalness: 0.9, roughness: 0.3 });
+      
+      const leftPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
+      leftPillar.position.set(-11, 3.75, 0);
+      gantryGroup.add(leftPillar);
+
+      const rightPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
+      rightPillar.position.set(11, 3.75, 0);
+      gantryGroup.add(rightPillar);
+
+      const crossbar = new THREE.Mesh(new THREE.BoxGeometry(22.6, 0.4, 0.4), trussMat);
+      crossbar.position.set(0, 7.4, 0);
+      gantryGroup.add(crossbar);
+
+      const signTex = createSignTexture(signInfo.text, signInfo.sub);
+      const signMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(13, 3.2, 0.2),
+        new THREE.MeshBasicMaterial({ map: signTex })
+      );
+      signMesh.position.set(0, 5.8, 0);
+      gantryGroup.add(signMesh);
+
+      chunk.add(gantryGroup);
+
+      return chunk;
+    }
+
+    function initCityEnvironment() {
+      windowTexture = createWindowTexture();
+      roadChunks = [];
+
+      for (let i = 0; i < NUM_CHUNKS; i++) {
+        const chunk = createRoadChunk(i);
+        scene.add(chunk);
+        roadChunks.push(chunk);
+      }
+    }
+
     function init() {
       // 1. Scene setup
       scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x050510, 0.02);
 
       // 2. Camera setup
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 5, 10);
-      camera.lookAt(0, 0, -20);
+      camera.position.set(0, 4.5, 11);
+      camera.lookAt(0, 1.8, -20);
 
       // 3. Renderer setup
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -124,32 +428,24 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for mobile
       container.appendChild(renderer.domElement);
 
-      // 4. Lighting (Synthwave + PBR Model Clarity)
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      // 4. Lighting (City Night Atmosphere)
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
       scene.add(ambientLight);
 
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1a1a2e, 0.9);
-      hemiLight.position.set(0, 25, 0);
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x111625, 0.8);
+      hemiLight.position.set(0, 30, 0);
       scene.add(hemiLight);
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
-      dirLight.position.set(10, 25, 15);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight.position.set(20, 35, 15);
       scene.add(dirLight);
 
-      const pinkLight = new THREE.PointLight(0xff007f, 2, 60);
-      pinkLight.position.set(-15, 5, -10);
-      scene.add(pinkLight);
+      // Night sky color & atmospheric fog
+      scene.background = new THREE.Color(0x080915);
+      scene.fog = new THREE.FogExp2(0x080915, 0.011);
 
-      const blueLight = new THREE.PointLight(0x00f3ff, 2.5, 60);
-      blueLight.position.set(15, 5, -10);
-      scene.add(blueLight);
-
-      // 5. Grid (The Road)
-      gridHelper = new THREE.GridHelper(250, 120, 0xff007f, 0x00f3ff);
-      gridHelper.position.y = -0.05;
-      gridHelper.material.transparent = true;
-      gridHelper.material.opacity = 0.6;
-      scene.add(gridHelper);
+      // 5. Build Procedural City & Road Chunks
+      initCityEnvironment();
 
       // 6. Player Car (Glowing Box Fallback)
       const geometry = new THREE.BoxGeometry(2, 1, 4);
@@ -172,8 +468,16 @@
 
       // Wrapper for player to hold either fallback or loaded model
       player = new THREE.Group();
-      player.position.set(0, -0.5, 5);
+      player.position.set(0, 0, 5);
       player.add(playerFallback);
+
+      // Add Moto Headlights shining onto the asphalt
+      const motoLight = new THREE.SpotLight(0xffffff, 3, 40, Math.PI / 6, 0.5, 1);
+      motoLight.position.set(0, 1, -1);
+      motoLight.target.position.set(0, 0, -20);
+      player.add(motoLight);
+      player.add(motoLight.target);
+
       scene.add(player);
 
       // Load 3D Models
@@ -310,7 +614,7 @@
       
       // Random lane
       const lane = Math.floor(Math.random() * (maxLanes * 2 + 1)) - maxLanes;
-      obsGroup.position.set(lane * laneWidth, -0.5, -100);
+      obsGroup.position.set(lane * laneWidth, 0, -130);
 
       scene.add(obsGroup);
       obstacles.push(obsGroup);
@@ -336,11 +640,13 @@
       requestAnimationFrame(animate);
 
       if (isPlaying) {
-        // Move Grid to simulate speed
-        gridHelper.position.z += speed;
-        if (gridHelper.position.z > 10) {
-          gridHelper.position.z = 0;
-        }
+        // Move Road Chunks for seamless infinite city
+        roadChunks.forEach(chunk => {
+          chunk.position.z += speed;
+          if (chunk.position.z > CHUNK_LENGTH) {
+            chunk.position.z -= CHUNK_LENGTH * NUM_CHUNKS;
+          }
+        });
 
         // Smooth player movement (lerp)
         player.position.x += (targetX - player.position.x) * 0.1;
