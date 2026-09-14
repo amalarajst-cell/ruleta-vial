@@ -47,7 +47,7 @@
     .main-wrap { flex: 1; max-width: 660px; margin: 0 auto; width: 100%; padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
     
     /* STATUS BAR */
-    .status-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(29, 34, 36, 0.7); border: 1px solid var(--outline); border-radius: 12px; padding: 8px 14px; font-size: 12px; font-weight: 700; }
+    .status-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(29, 34, 36, 0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 14px; font-size: 12px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.2); backdrop-filter: blur(10px); }
     .round-info { display: flex; align-items: center; gap: 8px; color: #fff; }
     .round-badge { background: var(--accent-red); color: #fff; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 900; letter-spacing: 0.4px; }
     .dots-wrap { display: flex; gap: 5px; }
@@ -68,14 +68,17 @@
     
     /* TIMER BAR */
     .timer-bar-wrap { position: absolute; bottom: 0; left: 0; width: 100%; height: 6px; background: rgba(255,255,255,0.2); z-index: 5; }
-    .timer-bar-fill { height: 100%; background: var(--accent-cyan); width: 100%; transform-origin: left; }
+    .timer-bar-fill { height: 100%; background: var(--accent-cyan); width: 100%; transform-origin: left; transition: background-color 0.3s ease; }
+    .timer-bar-fill.warning { background: var(--accent-yellow); }
+    .timer-bar-fill.danger { background: var(--accent-red); box-shadow: 0 0 10px rgba(255,68,68,0.8); }
     
     /* FEEDBACK OVERLAY (Congelamiento) */
     .feedback-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none; flex-direction: column; align-items: center; justify-content: flex-end; z-index: 15; padding: 15px; }
-    .feedback-box { background: rgba(20, 24, 26, 0.95); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; width: 100%; text-align: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-    .feedback-title { font-family: 'Archivo Black', sans-serif; font-size: 16px; margin-bottom: 4px; }
-    .feedback-desc { font-size: 12px; color: var(--text-muted); }
-    .btn-next-round { margin-top: 10px; width: 100%; padding: 10px; background: #fff; color: #000; border: none; border-radius: 8px; font-family: 'Archivo Black', sans-serif; font-size: 14px; cursor: pointer; }
+    .feedback-box { background: rgba(18, 22, 24, 0.7); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 20px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .feedback-title { font-family: 'Archivo Black', sans-serif; font-size: 18px; margin-bottom: 6px; }
+    .feedback-desc { font-size: 13px; color: var(--text-muted); }
+    .btn-next-round { margin-top: 15px; width: 100%; padding: 12px; background: #fff; color: #000; border: none; border-radius: 10px; font-family: 'Archivo Black', sans-serif; font-size: 14px; cursor: pointer; transition: transform 0.1s ease; }
+    .btn-next-round:active { transform: scale(0.98); }
     
     /* HOTSPOT HIGHLIGHT (Shown in feedback) */
     .hotspot-box { position: absolute; border: 3px solid var(--accent-red); box-shadow: 0 0 15px rgba(255,68,68,0.8), inset 0 0 15px rgba(255,68,68,0.5); background: rgba(255,68,68,0.2); border-radius: 50%; display: none; z-index: 12; pointer-events: none; animation: pulse-ring 1s infinite alternate; }
@@ -84,6 +87,14 @@
     /* RIPPLE EFFECT */
     .ripple { position: absolute; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.5); border: 2px solid #fff; border-radius: 50%; transform: translate(-50%, -50%) scale(0); animation: ripple-anim 0.5s ease-out forwards; pointer-events: none; z-index: 11; }
     @keyframes ripple-anim { 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
+
+    /* JUICE FX */
+    .game-arena.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: var(--accent-red); box-shadow: 0 0 20px rgba(255,68,68,0.5); }
+    @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+    .vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.85) 100%); z-index: 4; }
+    .flash-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 14; opacity: 0; transition: opacity 0.2s ease-out; }
+    .flash-overlay.flash-red { background: rgba(255, 68, 68, 0.4); opacity: 1; transition: opacity 0.05s ease-out; }
+    .flash-overlay.flash-green { background: rgba(0, 230, 118, 0.4); opacity: 1; transition: opacity 0.05s ease-out; }
 
     /* RESULTS CARD */
     .results-card { display: none; background: linear-gradient(180deg, #1b2022 0%, #131718 100%); border: 2px solid var(--accent-red); border-radius: 24px; padding: 24px 20px; text-align: center; flex-direction: column; align-items: center; gap: 16px; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6); }
@@ -131,6 +142,8 @@
 
     <!-- GAME ARENA -->
     <div class="game-arena" id="arena" style="display: none;">
+      <div class="vignette"></div>
+      <div class="flash-overlay" id="flash-overlay"></div>
       <img src="" id="scenario-img" class="game-img">
       
       <div class="timer-bar-wrap">
@@ -271,8 +284,37 @@
       score: document.getElementById('score-display'),
       roundNum: document.getElementById('round-num'),
       resultsCard: document.getElementById('results-card'),
-      statusBar: document.getElementById('status-bar')
+      statusBar: document.getElementById('status-bar'),
+      flashOverlay: document.getElementById('flash-overlay')
     };
+
+    function animateScore(startVal, endVal) {
+      const duration = 800; // ms
+      const startTime = performance.now();
+      const update = (time) => {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Easing out quart
+        const ease = 1 - Math.pow(1 - progress, 4);
+        const current = Math.floor(startVal + (endVal - startVal) * ease);
+        DOM.score.innerText = current;
+        if (progress < 1) requestAnimationFrame(update);
+        else DOM.score.innerText = endVal;
+      };
+      requestAnimationFrame(update);
+    }
+
+    function triggerShake() {
+      DOM.arena.classList.remove('shake');
+      void DOM.arena.offsetWidth; // trigger reflow
+      DOM.arena.classList.add('shake');
+      setTimeout(() => DOM.arena.classList.remove('shake'), 400);
+    }
+
+    function triggerFlash(type) {
+      DOM.flashOverlay.className = 'flash-overlay flash-' + type;
+      setTimeout(() => DOM.flashOverlay.className = 'flash-overlay', 100);
+    }
 
     function initGame() {
       currentRound = 0;
@@ -304,6 +346,7 @@
       DOM.fbOverlay.style.display = 'none';
       DOM.hotspotBox.style.display = 'none';
       DOM.timerBar.style.transform = 'scaleX(0)';
+      DOM.timerBar.className = 'timer-bar-fill';
       DOM.timerBar.style.transition = 'none';
       DOM.img.style.filter = 'brightness(0.9)';
 
@@ -326,7 +369,8 @@
       startTime = performance.now();
       const duration = 6000; // 6 seconds per scene
       
-      DOM.timerBar.style.transition = 'transform ' + duration + 'ms linear';
+      DOM.timerBar.className = 'timer-bar-fill';
+      DOM.timerBar.style.transition = 'transform ' + duration + 'ms linear, background-color 0.3s ease';
       setTimeout(() => DOM.timerBar.style.transform = 'scaleX(1)', 50);
 
       const loop = (time) => {
@@ -334,6 +378,14 @@
         const elapsed = time - startTime;
         const scene = scenarios[currentRound];
         
+        // Update timer bar color based on time left
+        const timeLeft = duration - elapsed;
+        if (timeLeft < 1500) {
+          if (!DOM.timerBar.classList.contains('danger')) DOM.timerBar.className = 'timer-bar-fill danger';
+        } else if (timeLeft < 3000) {
+          if (!DOM.timerBar.classList.contains('warning')) DOM.timerBar.className = 'timer-bar-fill warning';
+        }
+
         if (elapsed > scene.dangerStart * 1000 && !dangerActive) {
           dangerActive = true; // danger zone is now active
         }
@@ -369,6 +421,7 @@
 
       if(clickCount > 3) {
         // Spam penalty
+        triggerShake();
         handleResult(false, 'spam');
         return;
       }
@@ -405,18 +458,21 @@
 
       if (success) {
         roundTimes.push(timeSec);
-        if (timeSec < 1.5) { pts = 100; fbType = 'correct'; DOM.fbTitle.innerText = "¡EXCELENTE ANTICIPACIÓN!"; DOM.fbTitle.style.color = "var(--accent-green)"; sfx.correct(); }
-        else if (timeSec < 2.5) { pts = 60; fbType = 'medium'; DOM.fbTitle.innerText = "BUENA DETECCIÓN"; DOM.fbTitle.style.color = "var(--accent-yellow)"; sfx.correct(); }
+        if (timeSec < 1.5) { pts = 100; fbType = 'correct'; DOM.fbTitle.innerText = "¡EXCELENTE ANTICIPACIÓN!"; DOM.fbTitle.style.color = "var(--accent-green)"; sfx.correct(); triggerFlash('green'); }
+        else if (timeSec < 2.5) { pts = 60; fbType = 'medium'; DOM.fbTitle.innerText = "BUENA DETECCIÓN"; DOM.fbTitle.style.color = "var(--accent-yellow)"; sfx.correct(); triggerFlash('green'); }
         else { pts = 30; fbType = 'late'; DOM.fbTitle.innerText = "DETECCIÓN TARDÍA"; DOM.fbTitle.style.color = "var(--accent-amber)"; sfx.tick(); }
       } else {
+        triggerShake();
+        triggerFlash('red');
         if (timeSec === 'spam') { DOM.fbTitle.innerText = "CLICS EXCESIVOS"; DOM.fbDesc.innerText = "No toques al azar."; }
         else { DOM.fbTitle.innerText = "¡PELIGRO NO DETECTADO!"; }
         DOM.fbTitle.style.color = "var(--accent-red)";
         sfx.wrong();
       }
 
+      const prevScore = totalScore;
       totalScore += pts;
-      DOM.score.innerText = totalScore;
+      animateScore(prevScore, totalScore);
       DOM.fbDesc.innerText = scene.desc + " " + scene.rule;
       
       const dot = document.getElementById('dot-' + (currentRound+1));
