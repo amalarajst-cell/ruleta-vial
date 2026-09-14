@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Simulador 3D — Seguridad Vial BA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <style>
+    :root {
+      --neon-blue: #00f3ff;
+      --neon-pink: #ff007f;
+      --bg: #050510;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; touch-action: none; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; overflow: hidden; background-color: var(--bg); font-family: 'Archivo', sans-serif; }
+    
+    /* HEADER */
+    .app-header {
+      position: absolute; top: 0; left: 0; width: 100%;
+      background: rgba(5, 5, 16, 0.7); backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 243, 255, 0.2); padding: 12px 20px; z-index: 50;
+    }
+    .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; }
+    .header-title-text { font-family: 'Archivo Black', sans-serif; font-size: 16px; letter-spacing: 0.5px; color: var(--neon-blue); text-transform: uppercase; text-shadow: 0 0 10px rgba(0,243,255,0.5); }
+
+    /* HUD */
+    .hud { position: absolute; top: 70px; left: 20px; right: 20px; display: flex; justify-content: space-between; z-index: 10; pointer-events: none; }
+    .score-box { background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); padding: 10px 20px; border-radius: 12px; border: 1px solid var(--neon-blue); color: #fff; font-family: 'Archivo Black'; font-size: 20px; box-shadow: 0 0 15px rgba(0,243,255,0.3); }
+    
+    /* OVERLAYS */
+    .overlay { position: absolute; inset: 0; background: rgba(5,5,16,0.85); z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; backdrop-filter: blur(5px); }
+    .overlay h1 { font-family: 'Archivo Black'; margin-bottom: 15px; font-size: 32px; color: var(--neon-pink); text-shadow: 0 0 20px var(--neon-pink); }
+    .overlay p { color: #fff; font-size: 16px; margin-bottom: 30px; max-width: 300px; line-height: 1.5; }
+    .btn-action { pointer-events: auto; padding: 16px 40px; border-radius: 30px; background: var(--neon-blue); color: #000; font-family: 'Archivo Black'; font-size: 18px; border: none; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); text-transform: uppercase; cursor: pointer; transition: transform 0.2s; }
+    .btn-action:active { transform: scale(0.95); }
+
+    /* TOUCH CONTROLS HINT */
+    .controls-hint { position: absolute; bottom: 40px; left: 0; width: 100%; text-align: center; color: rgba(255,255,255,0.5); font-size: 14px; pointer-events: none; font-weight: 600; letter-spacing: 1px; z-index: 10; display: none; }
+
+    #canvas-container { width: 100vw; height: 100vh; display: block; }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="juegos.html" class="btn-back"><span class="material-symbols-outlined">arrow_back</span></a>
+        <span class="header-title-text">Motor 3D Experimental</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="hud" id="hud" style="display:none;">
+    <div class="score-box">PTS: <span id="score-val">0</span></div>
+  </div>
+
+  <div class="controls-hint" id="controls-hint">👈 DESLIZA PARA ESQUIVAR 👉</div>
+
+  <div id="canvas-container"></div>
+
+  <div class="overlay" id="start-screen">
+    <h1 style="color:var(--neon-blue); text-shadow: 0 0 20px var(--neon-blue);">SIMULADOR 3D</h1>
+    <p>Experimenta gráficos acelerados por hardware. Desliza el dedo o usa el mouse para esquivar los obstáculos.</p>
+    <button class="btn-action" id="btn-start">INICIAR MOTOR</button>
+  </div>
+
+  <div class="overlay" id="game-over-screen" style="display:none;">
+    <h1>¡COLISIÓN!</h1>
+    <p>Puntaje Final: <span id="final-score" style="font-weight:bold; color:var(--neon-blue);"></span></p>
+    <button class="btn-action" onclick="location.reload()">REINICIAR</button>
+  </div>
+
+  <!-- Three.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <script>
+    let scene, camera, renderer;
+    let player, gridHelper;
+    let obstacles = [];
+    let isPlaying = false;
+    let score = 0;
+    let speed = 0.5;
+    let targetX = 0; // for smooth movement
+    const laneWidth = 4;
+    const maxLanes = 2; // -2, -1, 0, 1, 2
+
+    // DOM Elements
+    const container = document.getElementById('canvas-container');
+    const startScreen = document.getElementById('start-screen');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const hud = document.getElementById('hud');
+    const scoreVal = document.getElementById('score-val');
+    const hint = document.getElementById('controls-hint');
+
+    function init() {
+      // 1. Scene setup
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x050510, 0.02);
+
+      // 2. Camera setup
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 5, 10);
+      camera.lookAt(0, 0, -20);
+
+      // 3. Renderer setup
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for mobile
+      container.appendChild(renderer.domElement);
+
+      // 4. Lighting (Synthwave Neon)
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xff007f, 1);
+      dirLight.position.set(-10, 20, 10);
+      scene.add(dirLight);
+
+      const blueLight = new THREE.PointLight(0x00f3ff, 2, 50);
+      blueLight.position.set(0, 2, 5);
+      scene.add(blueLight);
+
+      // 5. Grid (The Road)
+      gridHelper = new THREE.GridHelper(200, 100, 0xff007f, 0x00f3ff);
+      gridHelper.position.y = -1;
+      gridHelper.material.transparent = true;
+      gridHelper.material.opacity = 0.5;
+      scene.add(gridHelper);
+
+      // 6. Player Car (Glowing Box)
+      const geometry = new THREE.BoxGeometry(2, 1, 4);
+      const material = new THREE.MeshLambertMaterial({ 
+        color: 0x00f3ff, 
+        emissive: 0x00f3ff,
+        emissiveIntensity: 0.5,
+        wireframe: false 
+      });
+      player = new THREE.Mesh(geometry, material);
+      player.position.set(0, -0.5, 5);
+      scene.add(player);
+
+      // 7. Add wireframe to player for cool effect
+      const wireframe = new THREE.WireframeGeometry(geometry);
+      const line = new THREE.LineSegments(wireframe);
+      line.material.depthTest = false;
+      line.material.opacity = 0.8;
+      line.material.transparent = true;
+      line.material.color = new THREE.Color(0xffffff);
+      player.add(line);
+
+      // Resize handler
+      window.addEventListener('resize', onWindowResize, false);
+      
+      // Input handlers
+      setupControls();
+
+      // Start render loop (but game logic paused)
+      animate();
+    }
+
+    function setupControls() {
+      // Touch/Mouse Drag Logic
+      let isDragging = false;
+      let startX = 0;
+      let startPlayerX = 0;
+
+      const onStart = (e) => {
+        if (!isPlaying) return;
+        isDragging = true;
+        startX = e.clientX || (e.touches && e.touches[0].clientX);
+        startPlayerX = targetX;
+      };
+
+      const onMove = (e) => {
+        if (!isDragging || !isPlaying) return;
+        let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        let deltaX = clientX - startX;
+        
+        // Convert screen pixels to 3D world units (approximate scaling)
+        let movement = (deltaX / window.innerWidth) * 20; 
+        
+        let newX = startPlayerX + movement;
+        // Clamp to lanes
+        targetX = Math.max(-laneWidth * maxLanes, Math.min(laneWidth * maxLanes, newX));
+      };
+
+      const onEnd = () => { isDragging = false; };
+
+      document.addEventListener('mousedown', onStart);
+      document.addEventListener('touchstart', onStart, {passive: true});
+      
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, {passive: true});
+      
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchend', onEnd);
+    }
+
+    function spawnObstacle() {
+      const geometry = new THREE.BoxGeometry(3, 2, 3);
+      const material = new THREE.MeshLambertMaterial({ 
+        color: 0xff007f, 
+        emissive: 0xff007f,
+        emissiveIntensity: 0.8
+      });
+      const obs = new THREE.Mesh(geometry, material);
+      
+      // Random lane
+      const lane = Math.floor(Math.random() * (maxLanes * 2 + 1)) - maxLanes;
+      obs.position.set(lane * laneWidth, 0, -100);
+      
+      // Add wireframe
+      const wireframe = new THREE.WireframeGeometry(geometry);
+      const line = new THREE.LineSegments(wireframe);
+      line.material.color = new THREE.Color(0xffffff);
+      obs.add(line);
+
+      scene.add(obs);
+      obstacles.push(obs);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // AABB Collision check
+    function checkCollision(obj1, obj2) {
+      const box1 = new THREE.Box3().setFromObject(obj1);
+      const box2 = new THREE.Box3().setFromObject(obj2);
+      // Shrink hitbox slightly for better gameplay feel
+      box1.expandByScalar(-0.3);
+      box2.expandByScalar(-0.3);
+      return box1.intersectsBox(box2);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (isPlaying) {
+        // Move Grid to simulate speed
+        gridHelper.position.z += speed;
+        if (gridHelper.position.z > 10) {
+          gridHelper.position.z = 0;
+        }
+
+        // Smooth player movement (lerp)
+        player.position.x += (targetX - player.position.x) * 0.1;
+        // Add slight tilt based on movement for realism
+        player.rotation.z = -(targetX - player.position.x) * 0.05;
+
+        // Manage Obstacles
+        if (Math.random() < 0.03 + (speed * 0.01)) { // spawn rate increases with speed
+          spawnObstacle();
+        }
+
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+          let obs = obstacles[i];
+          obs.position.z += speed;
+
+          // Check Collision
+          if (checkCollision(player, obs)) {
+            isPlaying = false;
+            document.getElementById('final-score').innerText = Math.floor(score);
+            gameOverScreen.style.display = 'flex';
+            hud.style.display = 'none';
+            hint.style.display = 'none';
+            break;
+          }
+
+          // Remove if passed
+          if (obs.position.z > 15) {
+            scene.remove(obs);
+            obstacles.splice(i, 1);
+            score += 10;
+            scoreVal.innerText = Math.floor(score);
+            // Increase speed slightly
+            speed = Math.min(1.5, speed + 0.01);
+          }
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    document.getElementById('btn-start').addEventListener('click', () => {
+      startScreen.style.display = 'none';
+      hud.style.display = 'flex';
+      hint.style.display = 'block';
+      // Fade out hint after 3 seconds
+      setTimeout(() => { hint.style.opacity = '0'; transition = 'opacity 1s'; }, 3000);
+      
+      score = 0;
+      speed = 0.5;
+      scoreVal.innerText = '0';
+      targetX = 0;
+      player.position.x = 0;
+      
+      // Clear old obstacles
+      obstacles.forEach(obs => scene.remove(obs));
+      obstacles = [];
+      
+      isPlaying = true;
+    });
+
+    // Initialize Three.js scene
+    init();
+
+  </script>
+</body>
+</html>
