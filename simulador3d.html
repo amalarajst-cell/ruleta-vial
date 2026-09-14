@@ -142,6 +142,18 @@
     .btn-action:active { transform: scale(0.95); }
     .btn-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); box-shadow: none; margin-top: 12px; padding: 12px 28px; font-size: 14px; }
 
+    .btn-select-veh {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 7px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.06); color: #ccc; font-family: 'Archivo Black', sans-serif;
+      font-size: 12px; cursor: pointer; transition: all 0.2s ease;
+    }
+    .btn-select-veh:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .btn-select-veh.active {
+      background: var(--neon-blue); color: #000; border-color: var(--neon-blue);
+      box-shadow: 0 0 14px rgba(0, 243, 255, 0.5);
+    }
+
     #canvas-container { width: 100vw; height: 100vh; display: block; }
   </style>
 </head>
@@ -153,8 +165,11 @@
         <a href="juegos.html" class="btn-back"><span class="material-symbols-outlined">arrow_back</span></a>
         <span class="header-title-text">Hazard Perception 3D</span>
       </div>
-      <div style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-green);">
-        SEGURIDAD VIAL BA
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; gap:6px; background:rgba(255,255,255,0.06); padding:3px 6px; border-radius:14px; border:1px solid rgba(255,255,255,0.12);">
+          <button id="hud-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" title="Conducir Moto Honda CB 750">🏍️ Moto</button>
+          <button id="hud-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" title="Conducir Aston Martin V8">🚗 Auto</button>
+        </div>
       </div>
     </div>
   </header>
@@ -211,15 +226,37 @@
 
   <!-- PANTALLA DE INICIO (TEST BRIEFING) -->
   <div class="overlay" id="start-screen">
-    <span class="material-symbols-outlined" style="font-size:54px; color:var(--neon-yellow); margin-bottom:12px;">visibility</span>
-    <h1 style="color:#fff;">PERCEPCIÓN DE PELIGROS 3D</h1>
-    <h2 style="color:var(--neon-blue); font-size:17px; margin-bottom:15px; font-family:'Archivo Black';">HAZARD PERCEPTION TEST</h2>
+    <span class="material-symbols-outlined" style="font-size:50px; color:var(--neon-yellow); margin-bottom:8px;">visibility</span>
+    <h1 style="color:#fff; font-size:24px; margin-bottom:4px;">PERCEPCIÓN DE PELIGROS 3D</h1>
+    <h2 style="color:var(--neon-blue); font-size:15px; margin-bottom:14px; font-family:'Archivo Black';">HAZARD PERCEPTION TEST</h2>
     <div class="mission-card">
-      <p>Conducirás tu moto en la ciudad. A lo largo del recorrido se presentarán <b>3 situaciones de riesgo vial</b> imprevistas.</p>
-      <ul>
-        <li>👁️ <b>Observa el entorno:</b> Presta atención a vehículos, peatones y maniobras indebidas.</li>
-        <li>🚨 <b>Reacciona rápido:</b> Pulsa el botón rojo <b>¡PELIGRO!</b> (o la Barra Espaciadora) apenas veas que la amenaza comienza a formarse.</li>
-        <li>🎯 <b>Puntuación de 5 a 1 pts:</b> Cuanto antes anticipes el peligro, más puntos obtendrás.</li>
+      <p style="margin-bottom:10px;">Conducirás por la avenida urbana. A lo largo del trayecto se presentarán <b>3 situaciones de riesgo vial</b> imprevistas.</p>
+      
+      <div style="background:rgba(0, 243, 255, 0.08); border:1px solid rgba(0, 243, 255, 0.25); border-radius:12px; padding:10px 12px; margin-bottom:12px;">
+        <div style="font-family:'Archivo Black'; font-size:12px; color:var(--neon-blue); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:17px;">view_in_ar</span> VEHÍCULOS 3D DESCARGADOS ACTIVOS:
+        </div>
+        <div style="font-size:12px; color:#e0e0e0; line-height:1.45;">
+          • 🏍️ <b>Honda CB 750 F Super Sport (1970)</b> — Modelo descargado<br>
+          • 🚌 <b>Town Bus Colectivo</b> — Modelo descargado con luces de freno<br>
+          • 🚗 <b>Aston Martin V8 Vantage (1998)</b> — En tránsito y seleccionable
+        </div>
+      </div>
+
+      <div style="font-size:12px; margin-bottom:6px; font-weight:700; color:#fff;">Selecciona tu vehículo:</div>
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <button id="start-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" style="flex:1; padding:9px;">
+          🏍️ Moto Honda CB 750
+        </button>
+        <button id="start-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" style="flex:1; padding:9px;">
+          🚗 Aston Martin V8
+        </button>
+      </div>
+
+      <ul style="font-size:12px; color:#ccc;">
+        <li>👁️ <b>Observa el entorno:</b> Presta atención a vehículos, colectivos y peatones.</li>
+        <li>🚨 <b>Reacciona rápido:</b> Pulsa <b>¡PELIGRO!</b> (o Barra Espaciadora) ante cada amenaza.</li>
+        <li>🎯 <b>Puntuación de 5 a 1 pts:</b> Mayor anticipación = mayor puntaje preventivo.</li>
       </ul>
     </div>
     <button class="btn-action" id="btn-start">INICIAR TEST DE RIESGOS</button>
@@ -307,8 +344,46 @@
     let oncomingCar = null;
     let hazardMarker = null;
 
-    // Models Cache
+    // Models & Player Vehicle Selection
     let loadedModels = { moto: null, auto: null, colectivo: null };
+    let playerVehicleType = 'moto'; // 'moto' or 'car'
+    let playerMotoContainer = null;
+    let playerCarContainer = null;
+    let targetCameraPos = new THREE.Vector3(0, 4.3, 10.5);
+
+    // SELECT PLAYER VEHICLE
+    window.selectPlayerVehicle = function(type) {
+      playerVehicleType = type;
+
+      const bM1 = document.getElementById('start-select-moto');
+      const bC1 = document.getElementById('start-select-car');
+      const bM2 = document.getElementById('hud-select-moto');
+      const bC2 = document.getElementById('hud-select-car');
+
+      if (type === 'moto') {
+        if (bM1) bM1.classList.add('active');
+        if (bC1) bC1.classList.remove('active');
+        if (bM2) bM2.classList.add('active');
+        if (bC2) bC2.classList.remove('active');
+
+        if (playerMotoContainer) playerMotoContainer.visible = true;
+        if (playerCarContainer) playerCarContainer.visible = false;
+        if (playerFallback) playerFallback.visible = !playerMotoContainer;
+
+        targetCameraPos.set(0, 4.3, 10.5);
+      } else {
+        if (bM1) bM1.classList.remove('active');
+        if (bC1) bC1.classList.add('active');
+        if (bM2) bM2.classList.remove('active');
+        if (bC2) bC2.classList.add('active');
+
+        if (playerMotoContainer) playerMotoContainer.visible = false;
+        if (playerCarContainer) playerCarContainer.visible = true;
+        if (playerFallback) playerFallback.visible = !playerCarContainer;
+
+        targetCameraPos.set(0, 3.6, 9.2);
+      }
+    };
 
     // DOM Elements
     const container = document.getElementById('canvas-container');
@@ -540,27 +615,31 @@
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.25;
       container.appendChild(renderer.domElement);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
       scene.add(ambientLight);
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x111625, 0.85);
-      hemiLight.position.set(0, 30, 0);
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x141b2b, 0.95);
+      hemiLight.position.set(0, 35, 0);
       scene.add(hemiLight);
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.3);
-      dirLight.position.set(20, 35, 15);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
+      dirLight.position.set(22, 38, 16);
       scene.add(dirLight);
 
       scene.background = new THREE.Color(0x080915);
-      scene.fog = new THREE.FogExp2(0x080915, 0.011);
+      scene.fog = new THREE.FogExp2(0x080915, 0.010);
 
       initCityEnvironment();
 
-      // Player Motorcycle Setup
+      // Player Vehicle Setup
       playerFallback = new THREE.Mesh(
-        new THREE.BoxGeometry(1.4, 1.2, 2.8),
+        new THREE.BoxGeometry(1.2, 1.1, 2.4),
         new THREE.MeshLambertMaterial({ color: 0x00f3ff, emissive: 0x00f3ff, emissiveIntensity: 0.5 })
       );
+      playerFallback.position.y = 0.55;
       player = new THREE.Group();
       player.position.set(rightLaneX, 0, 5);
       player.add(playerFallback);
@@ -587,24 +666,24 @@
       animate();
     }
 
-    // BUS ACTOR WITH BRAKE LIGHTS
+    // BUS ACTOR WITH SYNCHRONIZED BRAKE GLOW
     function createBusActor() {
       busGroup = new THREE.Group();
       busGroup.position.set(rightLaneX, 0, -26);
 
       const fallbackBus = new THREE.Mesh(
-        new THREE.BoxGeometry(3.2, 3.2, 8),
+        new THREE.BoxGeometry(2.8, 3.0, 8.2),
         new THREE.MeshLambertMaterial({ color: 0x0066cc })
       );
-      fallbackBus.position.y = 1.6;
+      fallbackBus.position.y = 1.5;
       busGroup.add(fallbackBus);
       busGroup.fallback = fallbackBus;
 
-      // Brake lights on back of bus
-      const brakeLightMat = new THREE.MeshBasicMaterial({ color: 0x330000 });
-      busBrakeLight = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.35, 0.2), brakeLightMat);
-      busBrakeLight.position.set(0, 1.5, 4.1);
-      busGroup.add(busBrakeLight);
+      // Realistic brake point light that illuminates bus back and road
+      const brakePointLight = new THREE.PointLight(0xff0022, 0, 18, 1.2);
+      brakePointLight.position.set(0, 1.2, 4.6);
+      busGroup.add(brakePointLight);
+      busGroup.brakePointLight = brakePointLight;
 
       scene.add(busGroup);
     }
@@ -615,7 +694,7 @@
       pedestrianGroup.position.set(11, 0, -100); // starts waiting on sidewalk
 
       // Body
-      const bodyMat = new THREE.MeshLambertMaterial({ color: 0xffaa00 }); // bright safety hoodie
+      const bodyMat = new THREE.MeshLambertMaterial({ color: 0xffaa00 });
       const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 1.1, 8), bodyMat);
       body.position.y = 1.1;
       pedestrianGroup.add(body);
@@ -644,10 +723,10 @@
       oncomingCar.position.set(leftLaneX, 0, -200);
 
       const carMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(2.4, 1.5, 4.5),
+        new THREE.BoxGeometry(2.3, 1.4, 4.6),
         new THREE.MeshLambertMaterial({ color: 0xff0055 })
       );
-      carMesh.position.y = 0.75;
+      carMesh.position.y = 0.7;
       oncomingCar.add(carMesh);
       oncomingCar.fallback = carMesh;
 
@@ -664,63 +743,167 @@
       scene.add(hazardMarker);
     }
 
-    // LOAD 3D GLTF MODELS
+    // LOAD 3D GLTF MODELS (Uses all 3 models downloaded by user)
     function loadModels() {
       const loader = new THREE.GLTFLoader();
-      
-      const loadModel = (url, key, callback) => {
-        loader.load(url, (gltf) => {
-          const rawModel = gltf.scene;
-          const rawBox = new THREE.Box3().setFromObject(rawModel);
-          const rawCenter = rawBox.getCenter(new THREE.Vector3());
-          const rawSize = rawBox.getSize(new THREE.Vector3());
-          
-          rawModel.position.x = -rawCenter.x;
-          rawModel.position.y = -rawBox.min.y;
-          rawModel.position.z = -rawCenter.z;
 
-          const maxDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
-          let targetDim = key === 'moto' ? 2.4 : (key === 'colectivo' ? 7.8 : 4.6);
-          const scale = targetDim / maxDim;
+      // 1. HONDA CB 750 (Downloaded Motorcycle)
+      const motoPaths = [
+        'assets/models/honda_cb_750_f_super_sport_1970.glb',
+        'assets/models/moto.glb'
+      ];
+      const tryLoadMoto = (idx) => {
+        if (idx >= motoPaths.length) return;
+        loader.load(motoPaths[idx], (gltf) => {
+          const raw = gltf.scene;
+          const box = new THREE.Box3().setFromObject(raw);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+
+          raw.position.set(-center.x, -box.min.y, -center.z);
 
           const container = new THREE.Group();
-          container.add(rawModel);
+          container.add(raw);
+
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const scale = 2.25 / maxDim;
           container.scale.set(scale, scale, scale);
 
-          // Moto faces forward down road (-Z) with completely straight handlebar
-          if (key === 'moto') {
-            container.rotation.y = Math.PI;
-          } else if (key === 'colectivo') {
-            container.rotation.y = Math.PI;
-          } else {
-            container.rotation.y = 0;
-          }
-          
-          loadedModels[key] = container;
-          if (callback) callback();
-        }, undefined, (e) => {
-          console.warn(`Modelo ${key} no cargado:`, e);
-        });
-      };
+          // Faces forward down road (-Z)
+          container.rotation.y = Math.PI;
 
-      loadModel('assets/models/moto.glb', 'moto', () => {
-        if (player) {
-          player.remove(playerFallback);
-          player.add(loadedModels.moto);
-        }
-      });
-      loadModel('assets/models/colectivo.glb', 'colectivo', () => {
-        if (busGroup) {
-          busGroup.remove(busGroup.fallback);
-          busGroup.add(loadedModels.colectivo);
-        }
-      });
-      loadModel('assets/models/auto.glb', 'auto', () => {
-        if (oncomingCar) {
-          oncomingCar.remove(oncomingCar.fallback);
-          oncomingCar.add(loadedModels.auto);
-        }
-      });
+          raw.traverse(m => {
+            if (m.isMesh) {
+              m.castShadow = true;
+              m.receiveShadow = true;
+            }
+          });
+
+          playerMotoContainer = container;
+          player.add(container);
+          if (playerFallback) playerFallback.visible = false;
+          container.visible = (playerVehicleType === 'moto');
+        }, undefined, () => tryLoadMoto(idx + 1));
+      };
+      tryLoadMoto(0);
+
+      // 2. GENERIC TOWN BUS (Downloaded Bus)
+      const busPaths = [
+        'assets/models/generic_town_bus.glb',
+        'assets/models/colectivo.glb'
+      ];
+      const tryLoadBus = (idx) => {
+        if (idx >= busPaths.length) return;
+        loader.load(busPaths[idx], (gltf) => {
+          const raw = gltf.scene;
+          const box = new THREE.Box3().setFromObject(raw);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+
+          raw.position.set(-center.x, -box.min.y, -center.z);
+
+          const container = new THREE.Group();
+          container.add(raw);
+
+          // Bus length is along X in raw model (~10m). Scale to realistic 8.8m
+          const busLen = Math.max(size.x, size.z);
+          const scale = 8.8 / busLen;
+          container.scale.set(scale, scale, scale);
+
+          // Rotate Math.PI / 2 so front (+X) faces down road (-Z) and rear faces player!
+          container.rotation.y = Math.PI / 2;
+
+          raw.traverse(m => {
+            if (m.isMesh) {
+              m.castShadow = true;
+              m.receiveShadow = true;
+            }
+          });
+
+          if (busGroup) {
+            if (busGroup.fallback) {
+              busGroup.remove(busGroup.fallback);
+            }
+            busGroup.add(container);
+          }
+        }, undefined, () => tryLoadBus(idx + 1));
+      };
+      tryLoadBus(0);
+
+      // 3. ASTON MARTIN V8 VANTAGE (Downloaded Car)
+      const carPaths = [
+        'assets/models/aston_martin_v8_vantage_v600_limitededition_1998.glb',
+        'assets/models/auto.glb'
+      ];
+      const tryLoadCar = (idx) => {
+        if (idx >= carPaths.length) return;
+        loader.load(carPaths[idx], (gltf) => {
+          const raw = gltf.scene;
+
+          raw.traverse(m => {
+            if (m.isMesh) {
+              m.castShadow = true;
+              m.receiveShadow = true;
+              if (m.material) {
+                m.material.roughness = Math.min(m.material.roughness, 0.35);
+                m.material.metalness = Math.min(m.material.metalness, 0.85);
+              }
+            }
+          });
+
+          const box = new THREE.Box3().setFromObject(raw);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+
+          raw.position.set(-center.x, -box.min.y, -center.z);
+
+          function createCarInstance(facingForward = true, paintColor = null) {
+            const inst = raw.clone(true);
+            const grp = new THREE.Group();
+            grp.add(inst);
+
+            const carLen = Math.max(size.x, size.z);
+            const scale = 4.7 / carLen;
+            grp.scale.set(scale, scale, scale);
+
+            // Driving forward down road: Math.PI. Oncoming facing player: 0
+            grp.rotation.y = facingForward ? Math.PI : 0;
+
+            if (paintColor) {
+              inst.traverse(m => {
+                if (m.isMesh && m.material && m.material.name && m.material.name.includes('Aston')) {
+                  m.material = m.material.clone();
+                  m.material.color.setHex(paintColor);
+                }
+              });
+            }
+            return grp;
+          }
+
+          // A) Oncoming hazard car in Round 3
+          const oncomingMesh = createCarInstance(false, 0xcc1122); // Crimson red
+          if (oncomingCar) {
+            if (oncomingCar.fallback) oncomingCar.remove(oncomingCar.fallback);
+            oncomingCar.add(oncomingMesh);
+          }
+
+          // B) Player selectable Aston Martin
+          playerCarContainer = createCarInstance(true, 0x0c6848); // British Racing Green
+          player.add(playerCarContainer);
+          playerCarContainer.visible = (playerVehicleType === 'car');
+
+          // C) Parked Aston Martins along city avenues
+          const colors = [0x1a4080, 0x888890, 0x991122, 0x1e242b];
+          roadChunks.forEach((chunk, cIdx) => {
+            const side = cIdx % 2 === 0 ? 1 : -1;
+            const parkedCar = createCarInstance(true, colors[cIdx % colors.length]);
+            parkedCar.position.set(side * 8.0, 0, -CHUNK_LENGTH / 2 + (cIdx * 20) % 60);
+            chunk.add(parkedCar);
+          });
+
+        }, undefined, () => tryLoadCar(idx + 1));
+      };
+      tryLoadCar(0);
     }
 
     // CONTROLS AND EVENT LISTENERS
@@ -863,7 +1046,12 @@
       if (idx === 1) {
         // Round 2: Pedestrian crossing
         busGroup.position.set(rightLaneX, 0, -80); // bus is far ahead
-        busBrakeLight.material.color.setHex(0x330000);
+        if (busGroup.brakeLights) {
+          busGroup.brakeLights.forEach(l => l.material.color.setHex(0x440000));
+        }
+        if (busGroup.brakePointLight) {
+          busGroup.brakePointLight.intensity = 0;
+        }
         pedestrianGroup.position.set(10.5, 0, -45); // waiting on sidewalk ahead
       } else if (idx === 2) {
         // Round 3: Oncoming swerving car
@@ -922,6 +1110,11 @@
         player.position.x += (targetX - player.position.x) * 0.12;
         player.rotation.z = -(targetX - player.position.x) * 0.05;
 
+        // Smooth camera follow / switch
+        camera.position.x += (player.position.x * 0.65 - camera.position.x) * 0.1;
+        camera.position.y += (targetCameraPos.y - camera.position.y) * 0.08;
+        camera.position.z += (targetCameraPos.z - camera.position.z) * 0.08;
+
         // SCENARIO EVENT MANAGEMENT
         const hazard = HAZARDS[currentRoundIndex];
         if (hazard) {
@@ -938,7 +1131,12 @@
 
             if (hazard.type === 'bus_brake') {
               // Bus brake lights flash bright red
-              busBrakeLight.material.color.setHex(0xff0000);
+              if (busGroup.brakeLights) {
+                busGroup.brakeLights.forEach(l => l.material.color.setHex(0xff0000));
+              }
+              if (busGroup.brakePointLight) {
+                busGroup.brakePointLight.intensity = 3.5;
+              }
               // Bus decelerates rapidly towards player
               busGroup.position.z += (playerSpeed - 0.12);
 
@@ -1020,7 +1218,12 @@
 
       // Reset actor positions
       busGroup.position.set(rightLaneX, 0, -26);
-      busBrakeLight.material.color.setHex(0x330000);
+      if (busGroup.brakeLights) {
+        busGroup.brakeLights.forEach(l => l.material.color.setHex(0x440000));
+      }
+      if (busGroup.brakePointLight) {
+        busGroup.brakePointLight.intensity = 0;
+      }
       pedestrianGroup.position.set(11, 0, -100);
       oncomingCar.position.set(leftLaneX, 0, -200);
 
