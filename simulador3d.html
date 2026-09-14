@@ -562,9 +562,12 @@
           container.add(rawModel);
           container.scale.set(scale, scale, scale);
 
-          // For obstacles, face them oncoming towards the player (+Z)
-          if (key === 'auto' || key === 'colectivo') {
+          // Orient vehicles: moto faces forward down the avenue (-Z)
+          if (key === 'moto') {
             container.rotation.y = Math.PI;
+          } else {
+            // Obstacles face oncoming traffic towards player (+Z)
+            container.rotation.y = 0;
           }
           
           loadedModels[key] = container;
