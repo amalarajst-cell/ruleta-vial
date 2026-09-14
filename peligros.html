@@ -400,7 +400,11 @@
     }
 
     DOM.arena.addEventListener('mousedown', handleClick);
-    DOM.arena.addEventListener('touchstart', (e) => { e.preventDefault(); handleClick(e.touches[0]); }, {passive: false});
+    DOM.arena.addEventListener('touchstart', (e) => { 
+      if (e.target === DOM.intro || DOM.intro.contains(e.target) || e.target.closest('button')) return;
+      e.preventDefault(); 
+      handleClick(e.touches[0]); 
+    }, {passive: false});
 
     function handleClick(e) {
       if (state !== 'playing') return;
