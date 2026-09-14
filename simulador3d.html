@@ -124,23 +124,31 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for mobile
       container.appendChild(renderer.domElement);
 
-      // 4. Lighting (Synthwave Neon)
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+      // 4. Lighting (Synthwave + PBR Model Clarity)
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
       scene.add(ambientLight);
 
-      const dirLight = new THREE.DirectionalLight(0xff007f, 1);
-      dirLight.position.set(-10, 20, 10);
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1a1a2e, 0.9);
+      hemiLight.position.set(0, 25, 0);
+      scene.add(hemiLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+      dirLight.position.set(10, 25, 15);
       scene.add(dirLight);
 
-      const blueLight = new THREE.PointLight(0x00f3ff, 2, 50);
-      blueLight.position.set(0, 2, 5);
+      const pinkLight = new THREE.PointLight(0xff007f, 2, 60);
+      pinkLight.position.set(-15, 5, -10);
+      scene.add(pinkLight);
+
+      const blueLight = new THREE.PointLight(0x00f3ff, 2.5, 60);
+      blueLight.position.set(15, 5, -10);
       scene.add(blueLight);
 
       // 5. Grid (The Road)
-      gridHelper = new THREE.GridHelper(200, 100, 0xff007f, 0x00f3ff);
-      gridHelper.position.y = -1;
+      gridHelper = new THREE.GridHelper(250, 120, 0xff007f, 0x00f3ff);
+      gridHelper.position.y = -0.05;
       gridHelper.material.transparent = true;
-      gridHelper.material.opacity = 0.5;
+      gridHelper.material.opacity = 0.6;
       scene.add(gridHelper);
 
       // 6. Player Car (Glowing Box Fallback)
@@ -224,36 +232,50 @@
       
       const loadModel = (url, key, callback) => {
         loader.load(url, (gltf) => {
-          const model = gltf.scene;
+          const rawModel = gltf.scene;
           
-          // Center and scale model properly
-          const box = new THREE.Box3().setFromObject(model);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
+          // Measure raw bounds
+          const rawBox = new THREE.Box3().setFromObject(rawModel);
+          const rawCenter = rawBox.getCenter(new THREE.Vector3());
+          const rawSize = rawBox.getSize(new THREE.Vector3());
           
-          model.position.x = -center.x;
-          model.position.y = -box.min.y;
-          model.position.z = -center.z;
+          // Center model at origin
+          rawModel.position.x = -rawCenter.x;
+          rawModel.position.y = -rawBox.min.y; // Sit flat on road (y = 0)
+          rawModel.position.z = -rawCenter.z;
+
+          // If model was exported sideways (width X > length Z), rotate 90 degrees
+          if (rawSize.x > rawSize.z * 1.15) {
+            rawModel.rotation.y = Math.PI / 2;
+          }
           
-          // Normalizing scale
-          const maxDim = Math.max(size.x, size.y, size.z);
-          // Auto should be ~4 units long, moto ~2, colectivo ~8
-          let targetDim = key === 'moto' ? 2.5 : (key === 'colectivo' ? 7 : 4);
+          // Calculate scale to fit lane proportions
+          const maxDim = Math.max(rawSize.x, rawSize.y, rawSize.z);
+          let targetDim = key === 'moto' ? 2.5 : (key === 'colectivo' ? 7.5 : 4.6);
           const scale = targetDim / maxDim;
-          model.scale.set(scale, scale, scale);
+
+          const container = new THREE.Group();
+          container.add(rawModel);
+          container.scale.set(scale, scale, scale);
+
+          // For obstacles, face them oncoming towards the player (+Z)
+          if (key === 'auto' || key === 'colectivo') {
+            container.rotation.y = Math.PI;
+          }
           
-          loadedModels[key] = new THREE.Group();
-          loadedModels[key].add(model);
+          loadedModels[key] = container;
           
-          if(callback) callback();
+          if (callback) callback();
         }, undefined, (e) => {
-          console.log(`Modelo no encontrado o error: ${url}`);
+          console.warn(`Error al cargar modelo ${key} (${url}):`, e);
         });
       };
 
       loadModel('assets/models/moto.glb', 'moto', () => {
-        player.remove(playerFallback);
-        player.add(loadedModels.moto);
+        if (player) {
+          player.remove(playerFallback);
+          player.add(loadedModels.moto);
+        }
       });
       loadModel('assets/models/auto.glb', 'auto');
       loadModel('assets/models/colectivo.glb', 'colectivo');
