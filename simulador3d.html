@@ -281,7 +281,7 @@
   <!-- ── TARJETA PEDAGÓGICA ENTRE SITUACIONES ── -->
   <div class="feedback-modal" id="feedback-modal">
     <div class="feedback-title" id="feedback-title">✅ ¡CORRECTO!</div>
-    <div class="feedback-law" id="feedback-law">Ley 24.449, Art. 41</div>
+    <div class="feedback-law" id="feedback-law">Ley 2.148 CABA, Art. 6.1.1</div>
     <div class="feedback-desc" id="feedback-desc">Cediste el paso al peatón.</div>
     <button class="btn-next-round" id="btn-next-round">SIGUIENTE ➡️</button>
   </div>
@@ -325,12 +325,12 @@
   <div class="overlay" id="start-screen">
     <span class="material-symbols-outlined" style="font-size:48px; color:var(--neon-yellow); margin-bottom:8px;">drive_eta</span>
     <h1 style="color:#fff; font-size:22px; margin-bottom:2px;">SIMULADOR DE EXAMEN VIAL</h1>
-    <h2 style="color:var(--neon-blue); font-size:13px; margin-bottom:14px; font-family:'Archivo Black';">LEY NACIONAL DE TRÁNSITO 24.449 — CABA</h2>
+    <h2 style="color:var(--neon-blue); font-size:13px; margin-bottom:14px; font-family:'Archivo Black';">CÓDIGO DE TRÁNSITO Y TRANSPORTE CABA — LEY 2.148</h2>
     <div class="mission-card">
-      <p style="margin-bottom:10px;">Conducirás por una <b>avenida urbana de Buenos Aires</b>. El examen evalúa <b>6 situaciones reales</b> de conducción segura.</p>
+      <p style="margin-bottom:10px;">Conducirás por una <b>avenida urbana de la Ciudad de Buenos Aires</b>. El examen evalúa <b>6 situaciones reales</b> según el Código de Tránsito de la Ciudad (Ley 2.148).</p>
 
       <div style="background:rgba(255,204,0,0.08); border:1px solid rgba(255,204,0,0.25); border-radius:12px; padding:10px 12px; margin-bottom:12px;">
-        <div style="font-family:'Archivo Black'; font-size:11px; color:var(--neon-yellow); margin-bottom:6px;">📋 SE EVALUARÁ:</div>
+        <div style="font-family:'Archivo Black'; font-size:11px; color:var(--neon-yellow); margin-bottom:6px;">📋 SE EVALUARÁ (LEY 2.148 CABA):</div>
         <div style="font-size:12px; color:#ddd; line-height:1.6;">
           🔴 Respeto a semáforos en rojo<br>
           🚶 Prioridad peatonal en sendas<br>
@@ -380,16 +380,14 @@
   
   <script>
     // ═══════════════════════════════════════════════════════════════
-    // SIMULADOR DE EXAMEN VIAL — Ley 24.449 / CABA
+    // SIMULADOR DE EXAMEN VIAL — Código de Tránsito CABA (Ley 2.148)
     // 6 situaciones reales de conducción evaluadas con 100 pts
     // ═══════════════════════════════════════════════════════════════
 
     // Velocímetro: playerSpeed 0.42 ≈ 60 km/h (avenida)
-    //   scale: 1 unit/frame × 60fps × K = km/h
-    //   K = 60 / 0.42 / 60 ≈ 2.38 → currentKmh = playerSpeed * 60 * 2.38 ≈ 60
     const SPEED_TO_KMH = 143; // playerSpeed × SPEED_TO_KMH = km/h
     let currentSpeedKmh = 60;
-    let currentSpeedLimit = 60;  // km/h - default avenida CABA (Art. 51)
+    let currentSpeedLimit = 60;  // km/h - default avenida CABA (Ley 2.148, Art. 6.2.1)
 
     // ─── Definición de las 6 situaciones del examen ─────────────────
     const SITUATIONS = [
@@ -403,9 +401,9 @@
         actor: 'pedestrian',
         timeWindow: 4000,
         penalty: 20,
-        law: 'Ley 24.449, Art. 41 — Los peatones tienen prioridad absoluta en las sendas peatonales señalizadas.',
-        successTip: '¡Correcto! Cediste el paso al peatón. En CABA es infracción grave no respetar la senda.',
-        failTip: 'Infracción grave: no cediste el paso al peatón. El peatón tiene prioridad absoluta en sendas señalizadas.',
+        law: 'Ley 2.148 CABA, Art. 6.1.1 — Los peatones tienen prioridad absoluta de paso en las sendas peatonales y esquinas señalizadas.',
+        successTip: '¡Correcto! Cediste el paso al peatón. En la Ciudad de Buenos Aires el peatón siempre tiene prioridad absoluta.',
+        failTip: 'Infracción grave: no cediste el paso al peatón. El peatón tiene prioridad absoluta de cruce.',
       },
       {
         id: 'semaforo_rojo',
@@ -417,66 +415,66 @@
         actor: 'trafficlight_red',
         timeWindow: 3500,
         penalty: 20,
-        law: 'Ley 24.449, Art. 43 — Los semáforos tienen prioridad absoluta sobre toda otra señal o norma.',
-        successTip: '¡Correcto! Respetaste el semáforo en rojo. Pasar en rojo es una infracción muy grave con riesgo de siniestro.',
-        failTip: 'Infracción muy grave: pasaste el semáforo en rojo. El semáforo tiene prioridad absoluta.',
+        law: 'Ley 2.148 CABA, Art. 6.1.4 — La luz roja del semáforo indica detención obligatoria antes de la línea de parada o senda.',
+        successTip: '¡Correcto! Detuviste la marcha antes de la línea de frenado. Pasar en rojo es una falta muy grave.',
+        failTip: 'Infracción muy grave: cruzaste con luz roja. El semáforo tiene prioridad absoluta sobre cualquier otra maniobra.',
       },
       {
         id: 'distancia_seguridad',
         num: 3,
-        title: 'Distancia de Seguridad',
-        prompt: '🚌 <b>Colectivo frenando:</b> Mantené distancia. Presioná <b>FRENO</b> para no chocar.',
+        title: 'Distancia de Seguridad (Regla 2 Segundos)',
+        prompt: '🚌 <b>Colectivo frenando en parada:</b> Mantené distancia precautoria. Presioná <b>FRENO</b> para no chocar.',
         triggerDistance: 130,
         type: 'brake_required',
         actor: 'bus_brake',
         timeWindow: 3000,
         penalty: 15,
-        law: 'Ley 24.449, Art. 48 — Mantener la distancia precautoria mínima de 2 segundos respecto del vehículo precedente.',
-        successTip: '¡Perfecto! Frenaste a tiempo. La regla de los 2 segundos es esencial para evitar alcances traseros.',
-        failTip: 'No mantuviste distancia de seguridad. El colectivo frenó bruscamente y no pudiste detener tu vehículo a tiempo.',
+        law: 'Ley 2.148 CABA, Art. 6.1.18 — Es obligatorio mantener una distancia precautoria mínima de 2 segundos respecto del vehículo que precede.',
+        successTip: '¡Perfecto! Frenaste a tiempo manteniendo la distancia de seguridad precautoria de 2 segundos.',
+        failTip: 'No mantuviste distancia de seguridad. Ante la desaceleración del colectivo quedaste en riesgo de choque por alcance.',
       },
       {
         id: 'velocidad_zona_escolar',
         num: 4,
-        title: 'Zona Escolar — Vel. Reducida',
-        prompt: '🏫 <b>Zona escolar:</b> Límite 20 km/h. Reducí la velocidad (evitá el acelerador).',
+        title: 'Zona Escolar CABA — Máx 20 km/h',
+        prompt: '🏫 <b>Zona escolar:</b> Límite 20 km/h. Reducí la velocidad de marcha.',
         triggerDistance: 175,
         type: 'speed_zone',      // auto-detected: player must not exceed limit
         actor: 'speedzone',
         newLimit: 20,
         timeWindow: 6000,
         penalty: 15,
-        law: 'Ley 24.449, Art. 51 — En zonas escolares el límite máximo es de 20 km/h.',
-        successTip: '¡Bien! Respetaste la zona escolar. La velocidad es el principal factor de gravedad en siniestros viales.',
-        failTip: 'Excediste la velocidad en zona escolar. Este tipo de infracción puede costar vidas de niños.',
+        law: 'Ley 2.148 CABA, Art. 6.2.1 — El límite de velocidad precautoria máxima en cercanía de escuelas y colegios es de 20 km/h.',
+        successTip: '¡Bien! Respetaste la velocidad máxima de 20 km/h en zona escolar, protegiendo a los niños.',
+        failTip: 'Excediste la velocidad en zona escolar. Es una falta grave con riesgo directo sobre alumnos y peatones.',
       },
       {
         id: 'cambio_carril_señal',
         num: 5,
-        title: 'Cambio de Carril con Señal',
-        prompt: '🔄 <b>Cambio de carril:</b> Activá la <b>SEÑAL</b> de giro y luego usá las flechas ← →.',
+        title: 'Cambio de Carril y Señalización de Giro',
+        prompt: '🔄 <b>Cambio de carril:</b> Activá la <b>SEÑAL</b> de giro (luz intermitente) y luego cambiá de carril ← →.',
         triggerDistance: 220,
         type: 'signal_lane_change', // player must signal BEFORE changing lane
         actor: null,
         timeWindow: 7000,
         penalty: 10,
-        law: 'Ley 24.449, Art. 49 — El conductor debe indicar con la luz de giro, con suficiente anticipación, el cambio de carril.',
-        successTip: '¡Correcto! Señalizaste antes de cambiar de carril. Esto advierte a los demás conductores de tu intención.',
-        failTip: 'Cambiaste de carril sin señalizar. Esto sorprende a los conductores de atrás y causa siniestros.',
+        law: 'Ley 2.148 CABA, Art. 6.1.10 — Toda maniobra de giro o cambio de carril debe advertirse previamente con la luz de giro correspondiente.',
+        successTip: '¡Correcto! Activaste la luz de giro con antelación antes de pasar de carril, comunicando tu maniobra a los demás.',
+        failTip: 'Cambiaste de carril sin señalizar. Sorprender a los demás usuarios viales genera situaciones de roce o colisión.',
       },
       {
         id: 'linea_central',
         num: 6,
-        title: 'Respeto a la Doble Línea Amarilla',
-        prompt: '⚠️ <b>Doble línea amarilla:</b> No invadas el carril contrario. Mantené tu carril.',
+        title: 'Respeto a la Doble Línea Amarilla Continua',
+        prompt: '⚠️ <b>Doble línea amarilla:</b> Prohibido sobrepasar o invadir la contramano. Mantené tu carril.',
         triggerDistance: 270,
         type: 'stay_in_lane',    // auto-detected: player must NOT cross x=0 (center line)
         actor: 'oncoming_swerve',
         timeWindow: 5000,
         penalty: 20,
-        law: 'Ley 24.449, Art. 50 — La doble línea amarilla continua prohíbe el adelantamiento y la invasión del carril contrario.',
-        successTip: '¡Excelente! Mantuviste tu carril ante el peligro del contramano.',
-        failTip: 'Invadiste el carril contrario. La doble línea amarilla continua prohíbe el adelantamiento.',
+        law: 'Ley 2.148 CABA, Art. 2.1.2 — La doble línea amarilla continua prohíbe taxativamente su traspaso o circulación sobre ella.',
+        successTip: '¡Excelente! Mantuviste tu carril de avance sin invadir el sentido opuesto.',
+        failTip: 'Invadiste la calzada contraria. La doble línea amarilla continua prohíbe el sobrepaso y la invasión de mano.',
       },
     ];
 
@@ -610,11 +608,18 @@
     const feedbackDesc = document.getElementById('feedback-desc');
     const btnNextRound = document.getElementById('btn-next-round');
 
-    // WEB AUDIO API SYNTHESIZER
+    // WEB AUDIO API SYNTHESIZER (Sonido Dinámico de Motor, Frenada y Señales)
     let audioCtx = null;
+    let engineOsc = null;
+    let engineGain = null;
+    let engineFilter = null;
+    let blinkerSoundInterval = null;
+
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     }
+
     function playTone(freq, type, duration, vol = 0.15) {
       if (!audioCtx) return;
       try {
@@ -630,6 +635,84 @@
         osc.stop(audioCtx.currentTime + duration);
       } catch(e){}
     }
+
+    // Sonido dinámico del motor continuo según velocidad (km/h)
+    function startEngineSound() {
+      initAudio();
+      if (engineOsc || !audioCtx) return;
+      try {
+        engineOsc = audioCtx.createOscillator();
+        engineOsc.type = 'sawtooth';
+        engineOsc.frequency.setValueAtTime(45, audioCtx.currentTime);
+
+        engineFilter = audioCtx.createBiquadFilter();
+        engineFilter.type = 'lowpass';
+        engineFilter.frequency.setValueAtTime(260, audioCtx.currentTime);
+
+        engineGain = audioCtx.createGain();
+        engineGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+
+        engineOsc.connect(engineFilter);
+        engineFilter.connect(engineGain);
+        engineGain.connect(audioCtx.destination);
+        engineOsc.start();
+      } catch(e){}
+    }
+
+    function updateEngineSound(kmh) {
+      if (!engineOsc || !engineGain || !engineFilter || !audioCtx) return;
+      try {
+        const baseFreq = 40 + (Math.max(0, kmh) / 60) * 85;
+        engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.08);
+        engineFilter.frequency.setTargetAtTime(200 + kmh * 5, audioCtx.currentTime, 0.08);
+        const targetVol = (kmh > 8) ? 0.07 : 0.035;
+        engineGain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
+      } catch(e){}
+    }
+
+    function stopEngineSound() {
+      if (!engineGain || !audioCtx) return;
+      try {
+        engineGain.gain.setTargetAtTime(0.001, audioCtx.currentTime, 0.1);
+        setTimeout(() => {
+          if (engineOsc) {
+            try { engineOsc.stop(); } catch(e){}
+            engineOsc = null;
+          }
+        }, 150);
+      } catch(e){}
+    }
+
+    // Chirrido de neumáticos al clavar los frenos
+    function playTireScreech() {
+      initAudio();
+      if (!audioCtx) return;
+      try {
+        const bufferSize = Math.floor(audioCtx.sampleRate * 0.4);
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1600, audioCtx.currentTime);
+        filter.Q.setValueAtTime(5.0, audioCtx.currentTime);
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.20, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start();
+      } catch(e){}
+    }
+
     function playSuccessChime() {
       playTone(587.33, 'triangle', 0.2, 0.2);
       setTimeout(() => playTone(880.00, 'triangle', 0.35, 0.25), 120);
@@ -1798,7 +1881,7 @@
 
       blinkerActive = !blinkerActive;
 
-      // Visual HUD blinker
+      // Visual HUD blinker y sonido de relé (tic-tac)
       const blinkerHud = document.getElementById('blinker-hud');
       const btnSL = document.getElementById('btn-signal-left');
       const btnSR = document.getElementById('btn-signal-right');
@@ -1806,15 +1889,27 @@
         blinkerHud.classList.add('show');
         btnSL.classList.add('on');
         btnSR.classList.add('on');
+
+        // Sonido de tic-tac intermitente
+        let tick = true;
+        playTone(900, 'sine', 0.025, 0.07);
+        clearInterval(blinkerSoundInterval);
+        blinkerSoundInterval = setInterval(() => {
+          tick = !tick;
+          playTone(tick ? 900 : 720, 'sine', 0.025, 0.07);
+        }, 450);
+
         // Auto-cancel después de 5 segundos
         clearTimeout(blinkerTimer);
         blinkerTimer = setTimeout(() => {
           blinkerActive = false;
+          clearInterval(blinkerSoundInterval);
           blinkerHud.classList.remove('show');
           btnSL.classList.remove('on');
           btnSR.classList.remove('on');
         }, 5000);
       } else {
+        clearInterval(blinkerSoundInterval);
         clearTimeout(blinkerTimer);
         blinkerHud.classList.remove('show');
         btnSL.classList.remove('on');
@@ -1822,7 +1917,9 @@
       }
     };
 
-    // ── FRENO ─────────────────────────────────────────────────────────
+    // ── FRENO CON FÍSICA Y CHIRRIDO ──────────────────────────────────
+    let targetPitch = 0; // cabeceo de suspensión
+
     window.handleBrake = function(e) {
       if (e) e.preventDefault();
       if (!isPlaying || isPaused) return;
@@ -1832,6 +1929,12 @@
       const btnBrake = document.getElementById('btn-brake');
       btnBrake.classList.add('active-brake');
       setTimeout(() => btnBrake.classList.remove('active-brake'), 300);
+
+      // FÍSICA: Chirrido de neumáticos y cabeceo hacia adelante de la suspensión
+      if (currentSpeedKmh > 20) {
+        playTireScreech();
+      }
+      targetPitch = -0.075; // hincada de amortiguadores delanteros
 
       brakeActive = true;
       brakeDecay = 90; // 1.5 segundos a 60fps
@@ -1953,6 +2056,8 @@
 
       const sit = activeSit;
       isPaused = true;
+      stopEngineSound();
+      clearInterval(blinkerSoundInterval);
 
       if (!success) {
         // Descontar puntos
@@ -2018,6 +2123,7 @@
 
         document.getElementById('mission-prompt').innerHTML = activeSit.prompt;
         isPaused = false;
+        startEngineSound();
       } else {
         finishExam();
       }
@@ -2025,6 +2131,8 @@
 
     function finishExam() {
       isPlaying = false;
+      stopEngineSound();
+      clearInterval(blinkerSoundInterval);
       playVictoryFanfare();
       hud.style.display = 'none';
       controlsOverlay.style.display = 'none';
@@ -2060,7 +2168,7 @@
       } else {
         rankEl.style.color = 'var(--danger)';
         rankEl.innerText = '❌ DESAPROBADO — Necesitás repasar';
-        textEl.innerText = 'No alcanzaste el mínimo de 70 puntos. Estudiá la Ley 24.449 antes de volver a intentarlo.';
+        textEl.innerText = 'No alcanzaste el mínimo de 70 puntos. Repasá el Código de Tránsito CABA (Ley 2.148) antes de volver a rendir.';
       }
 
       if (infractions.length > 0) {
@@ -2146,6 +2254,26 @@
         updateAmbientTraffic();
         updateTrafficLights();
 
+        // ─── FÍSICA VEHICULAR: Inercia y suspensión ───
+        // Cabeceo de amortiguadores al frenar (Brake Pitch)
+        player.rotation.x += (targetPitch - player.rotation.x) * 0.16;
+        targetPitch += (0 - targetPitch) * 0.08; // retorna suavemente a nivel
+
+        // Desaceleración progresiva al frenar y aceleración de crucero
+        if (brakeActive && brakeDecay > 0) {
+          brakeDecay--;
+          playerSpeed = Math.max(0.08, playerSpeed - 0.016);
+          if (brakeDecay === 0) brakeActive = false;
+        } else {
+          // Recupera velocidad de crucero según zona
+          const targetCruise = (activeSit && activeSit.type === 'speed_zone') ? 0.14 : 0.42;
+          playerSpeed += (targetCruise - playerSpeed) * 0.035;
+        }
+
+        // Actualizar velocímetro y sonido continuo de motor en cada frame
+        updateSpeedometer();
+        updateEngineSound(currentSpeedKmh);
+
         // Smooth player steering & tilt
         player.position.x += (targetX - player.position.x) * 0.12;
         player.rotation.z = -(targetX - player.position.x) * 0.05;
@@ -2190,9 +2318,6 @@
           // Ejecución y animación de los actores 3D
           if (sitTriggered && !sitResolved) {
             const elapsed = performance.now() - sitStartTime;
-
-            // Actualizar velocímetro en cada frame
-            updateSpeedometer();
 
             // 1. Peatón cruzando por senda
             if (activeSit.actor === 'pedestrian' && pedestrianGroup.visible) {
@@ -2240,6 +2365,7 @@
     // BOTÓN INICIAR EXAMEN VIAL
     document.getElementById('btn-start').addEventListener('click', () => {
       initAudio();
+      startEngineSound();
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('hud').style.display = 'flex';
       document.getElementById('controls-overlay').style.display = 'flex';
