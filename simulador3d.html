@@ -3,641 +3,427 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Simulador 3D — Seguridad Vial BA</title>
+  <title>Simulador de Conducción Urbana — Ciudad de Buenos Aires</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   
   <style>
     :root {
-      --neon-blue: #00f3ff;
-      --neon-pink: #ff007f;
-      --neon-green: #00ff88;
-      --neon-yellow: #ffcc00;
+      --primary: #ffcc00;
+      --primary-dark: #e6b800;
+      --accent: #00d2ff;
+      --success: #00e676;
       --danger: #ff3344;
-      --bg: #050510;
+      --bg-dark: #12161f;
+      --card-bg: rgba(18, 22, 31, 0.88);
+      --caba-yellow: #ffcc00;
+      --caba-green: #1b8a4e;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; touch-action: none; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; overflow: hidden; background-color: var(--bg); font-family: 'Archivo', sans-serif; }
-    
+    body { margin: 0; overflow: hidden; background-color: #7ab0df; font-family: 'Archivo', sans-serif; }
+
     /* HEADER */
     .app-header {
       position: absolute; top: 0; left: 0; width: 100%;
-      background: rgba(5, 5, 16, 0.8); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0, 243, 255, 0.25); padding: 10px 16px; z-index: 50;
+      background: rgba(18, 22, 31, 0.82); backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--primary); padding: 8px 16px; z-index: 50;
     }
-    .header-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .btn-back { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; text-decoration: none; }
+    .header-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .btn-back {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; text-decoration: none; transition: background 0.2s;
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.2); }
     .header-title-text { font-family: 'Archivo Black', sans-serif; font-size: 15px; letter-spacing: 0.5px; color: #fff; text-transform: uppercase; }
+    .header-sub { font-size: 11px; color: var(--primary); font-weight: 700; margin-left: 6px; }
 
-    /* HAZARD HUD */
-    .hud { position: absolute; top: 60px; left: 16px; right: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 20; pointer-events: none; }
-    .hud-top-bar {
-      width: 100%; max-width: 620px; display: flex; justify-content: space-between; align-items: center;
-      background: rgba(10, 14, 28, 0.85); backdrop-filter: blur(10px);
-      padding: 8px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    /* TOP HUD BAR */
+    .hud-top {
+      position: absolute; top: 58px; left: 16px; right: 16px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      pointer-events: none; z-index: 20;
     }
-    .round-indicator { display: flex; align-items: center; gap: 8px; font-family: 'Archivo Black'; font-size: 13px; color: #fff; }
-    .round-badge { background: var(--danger); color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
-    .dots-container { display: flex; gap: 6px; }
-    .round-dot { width: 10px; height: 10px; border-radius: 50%; background: #2a3134; transition: all 0.25s ease; }
-    .round-dot.active { background: #fff; box-shadow: 0 0 10px #fff; transform: scale(1.2); }
-    .round-dot.done-5 { background: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
-    .round-dot.done-3 { background: var(--neon-yellow); box-shadow: 0 0 10px var(--neon-yellow); }
-    .round-dot.done-1 { background: #ff9900; box-shadow: 0 0 8px #ff9900; }
-    .round-dot.done-0 { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
-
-    .score-telemetry { font-family: 'Archivo Black'; font-size: 14px; color: var(--neon-yellow); }
-
-    .mission-prompt {
-      width: 100%; max-width: 580px; background: rgba(5, 7, 20, 0.85); backdrop-filter: blur(8px);
-      border-radius: 12px; border-left: 4px solid var(--neon-blue); padding: 8px 14px;
-      color: #fff; font-size: 13px; line-height: 1.35; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    .hud-panel {
+      background: var(--card-bg); backdrop-filter: blur(10px);
+      border-radius: 16px; border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); pointer-events: auto;
     }
 
-    /* REACTION RATING POPUP */
-    .reaction-popup {
-      position: absolute; top: 160px; left: 50%; transform: translateX(-50%) scale(0.8);
-      background: rgba(0, 230, 118, 0.95); color: #000; padding: 12px 28px;
-      border-radius: 30px; font-family: 'Archivo Black'; font-size: 18px;
-      box-shadow: 0 0 35px rgba(0, 230, 118, 0.8); z-index: 35; pointer-events: none;
-      display: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* GPS / MISSION CARD */
+    .mission-card {
+      max-width: 480px; display: flex; align-items: center; gap: 12px;
+      border-left: 4px solid var(--accent);
     }
-    .reaction-popup.show { display: block; transform: translateX(-50%) scale(1); }
-    .reaction-popup.warn { background: rgba(255, 204, 0, 0.95); box-shadow: 0 0 30px rgba(255, 204, 0, 0.8); color: #000; }
-    .reaction-popup.bad { background: rgba(255, 51, 68, 0.95); box-shadow: 0 0 30px rgba(255, 51, 68, 0.8); color: #fff; }
+    .mission-icon { font-size: 28px; color: var(--accent); }
+    .mission-title { font-family: 'Archivo Black'; font-size: 13px; color: #fff; margin-bottom: 2px; }
+    .mission-desc { font-size: 12px; color: #cbd5e1; line-height: 1.3; }
 
-    /* CONTROLS OVERLAY */
-    .controls-overlay {
-      position: absolute; bottom: 20px; left: 16px; right: 16px;
-      display: flex; justify-content: space-between; align-items: flex-end;
-      z-index: 25; pointer-events: none;
+    /* TELEMETRY / SPEEDOMETER */
+    .telemetry-card {
+      display: flex; align-items: center; gap: 16px;
     }
-    .steering-group { display: flex; gap: 10px; pointer-events: auto; }
-    .hazard-group { pointer-events: auto; }
+    .speedo-wrap { text-align: center; }
+    .speedo-val { font-family: 'Archivo Black'; font-size: 34px; color: #fff; line-height: 1; }
+    .speedo-lbl { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+    
+    .limit-sign {
+      width: 44px; height: 44px; border-radius: 50%; background: #fff;
+      border: 4px solid #d32f2f; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    }
+    .limit-sign-num { font-family: 'Archivo Black'; font-size: 16px; color: #000; line-height: 1; }
+    .limit-sign-lbl { font-size: 7px; color: #444; font-weight: 900; }
+    .limit-sign.warn { animation: pulse-limit 0.5s infinite alternate; background: #ffebee; }
+    @keyframes pulse-limit { from { transform: scale(1); } to { transform: scale(1.1); box-shadow: 0 0 15px #d32f2f; } }
 
-    /* ── CONTROLES DE CARRIL ── */
-    .ctrl-btn {
-      width: 58px; height: 58px; border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(15, 18, 35, 0.85); backdrop-filter: blur(8px);
-      border: 2px solid rgba(0, 243, 255, 0.3); color: var(--neon-blue);
-      cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.5); transition: transform 0.1s;
-    }
-    .ctrl-btn:active { transform: scale(0.92); }
-    .ctrl-btn.blink-active { border-color: var(--neon-yellow); color: var(--neon-yellow); animation: blink-pulse 0.5s infinite alternate; }
-    @keyframes blink-pulse { from { box-shadow: 0 0 6px rgba(255,204,0,0.4); } to { box-shadow: 0 0 18px rgba(255,204,0,0.9); } }
+    /* SCORE BAR */
+    .score-card { text-align: right; min-width: 100px; }
+    .score-label { font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 2px; }
+    .score-value { font-family: 'Archivo Black'; font-size: 24px; color: var(--success); }
+    .score-value.warn { color: var(--primary); }
+    .score-value.bad { color: var(--danger); }
 
-    /* ── BOTÓN FRENO ── */
-    .btn-brake {
-      width: 130px; height: 70px; border-radius: 20px;
-      background: linear-gradient(135deg, #cc0000 0%, #ff3300 100%);
-      border: 3px solid #ffffff; color: #ffffff;
-      font-family: 'Archivo Black'; font-size: 15px; letter-spacing: 0.5px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-      cursor: pointer; box-shadow: 0 0 22px rgba(255,0,0,0.5), 0 6px 18px rgba(0,0,0,0.5);
-      transition: transform 0.1s; touch-action: none;
+    /* BLINKER HUD */
+    .blinker-indicator {
+      position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 20px; align-items: center; background: rgba(0,0,0,0.75);
+      padding: 6px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+      z-index: 25; pointer-events: none; opacity: 0; transition: opacity 0.2s;
     }
-    .btn-brake:active { transform: scale(0.91); }
-    .btn-brake.active-brake { background: linear-gradient(135deg, #ff4400, #ff8800); transform: scale(0.91); }
+    .blinker-indicator.show { opacity: 1; }
+    .blinker-arrow { font-size: 22px; color: #555; }
+    .blinker-arrow.active { color: var(--primary); animation: blink-anim 0.5s infinite alternate; }
+    @keyframes blink-anim { from { opacity: 0.2; } to { opacity: 1; filter: drop-shadow(0 0 8px var(--primary)); } }
 
-    /* ── BOTÓN SEÑAL DE GIRO ── */
-    .btn-signal {
-      width: 68px; height: 58px; border-radius: 16px;
-      background: rgba(30, 22, 5, 0.9); border: 2px solid var(--neon-yellow); color: var(--neon-yellow);
-      font-family: 'Archivo Black'; font-size: 11px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-      cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.5); transition: transform 0.1s;
-    }
-    .btn-signal:active { transform: scale(0.91); }
-    .btn-signal.on { background: var(--neon-yellow); color: #000; box-shadow: 0 0 18px rgba(255,204,0,0.7); }
-
-    /* ── FEEDBACK CARD ── */
-    .feedback-modal {
-      position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
-      width: 92%; max-width: 500px; background: rgba(8, 12, 24, 0.94); backdrop-filter: blur(16px);
-      border: 2px solid var(--neon-green); border-radius: 20px; padding: 20px; text-align: center;
-      z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: none;
-    }
-    .feedback-modal.infraction { border-color: var(--danger); }
-    .feedback-title { font-family: 'Archivo Black'; font-size: 18px; margin-bottom: 6px; }
-    .feedback-law { font-size: 11px; color: var(--neon-blue); margin-bottom: 8px; font-style: italic; }
-    .feedback-desc { font-size: 13px; color: #ccc; line-height: 1.45; margin-bottom: 14px; }
-    .btn-next-round {
-      padding: 11px 28px; background: var(--neon-green); color: #000;
-      border: none; border-radius: 25px; font-family: 'Archivo Black'; font-size: 14px;
-      cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(0,255,136,0.4);
-    }
-    .btn-next-round.infraction { background: var(--neon-yellow); }
-
-    /* ── SPEEDOMETER HUD ── */
-    .speedo-widget {
-      display: flex; align-items: center; gap: 8px;
-    }
-    .speedo-value {
-      font-family: 'Archivo Black'; font-size: 26px; color: #fff; line-height: 1;
-    }
-    .speedo-unit { font-size: 10px; color: #888; margin-top: 2px; }
-    .speed-limit-badge {
-      display: flex; align-items: center; justify-content: center;
-      width: 36px; height: 36px; border-radius: 50%;
-      border: 3px solid #cc0000; background: #fff;
-      font-family: 'Archivo Black'; font-size: 11px; color: #000; line-height: 1.1;
+    /* REACTION / INFRACTION POPUP */
+    .alert-popup {
+      position: absolute; top: 180px; left: 50%; transform: translateX(-50%) scale(0.9);
+      background: rgba(18, 22, 31, 0.95); backdrop-filter: blur(12px);
+      padding: 12px 24px; border-radius: 20px; border: 2px solid var(--success);
+      color: #fff; font-family: 'Archivo Black'; font-size: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6); z-index: 40; pointer-events: none;
+      display: none; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: center;
     }
-    .speed-limit-badge.ok  { border-color: #00cc44; }
-    .speed-limit-badge.warn { border-color: #ff4400; background: #ff4400; color: #fff; }
+    .alert-popup.show { display: block; transform: translateX(-50%) scale(1); }
+    .alert-popup.infraction { border-color: var(--danger); }
+    .alert-popup-sub { font-size: 11px; font-family: 'Archivo'; color: #cbd5e1; margin-top: 4px; font-weight: 600; }
 
-    /* ── SCORE BAR ── */
-    .score-bar-wrap {
-      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+    /* CONTROLS OVERLAY (MÓVIL / TÁCTIL) */
+    .controls-overlay {
+      position: absolute; bottom: 20px; left: 20px; right: 20px;
+      display: flex; justify-content: space-between; align-items: flex-end;
+      pointer-events: none; z-index: 30;
     }
-    .score-bar-label { font-family:'Archivo Black'; font-size:11px; color:#aaa; }
-    .score-bar-track { width: 80px; height: 8px; background: #222; border-radius: 9999px; overflow: hidden; }
-    .score-bar-fill  { height: 100%; border-radius: 9999px; background: var(--neon-green); transition: width 0.5s ease, background 0.5s; }
-    .score-pts { font-family:'Archivo Black'; font-size:18px; color: var(--neon-green); }
-    .score-pts.warn { color: var(--neon-yellow); }
-    .score-pts.bad  { color: var(--danger); }
+    .ctrl-group { display: flex; gap: 12px; pointer-events: auto; align-items: flex-end; }
 
-    /* ── BLINKER INDICATOR ── */
-    .blinker-hud {
-      position: absolute; top: 62px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; align-items: center; pointer-events: none;
-      z-index: 22; opacity: 0; transition: opacity 0.2s;
-    }
-    .blinker-hud.show { opacity: 1; }
-    .blinker-arrow { font-size: 24px; color: var(--neon-yellow); animation: blink-pulse 0.5s infinite alternate; }
-
-    /* ── OVERLAYS ── */
-    .overlay {
-      position: absolute; inset: 0; background: rgba(5,5,16,0.92); z-index: 60;
+    /* STEERING BUTTONS */
+    .touch-btn {
+      width: 66px; height: 66px; border-radius: 20px;
+      background: rgba(18, 22, 31, 0.85); backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2); color: #fff;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 24px; backdrop-filter: blur(10px);
+      cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+      transition: transform 0.08s, background 0.15s, border-color 0.15s;
     }
-    .overlay h1 { font-family: 'Archivo Black'; margin-bottom: 10px; font-size: 24px; }
-    .mission-card {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 16px; padding: 16px; max-width: 440px; text-align: left;
-      margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #e0e0e0;
+    .touch-btn:active, .touch-btn.active { transform: scale(0.92); background: rgba(0, 210, 255, 0.25); border-color: var(--accent); }
+
+    /* PEDALES REALISTAS */
+    .pedal-btn {
+      width: 74px; height: 110px; border-radius: 18px;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      padding-bottom: 12px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      font-family: 'Archivo Black'; font-size: 11px; letter-spacing: 0.5px;
+      transition: transform 0.08s, filter 0.1s;
     }
-    .mission-card ul { margin-left: 18px; margin-top: 8px; }
-    .mission-card li { margin-bottom: 5px; }
-    .btn-action {
-      pointer-events: auto; padding: 15px 34px; border-radius: 30px;
-      background: var(--neon-blue); color: #000; font-family: 'Archivo Black';
-      font-size: 16px; border: none; box-shadow: 0 0 20px rgba(0,243,255,0.6);
-      text-transform: uppercase; cursor: pointer; transition: transform 0.2s;
+    .pedal-btn:active, .pedal-btn.active { transform: scale(0.94) translateY(4px); }
+    .pedal-brake {
+      background: linear-gradient(180deg, #333a46 0%, #1e232d 100%);
+      border: 3px solid #ef4444; color: #ef4444; width: 84px; height: 86px;
     }
-    .btn-action:active { transform: scale(0.95); }
-    .btn-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); box-shadow: none; margin-top: 12px; padding: 12px 26px; font-size: 13px; }
-    .btn-select-veh {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 7px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.06); color: #ccc; font-family: 'Archivo Black', sans-serif;
-      font-size: 12px; cursor: pointer; transition: all 0.2s ease;
+    .pedal-brake:active, .pedal-brake.active { background: linear-gradient(180deg, #ef4444 0%, #991b1b 100%); color: #fff; }
+    
+    .pedal-accel {
+      background: linear-gradient(180deg, #333a46 0%, #1e232d 100%);
+      border: 3px solid var(--success); color: var(--success);
     }
-    .btn-select-veh:hover { background: rgba(255,255,255,0.15); color: #fff; }
-    .btn-select-veh.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); box-shadow: 0 0 14px rgba(0,243,255,0.5); }
-    .btn-camera-toggle {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 6px 10px; border-radius: 10px;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
-      color: #ccc; font-family: 'Archivo', sans-serif; font-size: 11px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    .pedal-accel:active, .pedal-accel.active { background: linear-gradient(180deg, var(--success) 0%, #15803d 100%); color: #000; }
+
+    /* ACCIONES RÁPIDAS (GUIÑOS, CÁMARA, BOCINA) */
+    .aux-controls {
+      position: absolute; bottom: 140px; left: 20px;
+      display: flex; gap: 8px; pointer-events: auto; z-index: 30;
     }
-    .btn-camera-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
-    #canvas-container { width: 100vw; height: 100vh; display: block; }
+    .aux-btn {
+      padding: 8px 14px; border-radius: 12px; background: rgba(18, 22, 31, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2); color: #fff;
+      font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px;
+      cursor: pointer; backdrop-filter: blur(8px); transition: all 0.15s;
+    }
+    .aux-btn:active, .aux-btn.active { background: var(--primary); color: #000; border-color: var(--primary); transform: scale(0.95); }
+
+    /* MODAL OVERLAYS */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(10, 14, 22, 0.88);
+      backdrop-filter: blur(14px); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 100; padding: 20px;
+    }
+    .dialog-box {
+      width: 100%; max-width: 520px; background: rgba(18, 24, 38, 0.96);
+      border-radius: 24px; border: 2px solid var(--primary); padding: 28px;
+      text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .dialog-title { font-family: 'Archivo Black'; font-size: 24px; color: #fff; margin-bottom: 6px; }
+    .dialog-sub { font-size: 13px; color: var(--primary); font-weight: 700; margin-bottom: 18px; text-transform: uppercase; }
+    .dialog-body { font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 22px; text-align: left; }
+    
+    .btn-main {
+      width: 100%; padding: 15px; border-radius: 16px; border: none;
+      background: linear-gradient(135deg, var(--primary) 0%, #ff9900 100%);
+      color: #000; font-family: 'Archivo Black'; font-size: 15px; letter-spacing: 0.5px;
+      cursor: pointer; box-shadow: 0 6px 20px rgba(255,204,0,0.4); transition: transform 0.1s;
+    }
+    .btn-main:active { transform: scale(0.98); }
+
+    /* RESULT REPORT */
+    .result-score { font-family: 'Archivo Black'; font-size: 58px; color: var(--success); line-height: 1; margin: 12px 0; }
+    .result-score.bad { color: var(--danger); }
+    .result-infractions {
+      max-height: 160px; overflow-y: auto; background: rgba(0,0,0,0.35);
+      border-radius: 12px; padding: 10px 14px; margin: 14px 0; font-size: 12px;
+    }
+    .inf-item { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #cbd5e1; }
+    .inf-item:last-child { border-bottom: none; }
+    .inf-law { font-size: 10px; color: var(--primary); font-weight: 700; }
+
+    #canvas-container { position: absolute; inset: 0; z-index: 1; }
   </style>
+
+  <!-- Three.js r128 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- GLTFLoader -->
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header class="app-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="juegos.html" class="btn-back"><span class="material-symbols-outlined">arrow_back</span></a>
-        <span class="header-title-text">Simulador de Examen Vial</span>
+        <a href="juegos.html" class="btn-back" title="Volver al menú de juegos">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <div>
+          <span class="header-title-text">Autoescuela Virtual CABA</span>
+          <span class="header-sub">Ley 2.148</span>
+        </div>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
-        <div style="display:flex; gap:6px; background:rgba(255,255,255,0.06); padding:3px 6px; border-radius:14px; border:1px solid rgba(255,255,255,0.12);">
-          <button id="hud-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" title="Conducir Moto Honda CB 750">🏍️ Moto</button>
-          <button id="hud-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" title="Conducir Aston Martin V8">🚗 Auto</button>
-        </div>
-        <button class="btn-camera-toggle" id="btn-camera-toggle" onclick="toggleCameraView()" title="Alternar vista Cabina/Exterior (C)" style="display:none;">
-          <span class="material-symbols-outlined" style="font-size:16px;">directions_car</span> CABINA
-        </button>
+        <span class="material-symbols-outlined" style="color:var(--primary); font-size:20px;">traffic</span>
+        <span style="font-size:12px; color:#fff; font-weight:700;">Stand Móvil</span>
       </div>
     </div>
   </header>
 
-  <!-- ── HUD DEL EXAMEN ── -->
-  <div class="hud" id="hud" style="display:none;">
-    <!-- Barra superior: velocímetro + situación + score -->
-    <div class="hud-top-bar">
-      <!-- Velocímetro -->
-      <div class="speedo-widget">
-        <div class="speed-limit-badge" id="speed-limit-badge">40</div>
-        <div>
-          <div class="speedo-value"><span id="speedo-kmh">50</span></div>
-          <div class="speedo-unit">km/h</div>
-        </div>
-      </div>
-      <!-- Situación actual -->
-      <div class="round-indicator">
-        <span class="round-badge" id="sit-badge">SIT. <span id="sit-num">1</span>/6</span>
-        <div class="dots-container" id="dots-container">
-          <div class="round-dot active" id="dot-1"></div>
-          <div class="round-dot" id="dot-2"></div>
-          <div class="round-dot" id="dot-3"></div>
-          <div class="round-dot" id="dot-4"></div>
-          <div class="round-dot" id="dot-5"></div>
-          <div class="round-dot" id="dot-6"></div>
-        </div>
-      </div>
-      <!-- Score -->
-      <div class="score-bar-wrap">
-        <div class="score-bar-label">PUNTAJE</div>
-        <div class="score-bar-track"><div class="score-bar-fill" id="score-bar-fill" style="width:100%"></div></div>
-        <div class="score-pts" id="score-pts">100</div>
+  <!-- TOP HUD -->
+  <div class="hud-top" id="hud-top" style="display:none;">
+    <!-- Mission Guidance -->
+    <div class="hud-panel mission-card">
+      <span class="material-symbols-outlined mission-icon" id="mission-icon">navigation</span>
+      <div>
+        <div class="mission-title" id="mission-title">Paso 1: Iniciá la marcha</div>
+        <div class="mission-desc" id="mission-desc">Avanzá por la avenida por el carril derecho. Máx 60 km/h.</div>
       </div>
     </div>
-    <!-- Prompt de situación -->
-    <div class="mission-prompt" id="mission-prompt">
-      🚗 <b>Conducción libre:</b> Respetá las señales, velocidades y prioridades.
+
+    <!-- Telemetry (Speed + Limit + Score) -->
+    <div class="hud-panel telemetry-card">
+      <div class="speedo-wrap">
+        <div class="speedo-val" id="hud-speed">0</div>
+        <div class="speedo-lbl">km/h</div>
+      </div>
+      <div class="limit-sign" id="hud-limit-sign">
+        <div class="limit-sign-num" id="hud-limit-num">60</div>
+        <div class="limit-sign-lbl">MÁX</div>
+      </div>
+      <div class="score-card">
+        <div class="score-label">PUNTAJE</div>
+        <div class="score-value" id="hud-score">100</div>
+      </div>
     </div>
   </div>
 
-  <!-- ── INDICADOR DE SEÑAL DE GIRO ── -->
-  <div class="blinker-hud" id="blinker-hud">
-    <span class="blinker-arrow" id="blinker-arrow-left">◀</span>
-    <span style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-yellow);">SEÑAL ACTIVA</span>
-    <span class="blinker-arrow" id="blinker-arrow-right">▶</span>
+  <!-- BLINKER INDICATOR -->
+  <div class="blinker-indicator" id="blinker-indicator">
+    <span class="blinker-arrow" id="b-arrow-left">◀</span>
+    <span style="font-family:'Archivo Black'; font-size:12px; color:#fff;">LUZ DE GIRO</span>
+    <span class="blinker-arrow" id="b-arrow-right">▶</span>
   </div>
 
-  <!-- ── POPUP DE REACCIÓN ── -->
-  <div class="reaction-popup" id="reaction-popup">✅ ¡FRENASTE A TIEMPO!</div>
-
-  <!-- ── TARJETA PEDAGÓGICA ENTRE SITUACIONES ── -->
-  <div class="feedback-modal" id="feedback-modal">
-    <div class="feedback-title" id="feedback-title">✅ ¡CORRECTO!</div>
-    <div class="feedback-law" id="feedback-law">Ley 2.148 CABA, Art. 6.1.1</div>
-    <div class="feedback-desc" id="feedback-desc">Cediste el paso al peatón.</div>
-    <button class="btn-next-round" id="btn-next-round">SIGUIENTE ➡️</button>
+  <!-- ALERT POPUP -->
+  <div class="alert-popup" id="alert-popup">
+    <div id="alert-title">¡CORRECTO!</div>
+    <div class="alert-popup-sub" id="alert-law">Ley 2.148 CABA</div>
   </div>
 
-  <!-- ── CONTROLES EN PANTALLA ── -->
+  <!-- AUX CONTROLS (GUIÑOS, CÁMARA, BOCINA) -->
+  <div class="aux-controls" id="aux-controls" style="display:none;">
+    <button class="aux-btn" id="btn-sig-left" onclick="toggleBlinker('left')">
+      <span class="material-symbols-outlined" style="font-size:18px;">turn_left</span> GIRO IZQ (Q)
+    </button>
+    <button class="aux-btn" id="btn-sig-right" onclick="toggleBlinker('right')">
+      <span class="material-symbols-outlined" style="font-size:18px;">turn_right</span> GIRO DER (E)
+    </button>
+    <button class="aux-btn" id="btn-camera" onclick="toggleCameraView()">
+      <span class="material-symbols-outlined" style="font-size:18px;">videocam</span> CÁMARA (C)
+    </button>
+    <button class="aux-btn" id="btn-horn" onclick="soundHorn()">
+      <span class="material-symbols-outlined" style="font-size:18px;">volume_up</span> BOCINA (H)
+    </button>
+  </div>
+
+  <!-- CONTROLES TÁCTILES INFERIORES -->
   <div class="controls-overlay" id="controls-overlay" style="display:none;">
-    <!-- Izquierda: señal + carril izq -->
-    <div class="steering-group" style="flex-direction:column; gap:8px;">
-      <button class="btn-signal" id="btn-signal-left" ontouchstart="handleSignal(event)" onclick="handleSignal(event)">
-        <span class="material-symbols-outlined" style="font-size:20px;">turn_left</span>
-        <span>SEÑAL</span>
+    <!-- Dirección Izquierda / Derecha -->
+    <div class="ctrl-group">
+      <button class="touch-btn" id="btn-steer-left">
+        <span class="material-symbols-outlined" style="font-size:36px;">arrow_back</span>
       </button>
-      <button class="ctrl-btn" id="btn-left">
-        <span class="material-symbols-outlined" style="font-size:28px;">arrow_back</span>
+      <button class="touch-btn" id="btn-steer-right">
+        <span class="material-symbols-outlined" style="font-size:36px;">arrow_forward</span>
       </button>
     </div>
 
-    <!-- Centro: FRENO -->
-    <div style="display:flex; flex-direction:column; align-items:center; pointer-events:auto;">
-      <button class="btn-brake" id="btn-brake" ontouchstart="handleBrake(event)" onclick="handleBrake(event)">
-        <span class="material-symbols-outlined" style="font-size:28px;">front_hand</span>
+    <!-- Pedales de Freno y Acelerador -->
+    <div class="ctrl-group">
+      <button class="pedal-btn pedal-brake" id="btn-pedal-brake">
+        <span class="material-symbols-outlined" style="font-size:32px;">pan_tool</span>
         FRENO
       </button>
-    </div>
-
-    <!-- Derecha: carril der + señal -->
-    <div class="steering-group" style="flex-direction:column; gap:8px; align-items:flex-end;">
-      <button class="btn-signal" id="btn-signal-right" ontouchstart="handleSignal(event)" onclick="handleSignal(event)">
-        <span class="material-symbols-outlined" style="font-size:20px;">turn_right</span>
-        <span>SEÑAL</span>
-      </button>
-      <button class="ctrl-btn" id="btn-right">
-        <span class="material-symbols-outlined" style="font-size:28px;">arrow_forward</span>
+      <button class="pedal-btn pedal-accel" id="btn-pedal-gas">
+        <span class="material-symbols-outlined" style="font-size:32px;">speed</span>
+        GAS
       </button>
     </div>
   </div>
 
+  <!-- CANVAS 3D -->
   <div id="canvas-container"></div>
 
-  <!-- ── PANTALLA DE INICIO — EXAMEN VIAL ── -->
-  <div class="overlay" id="start-screen">
-    <span class="material-symbols-outlined" style="font-size:48px; color:var(--neon-yellow); margin-bottom:8px;">drive_eta</span>
-    <h1 style="color:#fff; font-size:22px; margin-bottom:2px;">SIMULADOR DE EXAMEN VIAL</h1>
-    <h2 style="color:var(--neon-blue); font-size:13px; margin-bottom:14px; font-family:'Archivo Black';">CÓDIGO DE TRÁNSITO Y TRANSPORTE CABA — LEY 2.148</h2>
-    <div class="mission-card">
-      <p style="margin-bottom:10px;">Conducirás por una <b>avenida urbana de la Ciudad de Buenos Aires</b>. El examen evalúa <b>6 situaciones reales</b> según el Código de Tránsito de la Ciudad (Ley 2.148).</p>
+  <!-- PANTALLA INICIAL (START SCREEN) -->
+  <div class="overlay" id="modal-start">
+    <div class="dialog-box">
+      <span class="material-symbols-outlined" style="font-size:52px; color:var(--primary); margin-bottom:8px;">directions_car</span>
+      <h1 class="dialog-title">EXAMEN DE CONDUCCIÓN</h1>
+      <div class="dialog-sub">Ciudad Autónoma de Buenos Aires — Ley 2.148</div>
+      <div class="dialog-body">
+        <p style="margin-bottom:12px;">Conducirás por un <b>circuito urbano real de Buenos Aires</b> a plena luz del día. Tenés el control total del vehículo (acelerar, frenar y doblar en esquinas).</p>
+        
+        <div style="background:rgba(255,204,0,0.08); border:1px solid rgba(255,204,0,0.3); border-radius:12px; padding:12px; margin-bottom:12px;">
+          <b style="color:var(--primary); display:block; margin-bottom:6px;">📋 REGLAS DEL EXAMEN (LEY 2.148):</b>
+          • Máx. <b>60 km/h</b> en avenidas y <b>40 km/h</b> en calles.<br>
+          • Respetar la luz roja del semáforo.<br>
+          • Activar <b>luz de giro</b> antes de doblar.<br>
+          • Ceder el paso a peatones en sendas.<br>
+          • No circular sobre la doble línea amarilla.
+        </div>
 
-      <div style="background:rgba(255,204,0,0.08); border:1px solid rgba(255,204,0,0.25); border-radius:12px; padding:10px 12px; margin-bottom:12px;">
-        <div style="font-family:'Archivo Black'; font-size:11px; color:var(--neon-yellow); margin-bottom:6px;">📋 SE EVALUARÁ (LEY 2.148 CABA):</div>
-        <div style="font-size:12px; color:#ddd; line-height:1.6;">
-          🔴 Respeto a semáforos en rojo<br>
-          🚶 Prioridad peatonal en sendas<br>
-          🔄 Señalización antes de cambiar de carril<br>
-          📏 Distancia de seguridad (2 seg.)<br>
-          🚫 No invadir carril contrario<br>
-          🔢 Velocidad máxima urbana (60/40 km/h)
+        <div style="font-size:12px; color:#94a3b8;">
+          🎮 <b>Controles:</b> <b>W/▲</b> Acelerar • <b>S/▼</b> Frenar/Reversa • <b>A/D/◄/►</b> Doblar • <b>Q/E</b> Giros • <b>C</b> Cámara
         </div>
       </div>
-
-      <div style="font-size:12px; margin-bottom:6px; font-weight:700; color:#fff;">Seleccioná tu vehículo:</div>
-      <div style="display:flex; gap:10px; margin-bottom:10px;">
-        <button id="start-select-moto" class="btn-select-veh" onclick="selectPlayerVehicle('moto')" style="flex:1; padding:9px;">🏍️ Moto Honda CB 750</button>
-        <button id="start-select-car" class="btn-select-veh active" onclick="selectPlayerVehicle('car')" style="flex:1; padding:9px;">🚗 Aston Martin V8</button>
-      </div>
-
-      <ul style="font-size:11px; color:#aaa;">
-        <li>🛑 <b>FRENO</b> = frenar ante peligro / semáforo rojo / peatón</li>
-        <li>🔄 <b>SEÑAL</b> = activar antes de cambiar de carril (obligatorio)</li>
-        <li>← → <b>Carril</b> = cambiar de carril (solo después de activar señal)</li>
-        <li>⌨️ <b>Teclado:</b> Espacio/F=Freno, Q/E=Señal, A/D=Carril, C=Cámara</li>
-      </ul>
+      <button class="btn-main" id="btn-start-game">INICIAR EXAMEN VIAL (2 MIN)</button>
     </div>
-    <div style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-green); margin-bottom:14px;">📊 Comenzás con 100 pts — cada infracción descuenta puntos</div>
-    <button class="btn-action" id="btn-start">INICIAR EXAMEN VIAL</button>
   </div>
 
-  <!-- ── PANTALLA FINAL DE RESULTADOS ── -->
-  <div class="overlay" id="results-screen" style="display:none;">
-    <span class="material-symbols-outlined" style="font-size:52px; margin-bottom:8px;" id="results-icon">verified</span>
-    <h1 style="color:#fff;" id="results-hero-title">EXAMEN COMPLETADO</h1>
-    <div style="font-family:'Archivo Black'; font-size:52px; margin-bottom:4px;" id="results-score">85</div>
-    <div style="font-size:13px; color:#888; margin-bottom:14px;">PUNTOS SOBRE 100</div>
-    <div class="mission-card" style="text-align:center; max-width:420px;">
-      <h3 id="results-rank" style="font-size:17px; margin-bottom:8px;">APROBADO</h3>
-      <p id="results-text" style="font-size:13px;"></p>
-      <div id="results-infractions" style="margin-top:10px; font-size:12px; color:#ccc; text-align:left;"></div>
+  <!-- PANTALLA FINAL DE RESULTADOS -->
+  <div class="overlay" id="modal-result" style="display:none;">
+    <div class="dialog-box">
+      <span class="material-symbols-outlined" id="res-icon" style="font-size:54px; color:var(--success);">verified</span>
+      <h1 class="dialog-title" id="res-title">EXAMEN APROBADO</h1>
+      <div class="dialog-sub" id="res-sub">Código de Tránsito CABA (Ley 2.148)</div>
+      
+      <div class="result-score" id="res-score">100</div>
+      <div style="font-size:12px; color:#94a3b8; margin-bottom:8px;">PUNTOS OBTENIDOS SOBRE 100</div>
+
+      <div class="result-infractions" id="res-infractions"></div>
+
+      <button class="btn-main" onclick="location.reload()" style="margin-bottom:8px;">REPETIR EXAMEN</button>
+      <a href="juegos.html" class="btn-back" style="width:100%; border-radius:14px; padding:12px; font-weight:700; font-size:13px; text-decoration:none;">VOLVER AL MENÚ DE JUEGOS</a>
     </div>
-    <button class="btn-action" onclick="location.reload()">REPETIR EXAMEN</button>
-    <a href="juegos.html" class="btn-action btn-secondary" style="text-decoration:none; display:inline-block; margin-top:10px;">VOLVER AL MENÚ</a>
   </div>
 
-  <!-- Three.js from CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- GLTFLoader from CDN -->
-  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
-  
   <script>
     // ═══════════════════════════════════════════════════════════════
-    // SIMULADOR DE EXAMEN VIAL — Código de Tránsito CABA (Ley 2.148)
-    // 6 situaciones reales de conducción evaluadas con 100 pts
+    // SIMULADOR DE CONDUCCIÓN URBANA — CABA (LEY 2.148)
+    // Motor Three.js Diurno con Iluminación Solar, Calles y Físicas
     // ═══════════════════════════════════════════════════════════════
 
-    // Velocímetro: playerSpeed 0.42 ≈ 60 km/h (avenida)
-    const SPEED_TO_KMH = 143; // playerSpeed × SPEED_TO_KMH = km/h
-    let currentSpeedKmh = 60;
-    let currentSpeedLimit = 60;  // km/h - default avenida CABA (Ley 2.148, Art. 6.2.1)
+    // --- VARIABLES DE ESTADO DEL JUEGO ---
+    let isGameRunning = false;
+    let examScore = 100;
+    let infractions = [];
+    let currentLimitKmh = 60;
+    let activeBlinker = null; // 'left' | 'right' | null
+    let blinkerTimer = null;
+    let blinkerSoundInterval = null;
+    let currentStep = 1;
+    let examTimeLeft = 120; // 2 minutos de duración para stands
+    let examInterval = null;
 
-    // ─── Definición de las 6 situaciones del examen ─────────────────
-    const SITUATIONS = [
-      {
-        id: 'senda_peatonal',
-        num: 1,
-        title: 'Prioridad Peatonal en Senda',
-        prompt: '🚶 <b>Senda peatonal adelante:</b> Un peatón inicia el cruce. Presioná <b>FRENO</b> para cederle el paso.',
-        triggerDistance: 30,
-        type: 'brake_required',  // player must press FRENO
-        actor: 'pedestrian',
-        timeWindow: 4000,
-        penalty: 20,
-        law: 'Ley 2.148 CABA, Art. 6.1.1 — Los peatones tienen prioridad absoluta de paso en las sendas peatonales y esquinas señalizadas.',
-        successTip: '¡Correcto! Cediste el paso al peatón. En la Ciudad de Buenos Aires el peatón siempre tiene prioridad absoluta.',
-        failTip: 'Infracción grave: no cediste el paso al peatón. El peatón tiene prioridad absoluta de cruce.',
-      },
-      {
-        id: 'semaforo_rojo',
-        num: 2,
-        title: 'Semáforo en Rojo',
-        prompt: '🔴 <b>Semáforo en rojo:</b> Debés frenar antes de la línea de parada. Presioná <b>FRENO</b>.',
-        triggerDistance: 80,
-        type: 'brake_required',
-        actor: 'trafficlight_red',
-        timeWindow: 3500,
-        penalty: 20,
-        law: 'Ley 2.148 CABA, Art. 6.1.4 — La luz roja del semáforo indica detención obligatoria antes de la línea de parada o senda.',
-        successTip: '¡Correcto! Detuviste la marcha antes de la línea de frenado. Pasar en rojo es una falta muy grave.',
-        failTip: 'Infracción muy grave: cruzaste con luz roja. El semáforo tiene prioridad absoluta sobre cualquier otra maniobra.',
-      },
-      {
-        id: 'distancia_seguridad',
-        num: 3,
-        title: 'Distancia de Seguridad (Regla 2 Segundos)',
-        prompt: '🚌 <b>Colectivo frenando en parada:</b> Mantené distancia precautoria. Presioná <b>FRENO</b> para no chocar.',
-        triggerDistance: 130,
-        type: 'brake_required',
-        actor: 'bus_brake',
-        timeWindow: 3000,
-        penalty: 15,
-        law: 'Ley 2.148 CABA, Art. 6.1.18 — Es obligatorio mantener una distancia precautoria mínima de 2 segundos respecto del vehículo que precede.',
-        successTip: '¡Perfecto! Frenaste a tiempo manteniendo la distancia de seguridad precautoria de 2 segundos.',
-        failTip: 'No mantuviste distancia de seguridad. Ante la desaceleración del colectivo quedaste en riesgo de choque por alcance.',
-      },
-      {
-        id: 'velocidad_zona_escolar',
-        num: 4,
-        title: 'Zona Escolar CABA — Máx 20 km/h',
-        prompt: '🏫 <b>Zona escolar:</b> Límite 20 km/h. Reducí la velocidad de marcha.',
-        triggerDistance: 175,
-        type: 'speed_zone',      // auto-detected: player must not exceed limit
-        actor: 'speedzone',
-        newLimit: 20,
-        timeWindow: 6000,
-        penalty: 15,
-        law: 'Ley 2.148 CABA, Art. 6.2.1 — El límite de velocidad precautoria máxima en cercanía de escuelas y colegios es de 20 km/h.',
-        successTip: '¡Bien! Respetaste la velocidad máxima de 20 km/h en zona escolar, protegiendo a los niños.',
-        failTip: 'Excediste la velocidad en zona escolar. Es una falta grave con riesgo directo sobre alumnos y peatones.',
-      },
-      {
-        id: 'cambio_carril_señal',
-        num: 5,
-        title: 'Cambio de Carril y Señalización de Giro',
-        prompt: '🔄 <b>Cambio de carril:</b> Activá la <b>SEÑAL</b> de giro (luz intermitente) y luego cambiá de carril ← →.',
-        triggerDistance: 220,
-        type: 'signal_lane_change', // player must signal BEFORE changing lane
-        actor: null,
-        timeWindow: 7000,
-        penalty: 10,
-        law: 'Ley 2.148 CABA, Art. 6.1.10 — Toda maniobra de giro o cambio de carril debe advertirse previamente con la luz de giro correspondiente.',
-        successTip: '¡Correcto! Activaste la luz de giro con antelación antes de pasar de carril, comunicando tu maniobra a los demás.',
-        failTip: 'Cambiaste de carril sin señalizar. Sorprender a los demás usuarios viales genera situaciones de roce o colisión.',
-      },
-      {
-        id: 'linea_central',
-        num: 6,
-        title: 'Respeto a la Doble Línea Amarilla Continua',
-        prompt: '⚠️ <b>Doble línea amarilla:</b> Prohibido sobrepasar o invadir la contramano. Mantené tu carril.',
-        triggerDistance: 270,
-        type: 'stay_in_lane',    // auto-detected: player must NOT cross x=0 (center line)
-        actor: 'oncoming_swerve',
-        timeWindow: 5000,
-        penalty: 20,
-        law: 'Ley 2.148 CABA, Art. 2.1.2 — La doble línea amarilla continua prohíbe taxativamente su traspaso o circulación sobre ella.',
-        successTip: '¡Excelente! Mantuviste tu carril de avance sin invadir el sentido opuesto.',
-        failTip: 'Invadiste la calzada contraria. La doble línea amarilla continua prohíbe el sobrepaso y la invasión de mano.',
-      },
-    ];
-
-    // ─── Estado del examen ────────────────────────────────────────────
-    let isPlaying = false;
-    let isPaused = false;
-    let currentSitIndex = 0;   // índice de situación actual (0-5)
-    let examScore = 100;       // puntaje inicial
-    let infractions = [];      // log de infracciones cometidas
-    let distanceTraveled = 0;
-    let playerSpeed = 0.42;
-    let targetX = 5.25;        // posición X objetivo del jugador
-    const rightLaneX  =  5.25; // carril derecho exterior (jugador por defecto)
-    const rightLaneX2 =  1.75; // carril derecho interior
-    const leftLaneX   = -1.75; // SOLO para contramano — no accesible al jugador
-    const centerLineX =  0.0;  // línea doble amarilla central — NO cruzar
-
-    // Estado de la situación actual
-    let activeSit = null;
-    let sitStartTime = 0;
-    let sitTriggered = false;
-    let sitResolved = false;
-
-    // Velocidad actual (con frenado suave)
-    let brakeActive = false;
-    let brakeDecay  = 0;       // frames de frenado restantes
-
-    // Señal de giro (blinker)
-    let blinkerActive = false;
-    let blinkerTimer  = null;
-    let laneChangedWithSignal = false; // para situación 5
-
-    // Detección automática de infracciones continuas
-    let centerLineCrossed = false; // para situación 6
-    let speedViolation    = false; // para situación 4
-
-    // SCENE & CITY SETTINGS
-    const CHUNK_LENGTH = 70;
-    const NUM_CHUNKS = 6;
-    let scene = null;
-    let camera = null;
-    let renderer = null;
-    let player = null;
-    let playerFallback = null;
-    let roadChunks = [];
-    let windowTexture = null;
-
-    // VEHICLES & ACTORS
-    let busGroup = null;
-    let pedestrianGroup = null;
-    let oncomingCar = null;
-    let hazardMarker = null;
-
-    // AMBIENT TRAFFIC SYSTEM
-    const ambientCars = [];
-    const trafficLights = [];
-    const TRAFFIC_COLORS = [0x1a4080, 0x888890, 0x2d7a3a, 0x991122, 0x1e242b, 0x7a4a0a, 0x4a0a7a, 0x3a3a3a];
-    let trafficCarGltf = null; // GLB clone source for ambient traffic
-
-    // Models & Player Vehicle Selection
-    let loadedModels = { moto: null, auto: null, colectivo: null };
-    let playerVehicleType = 'car';
-    let playerMotoContainer = null;
-    let playerCarContainer = null;
-    let targetCameraPos = new THREE.Vector3(0, 3.6, 9.2);
-
-    // COCKPIT STATE
-    let cockpitView = false;
-    let cockpitGroup = null;
-    let steeringWheel = null;
-    let targetSteeringAngle = 0;
-    let currentSteeringAngle = 0;
-
-    // SELECT PLAYER VEHICLE
-    window.selectPlayerVehicle = function(type) {
-      playerVehicleType = type;
-
-      const bM1 = document.getElementById('start-select-moto');
-      const bC1 = document.getElementById('start-select-car');
-      const bM2 = document.getElementById('hud-select-moto');
-      const bC2 = document.getElementById('hud-select-car');
-      const btnCam = document.getElementById('btn-camera-toggle');
-
-      if (type === 'moto') {
-        if (bM1) bM1.classList.add('active');
-        if (bC1) bC1.classList.remove('active');
-        if (bM2) bM2.classList.add('active');
-        if (bC2) bC2.classList.remove('active');
-
-        if (playerMotoContainer) playerMotoContainer.visible = true;
-        if (playerCarContainer) playerCarContainer.visible = false;
-        if (playerFallback) playerFallback.visible = false;
-
-        cockpitView = false;
-        if (cockpitGroup) cockpitGroup.visible = false;
-        targetCameraPos.set(0, 4.3, 10.5);
-        if (btnCam) btnCam.style.display = 'none';
-      } else {
-        if (bM1) bM1.classList.remove('active');
-        if (bC1) bC1.classList.add('active');
-        if (bM2) bM2.classList.remove('active');
-        if (bC2) bC2.classList.add('active');
-
-        if (playerMotoContainer) playerMotoContainer.visible = false;
-        if (playerCarContainer) playerCarContainer.visible = true;
-        if (playerFallback) playerFallback.visible = false;
-
-        // Auto: vista exterior en 3ra persona por defecto para apreciar el modelo 3D
-        cockpitView = false;
-        if (cockpitGroup) cockpitGroup.visible = false;
-        if (btnCam) {
-          btnCam.style.display = 'inline-flex';
-          btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">directions_car</span> CABINA';
-        }
-        targetCameraPos.set(0, 3.6, 9.2);
-      }
+    // --- FÍSICAS DEL VEHÍCULO ---
+    const car = {
+      x: 4.2,              // Comienza en carril derecho de la avenida (sentido -Z)
+      z: 80.0,
+      y: 0.0,
+      heading: 0.0,        // 0 rad = mirando hacia -Z
+      speed: 0.0,          // m/frame (positivo = avance, negativo = reversa)
+      steerAngle: 0.0,     // ángulo ruedas delanteras
+      maxForwardSpeed: 0.52, // ~60-65 km/h
+      maxReverseSpeed: -0.15,
+      accelRate: 0.009,
+      brakeRate: 0.024,
+      friction: 0.982,
+      wheelbase: 2.7,
+      pitch: 0.0,
+      roll: 0.0,
+      mesh: null,
+      wheels: []
     };
 
-    // DOM Elements
-    const container = document.getElementById('canvas-container');
-    const startScreen = document.getElementById('start-screen');
-    const resultsScreen = document.getElementById('results-screen');
-    const hud = document.getElementById('hud');
-    const controlsOverlay = document.getElementById('controls-overlay');
-    const roundNumDisplay = document.getElementById('round-num');
-    const scoreValDisplay = document.getElementById('score-val');
-    const missionPrompt = document.getElementById('mission-prompt');
-    const reactionPopup = document.getElementById('reaction-popup');
-    const feedbackModal = document.getElementById('feedback-modal');
-    const feedbackTitle = document.getElementById('feedback-title');
-    const feedbackDesc = document.getElementById('feedback-desc');
-    const btnNextRound = document.getElementById('btn-next-round');
+    // Inputs
+    const keys = {
+      forward: false,
+      backward: false,
+      left: false,
+      right: false
+    };
 
-    // WEB AUDIO API SYNTHESIZER (Sonido Dinámico de Motor, Frenada y Señales)
+    // --- ESCENA THREE.JS ---
+    let scene, camera, renderer;
+    let sunLight, dirLightShadow;
+    let trafficLights = [];
+    let pedestrians = [];
+    let trafficCars = [];
+    let cameraMode = 'chase'; // 'chase' | 'hood'
+
+    // ═══════════════════════════════════════════════════════════════
+    // SINTETIZADOR DE AUDIO (MOTOR, FRENOS, BOCINA, GUIÑOS)
+    // ═══════════════════════════════════════════════════════════════
     let audioCtx = null;
     let engineOsc = null;
-    let engineGain = null;
     let engineFilter = null;
-    let blinkerSoundInterval = null;
+    let engineGain = null;
 
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    function playTone(freq, type, duration, vol = 0.15) {
-      if (!audioCtx) return;
-      try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch(e){}
-    }
-
-    // Sonido dinámico del motor continuo según velocidad (km/h)
-    function startEngineSound() {
+    function startEngineAudio() {
       initAudio();
       if (engineOsc || !audioCtx) return;
       try {
@@ -647,7 +433,7 @@
 
         engineFilter = audioCtx.createBiquadFilter();
         engineFilter.type = 'lowpass';
-        engineFilter.frequency.setValueAtTime(260, audioCtx.currentTime);
+        engineFilter.frequency.setValueAtTime(280, audioCtx.currentTime);
 
         engineGain = audioCtx.createGain();
         engineGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
@@ -659,1763 +445,1028 @@
       } catch(e){}
     }
 
-    function updateEngineSound(kmh) {
+    function updateEngineAudio(kmh) {
       if (!engineOsc || !engineGain || !engineFilter || !audioCtx) return;
       try {
-        const baseFreq = 40 + (Math.max(0, kmh) / 60) * 85;
-        engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.08);
-        engineFilter.frequency.setTargetAtTime(200 + kmh * 5, audioCtx.currentTime, 0.08);
-        const targetVol = (kmh > 8) ? 0.07 : 0.035;
-        engineGain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
+        const absKmh = Math.abs(kmh);
+        const baseFreq = 42 + (absKmh / 60) * 95;
+        engineOsc.frequency.setTargetAtTime(baseFreq, audioCtx.currentTime, 0.06);
+        engineFilter.frequency.setTargetAtTime(220 + absKmh * 6, audioCtx.currentTime, 0.06);
+        const targetVol = absKmh > 5 ? 0.075 : 0.04;
+        engineGain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.06);
       } catch(e){}
     }
 
-    function stopEngineSound() {
+    function stopEngineAudio() {
       if (!engineGain || !audioCtx) return;
       try {
         engineGain.gain.setTargetAtTime(0.001, audioCtx.currentTime, 0.1);
         setTimeout(() => {
-          if (engineOsc) {
-            try { engineOsc.stop(); } catch(e){}
-            engineOsc = null;
-          }
+          if (engineOsc) { try { engineOsc.stop(); } catch(e){} engineOsc = null; }
         }, 150);
       } catch(e){}
     }
 
-    // Chirrido de neumáticos al clavar los frenos
-    function playTireScreech() {
+    function playScreechAudio() {
       initAudio();
       if (!audioCtx) return;
       try {
-        const bufferSize = Math.floor(audioCtx.sampleRate * 0.4);
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = Math.random() * 2 - 1;
-        }
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1600, audioCtx.currentTime);
-        filter.Q.setValueAtTime(5.0, audioCtx.currentTime);
-
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.20, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        const buf = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * 0.35), audioCtx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        const noise = audioCtx.createBufferSource(); noise.buffer = buf;
+        const fil = audioCtx.createBiquadFilter(); fil.type = 'bandpass';
+        fil.frequency.setValueAtTime(1500, audioCtx.currentTime); fil.Q.setValueAtTime(4.5, audioCtx.currentTime);
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.18, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        noise.connect(fil); fil.connect(g); g.connect(audioCtx.destination);
         noise.start();
       } catch(e){}
     }
 
-    function playSuccessChime() {
-      playTone(587.33, 'triangle', 0.2, 0.2);
-      setTimeout(() => playTone(880.00, 'triangle', 0.35, 0.25), 120);
+    function playTone(freq, duration = 0.05, vol = 0.1) {
+      if (!audioCtx) return;
+      try {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        g.gain.setValueAtTime(vol, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + duration);
+      } catch(e){}
     }
-    function playWarnBuzzer() {
-      playTone(220, 'sawtooth', 0.3, 0.2);
+
+    function soundHorn() {
+      initAudio();
+      if (!audioCtx) return;
+      try {
+        [440, 550].forEach(f => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'triangle';
+          o.frequency.setValueAtTime(f, audioCtx.currentTime);
+          g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          g.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+          o.connect(g); g.connect(audioCtx.destination);
+          o.start(); o.stop(audioCtx.currentTime + 0.25);
+        });
+      } catch(e){}
     }
-    function playVictoryFanfare() {
-      [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
-        setTimeout(() => playTone(f, 'triangle', 0.45, 0.25), i * 140);
+
+    // ═══════════════════════════════════════════════════════════════
+    // CONSTRUCCIÓN DEL MAPA URBANO DE BUENOS AIRES
+    // ═══════════════════════════════════════════════════════════════
+    function buildBuenosAiresCity() {
+      // 1. Suelo base / Pavimento
+      const groundGeo = new THREE.PlaneGeometry(350, 450);
+      const groundMat = new THREE.MeshLambertMaterial({ color: 0x22252a });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      // 2. AVENIDA PRINCIPAL (Eje Z, de Z = 150 a Z = -220, Ancho = 16m)
+      createAvenueMarkings();
+
+      // 3. CALLES TRANSVERSALES (Eje X, en Z = 0 y Z = -110, Ancho = 9m)
+      createCrossStreet(0);
+      createCrossStreet(-110);
+
+      // 4. MANZANAS CON VEREDAS, EDIFICIOS Y ÁRBOLES
+      buildCityBlocks();
+
+      // 5. SEMÁFOROS CABA EN LAS ESQUINAS
+      createTrafficLightPole(8.8, 0, 8.8, Math.PI);        // Esquina Av y Calle 1 (SE)
+      createTrafficLightPole(-8.8, 0, -8.8, 0);            // Esquina Av y Calle 1 (NW)
+      createTrafficLightPole(8.8, 0, -101.2, Math.PI);     // Esquina Av y Calle 2
+      createTrafficLightPole(-8.8, 0, -118.8, 0);
+
+      // 6. PEATÓN EN LA SENDA (Intersección Z = 0)
+      createZebraPedestrian(12, -4.5);
+    }
+
+    // Demarcación vial de la avenida
+    function createAvenueMarkings() {
+      const lineMatYellow = new THREE.MeshBasicMaterial({ color: 0xffcc00 }); // Doble línea continua
+      const lineMatWhite  = new THREE.MeshBasicMaterial({ color: 0xf1f5f9 }); // Líneas divisorias
+      const bikeLaneMat   = new THREE.MeshLambertMaterial({ color: 0x1b7a45 }); // Ciclovía verde CABA
+
+      // Ciclovía CABA (lado derecho de la avenida, x: 6.5 a 8.0)
+      const bikeGeo = new THREE.PlaneGeometry(1.6, 360);
+      const bikeLane = new THREE.Mesh(bikeGeo, bikeLaneMat);
+      bikeLane.rotation.x = -Math.PI / 2;
+      bikeLane.position.set(7.2, 0.01, -30);
+      scene.add(bikeLane);
+
+      // Delineadores tubulares amarillos de ciclovía CABA
+      const delineatorGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.85, 8);
+      const delineatorMat = new THREE.MeshLambertMaterial({ color: 0xffcc00 });
+      for (let z = 120; z >= -200; z -= 10) {
+        if (Math.abs(z) < 10 || Math.abs(z + 110) < 10) continue; // no tapar bocacalles
+        const del = new THREE.Mesh(delineatorGeo, delineatorMat);
+        del.position.set(6.3, 0.42, z);
+        del.castShadow = true;
+        scene.add(del);
+      }
+
+      // Doble línea amarilla continua central (X = 0)
+      [-0.14, 0.14].forEach(offX => {
+        const dL = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 360), lineMatYellow);
+        dL.rotation.x = -Math.PI / 2;
+        dL.position.set(offX, 0.02, -30);
+        scene.add(dL);
       });
-    }
 
-    // Procedural Window Texture for Skyscrapers
-    function createWindowTexture() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256; canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#10121d'; ctx.fillRect(0, 0, 256, 512);
-      const rows = 16, cols = 8, padX = 8, padY = 8;
-      const winW = (256 - (cols + 1) * padX) / cols;
-      const winH = (512 - (rows + 1) * padY) / rows;
-      const colors = ['rgba(255,220,110,0.9)', 'rgba(180,240,255,0.85)', 'rgba(255,255,255,0.8)', '#191c2a', '#191c2a'];
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-          ctx.fillRect(padX + c * (winW + padX), padY + r * (winH + padY), winW, winH);
-        }
-      }
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.wrapS = THREE.RepeatWrapping; texture.wrapT = THREE.RepeatWrapping;
-      return texture;
-    }
-
-    // Procedural Signboard
-    function createSignTexture(text, subtitle) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512; canvas.height = 140;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#0a6332'; ctx.fillRect(0, 0, 512, 140);
-      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6; ctx.strokeRect(10, 10, 492, 120);
-      ctx.fillStyle = '#ffde59'; ctx.font = 'bold 22px Archivo, sans-serif'; ctx.textAlign = 'center';
-      ctx.fillText(subtitle.toUpperCase(), 256, 42);
-      ctx.fillStyle = '#ffffff'; ctx.font = '900 28px "Archivo Black", sans-serif';
-      ctx.fillText(text.toUpperCase(), 256, 92);
-      return new THREE.CanvasTexture(canvas);
-    }
-
-    // BUILD ROAD & CITY CHUNK
-    function createRoadChunk(chunkIndex) {
-      const chunk = new THREE.Group();
-      chunk.position.z = -chunkIndex * CHUNK_LENGTH;
-
-      // 1. Asphalt Road (14m calzada, 2 carriles x mano de 3.50m)
-      const road = new THREE.Mesh(
-        new THREE.BoxGeometry(14.4, 0.3, CHUNK_LENGTH),
-        new THREE.MeshStandardMaterial({ color: 0x1a1d2a, roughness: 0.85, metalness: 0.1 })
-      );
-      road.position.y = -0.15;
-      chunk.add(road);
-
-      // 2. Solid White Edge Lines (borde de calzada)
-      const whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const edgeGeo = new THREE.BoxGeometry(0.18, 0.04, CHUNK_LENGTH);
-      const leftEdge = new THREE.Mesh(edgeGeo, whiteMat);
-      leftEdge.position.set(-7.0, 0.03, 0);
-      chunk.add(leftEdge);
-      const rightEdge = new THREE.Mesh(edgeGeo, whiteMat);
-      rightEdge.position.set(7.0, 0.03, 0);
-      chunk.add(rightEdge);
-
-      // 3. Center Double Yellow Line
-      const yellowMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
-      const lineGeo = new THREE.BoxGeometry(0.15, 0.04, CHUNK_LENGTH);
-      const yLine1 = new THREE.Mesh(lineGeo, yellowMat);
-      yLine1.position.set(-0.20, 0.03, 0);
-      chunk.add(yLine1);
-      const yLine2 = new THREE.Mesh(lineGeo, yellowMat);
-      yLine2.position.set(0.20, 0.03, 0);
-      chunk.add(yLine2);
-
-      // 3b. Dashed White Lane Dividers at x=±3.5 (trazo 4m, vano 5m)
-      const dashGeo = new THREE.BoxGeometry(0.15, 0.04, 4);
-      for (let di = 0; di < Math.ceil(CHUNK_LENGTH / 9); di++) {
-        const dz = -CHUNK_LENGTH / 2 + di * 9 + 2;
-        const dashR = new THREE.Mesh(dashGeo, whiteMat);
-        dashR.position.set(3.5, 0.035, dz);
-        chunk.add(dashR);
-        const dashL = new THREE.Mesh(dashGeo, whiteMat);
-        dashL.position.set(-3.5, 0.035, dz);
-        chunk.add(dashL);
-      }
-
-      // 4. Zebra Crosswalk (cordón a cordón)
-      const zebraGeo = new THREE.BoxGeometry(0.8, 0.04, 4.5);
-      for (let x = -6.5; x <= 6.5; x += 1.6) {
-        const zebra = new THREE.Mesh(zebraGeo, whiteMat);
-        zebra.position.set(x, 0.035, 0);
-        chunk.add(zebra);
-      }
-
-      // 5. Curbs & Sidewalks
-      const curbMat = new THREE.MeshStandardMaterial({ color: 0x6e7382, roughness: 0.7 });
-      const leftCurb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH), curbMat);
-      leftCurb.position.set(-7.4, 0.12, 0);
-      chunk.add(leftCurb);
-      const rightCurb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH), curbMat);
-      rightCurb.position.set(7.4, 0.12, 0);
-      chunk.add(rightCurb);
-
-      const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x3a3d4d, roughness: 0.9 });
-      const leftSidewalk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.5, CHUNK_LENGTH), sidewalkMat);
-      leftSidewalk.position.set(-11.6, 0.1, 0);
-      chunk.add(leftSidewalk);
-      const rightSidewalk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.5, CHUNK_LENGTH), sidewalkMat);
-      rightSidewalk.position.set(11.6, 0.1, 0);
-      chunk.add(rightSidewalk);
-
-      // 6. Streetlights
-      const poleMat = new THREE.MeshStandardMaterial({ color: 0x252834, metalness: 0.8, roughness: 0.3 });
-      const lampGlowMat = new THREE.MeshBasicMaterial({ color: 0xffea94 });
-      for (let z = -CHUNK_LENGTH / 2 + 10; z < CHUNK_LENGTH / 2; z += 35) {
-        [-8.2, 8.2].forEach(poleX => {
-          const lampGroup = new THREE.Group();
-          lampGroup.position.set(poleX, 0, z);
-          const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 6.5, 8), poleMat);
-          pole.position.y = 3.25;
-          lampGroup.add(pole);
-          const armDir = poleX < 0 ? 1 : -1;
-          const arm = new THREE.Mesh(new THREE.BoxGeometry(2, 0.12, 0.12), poleMat);
-          arm.position.set(armDir * 0.9, 6.4, 0);
-          lampGroup.add(arm);
-          const bulb = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.05, 0.4), lampGlowMat);
-          bulb.position.set(armDir * 1.8, 6.25, 0);
-          lampGroup.add(bulb);
-          chunk.add(lampGroup);
+      // Líneas blancas segmentadas entre carriles (en X = 3.5 y X = -3.5)
+      for (let z = 120; z >= -200; z -= 7) {
+        if (Math.abs(z) < 8 || Math.abs(z + 110) < 8) continue;
+        [3.5, -3.5].forEach(lx => {
+          const dash = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 3.8), lineMatWhite);
+          dash.rotation.x = -Math.PI / 2;
+          dash.position.set(lx, 0.02, z);
+          scene.add(dash);
         });
       }
-
-      // 7. Skyscrapers
-      const buildingConfigs = [
-        { x: -22, w: 14, d: 18, h: 44, z: -20 },
-        { x: -26, w: 18, d: 24, h: 68, z: -55 },
-        { x: -21, w: 12, d: 16, h: 38, z: -90 },
-        { x: 22, w: 14, d: 18, h: 48, z: -15 },
-        { x: 26, w: 18, d: 22, h: 74, z: -50 },
-        { x: 21, w: 13, d: 15, h: 40, z: -85 }
-      ];
-      buildingConfigs.forEach(b => {
-        const building = new THREE.Mesh(
-          new THREE.BoxGeometry(b.w, b.h, b.d),
-          new THREE.MeshLambertMaterial({ map: windowTexture, color: 0xcccccc })
-        );
-        building.position.set(b.x, b.h / 2, b.z + (CHUNK_LENGTH / 2));
-        chunk.add(building);
-      });
-
-      // 8. Overhead Highway Gantry
-      const signsList = [
-        { text: "ATENCIÓN A LA VÍA", sub: "Anticipación de Peligros" },
-        { text: "PRIORIDAD PEATONAL", sub: "Disminuya la Velocidad" },
-        { text: "CONDUCCIÓN DEFENSIVA", sub: "Seguridad Vial BA" }
-      ];
-      const signInfo = signsList[chunkIndex % signsList.length];
-      const gantryGroup = new THREE.Group();
-      const trussMat = new THREE.MeshStandardMaterial({ color: 0x4a5060, metalness: 0.9, roughness: 0.3 });
-      const leftPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
-      leftPillar.position.set(-7.8, 3.75, 0);
-      gantryGroup.add(leftPillar);
-      const rightPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
-      rightPillar.position.set(7.8, 3.75, 0);
-      gantryGroup.add(rightPillar);
-      const crossbar = new THREE.Mesh(new THREE.BoxGeometry(16.0, 0.4, 0.4), trussMat);
-      crossbar.position.set(0, 7.4, 0);
-      gantryGroup.add(crossbar);
-      const signMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(10, 3.2, 0.2),
-        new THREE.MeshBasicMaterial({ map: createSignTexture(signInfo.text, signInfo.sub) })
-      );
-      signMesh.position.set(0, 5.8, 0);
-      gantryGroup.add(signMesh);
-      chunk.add(gantryGroup);
-
-      return chunk;
     }
 
-    function initCityEnvironment() {
-      windowTexture = createWindowTexture();
-      roadChunks = [];
-      for (let i = 0; i < NUM_CHUNKS; i++) {
-        const chunk = createRoadChunk(i);
-        scene.add(chunk);
-        roadChunks.push(chunk);
-      }
-    }
+    // Calles transversales con sendas peatonales
+    function createCrossStreet(zPos) {
+      const lineMatWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
-    // ═══════════════════════════════════════════════
-    // CREATE CAR COCKPIT (Interior 3D del automóvil)
-    // ═══════════════════════════════════════════════
-    function createCarCockpit() {
-      cockpitGroup = new THREE.Group();
-
-      const darkMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
-      const leatherMat = new THREE.MeshLambertMaterial({ color: 0x2a2420 });
-      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.9, roughness: 0.2 });
-
-      // Dashboard / Salpicadero
-      const dashboard = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.22, 0.65), leatherMat);
-      dashboard.position.set(0, 0.78, -0.5);
-      cockpitGroup.add(dashboard);
-
-      // Dashboard top
-      const dashTop = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.07, 0.42), darkMat);
-      dashTop.position.set(0, 0.92, -0.65);
-      dashTop.rotation.x = -0.3;
-      cockpitGroup.add(dashTop);
-
-      // Instrument Panel (velocímetro + tacómetro)
-      const instrCanvas = document.createElement('canvas');
-      instrCanvas.width = 256; instrCanvas.height = 128;
-      const ictx = instrCanvas.getContext('2d');
-      ictx.fillStyle = '#080808'; ictx.fillRect(0, 0, 256, 128);
-      // Speedometer
-      ictx.strokeStyle = '#00f3ff'; ictx.lineWidth = 2;
-      ictx.beginPath(); ictx.arc(80, 64, 44, Math.PI * 0.7, Math.PI * 2.3); ictx.stroke();
-      // Tachometer
-      ictx.beginPath(); ictx.arc(176, 64, 44, Math.PI * 0.7, Math.PI * 2.3); ictx.stroke();
-      // Markings
-      ictx.fillStyle = '#ffffff'; ictx.font = '9px sans-serif'; ictx.textAlign = 'center';
-      ['0','20','40','60','80','100','120'].forEach((s, i) => {
-        const a = Math.PI * 0.7 + (i / 6) * Math.PI * 1.6;
-        ictx.fillText(s, 80 + Math.cos(a) * 35, 64 + Math.sin(a) * 35);
-      });
-      ['0','1','2','3','4','5','6','7'].forEach((s, i) => {
-        const a = Math.PI * 0.7 + (i / 7) * Math.PI * 1.6;
-        ictx.fillText(s, 176 + Math.cos(a) * 35, 64 + Math.sin(a) * 35);
-      });
-      // Needles
-      ictx.strokeStyle = '#ff3344'; ictx.lineWidth = 2;
-      const spA = Math.PI * 0.7 + (50 / 120) * Math.PI * 1.6;
-      ictx.beginPath(); ictx.moveTo(80, 64); ictx.lineTo(80 + Math.cos(spA) * 28, 64 + Math.sin(spA) * 28); ictx.stroke();
-      const rpA = Math.PI * 0.7 + (2.5 / 7) * Math.PI * 1.6;
-      ictx.beginPath(); ictx.moveTo(176, 64); ictx.lineTo(176 + Math.cos(rpA) * 28, 64 + Math.sin(rpA) * 28); ictx.stroke();
-      ictx.fillStyle = '#00f3ff'; ictx.font = 'bold 8px sans-serif';
-      ictx.fillText('km/h', 80, 84); ictx.fillText('RPM x1000', 176, 84);
-      const instrPanel = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.44, 0.22),
-        new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(instrCanvas) })
-      );
-      instrPanel.position.set(-0.30, 0.88, -0.70);
-      instrPanel.rotation.x = -0.4;
-      cockpitGroup.add(instrPanel);
-
-      // Steering Wheel (Volante)
-      steeringWheel = new THREE.Group();
-      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.016, 12, 32), darkMat);
-      steeringWheel.add(rim);
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.02, 16), chromeMat);
-      hub.rotation.x = Math.PI / 2;
-      steeringWheel.add(hub);
-      for (let i = 0; i < 3; i++) {
-        const ang = (i / 3) * Math.PI * 2 - Math.PI / 2;
-        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.012, 0.13), chromeMat);
-        spoke.position.set(Math.cos(ang) * 0.07, Math.sin(ang) * 0.07, 0);
-        spoke.rotation.z = ang;
-        steeringWheel.add(spoke);
-      }
-      const column = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.24, 8), darkMat);
-      column.position.set(0, 0, 0.14); column.rotation.x = Math.PI / 2;
-      steeringWheel.add(column);
-      steeringWheel.position.set(-0.30, 0.92, -0.28);
-      steeringWheel.rotation.x = -0.45;
-      cockpitGroup.add(steeringWheel);
-
-      // A-Pillar Left (Parante A izquierdo)
-      const pillarGeo = new THREE.BoxGeometry(0.07, 0.75, 0.07);
-      const leftAPillar = new THREE.Mesh(pillarGeo, darkMat);
-      leftAPillar.position.set(-0.88, 1.18, -0.48);
-      leftAPillar.rotation.z = 0.15; leftAPillar.rotation.x = -0.2;
-      cockpitGroup.add(leftAPillar);
-
-      // A-Pillar Right (Parante A derecho)
-      const rightAPillar = new THREE.Mesh(pillarGeo, darkMat);
-      rightAPillar.position.set(0.88, 1.18, -0.48);
-      rightAPillar.rotation.z = -0.15; rightAPillar.rotation.x = -0.2;
-      cockpitGroup.add(rightAPillar);
-
-      // Roof edge / sun visor
-      const roof = new THREE.Mesh(new THREE.BoxGeometry(1.86, 0.06, 0.48), darkMat);
-      roof.position.set(0, 1.44, -0.35);
-      cockpitGroup.add(roof);
-
-      // Rearview Mirror (Espejo retrovisor interior)
-      const mirrorMount = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.10, 0.025), darkMat);
-      mirrorMount.position.set(0, 1.36, -0.44);
-      cockpitGroup.add(mirrorMount);
-      const mirrorFace = new THREE.Mesh(
-        new THREE.BoxGeometry(0.22, 0.07, 0.015),
-        new THREE.MeshStandardMaterial({ color: 0x445566, metalness: 0.95, roughness: 0.05 })
-      );
-      mirrorFace.position.set(0, 1.29, -0.44);
-      cockpitGroup.add(mirrorFace);
-
-      // Hood / Capot (visible a través del parabrisas)
-      const hood = new THREE.Mesh(
-        new THREE.BoxGeometry(1.48, 0.055, 1.2),
-        new THREE.MeshStandardMaterial({ color: 0x0c6848, metalness: 0.5, roughness: 0.4 })
-      );
-      hood.position.set(0, 0.72, -1.22);
-      hood.rotation.x = -0.04;
-      cockpitGroup.add(hood);
-
-      // Side door panels
-      const doorGeo = new THREE.BoxGeometry(0.055, 0.42, 0.95);
-      const leftDoor = new THREE.Mesh(doorGeo, leatherMat);
-      leftDoor.position.set(-0.86, 0.84, 0.0);
-      cockpitGroup.add(leftDoor);
-      const rightDoor = new THREE.Mesh(doorGeo, leatherMat);
-      rightDoor.position.set(0.86, 0.84, 0.0);
-      cockpitGroup.add(rightDoor);
-
-      cockpitGroup.visible = false;
-      player.add(cockpitGroup);
-    }
-
-    // TOGGLE CAMERA VIEW (Cabina / Exterior)
-    window.toggleCameraView = function() {
-      if (playerVehicleType !== 'car') return;
-      cockpitView = !cockpitView;
-      const btnCam = document.getElementById('btn-camera-toggle');
-
-      if (cockpitView) {
-        if (cockpitGroup) cockpitGroup.visible = true;
-        if (playerCarContainer) playerCarContainer.visible = false;
-        if (btnCam) btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">videocam</span> EXTERIOR';
-      } else {
-        if (cockpitGroup) cockpitGroup.visible = false;
-        if (playerCarContainer) playerCarContainer.visible = true;
-        targetCameraPos.set(0, 3.6, 9.2);
-        if (btnCam) btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">directions_car</span> CABINA';
-      }
-    };
-
-    // INITIALIZE THREE.JS SCENE
-    function init() {
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(rightLaneX * 0.85, 4.3, 10.5);
-      camera.lookAt(rightLaneX * 0.5, 1.5, -20);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.outputEncoding = THREE.sRGBEncoding;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.25;
-      container.appendChild(renderer.domElement);
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
-      scene.add(ambientLight);
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x141b2b, 0.95);
-      hemiLight.position.set(0, 35, 0);
-      scene.add(hemiLight);
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.8);
-      dirLight.position.set(22, 38, 16);
-      scene.add(dirLight);
-
-      scene.background = new THREE.Color(0x080915);
-      scene.fog = new THREE.FogExp2(0x080915, 0.010);
-
-      initCityEnvironment();
-
-      // Player Vehicle Setup
-      player = new THREE.Group();
-      player.position.set(rightLaneX, 0, 5);
-
-      // Pre-instanciar modelos detallados (Auto y Moto)
-      playerCarContainer = buildProceduralCar(0x0c6848, 'sedan');
-      playerCarContainer.rotation.y = Math.PI; // Mirando hacia el frente (-Z)
-      playerCarContainer.visible = (playerVehicleType === 'car');
-      player.add(playerCarContainer);
-
-      playerMotoContainer = buildProceduralMoto();
-      playerMotoContainer.rotation.y = Math.PI;
-      playerMotoContainer.visible = (playerVehicleType === 'moto');
-      player.add(playerMotoContainer);
-
-      playerFallback = playerCarContainer;
-
-      // Headlight
-      const headLight = new THREE.SpotLight(0xffffff, 3.5, 55, Math.PI / 5, 0.4, 1);
-      headLight.position.set(0, 0.9, -1.5);
-      headLight.target.position.set(0, 0, -30);
-      player.add(headLight);
-      player.add(headLight.target);
-      scene.add(player);
-
-      // Create Actors
-      createBusActor();
-      createPedestrianActor();
-      createOncomingCarActor();
-      createHazardMarker();
-
-      // Load 3D Models
-      loadModels();
-
-      // Build Car Cockpit
-      createCarCockpit();
-
-      // Ambient Traffic & Semáforos
-      createAmbientTraffic();
-      createTrafficLights();
-
-      window.addEventListener('resize', onWindowResize, false);
-      setupControls();
-      animate();
-    }
-
-    // ═══════════════════════════════════════════════
-    // AMBIENT TRAFFIC SYSTEM (v2 — Fixed & Improved)
-    // ═══════════════════════════════════════════════
-
-    // Road layout (same as createRoadChunk):
-    //   x=  0 ± 0.2  → double yellow centre line
-    //   x= +3.5      → dashed white (same-dir lane divider)
-    //   x= -3.5      → dashed white (oncoming lane divider)
-    //   x> 0         → player side (going "forward" = road chunks scroll +Z)
-    //   x< 0         → oncoming side
-
-    // KEY: In this game's reference frame the player is fixed; the WORLD scrolls.
-    //   Road chunks move +Z each frame (= player moving -Z in world).
-    //   "Same-direction" cars: also move +Z but at a slightly different pace than road.
-    //     If speed < playerSpeed  → player overtakes them (they fall behind).
-    //     If speed > playerSpeed  → they pull ahead of the player.
-    //   "Oncoming" cars: approach the player, so they ALSO move +Z but much FASTER
-    //     than the road (same logic as the hazard 'oncomingCar' in round 3).
-
-    // ─── Improved procedural car mesh ───────────────────────────────────────────
-    function buildProceduralCar(color, type) {
-      // type: 'sedan' | 'suv' | 'hatch'
-      const g = new THREE.Group();
-      const paint  = new THREE.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.6 });
-      const dark   = new THREE.MeshLambertMaterial({ color: 0x111111 });
-      const chrome = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.95, roughness: 0.1 });
-      const glass  = new THREE.MeshLambertMaterial({ color: 0x6aaccc, transparent: true, opacity: 0.55 });
-      const hlMat  = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const tlMat  = new THREE.MeshBasicMaterial({ color: 0xff1100 });
-      const tlAmbMat  = new THREE.MeshBasicMaterial({ color: 0x661100 }); // dim tail
-
-      // Dimensions by type
-      const dims = {
-        sedan: { bW:1.88, bH:0.72, bL:4.10, rW:1.48, rH:0.52, rL:2.10, rOff:-0.05 },
-        suv:   { bW:2.00, bH:0.90, bL:4.40, rW:1.72, rH:0.70, rL:2.60, rOff: 0.00 },
-        hatch: { bW:1.80, bH:0.68, bL:3.70, rW:1.50, rH:0.60, rL:2.40, rOff: 0.20 },
-      }[type || 'sedan'];
-
-      // ── Body ──
-      const body = new THREE.Mesh(new THREE.BoxGeometry(dims.bW, dims.bH, dims.bL), paint);
-      body.position.y = 0.55;
-      g.add(body);
-
-      // ── Cabin / Roof ──
-      const roof = new THREE.Mesh(new THREE.BoxGeometry(dims.rW, dims.rH, dims.rL), paint);
-      roof.position.set(0, 0.55 + dims.bH/2 + dims.rH/2 - 0.04, dims.rOff);
-      g.add(roof);
-
-      // ── Front bumper ──
-      const bumperF = new THREE.Mesh(new THREE.BoxGeometry(dims.bW - 0.12, 0.18, 0.14), chrome);
-      bumperF.position.set(0, 0.25, -(dims.bL/2 + 0.06));
-      g.add(bumperF);
-
-      // ── Rear bumper ──
-      const bumperR = new THREE.Mesh(new THREE.BoxGeometry(dims.bW - 0.12, 0.18, 0.14), chrome);
-      bumperR.position.set(0, 0.25, dims.bL/2 + 0.06);
-      g.add(bumperR);
-
-      // ── Windshields ──
-      const windF = new THREE.Mesh(new THREE.BoxGeometry(dims.rW - 0.10, dims.rH - 0.10, 0.08), glass);
-      windF.position.set(0, roof.position.y, dims.rOff + dims.rL/2 + 0.04);
-      g.add(windF);
-      const windR = new THREE.Mesh(new THREE.BoxGeometry(dims.rW - 0.10, dims.rH - 0.10, 0.08), glass);
-      windR.position.set(0, roof.position.y, dims.rOff - dims.rL/2 - 0.04);
-      g.add(windR);
-
-      // ── Wheels (4) with chrome hub ──
-      const tireGeo = new THREE.CylinderGeometry(0.33, 0.33, 0.23, 12);
-      const hubGeo  = new THREE.CylinderGeometry(0.16, 0.16, 0.25, 8);
-      const wPos = [
-        [-dims.bW/2 - 0.04, 0.33,  dims.bL/2 - 0.88],
-        [ dims.bW/2 + 0.04, 0.33,  dims.bL/2 - 0.88],
-        [-dims.bW/2 - 0.04, 0.33, -dims.bL/2 + 0.88],
-        [ dims.bW/2 + 0.04, 0.33, -dims.bL/2 + 0.88],
-      ];
-      wPos.forEach(([wx, wy, wz]) => {
-        const tire = new THREE.Mesh(tireGeo, dark);
-        tire.rotation.z = Math.PI / 2;
-        tire.position.set(wx, wy, wz);
-        g.add(tire);
-        const hub = new THREE.Mesh(hubGeo, chrome);
-        hub.rotation.z = Math.PI / 2;
-        hub.position.set(wx, wy, wz);
-        g.add(hub);
+      // Sendas peatonales cebradas en los 4 cruces de la bocacalle
+      // Senda sobre la avenida norte y sur
+      [-5.5, 5.5].forEach(offZ => {
+        for (let x = -7.0; x <= 6.0; x += 1.0) {
+          const bar = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 3.0), lineMatWhite);
+          bar.rotation.x = -Math.PI / 2;
+          bar.position.set(x, 0.025, zPos + offZ);
+          scene.add(bar);
+        }
       });
 
-      // ── Headlights (front = -Z direction of mesh) ──
-      const fz = -(dims.bL / 2 + 0.01);
-      [-0.52, 0.52].forEach(hx => {
-        const hl = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.13, 0.06), hlMat);
-        hl.position.set(hx, 0.6, fz);
-        g.add(hl);
-      });
-      // ── Taillights (rear = +Z direction of mesh) ──
-      const rz = dims.bL / 2 + 0.01;
-      [-0.52, 0.52].forEach(tx => {
-        const tl = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.11, 0.06), tlAmbMat);
-        tl.position.set(tx, 0.62, rz);
-        g.add(tl);
-      });
-
-      return g;
-    }
-
-    // ─── Colectivo Porteño realista (Línea 60) ───
-    function buildProceduralBus() {
-      const g = new THREE.Group();
-      const bodyPaint  = new THREE.MeshStandardMaterial({ color: 0x0044aa, roughness: 0.35, metalness: 0.4 });
-      const whitePaint = new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.4 });
-      const redTrim    = new THREE.MeshStandardMaterial({ color: 0xd91a2a });
-      const glassMat   = new THREE.MeshStandardMaterial({ color: 0x1a3355, transparent: true, opacity: 0.65, roughness: 0.1 });
-      const chromeMat  = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.1 });
-      const darkMat    = new THREE.MeshLambertMaterial({ color: 0x111111 });
-
-      // Carrocería principal (2.7m ancho, 1.4m alto, 9.4m largo)
-      const lower = new THREE.Mesh(new THREE.BoxGeometry(2.7, 1.4, 9.4), bodyPaint);
-      lower.position.y = 1.0;
-      g.add(lower);
-
-      // Franjas decorativas tipo colectivo CABA
-      const stripeW = new THREE.Mesh(new THREE.BoxGeometry(2.72, 0.28, 9.42), whitePaint);
-      stripeW.position.y = 1.72;
-      g.add(stripeW);
-
-      const stripeR = new THREE.Mesh(new THREE.BoxGeometry(2.73, 0.12, 9.43), redTrim);
-      stripeR.position.y = 1.88;
-      g.add(stripeR);
-
-      // Techo blanco redondeado
-      const roof = new THREE.Mesh(new THREE.BoxGeometry(2.65, 0.35, 9.2), whitePaint);
-      roof.position.y = 3.0;
-      g.add(roof);
-
-      // Ventanillas laterales
-      const winL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 8.2), glassMat);
-      winL.position.set(-1.35, 2.4, -0.2);
-      g.add(winL);
-      const winR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 8.2), glassMat);
-      winR.position.set(1.35, 2.4, -0.2);
-      g.add(winR);
-
-      // Parabrisas delantero (frente = -Z)
-      const winF = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.1, 0.1), glassMat);
-      winF.position.set(0, 2.3, -4.68);
-      g.add(winF);
-
-      // Luneta trasera (trasera = +Z)
-      const winB = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.85, 0.1), glassMat);
-      winB.position.set(0, 2.4, 4.68);
-      g.add(winB);
-
-      // Letrero LED luminoso frontal y trasero (LÍNEA 60)
-      const ledSign = new THREE.Mesh(
-        new THREE.BoxGeometry(1.8, 0.38, 0.12),
-        new THREE.MeshBasicMaterial({ color: 0x00ff88 })
-      );
-      ledSign.position.set(0, 2.95, 4.71);
-      g.add(ledSign);
-
-      // Paragolpes cromados
-      const bumpF = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.25, 0.2), chromeMat);
-      bumpF.position.set(0, 0.35, -4.75);
-      g.add(bumpF);
-      const bumpR = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.25, 0.2), chromeMat);
-      bumpR.position.set(0, 0.35, 4.75);
-      g.add(bumpR);
-
-      // Luces traseras de freno (al +Z)
-      const brakeMat = new THREE.MeshBasicMaterial({ color: 0x550000 });
-      const bL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.08), brakeMat);
-      bL.position.set(-1.05, 1.1, 4.72);
-      g.add(bL);
-      const bR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.08), brakeMat);
-      bR.position.set(1.05, 1.1, 4.72);
-      g.add(bR);
-      g.brakeLights = [bL, bR];
-
-      // Ruedas grandes de colectivo
-      const wheelGeo = new THREE.CylinderGeometry(0.52, 0.52, 0.38, 16);
-      wheelGeo.rotateZ(Math.PI / 2);
-      [-2.8, 2.8].forEach(z => {
-        [-1.35, 1.35].forEach(x => {
-          const w = new THREE.Mesh(wheelGeo, darkMat);
-          w.position.set(x, 0.52, z);
-          g.add(w);
-        });
-      });
-
-      return g;
-    }
-
-    // ─── Moto deportiva realista (Honda CB 750) ───
-    function buildProceduralMoto() {
-      const g = new THREE.Group();
-      const bodyPaint = new THREE.MeshStandardMaterial({ color: 0xd91b24, roughness: 0.3, metalness: 0.7 });
-      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.95, roughness: 0.1 });
-      const darkMat   = new THREE.MeshLambertMaterial({ color: 0x151515 });
-
-      // Ruedas delantera y trasera
-      const tireGeo = new THREE.TorusGeometry(0.38, 0.08, 12, 24);
-      const wF = new THREE.Mesh(tireGeo, darkMat);
-      wF.position.set(0, 0.38, -0.9);
-      g.add(wF);
-      const wR = new THREE.Mesh(tireGeo, darkMat);
-      wR.position.set(0, 0.38, 0.9);
-      g.add(wR);
-
-      // Rayos de llanta cromados
-      const hubGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.12, 12);
-      hubGeo.rotateZ(Math.PI / 2);
-      const hubF = new THREE.Mesh(hubGeo, chromeMat);
-      hubF.position.set(0, 0.38, -0.9);
-      g.add(hubF);
-      const hubR = new THREE.Mesh(hubGeo, chromeMat);
-      hubR.position.set(0, 0.38, 0.9);
-      g.add(hubR);
-
-      // Bloque motor
-      const engine = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.42, 0.62), chromeMat);
-      engine.position.set(0, 0.44, 0.0);
-      g.add(engine);
-
-      // Tanque de combustible rojo
-      const tank = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.28, 0.72), bodyPaint);
-      tank.position.set(0, 0.82, -0.22);
-      g.add(tank);
-
-      // Asiento de cuero negro
-      const seat = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.68), darkMat);
-      seat.position.set(0, 0.78, 0.38);
-      g.add(seat);
-
-      // Horquilla delantera cromada
-      const fork = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.75), chromeMat);
-      fork.position.set(0, 0.72, -0.75);
-      fork.rotation.x = 0.25;
-      g.add(fork);
-
-      // Manillar
-      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.04, 0.04), chromeMat);
-      bar.position.set(0, 0.98, -0.7);
-      g.add(bar);
-
-      // Faro delantero redondo
-      const hl = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), chromeMat);
-      hl.position.set(0, 0.9, -0.88);
-      g.add(hl);
-
-      // Escape cromado lateral
-      const exh = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.2), chromeMat);
-      exh.position.set(0.24, 0.3, 0.35);
-      exh.rotation.x = Math.PI / 2;
-      g.add(exh);
-
-      return g;
-    }
-
-    // ─── Spawn traffic ───────────────────────────────────────────────────────────
-    function createAmbientTraffic() {
-      // Road coordinate system:
-      //   x > 0  →  player side  (same direction, going "forward")
-      //   x < 0  →  oncoming side
-      //
-      // Same-direction cars:  speed ≈ playerSpeed ± delta
-      //   They move +Z (with road). If speed < playerSpeed they fall behind;
-      //   if speed > playerSpeed they pull ahead.
-      //
-      // Oncoming cars: ALSO move +Z but at playerSpeed + approach_speed.
-      //   This is exactly how the hazard oncoming car (round 3) works.
-      //   They start far ahead (large −Z) and race toward the player, then recycle.
-
-      const PS = playerSpeed; // 0.42
-      const types = ['sedan','sedan','suv','hatch','sedan','suv','sedan','hatch','sedan','sedan','suv','sedan','hatch','sedan'];
-
-      const LANES = [
-        // ── SAME DIRECTION (x > 0, carril derecho de la avenida) ──
-        { laneX:  5.25, isOncoming: false, count: 4,
-          speeds: [PS * 0.70, PS * 0.90, PS * 1.05, PS * 0.80] },
-        { laneX:  1.75, isOncoming: false, count: 3,
-          speeds: [PS * 0.85, PS * 1.10, PS * 0.75] },
-
-        // ── ONCOMING (x < 0, carril izquierdo de la avenida) ──
-        // speed = playerSpeed + approach  (so approach = extra speed toward player)
-        { laneX: -1.75, isOncoming: true,  count: 4,
-          speeds: [PS + 0.30, PS + 0.38, PS + 0.25, PS + 0.42] },
-        { laneX: -5.25, isOncoming: true,  count: 3,
-          speeds: [PS + 0.35, PS + 0.28, PS + 0.40] },
-      ];
-
-      const worldLen = CHUNK_LENGTH * NUM_CHUNKS; // 420
-      let carIdx = 0;
-
-      LANES.forEach(lane => {
-        for (let i = 0; i < lane.count; i++) {
-          const color = TRAFFIC_COLORS[carIdx % TRAFFIC_COLORS.length];
-          const carType = types[carIdx % types.length];
-          const carGroup = buildProceduralCar(color, carType);
-
-          let startZ;
-          if (!lane.isOncoming) {
-            // Same-direction: spread behind & ahead of player
-            startZ = -10 - i * (worldLen / lane.count);
-          } else {
-            // Oncoming: spread far ahead (negative Z) so they come rushing toward player
-            startZ = -30 - i * (worldLen / lane.count);
-            // Oncoming cars face the player (+Z direction) so headlights point toward camera
-            carGroup.rotation.y = Math.PI;
-          }
-
-          carGroup.position.set(lane.laneX, 0, startZ);
-
-          // ── Point lights ──
-          // Headlights glow (at -Z of mesh local space = front)
-          const hlWorldZ = lane.isOncoming ? 2.4 : -2.4; // after rotation
-          const hlCol    = lane.isOncoming ? 0xffffaa : 0xffffff;
-          const hlLight  = new THREE.PointLight(hlCol, 1.2, 14, 2);
-          hlLight.position.set(0, 0.7, hlWorldZ);
-          carGroup.add(hlLight);
-
-          // Taillights glow (at +Z of mesh local space = rear)
-          const tlWorldZ = lane.isOncoming ? -2.4 : 2.4;
-          const tlLight  = new THREE.PointLight(0xff2200, 0.6, 9, 2);
-          tlLight.position.set(0, 0.6, tlWorldZ);
-          carGroup.add(tlLight);
-
-          scene.add(carGroup);
-          ambientCars.push({
-            group:      carGroup,
-            speed:      lane.speeds[i],
-            isOncoming: lane.isOncoming,
-          });
-          carIdx++;
+      // Senda sobre la calle este y oeste
+      [-10.5, 10.5].forEach(offX => {
+        for (let z = -3.5; z <= 3.5; z += 1.0) {
+          const bar = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 0.55), lineMatWhite);
+          bar.rotation.x = -Math.PI / 2;
+          bar.position.set(offX, 0.025, zPos + z);
+          scene.add(bar);
         }
       });
     }
 
-    function updateAmbientTraffic() {
-      const worldLen = CHUNK_LENGTH * NUM_CHUNKS; // 420
+    // Manzanas con veredas elevadas, edificios y arboleda porteña
+    function buildCityBlocks() {
+      const curbMat = new THREE.MeshLambertMaterial({ color: 0x94a3b8 });
+      const sidewalkMat = new THREE.MeshLambertMaterial({ color: 0xcfd8dc });
+      const bldgColors = [0xe2e8f0, 0xdbeafe, 0xf1f5f9, 0xfef3c7, 0xede9fe, 0xfce7f3];
 
-      ambientCars.forEach(car => {
-        // ALL ambient cars move in +Z direction (same as road chunks).
-        // Same-direction: speed ≈ playerSpeed → they appear roughly stationary or slow rel. to road.
-        // Oncoming: speed = playerSpeed + approach → they rush toward the player.
-        car.group.position.z += car.speed;
+      // Cuadrantes de manzana (4 manzanas rodeando los cruces)
+      const blocks = [
+        { minX:  8.5, maxX: 120, minZ:    6, maxZ:  140 }, // Sureste
+        { minX: -120, maxX: -8.5, minZ:   6, maxZ:  140 }, // Suroeste
+        { minX:  8.5, maxX: 120, minZ: -104, maxZ:   -6 }, // Centro Este
+        { minX: -120, maxX: -8.5, minZ: -104, maxZ:   -6 }, // Centro Oeste
+        { minX:  8.5, maxX: 120, minZ: -240, maxZ: -116 }, // Norte Este
+        { minX: -120, maxX: -8.5, minZ: -240, maxZ: -116 }  // Norte Oeste
+      ];
 
-        if (!car.isOncoming) {
-          // Same-direction: recycle when too far behind player
-          if (car.group.position.z > 60) {
-            car.group.position.z -= worldLen;
+      blocks.forEach(b => {
+        const w = b.maxX - b.minX;
+        const l = b.maxZ - b.minZ;
+        const cx = b.minX + w / 2;
+        const cz = b.minZ + l / 2;
+
+        // Vereda de hormigón elevada 0.18m
+        const walk = new THREE.Mesh(new THREE.BoxGeometry(w, 0.22, l), sidewalkMat);
+        walk.position.set(cx, 0.11, cz);
+        walk.receiveShadow = true;
+        scene.add(walk);
+
+        // Cordón perimetral
+        const curb = new THREE.Mesh(new THREE.BoxGeometry(w + 0.1, 0.25, l + 0.1), curbMat);
+        curb.position.set(cx, 0.10, cz);
+        scene.add(curb);
+
+        // Edificios en la manzana
+        const rows = 3; const cols = 2;
+        const bW = (w - 12) / cols;
+        const bL = (l - 12) / rows;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const h = 16 + Math.random() * 26; // alturas entre 16m y 42m
+            const color = bldgColors[Math.floor(Math.random() * bldgColors.length)];
+            const bldgMat = new THREE.MeshLambertMaterial({ color });
+            const bldg = new THREE.Mesh(new THREE.BoxGeometry(bW - 2, h, bL - 2), bldgMat);
+            bldg.position.set(
+              b.minX + 6 + c * bW + bW/2,
+              h / 2 + 0.22,
+              b.minZ + 6 + r * bL + bL/2
+            );
+            bldg.castShadow = true;
+            bldg.receiveShadow = true;
+            scene.add(bldg);
+
+            // Techos / remates
+            const roofMesh = new THREE.Mesh(
+              new THREE.BoxGeometry(bW - 3.5, 1.2, bL - 3.5),
+              new THREE.MeshLambertMaterial({ color: 0x475569 })
+            );
+            roofMesh.position.set(bldg.position.x, h + 0.8, bldg.position.z);
+            scene.add(roofMesh);
           }
-        } else {
-          // Oncoming: recycle when they've passed the player (came from ahead, went behind)
-          if (car.group.position.z > 30) {
-            car.group.position.z -= worldLen;
-          }
+        }
+
+        // Árboles urbanos en la vereda de la avenida
+        const treeSideX = b.minX > 0 ? b.minX + 1.8 : b.maxX - 1.8;
+        for (let tz = b.minZ + 8; tz <= b.maxZ - 8; tz += 18) {
+          createCityTree(treeSideX, 0.22, tz);
         }
       });
     }
 
-    // ═══════════════════════════════════════════════
-    // TRAFFIC LIGHTS (Semáforos animados)
-    // ═══════════════════════════════════════════════
-
-    function createSemaforo(x, z, facingAngle) {
+    // Árbol urbano estilo plátano porteño
+    function createCityTree(x, y, z) {
       const g = new THREE.Group();
-      g.position.set(x, 0, z);
-      g.rotation.y = facingAngle;
+      g.position.set(x, y, z);
 
-      const poleMat = new THREE.MeshStandardMaterial({ color: 0x252834, metalness: 0.8, roughness: 0.3 });
-      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 5.0, 8), poleMat);
-      pole.position.y = 2.5;
-      g.add(pole);
+      // Tronco
+      const trunkMat = new THREE.MeshLambertMaterial({ color: 0x4a3728 });
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.24, 3.2, 8), trunkMat);
+      trunk.position.y = 1.6;
+      trunk.castShadow = true;
+      g.add(trunk);
 
-      // Horizontal arm
-      const arm = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.1, 0.1), poleMat);
-      arm.position.set(-0.8, 5.0, 0);
-      g.add(arm);
-
-      // Housing box
-      const houseMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
-      const housing = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.05, 0.3), houseMat);
-      housing.position.set(-1.7, 4.6, 0);
-      g.add(housing);
-
-      // Lenses
-      const offMat = new THREE.MeshBasicMaterial({ color: 0x1a0000 });
-      const redMesh  = new THREE.Mesh(new THREE.CircleGeometry(0.13, 12), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-      const yelMesh  = new THREE.Mesh(new THREE.CircleGeometry(0.13, 12), new THREE.MeshBasicMaterial({ color: 0x332200 }));
-      const grnMesh  = new THREE.Mesh(new THREE.CircleGeometry(0.13, 12), new THREE.MeshBasicMaterial({ color: 0x003300 }));
-
-      redMesh.position.set(-1.7, 4.98, 0.16);
-      yelMesh.position.set(-1.7, 4.62, 0.16);
-      grnMesh.position.set(-1.7, 4.26, 0.16);
-      g.add(redMesh); g.add(yelMesh); g.add(grnMesh);
-
-      // Point light for glow
-      const ptLight = new THREE.PointLight(0xff0000, 1.2, 14, 2);
-      ptLight.position.set(-1.7, 4.98, 0.4);
-      g.add(ptLight);
+      // Copa frondosa
+      const leafMat = new THREE.MeshLambertMaterial({ color: 0x2e7d32 });
+      const crown = new THREE.Mesh(new THREE.SphereGeometry(1.8, 8, 8), leafMat);
+      crown.position.y = 4.2;
+      crown.scale.set(1.1, 0.9, 1.1);
+      crown.castShadow = true;
+      g.add(crown);
 
       scene.add(g);
+    }
 
-      // Random phase offset so not all lights sync
-      const phaseOffset = Math.random() * 12000;
+    // Poste de semáforo oficial CABA (cuerpo amarillo vial con visera negra)
+    function createTrafficLightPole(x, y, z, rotY = 0) {
+      const g = new THREE.Group();
+      g.position.set(x, y, z);
+      g.rotation.y = rotY;
 
+      const yellowMat = new THREE.MeshLambertMaterial({ color: 0xffcc00 });
+      const blackMat  = new THREE.MeshLambertMaterial({ color: 0x111111 });
+
+      // Poste vertical
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 5.2, 8), yellowMat);
+      pole.position.y = 2.6;
+      pole.castShadow = true;
+      g.add(pole);
+
+      // Caja semáforo
+      const box = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.4, 0.4), blackMat);
+      box.position.set(0, 4.4, 0);
+      g.add(box);
+
+      // 3 ópticas (rojo, amarillo, verde)
+      const redMat   = new THREE.MeshBasicMaterial({ color: 0xff1100 });
+      const yelMat   = new THREE.MeshBasicMaterial({ color: 0x332200 });
+      const grnMat   = new THREE.MeshBasicMaterial({ color: 0x003311 });
+
+      const rL = new THREE.Mesh(new THREE.CircleGeometry(0.16, 16), redMat);
+      rL.position.set(0, 4.8, 0.21);
+      g.add(rL);
+      const yL = new THREE.Mesh(new THREE.CircleGeometry(0.16, 16), yelMat);
+      yL.position.set(0, 4.4, 0.21);
+      g.add(yL);
+      const gL = new THREE.Mesh(new THREE.CircleGeometry(0.16, 16), grnMat);
+      gL.position.set(0, 4.0, 0.21);
+      g.add(gL);
+
+      scene.add(g);
       trafficLights.push({
         group: g,
-        redMesh, yelMesh, grnMesh, ptLight,
+        rL, yL, gL,
         state: 'red',
-        timer: performance.now() - phaseOffset
+        timer: performance.now(),
+        zPos: z
       });
     }
 
-    function createTrafficLights() {
-      // Place semáforos at intersections on both sides of the road
-      const intersectionZs = [-40, -100, -180, -270];
-      intersectionZs.forEach(z => {
-        createSemaforo( 8.0, z, 0);         // right sidewalk, facing road
-        createSemaforo(-8.0, z, Math.PI);   // left sidewalk, facing road
+    // Peatón cruzando por la senda
+    function createZebraPedestrian(startX, zPos) {
+      const g = new THREE.Group();
+      g.position.set(startX, 0.1, zPos);
+
+      const bodyMat = new THREE.MeshLambertMaterial({ color: 0x0284c7 });
+      const skinMat = new THREE.MeshLambertMaterial({ color: 0xfbbf24 });
+      const pantMat = new THREE.MeshLambertMaterial({ color: 0x1e293b });
+
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.65, 0.25), bodyMat);
+      torso.position.y = 1.05; torso.castShadow = true; g.add(torso);
+
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), skinMat);
+      head.position.y = 1.55; head.castShadow = true; g.add(head);
+
+      const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.7, 0.18), pantMat);
+      leg1.position.set(-0.12, 0.35, 0); leg1.castShadow = true; g.add(leg1);
+      const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.7, 0.18), pantMat);
+      leg2.position.set(0.12, 0.35, 0); leg2.castShadow = true; g.add(leg2);
+
+      scene.add(g);
+      pedestrians.push({
+        group: g,
+        leg1, leg2,
+        x: startX,
+        z: zPos,
+        speedX: -0.045,
+        isActive: false
       });
     }
 
-    // Durations (ms)
-    const TL_RED_DUR    = 8000;
-    const TL_YELLOW_DUR = 1800;
-    const TL_GREEN_DUR  = 7000;
+    // ═══════════════════════════════════════════════════════════════
+    // VEHÍCULO DEL JUGADOR (ASTON MARTIN V8 / PROCEDURAL)
+    // ═══════════════════════════════════════════════════════════════
+    function buildPlayerCar() {
+      const g = new THREE.Group();
 
-    function updateTrafficLights() {
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: 0x0c6848, // British Racing Green
+        metalness: 0.85,
+        roughness: 0.25
+      });
+      const glassMat = new THREE.MeshStandardMaterial({
+        color: 0x111c24,
+        roughness: 0.1,
+        metalness: 0.9,
+        transparent: true,
+        opacity: 0.75
+      });
+      const darkMat  = new THREE.MeshLambertMaterial({ color: 0x111111 });
+      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, metalness: 0.95, roughness: 0.1 });
+
+      // Carrocería principal (4.6m de largo, 1.9m ancho, 0.7m alto)
+      const lowerBody = new THREE.Mesh(new THREE.BoxGeometry(1.92, 0.62, 4.45), bodyMat);
+      lowerBody.position.y = 0.55;
+      lowerBody.castShadow = true;
+      g.add(lowerBody);
+
+      // Cabina / Techo
+      const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.58, 0.52, 2.3), bodyMat);
+      cabin.position.set(0, 1.05, -0.1);
+      cabin.castShadow = true;
+      g.add(cabin);
+
+      // Parabrisas y luneta
+      const winF = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.44, 0.08), glassMat);
+      winF.position.set(0, 1.02, -1.26); winF.rotation.x = -0.35; g.add(winF);
+
+      const winB = new THREE.Mesh(new THREE.BoxGeometry(1.50, 0.42, 0.08), glassMat);
+      winB.position.set(0, 1.02, 1.06); winB.rotation.x = 0.35; g.add(winB);
+
+      // Capot delantero (frente = -Z)
+      const hood = new THREE.Mesh(new THREE.BoxGeometry(1.80, 0.18, 1.45), bodyMat);
+      hood.position.set(0, 0.76, -1.45); hood.rotation.x = -0.05; g.add(hood);
+
+      // Faros delanteros LED
+      const hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      [-0.65, 0.65].forEach(hx => {
+        const hl = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.14, 0.05), hlMat);
+        hl.position.set(hx, 0.62, -2.24); g.add(hl);
+      });
+
+      // Luces traseras rojas
+      const tlMat = new THREE.MeshBasicMaterial({ color: 0xff1100 });
+      [-0.65, 0.65].forEach(tx => {
+        const tl = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.12, 0.05), tlMat);
+        tl.position.set(tx, 0.65, 2.24); g.add(tl);
+      });
+
+      // 4 Ruedas con llantas de aleación
+      const tireGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.28, 16);
+      tireGeo.rotateZ(Math.PI / 2);
+      const rimGeo  = new THREE.CylinderGeometry(0.22, 0.22, 0.29, 12);
+      rimGeo.rotateZ(Math.PI / 2);
+
+      const wheelPositions = [
+        { x: -1.0, y: 0.38, z: -1.35, isFront: true },  // Delantera Izq
+        { x:  1.0, y: 0.38, z: -1.35, isFront: true },  // Delantera Der
+        { x: -1.0, y: 0.38, z:  1.35, isFront: false }, // Trasera Izq
+        { x:  1.0, y: 0.38, z:  1.35, isFront: false }  // Trasera Der
+      ];
+
+      wheelPositions.forEach(p => {
+        const wGroup = new THREE.Group();
+        wGroup.position.set(p.x, p.y, p.z);
+
+        const tire = new THREE.Mesh(tireGeo, darkMat);
+        tire.castShadow = true; wGroup.add(tire);
+        const rim = new THREE.Mesh(rimGeo, chromeMat);
+        wGroup.add(rim);
+
+        g.add(wGroup);
+        car.wheels.push({ group: wGroup, isFront: p.isFront, tire });
+      });
+
+      // Luz frontal que proyecta hacia adelante
+      const carLight = new THREE.SpotLight(0xffffff, 2.5, 45, Math.PI / 5, 0.4, 1);
+      carLight.position.set(0, 0.7, -2.1);
+      carLight.target.position.set(0, 0, -25);
+      g.add(carLight);
+      g.add(carLight.target);
+
+      car.mesh = g;
+      scene.add(g);
+
+      // Intento de reemplazo por el GLB Aston Martin descargado
+      loadAstonMartinGLB(g);
+    }
+
+    // Carga de Aston Martin GLB descargado por el usuario
+    function loadAstonMartinGLB(fallbackGroup) {
+      if (typeof THREE.GLTFLoader === 'undefined') return;
+      const loader = new THREE.GLTFLoader();
+      const paths = [
+        'assets/models/auto.glb',
+        'assets/models/aston_martin_v8_vantage_v600_limitededition_1998.glb',
+        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/auto.glb'
+      ];
+
+      const tryLoad = (idx) => {
+        if (idx >= paths.length) return;
+        loader.load(paths[idx], (gltf) => {
+          const raw = gltf.scene;
+          const box = new THREE.Box3().setFromObject(raw);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+
+          raw.position.set(-center.x, -box.min.y, -center.z);
+
+          const modelGroup = new THREE.Group();
+          modelGroup.add(raw);
+
+          const carLen = Math.max(size.x, size.z);
+          const scale = 4.65 / carLen;
+          modelGroup.scale.set(scale, scale, scale);
+          modelGroup.rotation.y = Math.PI; // Mirando hacia -Z
+
+          raw.traverse(m => {
+            if (m.isMesh) {
+              m.castShadow = true;
+              m.receiveShadow = true;
+            }
+          });
+
+          // Sustituir la carrocería procedural conservando el grupo car.mesh
+          fallbackGroup.children.forEach(c => {
+            if (c.type === 'Mesh') c.visible = false;
+          });
+          fallbackGroup.add(modelGroup);
+          console.log('✅ Aston Martin GLB cargado e instanciado.');
+        }, undefined, () => tryLoad(idx + 1));
+      };
+      tryLoad(0);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // FÍSICA VEHICULAR LIBRE Y CONTROL DE MANEJO
+    // ═══════════════════════════════════════════════════════════════
+    function updateCarPhysics() {
+      // 1. Aceleración y Frenado / Reversa
+      if (keys.forward) {
+        if (car.speed < car.maxForwardSpeed) {
+          car.speed += car.accelRate;
+        }
+      } else if (keys.backward) {
+        if (car.speed > 0.04) {
+          // Frenada enérgica
+          car.speed -= car.brakeRate;
+          car.pitch = -0.06; // cabeceo delantero
+          if (car.speed > 0.18) playScreechAudio();
+        } else if (car.speed > car.maxReverseSpeed) {
+          // Marcha atrás
+          car.speed -= car.accelRate * 0.7;
+        }
+      } else {
+        // Fricción de rodadura natural
+        car.speed *= car.friction;
+        if (Math.abs(car.speed) < 0.002) car.speed = 0;
+      }
+
+      // 2. Dirección de ruedas y viraje (Bicycle Ackerman Model)
+      const targetSteer = keys.left ? 0.52 : keys.right ? -0.52 : 0.0;
+      car.steerAngle += (targetSteer - car.steerAngle) * 0.18;
+
+      // Las ruedas delanteras doblan visualmente
+      car.wheels.forEach(w => {
+        if (w.isFront) {
+          w.group.rotation.y = car.steerAngle;
+        }
+        // Rodadura de los neumáticos
+        w.tire.rotation.x += car.speed * 2.6;
+      });
+
+      // Viraje cinemático real
+      if (Math.abs(car.speed) > 0.001) {
+        const turnRadiusDelta = (car.speed / car.wheelbase) * Math.sin(car.steerAngle);
+        car.heading += turnRadiusDelta;
+      }
+
+      // Desplazamiento en el plano XZ
+      car.x -= Math.sin(car.heading) * car.speed;
+      car.z -= Math.cos(car.heading) * car.speed;
+
+      // Amortiguación elástica de suspensión (cabeceo pitch y balanceo roll)
+      car.pitch += (0 - car.pitch) * 0.12;
+      car.roll = -car.steerAngle * car.speed * 0.8;
+
+      // Actualizar posición y rotación de la malla del auto
+      if (car.mesh) {
+        car.mesh.position.set(car.x, car.y, car.z);
+        car.mesh.rotation.y = car.heading;
+        car.mesh.rotation.x = car.pitch;
+        car.mesh.rotation.z = car.roll;
+      }
+
+      // Velocidad en km/h (escala realista: 0.50 m/frame ≈ 60 km/h)
+      const kmh = Math.round(Math.abs(car.speed) * 120);
+      document.getElementById('hud-speed').innerText = kmh;
+      updateEngineAudio(kmh);
+
+      // Evaluación continua de velocidad máxima (Ley 2.148 CABA)
+      if (kmh > currentLimitKmh + 3) {
+        document.getElementById('hud-limit-sign').className = 'limit-sign warn';
+        penalizeInfraction(
+          'Exceso de velocidad',
+          15,
+          `Ley 2.148 CABA, Art. 6.2.1 — Circulabas a ${kmh} km/h (límite: ${currentLimitKmh} km/h).`
+        );
+      } else {
+        document.getElementById('hud-limit-sign').className = 'limit-sign';
+      }
+
+      // Colisión suave con los cordones de la vereda (límites físicos)
+      handleCurbCollisions();
+    }
+
+    // Colisión contra bordes y cordones
+    function handleCurbCollisions() {
+      // Si el auto se monta a la vereda de la avenida
+      if (car.z > 8 || (car.z < -6 && car.z > -104) || car.z < -116) {
+        if (car.x > 8.4 || car.x < -8.4) {
+          car.speed = -car.speed * 0.4; // rebote
+          car.x = car.x > 0 ? 8.2 : -8.2;
+          penalizeInfraction('Impacto contra el cordón de vereda', 10, 'Ley 2.148 CABA — Conducción peligrosa sobre acera.');
+        }
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // CÁMARA DE SEGUIMIENTO DINÁMICA (CHASE CAM / HOOD CAM)
+    // ═══════════════════════════════════════════════════════════════
+    function updateCamera() {
+      if (!camera) return;
+
+      if (cameraMode === 'chase') {
+        // Tercera persona deportiva detrás del auto
+        const camDistance = 6.4;
+        const camHeight = 2.6;
+
+        const targetCamX = car.x + Math.sin(car.heading) * camDistance;
+        const targetCamZ = car.z + Math.cos(car.heading) * camDistance;
+        const targetCamY = car.y + camHeight;
+
+        camera.position.x += (targetCamX - camera.position.x) * 0.15;
+        camera.position.y += (targetCamY - camera.position.y) * 0.15;
+        camera.position.z += (targetCamZ - camera.position.z) * 0.15;
+
+        // Mirar hacia adelante del capot
+        const lookX = car.x - Math.sin(car.heading) * 12;
+        const lookZ = car.z - Math.cos(car.heading) * 12;
+        camera.lookAt(lookX, car.y + 1.2, lookZ);
+      } else {
+        // Primera persona sobre el capot / asiento
+        camera.position.set(
+          car.x - Math.sin(car.heading) * 0.3,
+          car.y + 1.15,
+          car.z - Math.cos(car.heading) * 0.3
+        );
+        const lookX = car.x - Math.sin(car.heading) * 30;
+        const lookZ = car.z - Math.cos(car.heading) * 30;
+        camera.lookAt(lookX, car.y + 1.0, lookZ);
+      }
+    }
+
+    function toggleCameraView() {
+      cameraMode = cameraMode === 'chase' ? 'hood' : 'chase';
+      const btn = document.getElementById('btn-camera');
+      if (btn) {
+        btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px;">videocam</span> ${cameraMode === 'chase' ? 'EXTERIOR (C)' : 'CABINA (C)'}`;
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // SEÑAL DE GIRO (LUZ Y RELÉ ACÚSTICO)
+    // ═══════════════════════════════════════════════════════════════
+    function toggleBlinker(dir) {
+      initAudio();
+      const ind = document.getElementById('blinker-indicator');
+      const arrL = document.getElementById('b-arrow-left');
+      const arrR = document.getElementById('b-arrow-right');
+      const btnL = document.getElementById('btn-sig-left');
+      const btnR = document.getElementById('btn-sig-right');
+
+      if (activeBlinker === dir) {
+        // Apagar
+        activeBlinker = null;
+        clearInterval(blinkerSoundInterval);
+        clearTimeout(blinkerTimer);
+        ind.classList.remove('show');
+        arrL.classList.remove('active');
+        arrR.classList.remove('active');
+        btnL.classList.remove('active');
+        btnR.classList.remove('active');
+      } else {
+        // Encender
+        activeBlinker = dir;
+        ind.classList.add('show');
+        arrL.className = 'blinker-arrow' + (dir === 'left' ? ' active' : '');
+        arrR.className = 'blinker-arrow' + (dir === 'right' ? ' active' : '');
+        btnL.className = 'aux-btn' + (dir === 'left' ? ' active' : '');
+        btnR.className = 'aux-btn' + (dir === 'right' ? ' active' : '');
+
+        // Relé tic-tac acústico
+        let high = true;
+        playTone(920, 0.025, 0.08);
+        clearInterval(blinkerSoundInterval);
+        blinkerSoundInterval = setInterval(() => {
+          high = !high;
+          playTone(high ? 920 : 720, 0.025, 0.08);
+        }, 450);
+
+        // Auto-cancel a los 7 segundos
+        clearTimeout(blinkerTimer);
+        blinkerTimer = setTimeout(() => {
+          if (activeBlinker === dir) toggleBlinker(dir);
+        }, 7000);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // SISTEMA DE EVALUACIÓN DE 2 MINUTOS (LEY 2.148 CABA)
+    // ═══════════════════════════════════════════════════════════════
+    let lastPenalizeTime = 0;
+    function penalizeInfraction(title, pts, lawText) {
+      const now = performance.now();
+      if (now - lastPenalizeTime < 3000) return; // evitar spam repetitivo
+      lastPenalizeTime = now;
+
+      examScore = Math.max(0, examScore - pts);
+      infractions.push({ title, pts, lawText });
+
+      const sc = document.getElementById('hud-score');
+      sc.innerText = examScore;
+      sc.className = 'score-value' + (examScore < 70 ? ' bad' : examScore < 85 ? ' warn' : '');
+
+      showAlert(`❌ -${pts} pts: ${title}`, lawText, true);
+      playTone(220, 0.35, 0.25); // buzzer de advertencia
+    }
+
+    function showAlert(title, lawText, isInfraction = false) {
+      const el = document.getElementById('alert-popup');
+      document.getElementById('alert-title').innerText = title;
+      document.getElementById('alert-law').innerText = lawText;
+      el.className = 'alert-popup show' + (isInfraction ? ' infraction' : '');
+      setTimeout(() => { el.className = 'alert-popup'; }, 3200);
+    }
+
+    // Máquina de estados del examen de 2 minutos
+    function updateExamMission() {
+      const mTitle = document.getElementById('mission-title');
+      const mDesc  = document.getElementById('mission-desc');
+      const mIcon  = document.getElementById('mission-icon');
+
+      // PASO 1: Avanzar por la avenida (Z: 80 -> 25)
+      if (currentStep === 1) {
+        currentLimitKmh = 60;
+        document.getElementById('hud-limit-num').innerText = '60';
+        if (car.z < 35) {
+          currentStep = 2;
+          mIcon.innerText = 'traffic';
+          mTitle.innerText = 'Paso 2: Cruce con Semáforo';
+          mDesc.innerText = 'Te aproximás a la esquina. Observá el semáforo. Si está rojo, frená antes de la senda.';
+        }
+      }
+
+      // PASO 2: Llegar a la esquina y respetar semáforo (Z: 35 -> 8)
+      else if (currentStep === 2) {
+        // Verificar semáforo rojo en Z = 8
+        const tl = trafficLights[0];
+        if (tl && tl.state === 'red' && car.z < 12 && car.z > 2) {
+          if (car.speed > 0.08) {
+            penalizeInfraction(
+              'Cruce con Semáforo en Rojo',
+              25,
+              'Ley 2.148 CABA, Art. 6.1.4 — Obligatorio detenerse antes de la línea de frenado ante luz roja.'
+            );
+          }
+        }
+
+        if (car.z < 6) {
+          currentStep = 3;
+          mIcon.innerText = 'turn_right';
+          mTitle.innerText = 'Paso 3: Doblá a la derecha (calle transversal)';
+          mDesc.innerText = 'Colocá la LUZ DE GIRO DERECHA (E) y doblá a 90° hacia la calle. Límite: 40 km/h.';
+          showAlert('🔄 Activá Luz de Giro Derecha', 'Ley 2.148 CABA, Art. 6.1.10 — Señalización obligatoria.');
+        }
+      }
+
+      // PASO 3: Doblar en la esquina con guiño (Z: 6 -> -6, X: 4 -> 18)
+      else if (currentStep === 3) {
+        // Si comenzó a virar a la derecha
+        if (car.heading < -0.35 || car.x > 9.0) {
+          // Evaluar si tenía el guiño derecho activo
+          if (activeBlinker !== 'right') {
+            penalizeInfraction(
+              'Giro sin Señalizar',
+              15,
+              'Ley 2.148 CABA, Art. 6.1.10 — Toda maniobra de giro debe advertirse con suficiente antelación.'
+            );
+          } else {
+            showAlert('✅ ¡Excelente señalización!', 'Giro advertido correctamente con luz de giro.');
+          }
+          currentStep = 4;
+          currentLimitKmh = 40;
+          document.getElementById('hud-limit-num').innerText = '40';
+          mIcon.innerText = 'person';
+          mTitle.innerText = 'Paso 4: Prioridad al Peatón en Ochava';
+          mDesc.innerText = 'Un peatón cruza por la senda en la esquina. Detenete para cederle el paso.';
+          
+          // Activar peatón
+          if (pedestrians[0]) pedestrians[0].isActive = true;
+        }
+      }
+
+      // PASO 4: Peatón cruzando en senda ochava
+      else if (currentStep === 4) {
+        const ped = pedestrians[0];
+        if (ped && ped.isActive) {
+          const dist = Math.hypot(car.x - ped.group.position.x, car.z - ped.group.position.z);
+          // Si el auto se aproxima a menos de 4m sin frenar
+          if (dist < 4.2 && car.speed > 0.08) {
+            penalizeInfraction(
+              'No ceder paso al peatón en senda',
+              20,
+              'Ley 2.148 CABA, Art. 6.1.1 — Los peatones tienen prioridad absoluta de paso en sendas peatonales.'
+            );
+          } else if (dist < 5.5 && car.speed < 0.03) {
+            showAlert('✅ ¡Prioridad respetada!', 'Cediste el paso al peatón en la senda reglamentaria.');
+            currentStep = 5;
+            mIcon.innerText = 'flag';
+            mTitle.innerText = 'Paso 5: Estacioná en el área delimitada';
+            mDesc.innerText = 'Avanzá unos metros por la calle y frená suavemente junto al cordón para concluir.';
+          }
+        }
+      }
+
+      // PASO 5: Fin del examen
+      else if (currentStep === 5) {
+        if (car.x > 26 && car.speed === 0) {
+          finishExamSession();
+        }
+      }
+    }
+
+    // Animación de semáforos porteños
+    function updateTrafficLightsLogic() {
       const now = performance.now();
       trafficLights.forEach(tl => {
         const elapsed = now - tl.timer;
-        let newState = tl.state;
-
-        if (tl.state === 'red'    && elapsed > TL_RED_DUR)    { newState = 'green';  tl.timer = now; }
-        if (tl.state === 'green'  && elapsed > TL_GREEN_DUR)  { newState = 'yellow'; tl.timer = now; }
-        if (tl.state === 'yellow' && elapsed > TL_YELLOW_DUR) { newState = 'red';    tl.timer = now; }
-
-        if (newState !== tl.state) {
-          tl.state = newState;
-          // Update lens colors
-          tl.redMesh.material.color.setHex(newState === 'red'    ? 0xff0000 : 0x1a0000);
-          tl.yelMesh.material.color.setHex(newState === 'yellow' ? 0xffcc00 : 0x332200);
-          tl.grnMesh.material.color.setHex(newState === 'green'  ? 0x00ff44 : 0x003300);
-          // Update point light color & intensity
-          if (newState === 'red')    { tl.ptLight.color.setHex(0xff0000); tl.ptLight.intensity = 1.4; }
-          if (newState === 'yellow') { tl.ptLight.color.setHex(0xffcc00); tl.ptLight.intensity = 1.1; }
-          if (newState === 'green')  { tl.ptLight.color.setHex(0x00ff44); tl.ptLight.intensity = 1.4; }
-        }
-
-        // Move semáforos with road chunks (they scroll with road only while playing)
-        if (isPlaying && !isPaused) {
-          tl.group.position.z += playerSpeed;
-          if (tl.group.position.z > 80) {
-            tl.group.position.z -= CHUNK_LENGTH * NUM_CHUNKS;
-          }
+        if (tl.state === 'red' && elapsed > 7000) {
+          tl.state = 'green'; tl.timer = now;
+          tl.rL.material.color.setHex(0x330000);
+          tl.gL.material.color.setHex(0x00ff44);
+        } else if (tl.state === 'green' && elapsed > 8000) {
+          tl.state = 'yellow'; tl.timer = now;
+          tl.gL.material.color.setHex(0x003311);
+          tl.yL.material.color.setHex(0xffcc00);
+        } else if (tl.state === 'yellow' && elapsed > 2000) {
+          tl.state = 'red'; tl.timer = now;
+          tl.yL.material.color.setHex(0x332200);
+          tl.rL.material.color.setHex(0xff1100);
         }
       });
     }
 
-    // BUS ACTOR WITH SYNCHRONIZED BRAKE GLOW
-    function createBusActor() {
-      busGroup = new THREE.Group();
-      busGroup.position.set(rightLaneX, 0, -26);
-
-      const fallbackBus = buildProceduralBus();
-      busGroup.add(fallbackBus);
-      busGroup.fallback = fallbackBus;
-
-      // Realistic brake point light that illuminates bus back and road
-      const brakePointLight = new THREE.PointLight(0xff0022, 0, 18, 1.2);
-      brakePointLight.position.set(0, 1.2, 4.6);
-      busGroup.add(brakePointLight);
-      busGroup.brakePointLight = brakePointLight;
-
-      scene.add(busGroup);
-    }
-
-    // PEDESTRIAN 3D ACTOR
-    function createPedestrianActor() {
-      pedestrianGroup = new THREE.Group();
-      pedestrianGroup.position.set(8.5, 0, -100); // starts waiting on sidewalk
-
-      // Body
-      const bodyMat = new THREE.MeshLambertMaterial({ color: 0xffaa00 });
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 1.1, 8), bodyMat);
-      body.position.y = 1.1;
-      pedestrianGroup.add(body);
-
-      // Head
-      const headMat = new THREE.MeshLambertMaterial({ color: 0xffdbac });
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 8), headMat);
-      head.position.y = 1.85;
-      pedestrianGroup.add(head);
-
-      // Legs
-      const legMat = new THREE.MeshLambertMaterial({ color: 0x223344 });
-      const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.65, 0.18), legMat);
-      leg1.position.set(-0.15, 0.35, 0);
-      pedestrianGroup.add(leg1);
-      const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.65, 0.18), legMat);
-      leg2.position.set(0.15, 0.35, 0);
-      pedestrianGroup.add(leg2);
-
-      scene.add(pedestrianGroup);
-    }
-
-    // ONCOMING SWERVING CAR ACTOR
-    function createOncomingCarActor() {
-      oncomingCar = new THREE.Group();
-      oncomingCar.position.set(leftLaneX, 0, -200);
-
-      const carMesh = buildProceduralCar(0xcc1122, 'sedan');
-      oncomingCar.add(carMesh);
-      oncomingCar.fallback = carMesh;
-
-      scene.add(oncomingCar);
-    }
-
-    // FLOATING HAZARD MARKER TARGET
-    function createHazardMarker() {
-      const ringGeo = new THREE.RingGeometry(1.4, 1.8, 24);
-      ringGeo.rotateX(-Math.PI / 2);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0044, side: THREE.DoubleSide });
-      hazardMarker = new THREE.Mesh(ringGeo, ringMat);
-      hazardMarker.visible = false;
-      scene.add(hazardMarker);
-    }
-
-    // LOAD 3D GLTF MODELS (Uses all 3 models downloaded by user)
-    function loadModels() {
-      if (typeof THREE.GLTFLoader === 'undefined') {
-        console.warn('GLTFLoader no disponible en THREE');
-        return;
-      }
-      const loader = new THREE.GLTFLoader();
-
-      // 1. HONDA CB 750 (Downloaded Motorcycle)
-      const motoPaths = [
-        'assets/models/honda_cb_750_f_super_sport_1970.glb',
-        'assets/models/moto.glb',
-        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/moto.glb'
-      ];
-      const tryLoadMoto = (idx) => {
-        if (idx >= motoPaths.length) return;
-        loader.load(motoPaths[idx], (gltf) => {
-          const raw = gltf.scene;
-          const box = new THREE.Box3().setFromObject(raw);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
-
-          raw.position.set(-center.x, -box.min.y, -center.z);
-
-          const container = new THREE.Group();
-          container.add(raw);
-
-          const maxDim = Math.max(size.x, size.y, size.z);
-          const scale = 2.25 / maxDim;
-          container.scale.set(scale, scale, scale);
-
-          // Faces forward down road (-Z)
-          container.rotation.y = Math.PI;
-
-          raw.traverse(m => {
-            if (m.isMesh) {
-              m.castShadow = true;
-              m.receiveShadow = true;
-            }
-          });
-
-          if (playerMotoContainer) player.remove(playerMotoContainer);
-          playerMotoContainer = container;
-          player.add(container);
-          container.visible = (playerVehicleType === 'moto');
-        }, undefined, () => tryLoadMoto(idx + 1));
-      };
-      tryLoadMoto(0);
-
-      // 2. GENERIC TOWN BUS (Downloaded Bus)
-      const busPaths = [
-        'assets/models/generic_town_bus.glb',
-        'assets/models/colectivo.glb',
-        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/colectivo.glb'
-      ];
-      const tryLoadBus = (idx) => {
-        if (idx >= busPaths.length) return;
-        loader.load(busPaths[idx], (gltf) => {
-          const raw = gltf.scene;
-          const box = new THREE.Box3().setFromObject(raw);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
-
-          raw.position.set(-center.x, -box.min.y, -center.z);
-
-          const container = new THREE.Group();
-          container.add(raw);
-
-          // Bus length is along X in raw model (~10m). Scale to realistic 8.8m
-          const busLen = Math.max(size.x, size.z);
-          const scale = 8.8 / busLen;
-          container.scale.set(scale, scale, scale);
-
-          // Rotate Math.PI / 2 so front (+X) faces down road (-Z) and rear faces player!
-          container.rotation.y = Math.PI / 2;
-
-          raw.traverse(m => {
-            if (m.isMesh) {
-              m.castShadow = true;
-              m.receiveShadow = true;
-            }
-          });
-
-          if (busGroup) {
-            if (busGroup.fallback) {
-              busGroup.remove(busGroup.fallback);
-            }
-            busGroup.add(container);
-          }
-        }, undefined, () => tryLoadBus(idx + 1));
-      };
-      tryLoadBus(0);
-
-      // 3. ASTON MARTIN V8 VANTAGE (Downloaded Car)
-      const carPaths = [
-        'assets/models/aston_martin_v8_vantage_v600_limitededition_1998.glb',
-        'assets/models/auto.glb',
-        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/auto.glb'
-      ];
-      const tryLoadCar = (idx) => {
-        if (idx >= carPaths.length) return;
-        loader.load(carPaths[idx], (gltf) => {
-          const raw = gltf.scene;
-
-          raw.traverse(m => {
-            if (m.isMesh) {
-              m.castShadow = true;
-              m.receiveShadow = true;
-              if (m.material) {
-                m.material.roughness = Math.min(m.material.roughness, 0.35);
-                m.material.metalness = Math.min(m.material.metalness, 0.85);
-              }
-            }
-          });
-
-          const box = new THREE.Box3().setFromObject(raw);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
-
-          raw.position.set(-center.x, -box.min.y, -center.z);
-
-          function createCarInstance(facingForward = true, paintColor = null) {
-            const inst = raw.clone(true);
-            const grp = new THREE.Group();
-            grp.add(inst);
-
-            const carLen = Math.max(size.x, size.z);
-            const scale = 4.7 / carLen;
-            grp.scale.set(scale, scale, scale);
-
-            // Driving forward down road: Math.PI. Oncoming facing player: 0
-            grp.rotation.y = facingForward ? Math.PI : 0;
-
-            if (paintColor) {
-              inst.traverse(m => {
-                if (m.isMesh && m.material && m.material.name && m.material.name.includes('Aston')) {
-                  m.material = m.material.clone();
-                  m.material.color.setHex(paintColor);
-                }
-              });
-            }
-            return grp;
-          }
-
-          // A) Oncoming hazard car in Situation 6
-          const oncomingMesh = createCarInstance(false, 0xcc1122); // Crimson red
-          if (oncomingCar) {
-            if (oncomingCar.fallback) oncomingCar.remove(oncomingCar.fallback);
-            oncomingCar.add(oncomingMesh);
-          }
-
-          // B) Player selectable Aston Martin
-          const newCar = createCarInstance(true, 0x0c6848); // British Racing Green
-          if (playerCarContainer) player.remove(playerCarContainer);
-          playerCarContainer = newCar;
-          player.add(playerCarContainer);
-          playerCarContainer.visible = (playerVehicleType === 'car');
-
-          // C) Parked Aston Martins along city avenues
-          const colors = [0x1a4080, 0x888890, 0x991122, 0x1e242b];
-          roadChunks.forEach((chunk, cIdx) => {
-            const side = cIdx % 2 === 0 ? 1 : -1;
-            const parkedCar = createCarInstance(true, colors[cIdx % colors.length]);
-            parkedCar.position.set(side * 6.2, 0, -CHUNK_LENGTH / 2 + (cIdx * 20) % 60);
-            chunk.add(parkedCar);
-          });
-
-        }, undefined, () => tryLoadCar(idx + 1));
-      };
-      tryLoadCar(0);
-    }
-
-    // CONTROLS AND EVENT LISTENERS
-    // ═══════════════════════════════════════════════════════════════
-    // CONTROLS — EXAMEN VIAL
-    // ═══════════════════════════════════════════════════════════════
-
-    function changeLane(direction) {
-      // direction: -1 = izquierda, +1 = derecha
-      // El jugador solo puede estar en x = 1.75 o 5.25 (lado derecho de la avenida)
-      // NO puede cruzar el center line (x < 1.0)
-      if (!isPlaying) return;
-
-      const newX = targetX + direction * 3.5; // salto de carril (3.5m)
-
-      // Comprobar si el jugador cruzaría la línea central
-      if (newX < 1.0) {
-        // Infracción: invasión de contramano
-        showPopup('🚫 ¡INVASIÓN DE CARRIL CONTRARIO!', 'bad');
-        playWarnBuzzer();
-        if (activeSit && activeSit.type === 'stay_in_lane' && !sitResolved) {
-          centerLineCrossed = true;
-          resolveSituation(false);
-        }
-        return; // bloquear el movimiento
-      }
-
-      // Carril máximo permitido: 6.8
-      targetX = Math.min(6.8, Math.max(1.0, newX));
-
-      // SEÑAL: si cambia carril sin señal activa en situación 5
-      if (activeSit && activeSit.type === 'signal_lane_change' && !sitResolved) {
-        if (!blinkerActive) {
-          // Cambio sin señal → infracción
-          laneChangedWithSignal = false;
-          resolveSituation(false);
-        } else {
-          // Cambio con señal activa → correcto
-          laneChangedWithSignal = true;
-          resolveSituation(true);
-        }
-      }
-    }
-
-    // ── Señal de giro ─────────────────────────────────────────────────
-    window.handleSignal = function(e) {
-      if (e) e.preventDefault();
-      if (!isPlaying) return;
-      initAudio();
-
-      blinkerActive = !blinkerActive;
-
-      // Visual HUD blinker y sonido de relé (tic-tac)
-      const blinkerHud = document.getElementById('blinker-hud');
-      const btnSL = document.getElementById('btn-signal-left');
-      const btnSR = document.getElementById('btn-signal-right');
-      if (blinkerActive) {
-        blinkerHud.classList.add('show');
-        btnSL.classList.add('on');
-        btnSR.classList.add('on');
-
-        // Sonido de tic-tac intermitente
-        let tick = true;
-        playTone(900, 'sine', 0.025, 0.07);
-        clearInterval(blinkerSoundInterval);
-        blinkerSoundInterval = setInterval(() => {
-          tick = !tick;
-          playTone(tick ? 900 : 720, 'sine', 0.025, 0.07);
-        }, 450);
-
-        // Auto-cancel después de 5 segundos
-        clearTimeout(blinkerTimer);
-        blinkerTimer = setTimeout(() => {
-          blinkerActive = false;
-          clearInterval(blinkerSoundInterval);
-          blinkerHud.classList.remove('show');
-          btnSL.classList.remove('on');
-          btnSR.classList.remove('on');
-        }, 5000);
-      } else {
-        clearInterval(blinkerSoundInterval);
-        clearTimeout(blinkerTimer);
-        blinkerHud.classList.remove('show');
-        btnSL.classList.remove('on');
-        btnSR.classList.remove('on');
-      }
-    };
-
-    // ── FRENO CON FÍSICA Y CHIRRIDO ──────────────────────────────────
-    let targetPitch = 0; // cabeceo de suspensión
-
-    window.handleBrake = function(e) {
-      if (e) e.preventDefault();
-      if (!isPlaying || isPaused) return;
-      initAudio();
-
-      // Feedback visual del botón
-      const btnBrake = document.getElementById('btn-brake');
-      btnBrake.classList.add('active-brake');
-      setTimeout(() => btnBrake.classList.remove('active-brake'), 300);
-
-      // FÍSICA: Chirrido de neumáticos y cabeceo hacia adelante de la suspensión
-      if (currentSpeedKmh > 20) {
-        playTireScreech();
-      }
-      targetPitch = -0.075; // hincada de amortiguadores delanteros
-
-      brakeActive = true;
-      brakeDecay = 90; // 1.5 segundos a 60fps
-
-      // Si hay una situación activa que requiere freno
-      if (activeSit && sitTriggered && !sitResolved) {
-        if (activeSit.type === 'brake_required') {
-          resolveSituation(true);
-          return;
-        }
-      }
-
-      // Freno fuera de contexto: feedback neutro
-      showPopup('🛑 Frenada', '');
-    };
-
-    function setupControls() {
-      // ── Botones de carril ──
-      document.getElementById('btn-left').addEventListener('click',      () => { initAudio(); changeLane(-1); });
-      document.getElementById('btn-left').addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); changeLane(-1); }, {passive:false});
-      document.getElementById('btn-right').addEventListener('click',     () => { initAudio(); changeLane(+1); });
-      document.getElementById('btn-right').addEventListener('touchstart',(e) => { e.preventDefault(); initAudio(); changeLane(+1); }, {passive:false});
-
-      // ── Botón FRENO y SEÑAL ya usan onclick/ontouchstart inline ──
-
-      // ── Teclado ──
-      window.addEventListener('keydown', (e) => {
-        initAudio();
-        if (e.code === 'Space' || e.key === 'f' || e.key === 'F') {
-          handleBrake(null);
-        }
-        if (e.key === 'q' || e.key === 'Q' || e.key === 'e' || e.key === 'E') {
-          handleSignal(null);
-        }
-        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-          changeLane(-1);
-        }
-        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-          changeLane(+1);
-        }
-        if (e.key === 'c' || e.key === 'C') {
-          toggleCameraView();
+    // Animación de peatones
+    function updatePedestriansLogic() {
+      pedestrians.forEach(p => {
+        if (p.isActive) {
+          p.group.position.x += p.speedX;
+          const legPhase = Math.sin(Date.now() * 0.012);
+          p.leg1.rotation.x = legPhase * 0.5;
+          p.leg2.rotation.x = -legPhase * 0.5;
+          if (p.group.position.x < -1.0) p.isActive = false; // terminó de cruzar
         }
       });
-
-      // ── Siguiente situación ──
-      btnNextRound.addEventListener('click', advanceToNextSituation);
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // SITUACIÓN: TRIGGER & RESOLVE
+    // FINALIZACIÓN DEL EXAMEN Y REPORTE
     // ═══════════════════════════════════════════════════════════════
+    function finishExamSession() {
+      isGameRunning = false;
+      stopEngineAudio();
+      clearInterval(examInterval);
 
-    function triggerSituation(sit) {
-      sitTriggered = true;
-      sitStartTime = performance.now();
-      centerLineCrossed = false;
-      speedViolation = false;
-      laneChangedWithSignal = false;
-
-      // Activar actores según el tipo
-      if (sit.actor === 'pedestrian') {
-        pedestrianGroup.visible = true;
-        pedestrianGroup.position.set(8.5, 0, player.position.z - 18);
-        pedestrianGroup.userData.crossing = true;
-      }
-      if (sit.actor === 'bus_brake') {
-        busGroup.visible = true;
-        busGroup.position.set(rightLaneX, 0, player.position.z - 22);
-        busGroup.userData.braking = true;
-      }
-      if (sit.actor === 'trafficlight_red') {
-        // Forzar un semáforo cercano en rojo
-        if (trafficLights.length > 0) {
-          const nearest = trafficLights.reduce((a, b) =>
-            Math.abs(a.group.position.z - player.position.z) <
-            Math.abs(b.group.position.z - player.position.z) ? a : b
-          );
-          nearest.state = 'red';
-          nearest.redMesh.material.color.setHex(0xff0000);
-          nearest.yelMesh.material.color.setHex(0x332200);
-          nearest.grnMesh.material.color.setHex(0x003300);
-          nearest.ptLight.color.setHex(0xff0000);
-          nearest.ptLight.intensity = 2.0;
-          nearest.group.position.z = player.position.z - 18;
-        }
-      }
-      if (sit.actor === 'oncoming_swerve') {
-        oncomingCar.visible = true;
-        oncomingCar.position.set(-1.75, 0, player.position.z - 90);
-      }
-      if (sit.type === 'speed_zone') {
-        currentSpeedLimit = sit.newLimit;
-        updateSpeedLimitBadge();
-      }
-
-      // Timer: si no actúa, la situación falla automáticamente
-      setTimeout(() => {
-        if (activeSit === sit && !sitResolved) {
-          if (sit.type === 'brake_required') {
-            resolveSituation(false);
-          } else if (sit.type === 'speed_zone') {
-            // auto-evaluated: si pasó el tiempo y la velocidad era OK
-            resolveSituation(!speedViolation);
-          } else if (sit.type === 'signal_lane_change') {
-            // timeout sin cambiar carril → falla
-            resolveSituation(false);
-          } else if (sit.type === 'stay_in_lane') {
-            // llegó al final sin invadir → éxito
-            resolveSituation(!centerLineCrossed);
-          }
-        }
-      }, sit.timeWindow);
-    }
-
-    function resolveSituation(success) {
-      if (sitResolved) return;
-      sitResolved = true;
-
-      const sit = activeSit;
-      isPaused = true;
-      stopEngineSound();
-      clearInterval(blinkerSoundInterval);
-
-      if (!success) {
-        // Descontar puntos
-        examScore = Math.max(0, examScore - sit.penalty);
-        infractions.push({ title: sit.title, penalty: sit.penalty, law: sit.law });
-        updateScoreHUD();
-      }
-
-      // Actualizar dot
-      const dot = document.getElementById(`dot-${sit.num}`);
-      if (dot) dot.className = success ? 'round-dot done-5' : 'round-dot done-0';
-
-      // Popup rápido
-      showPopup(success ? '✅ ¡CORRECTO!' : `❌ INFRACCIÓN (-${sit.penalty} pts)`, success ? '' : 'bad');
-      setTimeout(() => { document.getElementById('reaction-popup').className = 'reaction-popup'; }, 2000);
-
-      // Sonido
-      if (success) playSuccessChime(); else playWarnBuzzer();
-
-      // Mostrar feedback modal
-      const feedbackModal = document.getElementById('feedback-modal');
-      const feedbackTitle = document.getElementById('feedback-title');
-      const feedbackLaw   = document.getElementById('feedback-law');
-      const feedbackDesc  = document.getElementById('feedback-desc');
-      const btnNext       = document.getElementById('btn-next-round');
-
-      feedbackModal.className = success ? 'feedback-modal' : 'feedback-modal infraction';
-      feedbackTitle.style.color = success ? 'var(--neon-green)' : 'var(--danger)';
-      feedbackTitle.innerText = success ? `✅ ${sit.title}` : `❌ ${sit.title}`;
-      feedbackLaw.innerText   = sit.law;
-      feedbackDesc.innerText  = success ? sit.successTip : sit.failTip;
-      btnNext.className       = success ? 'btn-next-round' : 'btn-next-round infraction';
-
-      const isLast = (sit.num === SITUATIONS.length);
-      btnNext.innerText = isLast ? 'VER RESULTADOS 🏁' : 'SIGUIENTE ➡️';
-      feedbackModal.style.display = 'block';
-
-      // Restaurar límite de velocidad si era zona especial
-      if (sit.type === 'speed_zone') {
-        setTimeout(() => { currentSpeedLimit = 60; updateSpeedLimitBadge(); }, 3000);
-      }
-    }
-
-    function advanceToNextSituation() {
-      document.getElementById('feedback-modal').style.display = 'none';
-      if (hazardMarker) hazardMarker.visible = false;
-
-      currentSitIndex++;
-
-      if (currentSitIndex < SITUATIONS.length) {
-        activeSit = SITUATIONS[currentSitIndex];
-        sitTriggered = false;
-        sitResolved  = false;
-        document.getElementById('sit-num').innerText = activeSit.num;
-
-        const nextDot = document.getElementById(`dot-${activeSit.num}`);
-        if (nextDot) nextDot.className = 'round-dot active';
-
-        // Reset actores
-        busGroup.visible = false;
-        pedestrianGroup.visible = false;
-        if (oncomingCar) oncomingCar.visible = false;
-
-        document.getElementById('mission-prompt').innerHTML = activeSit.prompt;
-        isPaused = false;
-        startEngineSound();
-      } else {
-        finishExam();
-      }
-    }
-
-    function finishExam() {
-      isPlaying = false;
-      stopEngineSound();
-      clearInterval(blinkerSoundInterval);
-      playVictoryFanfare();
-      hud.style.display = 'none';
-      controlsOverlay.style.display = 'none';
-
-      const scoreEl  = document.getElementById('results-score');
-      const iconEl   = document.getElementById('results-icon');
-      const rankEl   = document.getElementById('results-rank');
-      const textEl   = document.getElementById('results-text');
-      const infEl    = document.getElementById('results-infractions');
-      const heroEl   = document.getElementById('results-hero-title');
-
-      scoreEl.innerText = examScore;
+      document.getElementById('hud-top').style.display = 'none';
+      document.getElementById('aux-controls').style.display = 'none';
+      document.getElementById('controls-overlay').style.display = 'none';
 
       const passed = examScore >= 70;
-      iconEl.innerText  = passed ? 'verified' : 'cancel';
-      iconEl.style.color = passed ? 'var(--neon-green)' : 'var(--danger)';
-      heroEl.style.color = passed ? '#fff' : 'var(--danger)';
-      heroEl.innerText   = passed ? '¡EXAMEN APROBADO!' : 'EXAMEN DESAPROBADO';
-      scoreEl.style.color = passed ? 'var(--neon-green)' : 'var(--danger)';
+      const resIcon = document.getElementById('res-icon');
+      const resTitle = document.getElementById('res-title');
+      const resScore = document.getElementById('res-score');
+      const resInf   = document.getElementById('res-infractions');
 
-      if (examScore === 100) {
-        rankEl.style.color = 'var(--neon-green)';
-        rankEl.innerText = '🏆 CONDUCTOR MODELO — PUNTAJE PERFECTO';
-        textEl.innerText = 'Respetaste todas las normas de tránsito. Ejemplar.';
-      } else if (examScore >= 85) {
-        rankEl.style.color = 'var(--neon-green)';
-        rankEl.innerText = '✅ MUY BUEN CONDUCTOR';
-        textEl.innerText = 'Cometiste infracciones menores. Con más práctica alcanzarás el puntaje perfecto.';
-      } else if (passed) {
-        rankEl.style.color = 'var(--neon-yellow)';
-        rankEl.innerText = '⚠️ APROBADO CON OBSERVACIONES';
-        textEl.innerText = 'Aprobaste el mínimo requerido (70 pts), pero debés reforzar el conocimiento de las normas.';
-      } else {
-        rankEl.style.color = 'var(--danger)';
-        rankEl.innerText = '❌ DESAPROBADO — Necesitás repasar';
-        textEl.innerText = 'No alcanzaste el mínimo de 70 puntos. Repasá el Código de Tránsito CABA (Ley 2.148) antes de volver a rendir.';
-      }
+      resScore.innerText = examScore;
+      resScore.className = 'result-score' + (passed ? '' : ' bad');
+
+      resIcon.innerText = passed ? 'verified' : 'cancel';
+      resIcon.style.color = passed ? 'var(--success)' : 'var(--danger)';
+      resTitle.innerText = passed ? '¡EXAMEN APROBADO!' : 'EXAMEN DESAPROBADO';
+      resTitle.style.color = passed ? '#fff' : 'var(--danger)';
 
       if (infractions.length > 0) {
-        infEl.innerHTML = '<b>Infracciones cometidas:</b><br>' +
-          infractions.map(i => `• <b>-${i.penalty} pts</b> — ${i.title}<br><span style="color:#888;font-size:11px;">${i.law}</span>`).join('<br>');
+        resInf.innerHTML = '<div style="font-weight:700; color:#fff; margin-bottom:6px;">Detalle de Infracciones detectadas:</div>' +
+          infractions.map(i => `<div class="inf-item">• <b>-${i.pts} pts</b>: ${i.title}<br><span class="inf-law">${i.lawText}</span></div>`).join('');
       } else {
-        infEl.innerHTML = '<span style="color:var(--neon-green);">✅ Sin infracciones. ¡Excelente manejo!</span>';
+        resInf.innerHTML = '<div style="color:var(--success); font-weight:700; padding:10px;">🏆 ¡Puntaje Perfecto! Manejo modelo conforme al Código de Tránsito de CABA.</div>';
       }
 
-      resultsScreen.style.display = 'flex';
+      document.getElementById('modal-result').style.display = 'flex';
+      playTone(passed ? 660 : 220, 0.4, 0.3);
     }
 
-    function showPopup(text, cls) {
-      const el = document.getElementById('reaction-popup');
-      el.className = `reaction-popup show${cls ? ' ' + cls : ''}`;
-      el.innerText = text;
-      setTimeout(() => { el.className = 'reaction-popup'; }, 2200);
+    // ═══════════════════════════════════════════════════════════════
+    // INICIALIZACIÓN THREE.JS Y EVENT LISTENERS
+    // ═══════════════════════════════════════════════════════════════
+    function init() {
+      // 1. Escena con cielo diurno
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x7ab0df);
+      scene.fog = new THREE.FogExp2(0x8ec3ea, 0.0055);
+
+      // 2. Cámara
+      camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 800);
+      camera.position.set(car.x, 3.5, car.z + 8);
+
+      // 3. Renderer con sombras suaves PBR
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+      // 4. Iluminación Solar Diurna
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+      scene.add(ambientLight);
+
+      const hemiLight = new THREE.HemisphereLight(0xb1e1ff, 0x3b3a32, 0.7);
+      hemiLight.position.set(0, 50, 0);
+      scene.add(hemiLight);
+
+      sunLight = new THREE.DirectionalLight(0xfffaed, 1.4);
+      sunLight.position.set(45, 75, 40);
+      sunLight.castShadow = true;
+      sunLight.shadow.mapSize.width = 2048;
+      sunLight.shadow.mapSize.height = 2048;
+      sunLight.shadow.camera.near = 10;
+      sunLight.shadow.camera.far = 250;
+      const d = 60;
+      sunLight.shadow.camera.left = -d;
+      sunLight.shadow.camera.right = d;
+      sunLight.shadow.camera.top = d;
+      sunLight.shadow.camera.bottom = -d;
+      sunLight.shadow.bias = -0.0004;
+      scene.add(sunLight);
+
+      // 5. Construir la Ciudad
+      buildBuenosAiresCity();
+
+      // 6. Construir el Vehículo del Jugador
+      buildPlayerCar();
+
+      // 7. Configurar Eventos de Entrada
+      setupInputListeners();
+
+      window.addEventListener('resize', onResize);
+      animate();
     }
 
-    function updateScoreHUD() {
-      const pts  = document.getElementById('score-pts');
-      const bar  = document.getElementById('score-bar-fill');
-      pts.innerText = examScore;
-      bar.style.width = examScore + '%';
-      bar.style.background = examScore >= 70 ? 'var(--neon-green)' : examScore >= 40 ? 'var(--neon-yellow)' : 'var(--danger)';
-      pts.className = 'score-pts' + (examScore < 70 ? ' bad' : examScore < 85 ? ' warn' : '');
-    }
-
-    function updateSpeedLimitBadge() {
-      const badge = document.getElementById('speed-limit-badge');
-      badge.innerText = currentSpeedLimit;
-      badge.className = 'speed-limit-badge'; // reset to red border default
-    }
-
-    function updateSpeedometer() {
-      // Velocidad actual: playerSpeed base = 0.42 → 60 km/h
-      // Cuando frena, playerSpeed se reduce → kmh baja
-      currentSpeedKmh = Math.round(playerSpeed * SPEED_TO_KMH);
-      const el = document.getElementById('speedo-kmh');
-      if (el) el.innerText = currentSpeedKmh;
-
-      // Colorear badge de límite
-      const badge = document.getElementById('speed-limit-badge');
-      if (badge) {
-        if (currentSpeedKmh > currentSpeedLimit) {
-          badge.className = 'speed-limit-badge warn';
-          // Si estamos en situación de zona escolar y se excede
-          if (activeSit && activeSit.type === 'speed_zone' && sitTriggered && !sitResolved) {
-            speedViolation = true;
-          }
-        } else {
-          badge.className = 'speed-limit-badge ok';
-        }
-      }
-    }
-
-    function resetActorsForRound(idx) {
-      // Compatibilidad con llamada desde el animate loop heredado — ya no se usa
-    }
-
-    function onWindowResize() {
+    function onResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    // MAIN GAME LOOP
+    // Controles de teclado y táctiles
+    function setupInputListeners() {
+      // Teclado
+      window.addEventListener('keydown', (e) => {
+        if (!isGameRunning) return;
+        if (e.code === 'KeyW' || e.code === 'ArrowUp')    keys.forward = true;
+        if (e.code === 'KeyS' || e.code === 'ArrowDown')  keys.backward = true;
+        if (e.code === 'KeyA' || e.code === 'ArrowLeft')  keys.left = true;
+        if (e.code === 'KeyD' || e.code === 'ArrowRight') keys.right = true;
+        if (e.code === 'KeyQ') toggleBlinker('left');
+        if (e.code === 'KeyE') toggleBlinker('right');
+        if (e.code === 'KeyC') toggleCameraView();
+        if (e.code === 'KeyH') soundHorn();
+      });
+
+      window.addEventListener('keyup', (e) => {
+        if (e.code === 'KeyW' || e.code === 'ArrowUp')    keys.forward = false;
+        if (e.code === 'KeyS' || e.code === 'ArrowDown')  keys.backward = false;
+        if (e.code === 'KeyA' || e.code === 'ArrowLeft')  keys.left = false;
+        if (e.code === 'KeyD' || e.code === 'ArrowRight') keys.right = false;
+      });
+
+      // Botones táctiles
+      const bindBtn = (id, keyName) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const setK = (v, ev) => { if (ev) ev.preventDefault(); keys[keyName] = v; };
+        el.addEventListener('touchstart', (ev) => setK(true, ev), {passive:false});
+        el.addEventListener('touchend',   (ev) => setK(false, ev), {passive:false});
+        el.addEventListener('mousedown',  (ev) => setK(true, ev));
+        el.addEventListener('mouseup',    (ev) => setK(false, ev));
+        el.addEventListener('mouseleave', (ev) => setK(false, ev));
+      };
+
+      bindBtn('btn-pedal-gas', 'forward');
+      bindBtn('btn-pedal-brake', 'backward');
+      bindBtn('btn-steer-left', 'left');
+      bindBtn('btn-steer-right', 'right');
+
+      // Botón inicio
+      document.getElementById('btn-start-game').addEventListener('click', () => {
+        document.getElementById('modal-start').style.display = 'none';
+        document.getElementById('hud-top').style.display = 'flex';
+        document.getElementById('aux-controls').style.display = 'flex';
+        document.getElementById('controls-overlay').style.display = 'flex';
+
+        isGameRunning = true;
+        startEngineAudio();
+
+        // Timer de 2 minutos para eventos
+        examTimeLeft = 120;
+        examInterval = setInterval(() => {
+          examTimeLeft--;
+          if (examTimeLeft <= 0) finishExamSession();
+        }, 1000);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // LOOP PRINCIPAL DE RENDER Y FÍSICAS (60 FPS)
+    // ═══════════════════════════════════════════════════════════════
     function animate() {
       requestAnimationFrame(animate);
 
-      if (isPlaying && !isPaused) {
-        distanceTraveled += playerSpeed * 0.85;
+      if (isGameRunning) {
+        updateCarPhysics();
+        updateCamera();
+        updateExamMission();
+        updateTrafficLightsLogic();
+        updatePedestriansLogic();
 
-        // Move Road Chunks for infinite city
-        roadChunks.forEach(chunk => {
-          chunk.position.z += playerSpeed;
-          if (chunk.position.z > CHUNK_LENGTH) {
-            chunk.position.z -= CHUNK_LENGTH * NUM_CHUNKS;
-          }
-        });
-
-        // Update Ambient Traffic & Semáforos
-        updateAmbientTraffic();
-        updateTrafficLights();
-
-        // ─── FÍSICA VEHICULAR: Inercia y suspensión ───
-        // Cabeceo de amortiguadores al frenar (Brake Pitch)
-        player.rotation.x += (targetPitch - player.rotation.x) * 0.16;
-        targetPitch += (0 - targetPitch) * 0.08; // retorna suavemente a nivel
-
-        // Desaceleración progresiva al frenar y aceleración de crucero
-        if (brakeActive && brakeDecay > 0) {
-          brakeDecay--;
-          playerSpeed = Math.max(0.08, playerSpeed - 0.016);
-          if (brakeDecay === 0) brakeActive = false;
-        } else {
-          // Recupera velocidad de crucero según zona
-          const targetCruise = (activeSit && activeSit.type === 'speed_zone') ? 0.14 : 0.42;
-          playerSpeed += (targetCruise - playerSpeed) * 0.035;
+        // La luz solar acompaña suavemente al jugador para sombras nítidas constantes
+        if (sunLight) {
+          sunLight.position.set(car.x + 45, 75, car.z + 40);
+          sunLight.target.position.set(car.x, 0, car.z);
         }
-
-        // Actualizar velocímetro y sonido continuo de motor en cada frame
-        updateSpeedometer();
-        updateEngineSound(currentSpeedKmh);
-
-        // Smooth player steering & tilt
-        player.position.x += (targetX - player.position.x) * 0.12;
-        player.rotation.z = -(targetX - player.position.x) * 0.05;
-
-        // Camera: Cockpit vs Exterior
-        if (cockpitView && playerVehicleType === 'car') {
-          // Cockpit camera — positioned at driver seat inside the car
-          camera.position.x += (player.position.x - 0.30 - camera.position.x) * 0.18;
-          camera.position.y += (1.18 - camera.position.y) * 0.18;
-          camera.position.z += (player.position.z + 0.2 - camera.position.z) * 0.18;
-          // Look forward with subtle head-turn toward steering
-          camera.lookAt(
-            player.position.x + (targetX - player.position.x) * 0.12,
-            0.9,
-            player.position.z - 30
-          );
-          // Subtle driving vibration
-          camera.position.y += Math.sin(Date.now() * 0.003) * 0.002;
-        } else {
-          // Third-person exterior camera
-          camera.position.x += (player.position.x * 0.85 - camera.position.x) * 0.1;
-          camera.position.y += (targetCameraPos.y - camera.position.y) * 0.08;
-          camera.position.z += (targetCameraPos.z - camera.position.z) * 0.08;
-          camera.lookAt(player.position.x * 0.6, 1.5, -20);
-        }
-
-        // Steering wheel animation
-        if (steeringWheel && cockpitView) {
-          const steerDelta = targetX - player.position.x;
-          targetSteeringAngle = -steerDelta * 0.5;
-          currentSteeringAngle += (targetSteeringAngle - currentSteeringAngle) * 0.12;
-          steeringWheel.rotation.z = currentSteeringAngle;
-        }
-
-        // ─── GESTIÓN DE SITUACIONES DEL EXAMEN VIAL ───
-        if (activeSit) {
-          // Condición de disparo de la situación actual
-          if (!sitTriggered && distanceTraveled >= activeSit.triggerDistance) {
-            triggerSituation(activeSit);
-          }
-
-          // Ejecución y animación de los actores 3D
-          if (sitTriggered && !sitResolved) {
-            const elapsed = performance.now() - sitStartTime;
-
-            // 1. Peatón cruzando por senda
-            if (activeSit.actor === 'pedestrian' && pedestrianGroup.visible) {
-              pedestrianGroup.position.z += playerSpeed;
-              pedestrianGroup.position.x -= 0.055; // camina cruzando la calzada
-              const walkPhase = Math.sin(Date.now() * 0.012);
-              if (pedestrianGroup.children[2] && pedestrianGroup.children[3]) {
-                pedestrianGroup.children[2].rotation.x = walkPhase * 0.4;
-                pedestrianGroup.children[3].rotation.x = -walkPhase * 0.4;
-              }
-
-              // Si el jugador no frenó y está a punto de atropellarlo
-              if (pedestrianGroup.position.z > player.position.z - 3.2 && !playerBraked) {
-                resolveSituation(false);
-              }
-            }
-
-            // 2. Colectivo frenando bruscamente (distancia de seguridad)
-            else if (activeSit.actor === 'bus_brake' && busGroup.visible) {
-              busGroup.position.z += (playerSpeed - 0.13); // el colectivo reduce drásticamente su velocidad
-
-              // Si el jugador no frenó a tiempo y colisiona por alcance
-              if (busGroup.position.z > player.position.z - 3.8 && !playerBraked) {
-                resolveSituation(false);
-              }
-            }
-
-            // 3. Auto contramano que roza la línea central
-            else if (activeSit.actor === 'oncoming_swerve' && oncomingCar.visible) {
-              oncomingCar.position.z += playerSpeed + 0.45;
-              if (oncomingCar.position.x < -0.4) {
-                oncomingCar.position.x += 0.02; // amaga a invadir
-              }
-            }
-          }
+      } else {
+        // En pantalla de inicio o resultado: cámara giratoria cinematográfica
+        if (camera && car.mesh) {
+          camera.position.x = car.x + Math.sin(Date.now() * 0.0006) * 9;
+          camera.position.z = car.z + Math.cos(Date.now() * 0.0006) * 9;
+          camera.position.y = 3.5;
+          camera.lookAt(car.x, 1.0, car.z);
         }
       }
-
-      // Traffic lights always animate
-      if (!isPlaying) updateTrafficLights();
 
       renderer.render(scene, camera);
     }
 
-    // BOTÓN INICIAR EXAMEN VIAL
-    document.getElementById('btn-start').addEventListener('click', () => {
-      initAudio();
-      startEngineSound();
-      document.getElementById('start-screen').style.display = 'none';
-      document.getElementById('hud').style.display = 'flex';
-      document.getElementById('controls-overlay').style.display = 'flex';
-
-      currentSitIndex = 0;
-      examScore = 100;
-      infractions = [];
-      distanceTraveled = 0;
-      playerSpeed = 0.42;
-      targetX = rightLaneX;
-      playerBraked = false;
-      signaledTurn = null;
-      signalActiveUntil = 0;
-      speedViolation = false;
-      centerLineCrossed = false;
-      isPaused = false;
-
-      updateScoreHUD();
-      activeSit = SITUATIONS[0];
-      sitTriggered = false;
-      sitResolved = false;
-
-      document.getElementById('sit-num').innerText = activeSit.num;
-      document.getElementById('mission-prompt').innerHTML = activeSit.prompt;
-
-      // Reset dots
-      for (let i = 1; i <= 6; i++) {
-        const dot = document.getElementById(`dot-${i}`);
-        if (dot) dot.className = (i === 1) ? 'round-dot active' : 'round-dot';
-      }
-
-      // Reset actores
-      busGroup.visible = false;
-      busGroup.position.set(rightLaneX, 0, -26);
-      if (busGroup.brakePointLight) busGroup.brakePointLight.intensity = 0;
-
-      pedestrianGroup.visible = false;
-      pedestrianGroup.position.set(8.5, 0, -100);
-
-      oncomingCar.visible = false;
-      oncomingCar.position.set(leftLaneX, 0, -200);
-
-      currentSpeedLimit = 60;
-      updateSpeedLimitBadge();
-
-      isPlaying = true;
-    });
-
-    // Initialize Three.js scene
-    init();
+    // Iniciar Three.js
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>

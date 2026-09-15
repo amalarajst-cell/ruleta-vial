@@ -23,6 +23,9 @@ while ($listener.IsListening) {
             elseif ($fullPath.EndsWith(".json")) { $response.ContentType = "application/json" }
             
             $response.AddHeader("Access-Control-Allow-Origin", "*")
+            $response.AddHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+            $response.AddHeader("Pragma", "no-cache")
+            $response.AddHeader("Expires", "0")
             $response.ContentLength64 = $bytes.Length
             $response.OutputStream.Write($bytes, 0, $bytes.Length)
         } else {
