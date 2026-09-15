@@ -1321,6 +1321,7 @@
 
       if (isCorrect) {
         soundSys.playCorrect();
+        try { if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 50, 50]); } catch(e) {}
         clickedCard.classList.add('correct-flash');
 
         streak++;
@@ -1356,6 +1357,7 @@
 
       } else {
         soundSys.playIncorrect();
+        try { if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([150]); } catch(e) {}
         clickedCard.classList.add('wrong-flash');
 
         streak = 0;

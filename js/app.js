@@ -988,10 +988,26 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStreak++;
       sessionCorrect++;
       sessionScore += pointsGained;
-      audioSystem.playCorrect();
+      if (typeof audioSystem !== 'undefined' && audioSystem.playCorrect) {
+        audioSystem.playCorrect();
+      } else {
+        try {
+          if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+            navigator.vibrate([50, 50, 50]);
+          }
+        } catch (e) {}
+      }
     } else {
       sessionStreak = 0;
-      audioSystem.playWrong();
+      if (typeof audioSystem !== 'undefined' && audioSystem.playWrong) {
+        audioSystem.playWrong();
+      } else {
+        try {
+          if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+            navigator.vibrate([150]);
+          }
+        } catch (e) {}
+      }
     }
 
     updateHeaderDisplay();

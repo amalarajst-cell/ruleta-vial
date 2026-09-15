@@ -1617,13 +1617,15 @@
 
       renderCurrentQuestion();
 
-      // En modo práctica, si acertó sonido correcto
+      // En modo práctica, si acertó sonido y vibración háptica
       if (selectedMode === 'practice') {
         const q = examQuestions[currentIndex];
         if (optIdx === q.correctAnswer) {
           if (window.audioSystem && audioSystem.playCorrect) audioSystem.playCorrect();
+          try { if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([50, 50, 50]); } catch(e) {}
         } else {
           if (window.audioSystem && audioSystem.playWrong) audioSystem.playWrong();
+          try { if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate([150]); } catch(e) {}
         }
       }
 

@@ -12,6 +12,15 @@ class SoundSystem {
     }
   }
 
+  // Safe Haptic Feedback API wrapper (vibración física táctil en smartphones)
+  vibrate(pattern) {
+    try {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator && typeof navigator.vibrate === 'function') {
+        navigator.vibrate(pattern);
+      }
+    } catch (e) {}
+  }
+
   init() {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -31,6 +40,8 @@ class SoundSystem {
   }
 
   playTick() {
+    // Suave vibración táctil física al pasar cada segmento de la ruleta (30ms)
+    this.vibrate([30]);
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
@@ -54,6 +65,8 @@ class SoundSystem {
   }
 
   playSpinStart() {
+    // Vibración suave de inicio de giro (30ms)
+    this.vibrate([30]);
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
@@ -79,6 +92,8 @@ class SoundSystem {
   }
 
   playCorrect() {
+    // Golpe doble de vibración positiva al acertar [50ms, 50ms silencio, 50ms]
+    this.vibrate([50, 50, 50]);
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
@@ -106,6 +121,8 @@ class SoundSystem {
   }
 
   playWrong() {
+    // Temblor de error al fallar [150ms]
+    this.vibrate([150]);
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;

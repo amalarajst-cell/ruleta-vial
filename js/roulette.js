@@ -330,7 +330,14 @@ class RouletteWheel {
     if (this.isSpinning) return;
     this.isSpinning = true;
 
-    if (typeof audioSystem !== 'undefined') audioSystem.playSpinStart();
+    // Haptic feedback al tocar para girar
+    try {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate([30]);
+      }
+    } catch (e) {}
+
+    if (typeof audioSystem !== 'undefined' && audioSystem.playSpinStart) audioSystem.playSpinStart();
 
     const targetIndex = (forcedIndex !== null && forcedIndex !== undefined)
       ? forcedIndex
@@ -354,12 +361,20 @@ class RouletteWheel {
       const ease = 1 - Math.pow(1 - progress, 4);
       this.currentAngle = startAngle + totalRotation * ease;
 
-      // Tick sound on segment boundary
+      // Tick sound and haptic vibration on segment boundary (tictac físico: 30ms)
       const pointerNorm = ((pointerAngle - this.currentAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
       const seg = Math.floor(pointerNorm / this.segmentAngle) % this.numSegments;
       if (seg !== this.lastTickSegment) {
         this.lastTickSegment = seg;
-        if (typeof audioSystem !== 'undefined') audioSystem.playTick();
+        if (typeof audioSystem !== 'undefined' && audioSystem.playTick) {
+          audioSystem.playTick();
+        } else {
+          try {
+            if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+              navigator.vibrate([30]);
+            }
+          } catch (e) {}
+        }
       }
 
       this.draw();
