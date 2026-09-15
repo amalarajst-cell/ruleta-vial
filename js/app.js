@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cat.includes('memotest') || cat.includes('señales') || cat.includes('senales')) return 'memotest';
     if (cat.includes('simulador')) return 'simulador';
     if (cat.includes('peligros') || cat.includes('detector')) return 'peligros';
+    if (cat.includes('crucigrama') || cat.includes('crossword')) return 'crucigrama';
     return 'ruleta';
   }
 

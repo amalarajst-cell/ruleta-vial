@@ -306,6 +306,25 @@
       border: 1px solid rgba(255, 68, 68, 0.25);
       background: rgba(255, 68, 68, 0.06);
     }
+    .btn-crucigrama {
+      border-color: #6366F1;
+      box-shadow: 0 10px 0 #4338CA, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-crucigrama:hover {
+      border-color: #A5B4FC;
+      box-shadow: 0 14px 0 #4338CA, 0 24px 44px rgba(99, 102, 241, 0.35);
+    }
+    .btn-crucigrama:active {
+      box-shadow: 0 4px 0 #4338CA, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-crucigrama span {
+      color: #818CF8;
+    }
+    .subtitle-crucigrama {
+      color: #A5B4FC;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      background: rgba(99, 102, 241, 0.06);
+    }
   </style>
 </head>
 <body>
@@ -403,7 +422,18 @@
       </div>
     </div>
 
-    <!-- 7. JUEGO: SIMULADOR 3D -->
+    <!-- 7. JUEGO: CRUCIGRAMA VIAL -->
+    <div class="game-card-wrapper">
+      <button class="btn-ruleta btn-crucigrama" id="btn-crucigrama" onclick="playGame('crucigrama.html')">
+        <img src="assets/crucigrama_icono.jpg" alt="Crucigrama Vial">
+        <span>CRUCIGRAMA VIAL</span>
+      </button>
+      <div class="btn-hub-subtitle subtitle-crucigrama" id="sub-crucigrama">
+        <span>Crucigrama temático: Moto, Auto y Colectivo</span>
+      </div>
+    </div>
+
+    <!-- 8. JUEGO: SIMULADOR 3D -->
     <div class="game-card-wrapper">
       <button class="btn-ruleta btn-simulador3d" id="btn-simulador3d" onclick="playGame('simulador3d.html')">
         <img src="assets/simulador3d_icono.jpg" alt="Simulador 3D">
@@ -442,7 +472,7 @@
 
       const playedGames = new Set(userEntries.map(e => e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'))));
       const count = playedGames.size;
-      const totalGames = 6;
+      const totalGames = 7;
 
       const progressEl = document.getElementById('progress-fill');
       if (progressEl) progressEl.style.width = `${Math.round((count / totalGames) * 100)}%`;
@@ -471,6 +501,10 @@
       if (playedGames.has('peligros')) {
         const sub = document.getElementById('sub-peligros');
         if (sub) sub.innerHTML = '<span>✅ Anticipación medida • ¡Mejorá tu tiempo!</span>';
+      }
+      if (playedGames.has('crucigrama')) {
+        const sub = document.getElementById('sub-crucigrama');
+        if (sub) sub.innerHTML = '<span>✅ Crucigrama resuelto • ¡Probá otro vehículo!</span>';
       }
     }
 
