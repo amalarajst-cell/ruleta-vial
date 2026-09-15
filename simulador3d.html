@@ -356,6 +356,12 @@
     let oncomingCar = null;
     let hazardMarker = null;
 
+    // AMBIENT TRAFFIC SYSTEM
+    const ambientCars = [];        // { group, speed, laneX, direction, baseZ }
+    const trafficLights = [];      // { group, state, timer, redMesh, yellowMesh, greenMesh, pointLight }
+    const TRAFFIC_COLORS = [0x1a4080, 0x888890, 0x2d7a3a, 0x991122, 0x1e242b, 0x7a4a0a, 0x4a0a7a, 0x3a3a3a];
+    let trafficCarTemplate = null; // reused clone source
+
     // Models & Player Vehicle Selection
     let loadedModels = { moto: null, auto: null, colectivo: null };
     let playerVehicleType = 'moto'; // 'moto' or 'car'
@@ -852,9 +858,231 @@
       // Build Car Cockpit
       createCarCockpit();
 
+      // Ambient Traffic & Semáforos
+      createAmbientTraffic();
+      createTrafficLights();
+
       window.addEventListener('resize', onWindowResize, false);
       setupControls();
       animate();
+    }
+
+    // ═══════════════════════════════════════════════
+    // AMBIENT TRAFFIC SYSTEM
+    // ═══════════════════════════════════════════════
+
+    // Build a procedural car mesh (fallback, used before GLTF loads)
+    function buildProceduralCar(color) {
+      const g = new THREE.Group();
+      const bodyMat = new THREE.MeshLambertMaterial({ color });
+      const body = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.75, 4.2), bodyMat);
+      body.position.y = 0.6;
+      g.add(body);
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.55, 2.3), bodyMat);
+      roof.position.set(0, 1.1, -0.1);
+      g.add(roof);
+      // Wheels
+      const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
+      const wheelGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.22, 10);
+      [[-0.95, 0.32, 1.4],[0.95, 0.32, 1.4],[-0.95, 0.32, -1.4],[0.95, 0.32, -1.4]].forEach(([x,y,z]) => {
+        const w = new THREE.Mesh(wheelGeo, wheelMat);
+        w.rotation.z = Math.PI / 2;
+        w.position.set(x, y, z);
+        g.add(w);
+      });
+      // Windshield (light blue)
+      const glassMat = new THREE.MeshLambertMaterial({ color: 0x88ccff, transparent: true, opacity: 0.6 });
+      const wind = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.4, 0.08), glassMat);
+      wind.position.set(0, 1.1, 0.95);
+      g.add(wind);
+      // Headlights
+      const hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      [-0.55, 0.55].forEach(hx => {
+        const hl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.06), hlMat);
+        hl.position.set(hx, 0.66, -2.12);
+        g.add(hl);
+      });
+      // Taillights
+      const tlMat = new THREE.MeshBasicMaterial({ color: 0xff2200 });
+      [-0.55, 0.55].forEach(tx => {
+        const tl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.06), tlMat);
+        tl.position.set(tx, 0.66, 2.12);
+        g.add(tl);
+      });
+      return g;
+    }
+
+    function createAmbientTraffic() {
+      // Traffic car specs: laneX, direction (+1 same as player going -Z world, -1 oncoming)
+      // In world space, road chunks move +Z → equivalent to player moving -Z
+      // Ambient cars in same direction: move with chunks (positive Z per frame)
+      // Oncoming cars: move opposite (negative Z per frame)
+      const LANES = [
+        { laneX: 5.25,  dir:  1, count: 4, speedMod: [0.30, 0.38, 0.45, 0.35] }, // mismo sentido carril der
+        { laneX: 1.75,  dir:  1, count: 3, speedMod: [0.36, 0.42, 0.28] },        // mismo sentido carril izq
+        { laneX: -1.75, dir: -1, count: 4, speedMod: [0.40, 0.33, 0.44, 0.37] }, // contramano carril der
+        { laneX: -5.25, dir: -1, count: 3, speedMod: [0.35, 0.42, 0.30] },        // contramano carril izq
+      ];
+
+      let carIdx = 0;
+      LANES.forEach(lane => {
+        for (let i = 0; i < lane.count; i++) {
+          const color = TRAFFIC_COLORS[carIdx % TRAFFIC_COLORS.length];
+          const carGroup = buildProceduralCar(color);
+
+          // Spread evenly across the world depth
+          const startZ = -20 - i * (CHUNK_LENGTH * NUM_CHUNKS / lane.count);
+          carGroup.position.set(lane.laneX, 0, startZ);
+
+          // Oncoming cars face forward (+Z)
+          if (lane.dir === -1) carGroup.rotation.y = Math.PI;
+
+          // Point light for headlights glow
+          const hlLight = new THREE.PointLight(lane.dir === -1 ? 0xffffcc : 0xffffff, 0.8, 12, 2);
+          hlLight.position.set(0, 0.8, lane.dir === -1 ? -2.4 : 2.4);
+          carGroup.add(hlLight);
+
+          // Point light for taillights glow
+          const tlLight = new THREE.PointLight(0xff2200, 0.5, 8, 2);
+          tlLight.position.set(0, 0.6, lane.dir === -1 ? 2.4 : -2.4);
+          carGroup.add(tlLight);
+
+          scene.add(carGroup);
+          ambientCars.push({
+            group: carGroup,
+            speed: lane.speedMod[i],
+            laneX: lane.laneX,
+            direction: lane.dir,
+            startZ: startZ
+          });
+          carIdx++;
+        }
+      });
+    }
+
+    function updateAmbientTraffic() {
+      const worldLen = CHUNK_LENGTH * NUM_CHUNKS; // 420 units
+
+      ambientCars.forEach(car => {
+        if (car.direction === 1) {
+          // Same direction as player: moves +Z like road chunks
+          car.group.position.z += car.speed;
+          // Recycle: when too far behind player (large +Z), reset far ahead
+          if (car.group.position.z > 50) {
+            car.group.position.z -= worldLen;
+          }
+        } else {
+          // Oncoming: moves in -Z (towards player)
+          car.group.position.z -= car.speed;
+          // Recycle: when too far ahead, reset far behind
+          if (car.group.position.z < -(worldLen - 30)) {
+            car.group.position.z += worldLen;
+          }
+        }
+
+        // Subtle wheel spin based on speed (rotate Y for aesthetics since wheels are CylinderGeometry)
+        // We skip per-wheel animation for performance
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    // TRAFFIC LIGHTS (Semáforos animados)
+    // ═══════════════════════════════════════════════
+
+    function createSemaforo(x, z, facingAngle) {
+      const g = new THREE.Group();
+      g.position.set(x, 0, z);
+      g.rotation.y = facingAngle;
+
+      const poleMat = new THREE.MeshStandardMaterial({ color: 0x252834, metalness: 0.8, roughness: 0.3 });
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 5.0, 8), poleMat);
+      pole.position.y = 2.5;
+      g.add(pole);
+
+      // Horizontal arm
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.1, 0.1), poleMat);
+      arm.position.set(-0.8, 5.0, 0);
+      g.add(arm);
+
+      // Housing box
+      const houseMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
+      const housing = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.05, 0.3), houseMat);
+      housing.position.set(-1.7, 4.6, 0);
+      g.add(housing);
+
+      // Lenses
+      const offMat = new THREE.MeshBasicMaterial({ color: 0x1a0000 });
+      const redMesh  = new THREE.Mesh(new THREE.CircleGeometry(0.13, 12), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+      const yelMesh  = new THREE.Mesh(new THREE.CircleGeometry(0.13, 12), new THREE.MeshBasicMaterial({ color: 0x332200 }));
+      const grnMesh  = new THREE.Mesh(new THREE.CircleGeometry(0.13, 12), new THREE.MeshBasicMaterial({ color: 0x003300 }));
+
+      redMesh.position.set(-1.7, 4.98, 0.16);
+      yelMesh.position.set(-1.7, 4.62, 0.16);
+      grnMesh.position.set(-1.7, 4.26, 0.16);
+      g.add(redMesh); g.add(yelMesh); g.add(grnMesh);
+
+      // Point light for glow
+      const ptLight = new THREE.PointLight(0xff0000, 1.2, 14, 2);
+      ptLight.position.set(-1.7, 4.98, 0.4);
+      g.add(ptLight);
+
+      scene.add(g);
+
+      // Random phase offset so not all lights sync
+      const phaseOffset = Math.random() * 12000;
+
+      trafficLights.push({
+        group: g,
+        redMesh, yelMesh, grnMesh, ptLight,
+        state: 'red',
+        timer: performance.now() - phaseOffset
+      });
+    }
+
+    function createTrafficLights() {
+      // Place semáforos at intersections on both sides of the road
+      const intersectionZs = [-40, -100, -180, -270];
+      intersectionZs.forEach(z => {
+        createSemaforo( 8.0, z, 0);         // right sidewalk, facing road
+        createSemaforo(-8.0, z, Math.PI);   // left sidewalk, facing road
+      });
+    }
+
+    // Durations (ms)
+    const TL_RED_DUR    = 8000;
+    const TL_YELLOW_DUR = 1800;
+    const TL_GREEN_DUR  = 7000;
+
+    function updateTrafficLights() {
+      const now = performance.now();
+      trafficLights.forEach(tl => {
+        const elapsed = now - tl.timer;
+        let newState = tl.state;
+
+        if (tl.state === 'red'    && elapsed > TL_RED_DUR)    { newState = 'green';  tl.timer = now; }
+        if (tl.state === 'green'  && elapsed > TL_GREEN_DUR)  { newState = 'yellow'; tl.timer = now; }
+        if (tl.state === 'yellow' && elapsed > TL_YELLOW_DUR) { newState = 'red';    tl.timer = now; }
+
+        if (newState !== tl.state) {
+          tl.state = newState;
+          // Update lens colors
+          tl.redMesh.material.color.setHex(newState === 'red'    ? 0xff0000 : 0x1a0000);
+          tl.yelMesh.material.color.setHex(newState === 'yellow' ? 0xffcc00 : 0x332200);
+          tl.grnMesh.material.color.setHex(newState === 'green'  ? 0x00ff44 : 0x003300);
+          // Update point light color & intensity
+          if (newState === 'red')    { tl.ptLight.color.setHex(0xff0000); tl.ptLight.intensity = 1.4; }
+          if (newState === 'yellow') { tl.ptLight.color.setHex(0xffcc00); tl.ptLight.intensity = 1.1; }
+          if (newState === 'green')  { tl.ptLight.color.setHex(0x00ff44); tl.ptLight.intensity = 1.4; }
+        }
+
+        // Move semáforos with road chunks (they scroll with road only while playing)
+        if (isPlaying && !isPaused) {
+          tl.group.position.z += playerSpeed;
+          if (tl.group.position.z > 80) {
+            tl.group.position.z -= CHUNK_LENGTH * NUM_CHUNKS;
+          }
+        }
+      });
     }
 
     // BUS ACTOR WITH SYNCHRONIZED BRAKE GLOW
@@ -1300,6 +1528,10 @@
           }
         });
 
+        // Update Ambient Traffic & Semáforos
+        updateAmbientTraffic();
+        updateTrafficLights();
+
         // Smooth player steering & tilt
         player.position.x += (targetX - player.position.x) * 0.12;
         player.rotation.z = -(targetX - player.position.x) * 0.05;
@@ -1406,6 +1638,9 @@
           }
         }
       }
+
+      // Traffic lights always animate (even on start screen / results)
+      if (!isPlaying) updateTrafficLights();
 
       renderer.render(scene, camera);
     }
