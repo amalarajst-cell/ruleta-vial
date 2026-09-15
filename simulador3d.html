@@ -868,92 +868,182 @@
     }
 
     // ═══════════════════════════════════════════════
-    // AMBIENT TRAFFIC SYSTEM
+    // AMBIENT TRAFFIC SYSTEM (v2 — Fixed & Improved)
     // ═══════════════════════════════════════════════
 
-    // Build a procedural car mesh (fallback, used before GLTF loads)
-    function buildProceduralCar(color) {
+    // Road layout (same as createRoadChunk):
+    //   x=  0 ± 0.2  → double yellow centre line
+    //   x= +3.5      → dashed white (same-dir lane divider)
+    //   x= -3.5      → dashed white (oncoming lane divider)
+    //   x> 0         → player side (going "forward" = road chunks scroll +Z)
+    //   x< 0         → oncoming side
+
+    // KEY: In this game's reference frame the player is fixed; the WORLD scrolls.
+    //   Road chunks move +Z each frame (= player moving -Z in world).
+    //   "Same-direction" cars: also move +Z but at a slightly different pace than road.
+    //     If speed < playerSpeed  → player overtakes them (they fall behind).
+    //     If speed > playerSpeed  → they pull ahead of the player.
+    //   "Oncoming" cars: approach the player, so they ALSO move +Z but much FASTER
+    //     than the road (same logic as the hazard 'oncomingCar' in round 3).
+
+    // ─── Improved procedural car mesh ───────────────────────────────────────────
+    function buildProceduralCar(color, type) {
+      // type: 'sedan' | 'suv' | 'hatch'
       const g = new THREE.Group();
-      const bodyMat = new THREE.MeshLambertMaterial({ color });
-      const body = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.75, 4.2), bodyMat);
-      body.position.y = 0.6;
+      const paint  = new THREE.MeshStandardMaterial({ color, roughness: 0.45, metalness: 0.6 });
+      const dark   = new THREE.MeshLambertMaterial({ color: 0x111111 });
+      const chrome = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.95, roughness: 0.1 });
+      const glass  = new THREE.MeshLambertMaterial({ color: 0x6aaccc, transparent: true, opacity: 0.55 });
+      const hlMat  = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const tlMat  = new THREE.MeshBasicMaterial({ color: 0xff1100 });
+      const tlAmbMat  = new THREE.MeshBasicMaterial({ color: 0x661100 }); // dim tail
+
+      // Dimensions by type
+      const dims = {
+        sedan: { bW:1.88, bH:0.72, bL:4.10, rW:1.48, rH:0.52, rL:2.10, rOff:-0.05 },
+        suv:   { bW:2.00, bH:0.90, bL:4.40, rW:1.72, rH:0.70, rL:2.60, rOff: 0.00 },
+        hatch: { bW:1.80, bH:0.68, bL:3.70, rW:1.50, rH:0.60, rL:2.40, rOff: 0.20 },
+      }[type || 'sedan'];
+
+      // ── Body ──
+      const body = new THREE.Mesh(new THREE.BoxGeometry(dims.bW, dims.bH, dims.bL), paint);
+      body.position.y = 0.55;
       g.add(body);
-      const roof = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.55, 2.3), bodyMat);
-      roof.position.set(0, 1.1, -0.1);
+
+      // ── Cabin / Roof ──
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(dims.rW, dims.rH, dims.rL), paint);
+      roof.position.set(0, 0.55 + dims.bH/2 + dims.rH/2 - 0.04, dims.rOff);
       g.add(roof);
-      // Wheels
-      const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111111 });
-      const wheelGeo = new THREE.CylinderGeometry(0.32, 0.32, 0.22, 10);
-      [[-0.95, 0.32, 1.4],[0.95, 0.32, 1.4],[-0.95, 0.32, -1.4],[0.95, 0.32, -1.4]].forEach(([x,y,z]) => {
-        const w = new THREE.Mesh(wheelGeo, wheelMat);
-        w.rotation.z = Math.PI / 2;
-        w.position.set(x, y, z);
-        g.add(w);
+
+      // ── Front bumper ──
+      const bumperF = new THREE.Mesh(new THREE.BoxGeometry(dims.bW - 0.12, 0.18, 0.14), chrome);
+      bumperF.position.set(0, 0.25, -(dims.bL/2 + 0.06));
+      g.add(bumperF);
+
+      // ── Rear bumper ──
+      const bumperR = new THREE.Mesh(new THREE.BoxGeometry(dims.bW - 0.12, 0.18, 0.14), chrome);
+      bumperR.position.set(0, 0.25, dims.bL/2 + 0.06);
+      g.add(bumperR);
+
+      // ── Windshields ──
+      const windF = new THREE.Mesh(new THREE.BoxGeometry(dims.rW - 0.10, dims.rH - 0.10, 0.08), glass);
+      windF.position.set(0, roof.position.y, dims.rOff + dims.rL/2 + 0.04);
+      g.add(windF);
+      const windR = new THREE.Mesh(new THREE.BoxGeometry(dims.rW - 0.10, dims.rH - 0.10, 0.08), glass);
+      windR.position.set(0, roof.position.y, dims.rOff - dims.rL/2 - 0.04);
+      g.add(windR);
+
+      // ── Wheels (4) with chrome hub ──
+      const tireGeo = new THREE.CylinderGeometry(0.33, 0.33, 0.23, 12);
+      const hubGeo  = new THREE.CylinderGeometry(0.16, 0.16, 0.25, 8);
+      const wPos = [
+        [-dims.bW/2 - 0.04, 0.33,  dims.bL/2 - 0.88],
+        [ dims.bW/2 + 0.04, 0.33,  dims.bL/2 - 0.88],
+        [-dims.bW/2 - 0.04, 0.33, -dims.bL/2 + 0.88],
+        [ dims.bW/2 + 0.04, 0.33, -dims.bL/2 + 0.88],
+      ];
+      wPos.forEach(([wx, wy, wz]) => {
+        const tire = new THREE.Mesh(tireGeo, dark);
+        tire.rotation.z = Math.PI / 2;
+        tire.position.set(wx, wy, wz);
+        g.add(tire);
+        const hub = new THREE.Mesh(hubGeo, chrome);
+        hub.rotation.z = Math.PI / 2;
+        hub.position.set(wx, wy, wz);
+        g.add(hub);
       });
-      // Windshield (light blue)
-      const glassMat = new THREE.MeshLambertMaterial({ color: 0x88ccff, transparent: true, opacity: 0.6 });
-      const wind = new THREE.Mesh(new THREE.BoxGeometry(1.42, 0.4, 0.08), glassMat);
-      wind.position.set(0, 1.1, 0.95);
-      g.add(wind);
-      // Headlights
-      const hlMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      [-0.55, 0.55].forEach(hx => {
-        const hl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.06), hlMat);
-        hl.position.set(hx, 0.66, -2.12);
+
+      // ── Headlights (front = -Z direction of mesh) ──
+      const fz = -(dims.bL / 2 + 0.01);
+      [-0.52, 0.52].forEach(hx => {
+        const hl = new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.13, 0.06), hlMat);
+        hl.position.set(hx, 0.6, fz);
         g.add(hl);
       });
-      // Taillights
-      const tlMat = new THREE.MeshBasicMaterial({ color: 0xff2200 });
-      [-0.55, 0.55].forEach(tx => {
-        const tl = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.06), tlMat);
-        tl.position.set(tx, 0.66, 2.12);
+      // ── Taillights (rear = +Z direction of mesh) ──
+      const rz = dims.bL / 2 + 0.01;
+      [-0.52, 0.52].forEach(tx => {
+        const tl = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.11, 0.06), tlAmbMat);
+        tl.position.set(tx, 0.62, rz);
         g.add(tl);
       });
+
       return g;
     }
 
+    // ─── Spawn traffic ───────────────────────────────────────────────────────────
     function createAmbientTraffic() {
-      // Traffic car specs: laneX, direction (+1 same as player going -Z world, -1 oncoming)
-      // In world space, road chunks move +Z → equivalent to player moving -Z
-      // Ambient cars in same direction: move with chunks (positive Z per frame)
-      // Oncoming cars: move opposite (negative Z per frame)
+      // Road coordinate system:
+      //   x > 0  →  player side  (same direction, going "forward")
+      //   x < 0  →  oncoming side
+      //
+      // Same-direction cars:  speed ≈ playerSpeed ± delta
+      //   They move +Z (with road). If speed < playerSpeed they fall behind;
+      //   if speed > playerSpeed they pull ahead.
+      //
+      // Oncoming cars: ALSO move +Z but at playerSpeed + approach_speed.
+      //   This is exactly how the hazard oncoming car (round 3) works.
+      //   They start far ahead (large −Z) and race toward the player, then recycle.
+
+      const PS = playerSpeed; // 0.42
+      const types = ['sedan','sedan','suv','hatch','sedan','suv','sedan','hatch','sedan','sedan','suv','sedan','hatch','sedan'];
+
       const LANES = [
-        { laneX: 5.25,  dir:  1, count: 4, speedMod: [0.30, 0.38, 0.45, 0.35] }, // mismo sentido carril der
-        { laneX: 1.75,  dir:  1, count: 3, speedMod: [0.36, 0.42, 0.28] },        // mismo sentido carril izq
-        { laneX: -1.75, dir: -1, count: 4, speedMod: [0.40, 0.33, 0.44, 0.37] }, // contramano carril der
-        { laneX: -5.25, dir: -1, count: 3, speedMod: [0.35, 0.42, 0.30] },        // contramano carril izq
+        // ── SAME DIRECTION (x > 0, carril derecho de la avenida) ──
+        { laneX:  5.25, isOncoming: false, count: 4,
+          speeds: [PS * 0.70, PS * 0.90, PS * 1.05, PS * 0.80] },
+        { laneX:  1.75, isOncoming: false, count: 3,
+          speeds: [PS * 0.85, PS * 1.10, PS * 0.75] },
+
+        // ── ONCOMING (x < 0, carril izquierdo de la avenida) ──
+        // speed = playerSpeed + approach  (so approach = extra speed toward player)
+        { laneX: -1.75, isOncoming: true,  count: 4,
+          speeds: [PS + 0.30, PS + 0.38, PS + 0.25, PS + 0.42] },
+        { laneX: -5.25, isOncoming: true,  count: 3,
+          speeds: [PS + 0.35, PS + 0.28, PS + 0.40] },
       ];
 
+      const worldLen = CHUNK_LENGTH * NUM_CHUNKS; // 420
       let carIdx = 0;
+
       LANES.forEach(lane => {
         for (let i = 0; i < lane.count; i++) {
           const color = TRAFFIC_COLORS[carIdx % TRAFFIC_COLORS.length];
-          const carGroup = buildProceduralCar(color);
+          const carType = types[carIdx % types.length];
+          const carGroup = buildProceduralCar(color, carType);
 
-          // Spread evenly across the world depth
-          const startZ = -20 - i * (CHUNK_LENGTH * NUM_CHUNKS / lane.count);
+          let startZ;
+          if (!lane.isOncoming) {
+            // Same-direction: spread behind & ahead of player
+            startZ = -10 - i * (worldLen / lane.count);
+          } else {
+            // Oncoming: spread far ahead (negative Z) so they come rushing toward player
+            startZ = -30 - i * (worldLen / lane.count);
+            // Oncoming cars face the player (+Z direction) so headlights point toward camera
+            carGroup.rotation.y = Math.PI;
+          }
+
           carGroup.position.set(lane.laneX, 0, startZ);
 
-          // Oncoming cars face forward (+Z)
-          if (lane.dir === -1) carGroup.rotation.y = Math.PI;
-
-          // Point light for headlights glow
-          const hlLight = new THREE.PointLight(lane.dir === -1 ? 0xffffcc : 0xffffff, 0.8, 12, 2);
-          hlLight.position.set(0, 0.8, lane.dir === -1 ? -2.4 : 2.4);
+          // ── Point lights ──
+          // Headlights glow (at -Z of mesh local space = front)
+          const hlWorldZ = lane.isOncoming ? 2.4 : -2.4; // after rotation
+          const hlCol    = lane.isOncoming ? 0xffffaa : 0xffffff;
+          const hlLight  = new THREE.PointLight(hlCol, 1.2, 14, 2);
+          hlLight.position.set(0, 0.7, hlWorldZ);
           carGroup.add(hlLight);
 
-          // Point light for taillights glow
-          const tlLight = new THREE.PointLight(0xff2200, 0.5, 8, 2);
-          tlLight.position.set(0, 0.6, lane.dir === -1 ? 2.4 : -2.4);
+          // Taillights glow (at +Z of mesh local space = rear)
+          const tlWorldZ = lane.isOncoming ? -2.4 : 2.4;
+          const tlLight  = new THREE.PointLight(0xff2200, 0.6, 9, 2);
+          tlLight.position.set(0, 0.6, tlWorldZ);
           carGroup.add(tlLight);
 
           scene.add(carGroup);
           ambientCars.push({
-            group: carGroup,
-            speed: lane.speedMod[i],
-            laneX: lane.laneX,
-            direction: lane.dir,
-            startZ: startZ
+            group:      carGroup,
+            speed:      lane.speeds[i],
+            isOncoming: lane.isOncoming,
           });
           carIdx++;
         }
@@ -961,27 +1051,25 @@
     }
 
     function updateAmbientTraffic() {
-      const worldLen = CHUNK_LENGTH * NUM_CHUNKS; // 420 units
+      const worldLen = CHUNK_LENGTH * NUM_CHUNKS; // 420
 
       ambientCars.forEach(car => {
-        if (car.direction === 1) {
-          // Same direction as player: moves +Z like road chunks
-          car.group.position.z += car.speed;
-          // Recycle: when too far behind player (large +Z), reset far ahead
-          if (car.group.position.z > 50) {
+        // ALL ambient cars move in +Z direction (same as road chunks).
+        // Same-direction: speed ≈ playerSpeed → they appear roughly stationary or slow rel. to road.
+        // Oncoming: speed = playerSpeed + approach → they rush toward the player.
+        car.group.position.z += car.speed;
+
+        if (!car.isOncoming) {
+          // Same-direction: recycle when too far behind player
+          if (car.group.position.z > 60) {
             car.group.position.z -= worldLen;
           }
         } else {
-          // Oncoming: moves in -Z (towards player)
-          car.group.position.z -= car.speed;
-          // Recycle: when too far ahead, reset far behind
-          if (car.group.position.z < -(worldLen - 30)) {
-            car.group.position.z += worldLen;
+          // Oncoming: recycle when they've passed the player (came from ahead, went behind)
+          if (car.group.position.z > 30) {
+            car.group.position.z -= worldLen;
           }
         }
-
-        // Subtle wheel spin based on speed (rotate Y for aesthetics since wheels are CylinderGeometry)
-        // We skip per-wheel animation for performance
       });
     }
 
