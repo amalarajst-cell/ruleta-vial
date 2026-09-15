@@ -154,6 +154,15 @@
       box-shadow: 0 0 14px rgba(0, 243, 255, 0.5);
     }
 
+    .btn-camera-toggle {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 10px; border-radius: 10px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+      color: #ccc; font-family: 'Archivo', sans-serif; font-size: 11px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    }
+    .btn-camera-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
     #canvas-container { width: 100vw; height: 100vh; display: block; }
   </style>
 </head>
@@ -170,6 +179,9 @@
           <button id="hud-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" title="Conducir Moto Honda CB 750">🏍️ Moto</button>
           <button id="hud-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" title="Conducir Aston Martin V8">🚗 Auto</button>
         </div>
+        <button class="btn-camera-toggle" id="btn-camera-toggle" onclick="toggleCameraView()" title="Alternar vista Cabina/Exterior (C)" style="display:none;">
+          <span class="material-symbols-outlined" style="font-size:16px;">directions_car</span> CABINA
+        </button>
       </div>
     </div>
   </header>
@@ -328,9 +340,9 @@
     let totalScore = 0;
     let distanceTraveled = 0;
     let playerSpeed = 0.42;
-    let targetX = 3.6;
-    const rightLaneX = 3.6;
-    const leftLaneX = -3.6;
+    let targetX = 5.25;
+    const rightLaneX = 5.25;
+    const leftLaneX = -1.75;
 
     let activeHazard = null;
     let hazardStartTime = 0;
@@ -351,6 +363,13 @@
     let playerCarContainer = null;
     let targetCameraPos = new THREE.Vector3(0, 4.3, 10.5);
 
+    // COCKPIT STATE
+    let cockpitView = false;
+    let cockpitGroup = null;
+    let steeringWheel = null;
+    let targetSteeringAngle = 0;
+    let currentSteeringAngle = 0;
+
     // SELECT PLAYER VEHICLE
     window.selectPlayerVehicle = function(type) {
       playerVehicleType = type;
@@ -359,6 +378,7 @@
       const bC1 = document.getElementById('start-select-car');
       const bM2 = document.getElementById('hud-select-moto');
       const bC2 = document.getElementById('hud-select-car');
+      const btnCam = document.getElementById('btn-camera-toggle');
 
       if (type === 'moto') {
         if (bM1) bM1.classList.add('active');
@@ -370,7 +390,10 @@
         if (playerCarContainer) playerCarContainer.visible = false;
         if (playerFallback) playerFallback.visible = !playerMotoContainer;
 
+        cockpitView = false;
+        if (cockpitGroup) cockpitGroup.visible = false;
         targetCameraPos.set(0, 4.3, 10.5);
+        if (btnCam) btnCam.style.display = 'none';
       } else {
         if (bM1) bM1.classList.remove('active');
         if (bC1) bC1.classList.add('active');
@@ -378,9 +401,16 @@
         if (bC2) bC2.classList.add('active');
 
         if (playerMotoContainer) playerMotoContainer.visible = false;
-        if (playerCarContainer) playerCarContainer.visible = true;
-        if (playerFallback) playerFallback.visible = !playerCarContainer;
+        if (playerFallback) playerFallback.visible = false;
 
+        // Car: default to cockpit view
+        cockpitView = true;
+        if (cockpitGroup) cockpitGroup.visible = true;
+        if (playerCarContainer) playerCarContainer.visible = false;
+        if (btnCam) {
+          btnCam.style.display = 'inline-flex';
+          btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">videocam</span> EXTERIOR';
+        }
         targetCameraPos.set(0, 3.6, 9.2);
       }
     };
@@ -473,65 +503,76 @@
       const chunk = new THREE.Group();
       chunk.position.z = -chunkIndex * CHUNK_LENGTH;
 
-      // 1. Asphalt Road
+      // 1. Asphalt Road (14m calzada, 2 carriles x mano de 3.50m)
       const road = new THREE.Mesh(
-        new THREE.BoxGeometry(22, 0.3, CHUNK_LENGTH),
-        new THREE.MeshStandardMaterial({ color: 0x161821, roughness: 0.85, metalness: 0.1 })
+        new THREE.BoxGeometry(14.4, 0.3, CHUNK_LENGTH),
+        new THREE.MeshStandardMaterial({ color: 0x1a1d2a, roughness: 0.85, metalness: 0.1 })
       );
       road.position.y = -0.15;
       chunk.add(road);
 
-      // 2. White Borders
-      const borderMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const borderGeo = new THREE.BoxGeometry(0.35, 0.05, CHUNK_LENGTH);
-      const leftBorder = new THREE.Mesh(borderGeo, borderMat);
-      leftBorder.position.set(-9.8, 0.03, 0);
-      chunk.add(leftBorder);
-      const rightBorder = new THREE.Mesh(borderGeo, borderMat);
-      rightBorder.position.set(9.8, 0.03, 0);
-      chunk.add(rightBorder);
+      // 2. Solid White Edge Lines (borde de calzada)
+      const whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const edgeGeo = new THREE.BoxGeometry(0.18, 0.04, CHUNK_LENGTH);
+      const leftEdge = new THREE.Mesh(edgeGeo, whiteMat);
+      leftEdge.position.set(-7.0, 0.03, 0);
+      chunk.add(leftEdge);
+      const rightEdge = new THREE.Mesh(edgeGeo, whiteMat);
+      rightEdge.position.set(7.0, 0.03, 0);
+      chunk.add(rightEdge);
 
       // 3. Center Double Yellow Line
       const yellowMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
-      const lineGeo = new THREE.BoxGeometry(0.22, 0.04, CHUNK_LENGTH);
+      const lineGeo = new THREE.BoxGeometry(0.15, 0.04, CHUNK_LENGTH);
       const yLine1 = new THREE.Mesh(lineGeo, yellowMat);
-      yLine1.position.set(-0.25, 0.03, 0);
+      yLine1.position.set(-0.20, 0.03, 0);
       chunk.add(yLine1);
       const yLine2 = new THREE.Mesh(lineGeo, yellowMat);
-      yLine2.position.set(0.25, 0.03, 0);
+      yLine2.position.set(0.20, 0.03, 0);
       chunk.add(yLine2);
 
-      // 4. Zebra Crosswalk (at center of chunk)
-      const zebraMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const zebraGeo = new THREE.BoxGeometry(0.9, 0.04, 5);
-      for (let x = -8.5; x <= 8.5; x += 1.8) {
-        const zebra = new THREE.Mesh(zebraGeo, zebraMat);
+      // 3b. Dashed White Lane Dividers at x=±3.5 (trazo 4m, vano 5m)
+      const dashGeo = new THREE.BoxGeometry(0.15, 0.04, 4);
+      for (let di = 0; di < Math.ceil(CHUNK_LENGTH / 9); di++) {
+        const dz = -CHUNK_LENGTH / 2 + di * 9 + 2;
+        const dashR = new THREE.Mesh(dashGeo, whiteMat);
+        dashR.position.set(3.5, 0.035, dz);
+        chunk.add(dashR);
+        const dashL = new THREE.Mesh(dashGeo, whiteMat);
+        dashL.position.set(-3.5, 0.035, dz);
+        chunk.add(dashL);
+      }
+
+      // 4. Zebra Crosswalk (cordón a cordón)
+      const zebraGeo = new THREE.BoxGeometry(0.8, 0.04, 4.5);
+      for (let x = -6.5; x <= 6.5; x += 1.6) {
+        const zebra = new THREE.Mesh(zebraGeo, whiteMat);
         zebra.position.set(x, 0.035, 0);
         chunk.add(zebra);
       }
 
-      // 5. Sidewalks & Curbs
-      const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x3a3d4d, roughness: 0.9 });
-      const leftSidewalk = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, CHUNK_LENGTH), sidewalkMat);
-      leftSidewalk.position.set(-16, 0.1, 0);
-      chunk.add(leftSidewalk);
-      const rightSidewalk = new THREE.Mesh(new THREE.BoxGeometry(10, 0.5, CHUNK_LENGTH), sidewalkMat);
-      rightSidewalk.position.set(16, 0.1, 0);
-      chunk.add(rightSidewalk);
-
+      // 5. Curbs & Sidewalks
       const curbMat = new THREE.MeshStandardMaterial({ color: 0x6e7382, roughness: 0.7 });
       const leftCurb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH), curbMat);
-      leftCurb.position.set(-11.1, 0.12, 0);
+      leftCurb.position.set(-7.4, 0.12, 0);
       chunk.add(leftCurb);
       const rightCurb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, CHUNK_LENGTH), curbMat);
-      rightCurb.position.set(11.1, 0.12, 0);
+      rightCurb.position.set(7.4, 0.12, 0);
       chunk.add(rightCurb);
+
+      const sidewalkMat = new THREE.MeshStandardMaterial({ color: 0x3a3d4d, roughness: 0.9 });
+      const leftSidewalk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.5, CHUNK_LENGTH), sidewalkMat);
+      leftSidewalk.position.set(-11.6, 0.1, 0);
+      chunk.add(leftSidewalk);
+      const rightSidewalk = new THREE.Mesh(new THREE.BoxGeometry(8, 0.5, CHUNK_LENGTH), sidewalkMat);
+      rightSidewalk.position.set(11.6, 0.1, 0);
+      chunk.add(rightSidewalk);
 
       // 6. Streetlights
       const poleMat = new THREE.MeshStandardMaterial({ color: 0x252834, metalness: 0.8, roughness: 0.3 });
       const lampGlowMat = new THREE.MeshBasicMaterial({ color: 0xffea94 });
       for (let z = -CHUNK_LENGTH / 2 + 10; z < CHUNK_LENGTH / 2; z += 35) {
-        [-11.6, 11.6].forEach(poleX => {
+        [-8.2, 8.2].forEach(poleX => {
           const lampGroup = new THREE.Group();
           lampGroup.position.set(poleX, 0, z);
           const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 6.5, 8), poleMat);
@@ -550,12 +591,12 @@
 
       // 7. Skyscrapers
       const buildingConfigs = [
-        { x: -26, w: 14, d: 18, h: 44, z: -20 },
-        { x: -30, w: 18, d: 24, h: 68, z: -55 },
-        { x: -25, w: 12, d: 16, h: 38, z: -90 },
-        { x: 26, w: 14, d: 18, h: 48, z: -15 },
-        { x: 30, w: 18, d: 22, h: 74, z: -50 },
-        { x: 25, w: 13, d: 15, h: 40, z: -85 }
+        { x: -22, w: 14, d: 18, h: 44, z: -20 },
+        { x: -26, w: 18, d: 24, h: 68, z: -55 },
+        { x: -21, w: 12, d: 16, h: 38, z: -90 },
+        { x: 22, w: 14, d: 18, h: 48, z: -15 },
+        { x: 26, w: 18, d: 22, h: 74, z: -50 },
+        { x: 21, w: 13, d: 15, h: 40, z: -85 }
       ];
       buildingConfigs.forEach(b => {
         const building = new THREE.Mesh(
@@ -576,16 +617,16 @@
       const gantryGroup = new THREE.Group();
       const trussMat = new THREE.MeshStandardMaterial({ color: 0x4a5060, metalness: 0.9, roughness: 0.3 });
       const leftPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
-      leftPillar.position.set(-11, 3.75, 0);
+      leftPillar.position.set(-7.8, 3.75, 0);
       gantryGroup.add(leftPillar);
       const rightPillar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 7.5, 6), trussMat);
-      rightPillar.position.set(11, 3.75, 0);
+      rightPillar.position.set(7.8, 3.75, 0);
       gantryGroup.add(rightPillar);
-      const crossbar = new THREE.Mesh(new THREE.BoxGeometry(22.6, 0.4, 0.4), trussMat);
+      const crossbar = new THREE.Mesh(new THREE.BoxGeometry(16.0, 0.4, 0.4), trussMat);
       crossbar.position.set(0, 7.4, 0);
       gantryGroup.add(crossbar);
       const signMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(13, 3.2, 0.2),
+        new THREE.BoxGeometry(10, 3.2, 0.2),
         new THREE.MeshBasicMaterial({ map: createSignTexture(signInfo.text, signInfo.sub) })
       );
       signMesh.position.set(0, 5.8, 0);
@@ -605,12 +646,159 @@
       }
     }
 
+    // ═══════════════════════════════════════════════
+    // CREATE CAR COCKPIT (Interior 3D del automóvil)
+    // ═══════════════════════════════════════════════
+    function createCarCockpit() {
+      cockpitGroup = new THREE.Group();
+
+      const darkMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
+      const leatherMat = new THREE.MeshLambertMaterial({ color: 0x2a2420 });
+      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.9, roughness: 0.2 });
+
+      // Dashboard / Salpicadero
+      const dashboard = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.22, 0.65), leatherMat);
+      dashboard.position.set(0, 0.78, -0.5);
+      cockpitGroup.add(dashboard);
+
+      // Dashboard top
+      const dashTop = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.07, 0.42), darkMat);
+      dashTop.position.set(0, 0.92, -0.65);
+      dashTop.rotation.x = -0.3;
+      cockpitGroup.add(dashTop);
+
+      // Instrument Panel (velocímetro + tacómetro)
+      const instrCanvas = document.createElement('canvas');
+      instrCanvas.width = 256; instrCanvas.height = 128;
+      const ictx = instrCanvas.getContext('2d');
+      ictx.fillStyle = '#080808'; ictx.fillRect(0, 0, 256, 128);
+      // Speedometer
+      ictx.strokeStyle = '#00f3ff'; ictx.lineWidth = 2;
+      ictx.beginPath(); ictx.arc(80, 64, 44, Math.PI * 0.7, Math.PI * 2.3); ictx.stroke();
+      // Tachometer
+      ictx.beginPath(); ictx.arc(176, 64, 44, Math.PI * 0.7, Math.PI * 2.3); ictx.stroke();
+      // Markings
+      ictx.fillStyle = '#ffffff'; ictx.font = '9px sans-serif'; ictx.textAlign = 'center';
+      ['0','20','40','60','80','100','120'].forEach((s, i) => {
+        const a = Math.PI * 0.7 + (i / 6) * Math.PI * 1.6;
+        ictx.fillText(s, 80 + Math.cos(a) * 35, 64 + Math.sin(a) * 35);
+      });
+      ['0','1','2','3','4','5','6','7'].forEach((s, i) => {
+        const a = Math.PI * 0.7 + (i / 7) * Math.PI * 1.6;
+        ictx.fillText(s, 176 + Math.cos(a) * 35, 64 + Math.sin(a) * 35);
+      });
+      // Needles
+      ictx.strokeStyle = '#ff3344'; ictx.lineWidth = 2;
+      const spA = Math.PI * 0.7 + (50 / 120) * Math.PI * 1.6;
+      ictx.beginPath(); ictx.moveTo(80, 64); ictx.lineTo(80 + Math.cos(spA) * 28, 64 + Math.sin(spA) * 28); ictx.stroke();
+      const rpA = Math.PI * 0.7 + (2.5 / 7) * Math.PI * 1.6;
+      ictx.beginPath(); ictx.moveTo(176, 64); ictx.lineTo(176 + Math.cos(rpA) * 28, 64 + Math.sin(rpA) * 28); ictx.stroke();
+      ictx.fillStyle = '#00f3ff'; ictx.font = 'bold 8px sans-serif';
+      ictx.fillText('km/h', 80, 84); ictx.fillText('RPM x1000', 176, 84);
+      const instrPanel = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.44, 0.22),
+        new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(instrCanvas) })
+      );
+      instrPanel.position.set(-0.30, 0.88, -0.70);
+      instrPanel.rotation.x = -0.4;
+      cockpitGroup.add(instrPanel);
+
+      // Steering Wheel (Volante)
+      steeringWheel = new THREE.Group();
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.016, 12, 32), darkMat);
+      steeringWheel.add(rim);
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.02, 16), chromeMat);
+      hub.rotation.x = Math.PI / 2;
+      steeringWheel.add(hub);
+      for (let i = 0; i < 3; i++) {
+        const ang = (i / 3) * Math.PI * 2 - Math.PI / 2;
+        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.012, 0.13), chromeMat);
+        spoke.position.set(Math.cos(ang) * 0.07, Math.sin(ang) * 0.07, 0);
+        spoke.rotation.z = ang;
+        steeringWheel.add(spoke);
+      }
+      const column = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.24, 8), darkMat);
+      column.position.set(0, 0, 0.14); column.rotation.x = Math.PI / 2;
+      steeringWheel.add(column);
+      steeringWheel.position.set(-0.30, 0.92, -0.28);
+      steeringWheel.rotation.x = -0.45;
+      cockpitGroup.add(steeringWheel);
+
+      // A-Pillar Left (Parante A izquierdo)
+      const pillarGeo = new THREE.BoxGeometry(0.07, 0.75, 0.07);
+      const leftAPillar = new THREE.Mesh(pillarGeo, darkMat);
+      leftAPillar.position.set(-0.88, 1.18, -0.48);
+      leftAPillar.rotation.z = 0.15; leftAPillar.rotation.x = -0.2;
+      cockpitGroup.add(leftAPillar);
+
+      // A-Pillar Right (Parante A derecho)
+      const rightAPillar = new THREE.Mesh(pillarGeo, darkMat);
+      rightAPillar.position.set(0.88, 1.18, -0.48);
+      rightAPillar.rotation.z = -0.15; rightAPillar.rotation.x = -0.2;
+      cockpitGroup.add(rightAPillar);
+
+      // Roof edge / sun visor
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(1.86, 0.06, 0.48), darkMat);
+      roof.position.set(0, 1.44, -0.35);
+      cockpitGroup.add(roof);
+
+      // Rearview Mirror (Espejo retrovisor interior)
+      const mirrorMount = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.10, 0.025), darkMat);
+      mirrorMount.position.set(0, 1.36, -0.44);
+      cockpitGroup.add(mirrorMount);
+      const mirrorFace = new THREE.Mesh(
+        new THREE.BoxGeometry(0.22, 0.07, 0.015),
+        new THREE.MeshStandardMaterial({ color: 0x445566, metalness: 0.95, roughness: 0.05 })
+      );
+      mirrorFace.position.set(0, 1.29, -0.44);
+      cockpitGroup.add(mirrorFace);
+
+      // Hood / Capot (visible a través del parabrisas)
+      const hood = new THREE.Mesh(
+        new THREE.BoxGeometry(1.48, 0.055, 1.2),
+        new THREE.MeshStandardMaterial({ color: 0x0c6848, metalness: 0.5, roughness: 0.4 })
+      );
+      hood.position.set(0, 0.72, -1.22);
+      hood.rotation.x = -0.04;
+      cockpitGroup.add(hood);
+
+      // Side door panels
+      const doorGeo = new THREE.BoxGeometry(0.055, 0.42, 0.95);
+      const leftDoor = new THREE.Mesh(doorGeo, leatherMat);
+      leftDoor.position.set(-0.86, 0.84, 0.0);
+      cockpitGroup.add(leftDoor);
+      const rightDoor = new THREE.Mesh(doorGeo, leatherMat);
+      rightDoor.position.set(0.86, 0.84, 0.0);
+      cockpitGroup.add(rightDoor);
+
+      cockpitGroup.visible = false;
+      player.add(cockpitGroup);
+    }
+
+    // TOGGLE CAMERA VIEW (Cabina / Exterior)
+    window.toggleCameraView = function() {
+      if (playerVehicleType !== 'car') return;
+      cockpitView = !cockpitView;
+      const btnCam = document.getElementById('btn-camera-toggle');
+
+      if (cockpitView) {
+        if (cockpitGroup) cockpitGroup.visible = true;
+        if (playerCarContainer) playerCarContainer.visible = false;
+        if (btnCam) btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">videocam</span> EXTERIOR';
+      } else {
+        if (cockpitGroup) cockpitGroup.visible = false;
+        if (playerCarContainer) playerCarContainer.visible = true;
+        targetCameraPos.set(0, 3.6, 9.2);
+        if (btnCam) btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">directions_car</span> CABINA';
+      }
+    };
+
     // INITIALIZE THREE.JS SCENE
     function init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 4.3, 10.5);
-      camera.lookAt(0, 1.7, -20);
+      camera.position.set(rightLaneX * 0.85, 4.3, 10.5);
+      camera.lookAt(rightLaneX * 0.5, 1.5, -20);
 
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -661,6 +849,9 @@
       // Load 3D Models
       loadModels();
 
+      // Build Car Cockpit
+      createCarCockpit();
+
       window.addEventListener('resize', onWindowResize, false);
       setupControls();
       animate();
@@ -691,7 +882,7 @@
     // PEDESTRIAN 3D ACTOR
     function createPedestrianActor() {
       pedestrianGroup = new THREE.Group();
-      pedestrianGroup.position.set(11, 0, -100); // starts waiting on sidewalk
+      pedestrianGroup.position.set(8.5, 0, -100); // starts waiting on sidewalk
 
       // Body
       const bodyMat = new THREE.MeshLambertMaterial({ color: 0xffaa00 });
@@ -897,7 +1088,7 @@
           roadChunks.forEach((chunk, cIdx) => {
             const side = cIdx % 2 === 0 ? 1 : -1;
             const parkedCar = createCarInstance(true, colors[cIdx % colors.length]);
-            parkedCar.position.set(side * 8.0, 0, -CHUNK_LENGTH / 2 + (cIdx * 20) % 60);
+            parkedCar.position.set(side * 6.2, 0, -CHUNK_LENGTH / 2 + (cIdx * 20) % 60);
             chunk.add(parkedCar);
           });
 
@@ -908,12 +1099,12 @@
 
     // CONTROLS AND EVENT LISTENERS
     function setupControls() {
-      // Button steering
+      // Button steering (within lane boundaries)
       document.getElementById('btn-left').addEventListener('click', () => {
-        targetX = Math.max(-5.5, targetX - 1.6);
+        targetX = Math.max(0.5, targetX - 1.6);
       });
       document.getElementById('btn-right').addEventListener('click', () => {
-        targetX = Math.min(5.5, targetX + 1.6);
+        targetX = Math.min(6.8, targetX + 1.6);
       });
 
       // BIG HAZARD ACTION BUTTON
@@ -933,10 +1124,13 @@
           handleHazardReaction();
         }
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-          targetX = Math.max(-5.5, targetX - 0.8);
+          targetX = Math.max(0.5, targetX - 0.8);
         }
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-          targetX = Math.min(5.5, targetX + 0.8);
+          targetX = Math.min(6.8, targetX + 0.8);
+        }
+        if (e.key === 'c' || e.key === 'C') {
+          toggleCameraView();
         }
       });
 
@@ -1052,11 +1246,11 @@
         if (busGroup.brakePointLight) {
           busGroup.brakePointLight.intensity = 0;
         }
-        pedestrianGroup.position.set(10.5, 0, -45); // waiting on sidewalk ahead
+        pedestrianGroup.position.set(8.5, 0, -45); // waiting on sidewalk ahead
       } else if (idx === 2) {
         // Round 3: Oncoming swerving car
         busGroup.position.set(rightLaneX, 0, -120);
-        pedestrianGroup.position.set(10.5, 0, -200);
+        pedestrianGroup.position.set(8.5, 0, -200);
         oncomingCar.position.set(leftLaneX, 0, -90); // approaching
       }
     }
@@ -1110,10 +1304,35 @@
         player.position.x += (targetX - player.position.x) * 0.12;
         player.rotation.z = -(targetX - player.position.x) * 0.05;
 
-        // Smooth camera follow / switch
-        camera.position.x += (player.position.x * 0.65 - camera.position.x) * 0.1;
-        camera.position.y += (targetCameraPos.y - camera.position.y) * 0.08;
-        camera.position.z += (targetCameraPos.z - camera.position.z) * 0.08;
+        // Camera: Cockpit vs Exterior
+        if (cockpitView && playerVehicleType === 'car') {
+          // Cockpit camera — positioned at driver seat inside the car
+          camera.position.x += (player.position.x - 0.30 - camera.position.x) * 0.18;
+          camera.position.y += (1.18 - camera.position.y) * 0.18;
+          camera.position.z += (player.position.z + 0.2 - camera.position.z) * 0.18;
+          // Look forward with subtle head-turn toward steering
+          camera.lookAt(
+            player.position.x + (targetX - player.position.x) * 0.12,
+            0.9,
+            player.position.z - 30
+          );
+          // Subtle driving vibration
+          camera.position.y += Math.sin(Date.now() * 0.003) * 0.002;
+        } else {
+          // Third-person exterior camera
+          camera.position.x += (player.position.x * 0.85 - camera.position.x) * 0.1;
+          camera.position.y += (targetCameraPos.y - camera.position.y) * 0.08;
+          camera.position.z += (targetCameraPos.z - camera.position.z) * 0.08;
+          camera.lookAt(player.position.x * 0.6, 1.5, -20);
+        }
+
+        // Steering wheel animation
+        if (steeringWheel && cockpitView) {
+          const steerDelta = targetX - player.position.x;
+          targetSteeringAngle = -steerDelta * 0.5;
+          currentSteeringAngle += (targetSteeringAngle - currentSteeringAngle) * 0.12;
+          steeringWheel.rotation.z = currentSteeringAngle;
+        }
 
         // SCENARIO EVENT MANAGEMENT
         const hazard = HAZARDS[currentRoundIndex];
@@ -1224,7 +1443,7 @@
       if (busGroup.brakePointLight) {
         busGroup.brakePointLight.intensity = 0;
       }
-      pedestrianGroup.position.set(11, 0, -100);
+      pedestrianGroup.position.set(8.5, 0, -100);
       oncomingCar.position.set(leftLaneX, 0, -200);
 
       isPlaying = true;
