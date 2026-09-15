@@ -78,6 +78,7 @@
     .steering-group { display: flex; gap: 10px; pointer-events: auto; }
     .hazard-group { pointer-events: auto; }
 
+    /* ── CONTROLES DE CARRIL ── */
     .ctrl-btn {
       width: 58px; height: 58px; border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
@@ -86,62 +87,111 @@
       cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.5); transition: transform 0.1s;
     }
     .ctrl-btn:active { transform: scale(0.92); }
+    .ctrl-btn.blink-active { border-color: var(--neon-yellow); color: var(--neon-yellow); animation: blink-pulse 0.5s infinite alternate; }
+    @keyframes blink-pulse { from { box-shadow: 0 0 6px rgba(255,204,0,0.4); } to { box-shadow: 0 0 18px rgba(255,204,0,0.9); } }
 
-    /* BIG PROMINENT HAZARD ACTION BUTTON */
-    .btn-hazard-action {
-      width: 140px; height: 75px; border-radius: 22px;
-      background: linear-gradient(135deg, #ff0044 0%, #ff5500 100%);
+    /* ── BOTÓN FRENO ── */
+    .btn-brake {
+      width: 130px; height: 70px; border-radius: 20px;
+      background: linear-gradient(135deg, #cc0000 0%, #ff3300 100%);
       border: 3px solid #ffffff; color: #ffffff;
-      font-family: 'Archivo Black'; font-size: 13px; letter-spacing: 0.5px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-      cursor: pointer; box-shadow: 0 0 25px rgba(255, 0, 68, 0.6), 0 8px 20px rgba(0,0,0,0.5);
-      animation: pulse-btn 1.5s infinite alternate; transition: transform 0.1s;
+      font-family: 'Archivo Black'; font-size: 15px; letter-spacing: 0.5px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      cursor: pointer; box-shadow: 0 0 22px rgba(255,0,0,0.5), 0 6px 18px rgba(0,0,0,0.5);
+      transition: transform 0.1s; touch-action: none;
     }
-    .btn-hazard-action:active { transform: scale(0.92); box-shadow: 0 0 10px rgba(255, 0, 68, 0.9); }
-    @keyframes pulse-btn {
-      from { box-shadow: 0 0 20px rgba(255, 0, 68, 0.5); }
-      to { box-shadow: 0 0 32px rgba(255, 0, 68, 0.85); }
-    }
+    .btn-brake:active { transform: scale(0.91); }
+    .btn-brake.active-brake { background: linear-gradient(135deg, #ff4400, #ff8800); transform: scale(0.91); }
 
-    /* FEEDBACK CARD BETWEEN ROUNDS */
+    /* ── BOTÓN SEÑAL DE GIRO ── */
+    .btn-signal {
+      width: 68px; height: 58px; border-radius: 16px;
+      background: rgba(30, 22, 5, 0.9); border: 2px solid var(--neon-yellow); color: var(--neon-yellow);
+      font-family: 'Archivo Black'; font-size: 11px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+      cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.5); transition: transform 0.1s;
+    }
+    .btn-signal:active { transform: scale(0.91); }
+    .btn-signal.on { background: var(--neon-yellow); color: #000; box-shadow: 0 0 18px rgba(255,204,0,0.7); }
+
+    /* ── FEEDBACK CARD ── */
     .feedback-modal {
-      position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);
-      width: 90%; max-width: 500px; background: rgba(12, 16, 28, 0.92); backdrop-filter: blur(14px);
+      position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+      width: 92%; max-width: 500px; background: rgba(8, 12, 24, 0.94); backdrop-filter: blur(16px);
       border: 2px solid var(--neon-green); border-radius: 20px; padding: 20px; text-align: center;
       z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,0.8); display: none;
     }
-    .feedback-title { font-family: 'Archivo Black'; font-size: 20px; margin-bottom: 6px; }
-    .feedback-desc { font-size: 14px; color: #ccc; line-height: 1.45; margin-bottom: 16px; }
+    .feedback-modal.infraction { border-color: var(--danger); }
+    .feedback-title { font-family: 'Archivo Black'; font-size: 18px; margin-bottom: 6px; }
+    .feedback-law { font-size: 11px; color: var(--neon-blue); margin-bottom: 8px; font-style: italic; }
+    .feedback-desc { font-size: 13px; color: #ccc; line-height: 1.45; margin-bottom: 14px; }
     .btn-next-round {
-      padding: 12px 32px; background: var(--neon-green); color: #000;
-      border: none; border-radius: 25px; font-family: 'Archivo Black'; font-size: 15px;
+      padding: 11px 28px; background: var(--neon-green); color: #000;
+      border: none; border-radius: 25px; font-family: 'Archivo Black'; font-size: 14px;
       cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(0,255,136,0.4);
     }
+    .btn-next-round.infraction { background: var(--neon-yellow); }
 
-    /* OVERLAYS (Start & Final Results) */
-    .overlay { 
-      position: absolute; inset: 0; background: rgba(5,5,16,0.92); z-index: 60; 
-      display: flex; flex-direction: column; align-items: center; justify-content: center; 
-      text-align: center; padding: 24px; backdrop-filter: blur(10px); 
+    /* ── SPEEDOMETER HUD ── */
+    .speedo-widget {
+      display: flex; align-items: center; gap: 8px;
     }
-    .overlay h1 { font-family: 'Archivo Black'; margin-bottom: 10px; font-size: 26px; }
+    .speedo-value {
+      font-family: 'Archivo Black'; font-size: 26px; color: #fff; line-height: 1;
+    }
+    .speedo-unit { font-size: 10px; color: #888; margin-top: 2px; }
+    .speed-limit-badge {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 3px solid #cc0000; background: #fff;
+      font-family: 'Archivo Black'; font-size: 11px; color: #000; line-height: 1.1;
+      text-align: center;
+    }
+    .speed-limit-badge.ok  { border-color: #00cc44; }
+    .speed-limit-badge.warn { border-color: #ff4400; background: #ff4400; color: #fff; }
+
+    /* ── SCORE BAR ── */
+    .score-bar-wrap {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+    }
+    .score-bar-label { font-family:'Archivo Black'; font-size:11px; color:#aaa; }
+    .score-bar-track { width: 80px; height: 8px; background: #222; border-radius: 9999px; overflow: hidden; }
+    .score-bar-fill  { height: 100%; border-radius: 9999px; background: var(--neon-green); transition: width 0.5s ease, background 0.5s; }
+    .score-pts { font-family:'Archivo Black'; font-size:18px; color: var(--neon-green); }
+    .score-pts.warn { color: var(--neon-yellow); }
+    .score-pts.bad  { color: var(--danger); }
+
+    /* ── BLINKER INDICATOR ── */
+    .blinker-hud {
+      position: absolute; top: 62px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; align-items: center; pointer-events: none;
+      z-index: 22; opacity: 0; transition: opacity 0.2s;
+    }
+    .blinker-hud.show { opacity: 1; }
+    .blinker-arrow { font-size: 24px; color: var(--neon-yellow); animation: blink-pulse 0.5s infinite alternate; }
+
+    /* ── OVERLAYS ── */
+    .overlay {
+      position: absolute; inset: 0; background: rgba(5,5,16,0.92); z-index: 60;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 24px; backdrop-filter: blur(10px);
+    }
+    .overlay h1 { font-family: 'Archivo Black'; margin-bottom: 10px; font-size: 24px; }
     .mission-card {
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 16px; padding: 18px; max-width: 440px; text-align: left;
-      margin-bottom: 24px; font-size: 14px; line-height: 1.5; color: #e0e0e0;
+      border-radius: 16px; padding: 16px; max-width: 440px; text-align: left;
+      margin-bottom: 20px; font-size: 13px; line-height: 1.5; color: #e0e0e0;
     }
-    .mission-card ul { margin-left: 20px; margin-top: 8px; }
-    .mission-card li { margin-bottom: 6px; }
-
-    .btn-action { 
-      pointer-events: auto; padding: 16px 36px; border-radius: 30px; 
-      background: var(--neon-blue); color: #000; font-family: 'Archivo Black'; 
-      font-size: 17px; border: none; box-shadow: 0 0 20px rgba(0, 243, 255, 0.6); 
-      text-transform: uppercase; cursor: pointer; transition: transform 0.2s; 
+    .mission-card ul { margin-left: 18px; margin-top: 8px; }
+    .mission-card li { margin-bottom: 5px; }
+    .btn-action {
+      pointer-events: auto; padding: 15px 34px; border-radius: 30px;
+      background: var(--neon-blue); color: #000; font-family: 'Archivo Black';
+      font-size: 16px; border: none; box-shadow: 0 0 20px rgba(0,243,255,0.6);
+      text-transform: uppercase; cursor: pointer; transition: transform 0.2s;
     }
     .btn-action:active { transform: scale(0.95); }
-    .btn-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); box-shadow: none; margin-top: 12px; padding: 12px 28px; font-size: 14px; }
-
+    .btn-secondary { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); box-shadow: none; margin-top: 12px; padding: 12px 26px; font-size: 13px; }
     .btn-select-veh {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
       padding: 7px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
@@ -149,11 +199,7 @@
       font-size: 12px; cursor: pointer; transition: all 0.2s ease;
     }
     .btn-select-veh:hover { background: rgba(255,255,255,0.15); color: #fff; }
-    .btn-select-veh.active {
-      background: var(--neon-blue); color: #000; border-color: var(--neon-blue);
-      box-shadow: 0 0 14px rgba(0, 243, 255, 0.5);
-    }
-
+    .btn-select-veh.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); box-shadow: 0 0 14px rgba(0,243,255,0.5); }
     .btn-camera-toggle {
       display: inline-flex; align-items: center; gap: 4px;
       padding: 6px 10px; border-radius: 10px;
@@ -162,7 +208,6 @@
       cursor: pointer; transition: all 0.2s; text-transform: uppercase;
     }
     .btn-camera-toggle:hover { background: rgba(255,255,255,0.15); color: #fff; }
-
     #canvas-container { width: 100vw; height: 100vh; display: block; }
   </style>
 </head>
@@ -172,7 +217,7 @@
     <div class="header-inner">
       <div class="header-left">
         <a href="juegos.html" class="btn-back"><span class="material-symbols-outlined">arrow_back</span></a>
-        <span class="header-title-text">Hazard Perception 3D</span>
+        <span class="header-title-text">Simulador de Examen Vial</span>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
         <div style="display:flex; gap:6px; background:rgba(255,255,255,0.06); padding:3px 6px; border-radius:14px; border:1px solid rgba(255,255,255,0.12);">
@@ -186,107 +231,146 @@
     </div>
   </header>
 
-  <!-- HUD DEL JUEGO -->
+  <!-- ── HUD DEL EXAMEN ── -->
   <div class="hud" id="hud" style="display:none;">
+    <!-- Barra superior: velocímetro + situación + score -->
     <div class="hud-top-bar">
+      <!-- Velocímetro -->
+      <div class="speedo-widget">
+        <div class="speed-limit-badge" id="speed-limit-badge">40</div>
+        <div>
+          <div class="speedo-value"><span id="speedo-kmh">50</span></div>
+          <div class="speedo-unit">km/h</div>
+        </div>
+      </div>
+      <!-- Situación actual -->
       <div class="round-indicator">
-        <span class="round-badge">PELIGRO <span id="round-num">1</span>/3</span>
-        <div class="dots-container">
+        <span class="round-badge" id="sit-badge">SIT. <span id="sit-num">1</span>/6</span>
+        <div class="dots-container" id="dots-container">
           <div class="round-dot active" id="dot-1"></div>
           <div class="round-dot" id="dot-2"></div>
           <div class="round-dot" id="dot-3"></div>
+          <div class="round-dot" id="dot-4"></div>
+          <div class="round-dot" id="dot-5"></div>
+          <div class="round-dot" id="dot-6"></div>
         </div>
       </div>
-      <div class="score-telemetry">
-        PUNTOS: <span id="score-val">0</span> / 15
+      <!-- Score -->
+      <div class="score-bar-wrap">
+        <div class="score-bar-label">PUNTAJE</div>
+        <div class="score-bar-track"><div class="score-bar-fill" id="score-bar-fill" style="width:100%"></div></div>
+        <div class="score-pts" id="score-pts">100</div>
       </div>
     </div>
+    <!-- Prompt de situación -->
     <div class="mission-prompt" id="mission-prompt">
-      👀 <b>Atención en la vía:</b> Circula con precaución. Al ver un peligro formándose, pulsa <b>¡PELIGRO!</b> de inmediato.
+      🚗 <b>Conducción libre:</b> Respetá las señales, velocidades y prioridades.
     </div>
   </div>
 
-  <!-- REACTION SCORE RATING POPUP -->
-  <div class="reaction-popup" id="reaction-popup">
-    ⚡ ¡ANTICIPACIÓN EXCELENTE! (+5 PTS)
+  <!-- ── INDICADOR DE SEÑAL DE GIRO ── -->
+  <div class="blinker-hud" id="blinker-hud">
+    <span class="blinker-arrow" id="blinker-arrow-left">◀</span>
+    <span style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-yellow);">SEÑAL ACTIVA</span>
+    <span class="blinker-arrow" id="blinker-arrow-right">▶</span>
   </div>
 
-  <!-- TARJETA PEDAGÓGICA INTERMEDIA ENTRE RONDAS -->
+  <!-- ── POPUP DE REACCIÓN ── -->
+  <div class="reaction-popup" id="reaction-popup">✅ ¡FRENASTE A TIEMPO!</div>
+
+  <!-- ── TARJETA PEDAGÓGICA ENTRE SITUACIONES ── -->
   <div class="feedback-modal" id="feedback-modal">
-    <div class="feedback-title" id="feedback-title" style="color:var(--neon-green);">¡EXCELENTE REACCIÓN!</div>
-    <div class="feedback-desc" id="feedback-desc">
-      Detectaste la frenada del colectivo a tiempo. Mantener la distancia de 2 segundos te da el campo visual y el margen para frenar sin colisionar.
-    </div>
-    <button class="btn-next-round" id="btn-next-round">SIGUIENTE PELIGRO ➡️</button>
+    <div class="feedback-title" id="feedback-title">✅ ¡CORRECTO!</div>
+    <div class="feedback-law" id="feedback-law">Ley 24.449, Art. 41</div>
+    <div class="feedback-desc" id="feedback-desc">Cediste el paso al peatón.</div>
+    <button class="btn-next-round" id="btn-next-round">SIGUIENTE ➡️</button>
   </div>
 
-  <!-- CONTROLES EN PANTALLA -->
+  <!-- ── CONTROLES EN PANTALLA ── -->
   <div class="controls-overlay" id="controls-overlay" style="display:none;">
-    <div class="steering-group">
-      <button class="ctrl-btn" id="btn-left"><span class="material-symbols-outlined" style="font-size:30px;">arrow_back</span></button>
-      <button class="ctrl-btn" id="btn-right"><span class="material-symbols-outlined" style="font-size:30px;">arrow_forward</span></button>
+    <!-- Izquierda: señal + carril izq -->
+    <div class="steering-group" style="flex-direction:column; gap:8px;">
+      <button class="btn-signal" id="btn-signal-left" ontouchstart="handleSignal(event)" onclick="handleSignal(event)">
+        <span class="material-symbols-outlined" style="font-size:20px;">turn_left</span>
+        <span>SEÑAL</span>
+      </button>
+      <button class="ctrl-btn" id="btn-left">
+        <span class="material-symbols-outlined" style="font-size:28px;">arrow_back</span>
+      </button>
     </div>
-    <div class="hazard-group">
-      <button class="btn-hazard-action" id="btn-hazard">
-        <span class="material-symbols-outlined" style="font-size:26px;">warning</span>
-        ¡PELIGRO!
+
+    <!-- Centro: FRENO -->
+    <div style="display:flex; flex-direction:column; align-items:center; pointer-events:auto;">
+      <button class="btn-brake" id="btn-brake" ontouchstart="handleBrake(event)" onclick="handleBrake(event)">
+        <span class="material-symbols-outlined" style="font-size:28px;">front_hand</span>
+        FRENO
+      </button>
+    </div>
+
+    <!-- Derecha: carril der + señal -->
+    <div class="steering-group" style="flex-direction:column; gap:8px; align-items:flex-end;">
+      <button class="btn-signal" id="btn-signal-right" ontouchstart="handleSignal(event)" onclick="handleSignal(event)">
+        <span class="material-symbols-outlined" style="font-size:20px;">turn_right</span>
+        <span>SEÑAL</span>
+      </button>
+      <button class="ctrl-btn" id="btn-right">
+        <span class="material-symbols-outlined" style="font-size:28px;">arrow_forward</span>
       </button>
     </div>
   </div>
 
   <div id="canvas-container"></div>
 
-  <!-- PANTALLA DE INICIO (TEST BRIEFING) -->
+  <!-- ── PANTALLA DE INICIO — EXAMEN VIAL ── -->
   <div class="overlay" id="start-screen">
-    <span class="material-symbols-outlined" style="font-size:50px; color:var(--neon-yellow); margin-bottom:8px;">visibility</span>
-    <h1 style="color:#fff; font-size:24px; margin-bottom:4px;">PERCEPCIÓN DE PELIGROS 3D</h1>
-    <h2 style="color:var(--neon-blue); font-size:15px; margin-bottom:14px; font-family:'Archivo Black';">HAZARD PERCEPTION TEST</h2>
+    <span class="material-symbols-outlined" style="font-size:48px; color:var(--neon-yellow); margin-bottom:8px;">drive_eta</span>
+    <h1 style="color:#fff; font-size:22px; margin-bottom:2px;">SIMULADOR DE EXAMEN VIAL</h1>
+    <h2 style="color:var(--neon-blue); font-size:13px; margin-bottom:14px; font-family:'Archivo Black';">LEY NACIONAL DE TRÁNSITO 24.449 — CABA</h2>
     <div class="mission-card">
-      <p style="margin-bottom:10px;">Conducirás por la avenida urbana. A lo largo del trayecto se presentarán <b>3 situaciones de riesgo vial</b> imprevistas.</p>
-      
-      <div style="background:rgba(0, 243, 255, 0.08); border:1px solid rgba(0, 243, 255, 0.25); border-radius:12px; padding:10px 12px; margin-bottom:12px;">
-        <div style="font-family:'Archivo Black'; font-size:12px; color:var(--neon-blue); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-          <span class="material-symbols-outlined" style="font-size:17px;">view_in_ar</span> VEHÍCULOS 3D DESCARGADOS ACTIVOS:
-        </div>
-        <div style="font-size:12px; color:#e0e0e0; line-height:1.45;">
-          • 🏍️ <b>Honda CB 750 F Super Sport (1970)</b> — Modelo descargado<br>
-          • 🚌 <b>Town Bus Colectivo</b> — Modelo descargado con luces de freno<br>
-          • 🚗 <b>Aston Martin V8 Vantage (1998)</b> — En tránsito y seleccionable
+      <p style="margin-bottom:10px;">Conducirás por una <b>avenida urbana de Buenos Aires</b>. El examen evalúa <b>6 situaciones reales</b> de conducción segura.</p>
+
+      <div style="background:rgba(255,204,0,0.08); border:1px solid rgba(255,204,0,0.25); border-radius:12px; padding:10px 12px; margin-bottom:12px;">
+        <div style="font-family:'Archivo Black'; font-size:11px; color:var(--neon-yellow); margin-bottom:6px;">📋 SE EVALUARÁ:</div>
+        <div style="font-size:12px; color:#ddd; line-height:1.6;">
+          🔴 Respeto a semáforos en rojo<br>
+          🚶 Prioridad peatonal en sendas<br>
+          🔄 Señalización antes de cambiar de carril<br>
+          📏 Distancia de seguridad (2 seg.)<br>
+          🚫 No invadir carril contrario<br>
+          🔢 Velocidad máxima urbana (60/40 km/h)
         </div>
       </div>
 
-      <div style="font-size:12px; margin-bottom:6px; font-weight:700; color:#fff;">Selecciona tu vehículo:</div>
-      <div style="display:flex; gap:10px; margin-bottom:12px;">
-        <button id="start-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" style="flex:1; padding:9px;">
-          🏍️ Moto Honda CB 750
-        </button>
-        <button id="start-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" style="flex:1; padding:9px;">
-          🚗 Aston Martin V8
-        </button>
+      <div style="font-size:12px; margin-bottom:6px; font-weight:700; color:#fff;">Seleccioná tu vehículo:</div>
+      <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <button id="start-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" style="flex:1; padding:9px;">🏍️ Moto Honda CB 750</button>
+        <button id="start-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" style="flex:1; padding:9px;">🚗 Aston Martin V8</button>
       </div>
 
-      <ul style="font-size:12px; color:#ccc;">
-        <li>👁️ <b>Observa el entorno:</b> Presta atención a vehículos, colectivos y peatones.</li>
-        <li>🚨 <b>Reacciona rápido:</b> Pulsa <b>¡PELIGRO!</b> (o Barra Espaciadora) ante cada amenaza.</li>
-        <li>🎯 <b>Puntuación de 5 a 1 pts:</b> Mayor anticipación = mayor puntaje preventivo.</li>
+      <ul style="font-size:11px; color:#aaa;">
+        <li>🛑 <b>FRENO</b> = frenar ante peligro / semáforo rojo / peatón</li>
+        <li>🔄 <b>SEÑAL</b> = activar antes de cambiar de carril (obligatorio)</li>
+        <li>← → <b>Carril</b> = cambiar de carril (solo después de activar señal)</li>
+        <li>⌨️ <b>Teclado:</b> Espacio/F=Freno, Q/E=Señal, A/D=Carril, C=Cámara</li>
       </ul>
     </div>
-    <button class="btn-action" id="btn-start">INICIAR TEST DE RIESGOS</button>
+    <div style="font-family:'Archivo Black'; font-size:13px; color:var(--neon-green); margin-bottom:14px;">📊 Comenzás con 100 pts — cada infracción descuenta puntos</div>
+    <button class="btn-action" id="btn-start">INICIAR EXAMEN VIAL</button>
   </div>
 
-  <!-- PANTALLA FINAL DE RESULTADOS -->
+  <!-- ── PANTALLA FINAL DE RESULTADOS ── -->
   <div class="overlay" id="results-screen" style="display:none;">
-    <span class="material-symbols-outlined" style="font-size:56px; color:var(--neon-green); margin-bottom:10px;">verified</span>
-    <h1 style="color:#fff;" id="results-hero-title">¡EVALUACIÓN COMPLETADA!</h1>
-    <div style="font-family:'Archivo Black'; font-size:42px; color:var(--neon-green); margin-bottom:10px;" id="results-score">
-      15 / 15
+    <span class="material-symbols-outlined" style="font-size:52px; margin-bottom:8px;" id="results-icon">verified</span>
+    <h1 style="color:#fff;" id="results-hero-title">EXAMEN COMPLETADO</h1>
+    <div style="font-family:'Archivo Black'; font-size:52px; margin-bottom:4px;" id="results-score">85</div>
+    <div style="font-size:13px; color:#888; margin-bottom:14px;">PUNTOS SOBRE 100</div>
+    <div class="mission-card" style="text-align:center; max-width:420px;">
+      <h3 id="results-rank" style="font-size:17px; margin-bottom:8px;">APROBADO</h3>
+      <p id="results-text" style="font-size:13px;"></p>
+      <div id="results-infractions" style="margin-top:10px; font-size:12px; color:#ccc; text-align:left;"></div>
     </div>
-    <div class="mission-card" style="text-align:center;">
-      <h3 id="results-rank" style="color:var(--neon-blue); font-size:18px; margin-bottom:8px;">CONDUCTOR DEFENSIVO EXPERTO</h3>
-      <p id="results-text">Has demostrado una capacidad sobresaliente para anticipar amenazas y reaccionar a tiempo, reduciendo a cero el riesgo de siniestros viales.</p>
-    </div>
-    <button class="btn-action" onclick="location.reload()">REINTENTAR TEST</button>
-    <a href="juegos.html" class="btn-action btn-secondary" style="text-decoration:none; display:inline-block;">VOLVER AL MENÚ DE JUEGOS</a>
+    <button class="btn-action" onclick="location.reload()">REPETIR EXAMEN</button>
+    <a href="juegos.html" class="btn-action btn-secondary" style="text-decoration:none; display:inline-block; margin-top:10px;">VOLVER AL MENÚ</a>
   </div>
 
   <!-- Three.js from CDN -->
@@ -295,76 +379,155 @@
   <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
   
   <script>
-    let scene, camera, renderer;
-    let player, playerFallback;
-    const CHUNK_LENGTH = 140;
-    const NUM_CHUNKS = 3;
-    let roadChunks = [];
-    let windowTexture = null;
+    // ═══════════════════════════════════════════════════════════════
+    // SIMULADOR DE EXAMEN VIAL — Ley 24.449 / CABA
+    // 6 situaciones reales de conducción evaluadas con 100 pts
+    // ═══════════════════════════════════════════════════════════════
 
-    // HAZARD PERCEPTION TEST DEFINITION
-    const HAZARDS = [
+    // Velocímetro: playerSpeed 0.42 ≈ 60 km/h (avenida)
+    //   scale: 1 unit/frame × 60fps × K = km/h
+    //   K = 60 / 0.42 / 60 ≈ 2.38 → currentKmh = playerSpeed * 60 * 2.38 ≈ 60
+    const SPEED_TO_KMH = 143; // playerSpeed × SPEED_TO_KMH = km/h
+    let currentSpeedKmh = 60;
+    let currentSpeedLimit = 60;  // km/h - default avenida CABA (Art. 51)
+
+    // ─── Definición de las 6 situaciones del examen ─────────────────
+    const SITUATIONS = [
       {
-        round: 1,
-        title: "Frenada Imprevista del Colectivo",
-        prompt: "Circulas detrás del colectivo en la avenida. Mantente alerta por si frena de golpe.",
-        triggerDistance: 35,
-        type: 'bus_brake',
-        pedagogicTip: "¡Excelente reflejo! Detectaste las luces de freno a tiempo. Mantener 2 segundos de distancia con vehículos grandes te otorga el campo visual y el margen para frenar sin colisionar (Ley 24.449, Art. 48).",
-        missedTip: "No anticipaste la frenada. Los vehículos pesados bloquean tu visión: mantén siempre distancia de seguridad para no quedar atrapado."
+        id: 'senda_peatonal',
+        num: 1,
+        title: 'Prioridad Peatonal en Senda',
+        prompt: '🚶 <b>Senda peatonal adelante:</b> Un peatón inicia el cruce. Presioná <b>FRENO</b> para cederle el paso.',
+        triggerDistance: 30,
+        type: 'brake_required',  // player must press FRENO
+        actor: 'pedestrian',
+        timeWindow: 4000,
+        penalty: 20,
+        law: 'Ley 24.449, Art. 41 — Los peatones tienen prioridad absoluta en las sendas peatonales señalizadas.',
+        successTip: '¡Correcto! Cediste el paso al peatón. En CABA es infracción grave no respetar la senda.',
+        failTip: 'Infracción grave: no cediste el paso al peatón. El peatón tiene prioridad absoluta en sendas señalizadas.',
       },
       {
-        round: 2,
-        title: "Peatón Cruzando en la Senda",
-        prompt: "Te aproximas a una senda peatonal cebra. Observa si alguien inicia el cruce.",
+        id: 'semaforo_rojo',
+        num: 2,
+        title: 'Semáforo en Rojo',
+        prompt: '🔴 <b>Semáforo en rojo:</b> Debés frenar antes de la línea de parada. Presioná <b>FRENO</b>.',
         triggerDistance: 80,
-        type: 'pedestrian_cross',
-        pedagogicTip: "¡Anticipación perfecta! Viste al peatón antes de llegar al cruce. En las sendas peatonales, la prioridad de paso es SIEMPRE del peatón (Ley 24.449, Art. 41).",
-        missedTip: "Cuidado con las sendas peatonales. En áreas urbanas los peatones pueden aparecer detrás de postes o árboles; disminuye la velocidad en cruces."
+        type: 'brake_required',
+        actor: 'trafficlight_red',
+        timeWindow: 3500,
+        penalty: 20,
+        law: 'Ley 24.449, Art. 43 — Los semáforos tienen prioridad absoluta sobre toda otra señal o norma.',
+        successTip: '¡Correcto! Respetaste el semáforo en rojo. Pasar en rojo es una infracción muy grave con riesgo de siniestro.',
+        failTip: 'Infracción muy grave: pasaste el semáforo en rojo. El semáforo tiene prioridad absoluta.',
       },
       {
-        round: 3,
-        title: "Invasión de Carril Contrario",
-        prompt: "Tramo con doble línea amarilla. Observa con atención el tráfico que viene de frente.",
-        triggerDistance: 135,
-        type: 'oncoming_swerve',
-        pedagogicTip: "¡Gran visión preventiva! Detectaste la invasión de carril a la distancia. La conducción defensiva implica anticipar los errores de otros conductores.",
-        missedTip: "Peligro omitido. Las invasiones en contramano son letales: debes mirar lejos hacia el horizonte de la ruta para anticiparte a tiempo."
-      }
+        id: 'distancia_seguridad',
+        num: 3,
+        title: 'Distancia de Seguridad',
+        prompt: '🚌 <b>Colectivo frenando:</b> Mantené distancia. Presioná <b>FRENO</b> para no chocar.',
+        triggerDistance: 130,
+        type: 'brake_required',
+        actor: 'bus_brake',
+        timeWindow: 3000,
+        penalty: 15,
+        law: 'Ley 24.449, Art. 48 — Mantener la distancia precautoria mínima de 2 segundos respecto del vehículo precedente.',
+        successTip: '¡Perfecto! Frenaste a tiempo. La regla de los 2 segundos es esencial para evitar alcances traseros.',
+        failTip: 'No mantuviste distancia de seguridad. El colectivo frenó bruscamente y no pudiste detener tu vehículo a tiempo.',
+      },
+      {
+        id: 'velocidad_zona_escolar',
+        num: 4,
+        title: 'Zona Escolar — Vel. Reducida',
+        prompt: '🏫 <b>Zona escolar:</b> Límite 20 km/h. Reducí la velocidad (evitá el acelerador).',
+        triggerDistance: 175,
+        type: 'speed_zone',      // auto-detected: player must not exceed limit
+        actor: 'speedzone',
+        newLimit: 20,
+        timeWindow: 6000,
+        penalty: 15,
+        law: 'Ley 24.449, Art. 51 — En zonas escolares el límite máximo es de 20 km/h.',
+        successTip: '¡Bien! Respetaste la zona escolar. La velocidad es el principal factor de gravedad en siniestros viales.',
+        failTip: 'Excediste la velocidad en zona escolar. Este tipo de infracción puede costar vidas de niños.',
+      },
+      {
+        id: 'cambio_carril_señal',
+        num: 5,
+        title: 'Cambio de Carril con Señal',
+        prompt: '🔄 <b>Cambio de carril:</b> Activá la <b>SEÑAL</b> de giro y luego usá las flechas ← →.',
+        triggerDistance: 220,
+        type: 'signal_lane_change', // player must signal BEFORE changing lane
+        actor: null,
+        timeWindow: 7000,
+        penalty: 10,
+        law: 'Ley 24.449, Art. 49 — El conductor debe indicar con la luz de giro, con suficiente anticipación, el cambio de carril.',
+        successTip: '¡Correcto! Señalizaste antes de cambiar de carril. Esto advierte a los demás conductores de tu intención.',
+        failTip: 'Cambiaste de carril sin señalizar. Esto sorprende a los conductores de atrás y causa siniestros.',
+      },
+      {
+        id: 'linea_central',
+        num: 6,
+        title: 'Respeto a la Doble Línea Amarilla',
+        prompt: '⚠️ <b>Doble línea amarilla:</b> No invadas el carril contrario. Mantené tu carril.',
+        triggerDistance: 270,
+        type: 'stay_in_lane',    // auto-detected: player must NOT cross x=0 (center line)
+        actor: 'oncoming_swerve',
+        timeWindow: 5000,
+        penalty: 20,
+        law: 'Ley 24.449, Art. 50 — La doble línea amarilla continua prohíbe el adelantamiento y la invasión del carril contrario.',
+        successTip: '¡Excelente! Mantuviste tu carril ante el peligro del contramano.',
+        failTip: 'Invadiste el carril contrario. La doble línea amarilla continua prohíbe el adelantamiento.',
+      },
     ];
 
-    // GAME & HAZARD STATE
+    // ─── Estado del examen ────────────────────────────────────────────
     let isPlaying = false;
     let isPaused = false;
-    let currentRoundIndex = 0;
-    let totalScore = 0;
+    let currentSitIndex = 0;   // índice de situación actual (0-5)
+    let examScore = 100;       // puntaje inicial
+    let infractions = [];      // log de infracciones cometidas
     let distanceTraveled = 0;
     let playerSpeed = 0.42;
-    let targetX = 5.25;
-    const rightLaneX = 5.25;
-    const leftLaneX = -1.75;
+    let targetX = 5.25;        // posición X objetivo del jugador
+    const rightLaneX  =  5.25; // carril derecho exterior (jugador por defecto)
+    const rightLaneX2 =  1.75; // carril derecho interior
+    const leftLaneX   = -1.75; // SOLO para contramano — no accesible al jugador
+    const centerLineX =  0.0;  // línea doble amarilla central — NO cruzar
 
-    let activeHazard = null;
-    let hazardStartTime = 0;
-    let hazardTriggered = false;
-    let roundResolved = false;
+    // Estado de la situación actual
+    let activeSit = null;
+    let sitStartTime = 0;
+    let sitTriggered = false;
+    let sitResolved = false;
+
+    // Velocidad actual (con frenado suave)
+    let brakeActive = false;
+    let brakeDecay  = 0;       // frames de frenado restantes
+
+    // Señal de giro (blinker)
+    let blinkerActive = false;
+    let blinkerTimer  = null;
+    let laneChangedWithSignal = false; // para situación 5
+
+    // Detección automática de infracciones continuas
+    let centerLineCrossed = false; // para situación 6
+    let speedViolation    = false; // para situación 4
 
     // VEHICLES & ACTORS
     let busGroup = null;
-    let busBrakeLight = null;
     let pedestrianGroup = null;
     let oncomingCar = null;
     let hazardMarker = null;
 
     // AMBIENT TRAFFIC SYSTEM
-    const ambientCars = [];        // { group, speed, laneX, direction, baseZ }
-    const trafficLights = [];      // { group, state, timer, redMesh, yellowMesh, greenMesh, pointLight }
+    const ambientCars = [];
+    const trafficLights = [];
     const TRAFFIC_COLORS = [0x1a4080, 0x888890, 0x2d7a3a, 0x991122, 0x1e242b, 0x7a4a0a, 0x4a0a7a, 0x3a3a3a];
-    let trafficCarTemplate = null; // reused clone source
+    let trafficCarGltf = null; // GLB clone source for ambient traffic
 
     // Models & Player Vehicle Selection
     let loadedModels = { moto: null, auto: null, colectivo: null };
-    let playerVehicleType = 'moto'; // 'moto' or 'car'
+    let playerVehicleType = 'moto';
     let playerMotoContainer = null;
     let playerCarContainer = null;
     let targetCameraPos = new THREE.Vector3(0, 4.3, 10.5);
@@ -1414,185 +1577,376 @@
     }
 
     // CONTROLS AND EVENT LISTENERS
+    // ═══════════════════════════════════════════════════════════════
+    // CONTROLS — EXAMEN VIAL
+    // ═══════════════════════════════════════════════════════════════
+
+    function changeLane(direction) {
+      // direction: -1 = izquierda, +1 = derecha
+      // El jugador solo puede estar en x = 1.75 o 5.25 (lado derecho de la avenida)
+      // NO puede cruzar el center line (x < 1.0)
+      if (!isPlaying) return;
+
+      const newX = targetX + direction * 3.5; // salto de carril (3.5m)
+
+      // Comprobar si el jugador cruzaría la línea central
+      if (newX < 1.0) {
+        // Infracción: invasión de contramano
+        showPopup('🚫 ¡INVASIÓN DE CARRIL CONTRARIO!', 'bad');
+        playWarnBuzzer();
+        if (activeSit && activeSit.type === 'stay_in_lane' && !sitResolved) {
+          centerLineCrossed = true;
+          resolveSituation(false);
+        }
+        return; // bloquear el movimiento
+      }
+
+      // Carril máximo permitido: 6.8
+      targetX = Math.min(6.8, Math.max(1.0, newX));
+
+      // SEÑAL: si cambia carril sin señal activa en situación 5
+      if (activeSit && activeSit.type === 'signal_lane_change' && !sitResolved) {
+        if (!blinkerActive) {
+          // Cambio sin señal → infracción
+          laneChangedWithSignal = false;
+          resolveSituation(false);
+        } else {
+          // Cambio con señal activa → correcto
+          laneChangedWithSignal = true;
+          resolveSituation(true);
+        }
+      }
+    }
+
+    // ── Señal de giro ─────────────────────────────────────────────────
+    window.handleSignal = function(e) {
+      if (e) e.preventDefault();
+      if (!isPlaying) return;
+      initAudio();
+
+      blinkerActive = !blinkerActive;
+
+      // Visual HUD blinker
+      const blinkerHud = document.getElementById('blinker-hud');
+      const btnSL = document.getElementById('btn-signal-left');
+      const btnSR = document.getElementById('btn-signal-right');
+      if (blinkerActive) {
+        blinkerHud.classList.add('show');
+        btnSL.classList.add('on');
+        btnSR.classList.add('on');
+        // Auto-cancel después de 5 segundos
+        clearTimeout(blinkerTimer);
+        blinkerTimer = setTimeout(() => {
+          blinkerActive = false;
+          blinkerHud.classList.remove('show');
+          btnSL.classList.remove('on');
+          btnSR.classList.remove('on');
+        }, 5000);
+      } else {
+        clearTimeout(blinkerTimer);
+        blinkerHud.classList.remove('show');
+        btnSL.classList.remove('on');
+        btnSR.classList.remove('on');
+      }
+    };
+
+    // ── FRENO ─────────────────────────────────────────────────────────
+    window.handleBrake = function(e) {
+      if (e) e.preventDefault();
+      if (!isPlaying || isPaused) return;
+      initAudio();
+
+      // Feedback visual del botón
+      const btnBrake = document.getElementById('btn-brake');
+      btnBrake.classList.add('active-brake');
+      setTimeout(() => btnBrake.classList.remove('active-brake'), 300);
+
+      brakeActive = true;
+      brakeDecay = 90; // 1.5 segundos a 60fps
+
+      // Si hay una situación activa que requiere freno
+      if (activeSit && sitTriggered && !sitResolved) {
+        if (activeSit.type === 'brake_required') {
+          resolveSituation(true);
+          return;
+        }
+      }
+
+      // Freno fuera de contexto: feedback neutro
+      showPopup('🛑 Frenada', '');
+    };
+
     function setupControls() {
-      // Button steering (within lane boundaries)
-      document.getElementById('btn-left').addEventListener('click', () => {
-        targetX = Math.max(0.5, targetX - 1.6);
-      });
-      document.getElementById('btn-right').addEventListener('click', () => {
-        targetX = Math.min(6.8, targetX + 1.6);
-      });
+      // ── Botones de carril ──
+      document.getElementById('btn-left').addEventListener('click',      () => { initAudio(); changeLane(-1); });
+      document.getElementById('btn-left').addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); changeLane(-1); }, {passive:false});
+      document.getElementById('btn-right').addEventListener('click',     () => { initAudio(); changeLane(+1); });
+      document.getElementById('btn-right').addEventListener('touchstart',(e) => { e.preventDefault(); initAudio(); changeLane(+1); }, {passive:false});
 
-      // BIG HAZARD ACTION BUTTON
-      const onHazardPress = (e) => {
-        if (e) e.preventDefault();
-        initAudio();
-        handleHazardReaction();
-      };
-      const btnHazard = document.getElementById('btn-hazard');
-      btnHazard.addEventListener('click', onHazardPress);
-      btnHazard.addEventListener('touchstart', onHazardPress, {passive: false});
+      // ── Botón FRENO y SEÑAL ya usan onclick/ontouchstart inline ──
 
-      // Keyboard Controls
+      // ── Teclado ──
       window.addEventListener('keydown', (e) => {
         initAudio();
-        if (e.code === 'Space' || e.key === ' ') {
-          handleHazardReaction();
+        if (e.code === 'Space' || e.key === 'f' || e.key === 'F') {
+          handleBrake(null);
+        }
+        if (e.key === 'q' || e.key === 'Q' || e.key === 'e' || e.key === 'E') {
+          handleSignal(null);
         }
         if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-          targetX = Math.max(0.5, targetX - 0.8);
+          changeLane(-1);
         }
         if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-          targetX = Math.min(6.8, targetX + 0.8);
+          changeLane(+1);
         }
         if (e.key === 'c' || e.key === 'C') {
           toggleCameraView();
         }
       });
 
-      // Next Round Button
-      btnNextRound.addEventListener('click', advanceToNextRound);
+      // ── Siguiente situación ──
+      btnNextRound.addEventListener('click', advanceToNextSituation);
     }
 
-    // HAZARD REACTION LOGIC (Anticipation Window)
-    function handleHazardReaction() {
-      if (!isPlaying || isPaused) return;
+    // ═══════════════════════════════════════════════════════════════
+    // SITUACIÓN: TRIGGER & RESOLVE
+    // ═══════════════════════════════════════════════════════════════
 
-      if (activeHazard && hazardTriggered && !roundResolved) {
-        // Player reacted during active hazard!
-        roundResolved = true;
-        const elapsed = performance.now() - hazardStartTime;
-        let points = 0;
-        let ratingClass = 'warn';
-        let ratingText = '';
+    function triggerSituation(sit) {
+      sitTriggered = true;
+      sitStartTime = performance.now();
+      centerLineCrossed = false;
+      speedViolation = false;
+      laneChangedWithSignal = false;
 
-        if (elapsed < 1200) {
-          points = 5;
-          ratingClass = '';
-          ratingText = `⚡ ¡ANTICIPACIÓN EXCELENTE! ${Math.floor(elapsed)}ms (+5 PTS)`;
-        } else if (elapsed < 2100) {
-          points = 3;
-          ratingClass = 'warn';
-          ratingText = `⚡ ¡BUENA REACCIÓN! ${Math.floor(elapsed)}ms (+3 PTS)`;
-        } else if (elapsed < 3200) {
-          points = 1;
-          ratingClass = 'warn';
-          ratingText = `⚠️ REACCIÓN TARDÍA ${Math.floor(elapsed)}ms (+1 PT)`;
-        } else {
-          points = 0;
-          ratingClass = 'bad';
-          ratingText = `❌ FUERA DE TIEMPO (0 PTS)`;
+      // Activar actores según el tipo
+      if (sit.actor === 'pedestrian') {
+        pedestrianGroup.visible = true;
+        pedestrianGroup.position.set(8.5, 0, player.position.z - 18);
+        pedestrianGroup.userData.crossing = true;
+      }
+      if (sit.actor === 'bus_brake') {
+        busGroup.visible = true;
+        busGroup.position.set(rightLaneX, 0, player.position.z - 22);
+        busGroup.userData.braking = true;
+      }
+      if (sit.actor === 'trafficlight_red') {
+        // Forzar un semáforo cercano en rojo
+        if (trafficLights.length > 0) {
+          const nearest = trafficLights.reduce((a, b) =>
+            Math.abs(a.group.position.z - player.position.z) <
+            Math.abs(b.group.position.z - player.position.z) ? a : b
+          );
+          nearest.state = 'red';
+          nearest.redMesh.material.color.setHex(0xff0000);
+          nearest.yelMesh.material.color.setHex(0x332200);
+          nearest.grnMesh.material.color.setHex(0x003300);
+          nearest.ptLight.color.setHex(0xff0000);
+          nearest.ptLight.intensity = 2.0;
+          nearest.group.position.z = player.position.z - 18;
         }
-
-        totalScore += points;
-        scoreValDisplay.innerText = totalScore;
-        playSuccessChime();
-
-        // Update dot
-        const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
-        if (dot) dot.className = `round-dot done-${points}`;
-
-        // Show popup
-        reactionPopup.className = `reaction-popup show ${ratingClass}`;
-        reactionPopup.innerText = ratingText;
-
-        // Pause scene and show feedback modal
-        freezeSceneForFeedback(points > 0, HAZARDS[currentRoundIndex].pedagogicTip);
-      } else {
-        // False Alarm (clicked when no hazard was developing)
-        playWarnBuzzer();
-        reactionPopup.className = 'reaction-popup show warn';
-        reactionPopup.innerText = '⚠️ CUIDADO: No hay ningún peligro desarrollándose';
-        setTimeout(() => { reactionPopup.className = 'reaction-popup'; }, 1500);
       }
+      if (sit.actor === 'oncoming_swerve') {
+        oncomingCar.visible = true;
+        oncomingCar.position.set(-1.75, 0, player.position.z - 90);
+      }
+      if (sit.type === 'speed_zone') {
+        currentSpeedLimit = sit.newLimit;
+        updateSpeedLimitBadge();
+      }
+
+      // Timer: si no actúa, la situación falla automáticamente
+      setTimeout(() => {
+        if (activeSit === sit && !sitResolved) {
+          if (sit.type === 'brake_required') {
+            resolveSituation(false);
+          } else if (sit.type === 'speed_zone') {
+            // auto-evaluated: si pasó el tiempo y la velocidad era OK
+            resolveSituation(!speedViolation);
+          } else if (sit.type === 'signal_lane_change') {
+            // timeout sin cambiar carril → falla
+            resolveSituation(false);
+          } else if (sit.type === 'stay_in_lane') {
+            // llegó al final sin invadir → éxito
+            resolveSituation(!centerLineCrossed);
+          }
+        }
+      }, sit.timeWindow);
     }
 
-    function freezeSceneForFeedback(success, explanation) {
+    function resolveSituation(success) {
+      if (sitResolved) return;
+      sitResolved = true;
+
+      const sit = activeSit;
       isPaused = true;
-      setTimeout(() => { reactionPopup.className = 'reaction-popup'; }, 2200);
 
-      // Position Hazard Marker on the active threat
-      if (activeHazard.type === 'bus_brake') {
-        hazardMarker.position.set(busGroup.position.x, 0.1, busGroup.position.z + 2);
-      } else if (activeHazard.type === 'pedestrian_cross') {
-        hazardMarker.position.set(pedestrianGroup.position.x, 0.1, pedestrianGroup.position.z);
-      } else if (activeHazard.type === 'oncoming_swerve') {
-        hazardMarker.position.set(oncomingCar.position.x, 0.1, oncomingCar.position.z);
+      if (!success) {
+        // Descontar puntos
+        examScore = Math.max(0, examScore - sit.penalty);
+        infractions.push({ title: sit.title, penalty: sit.penalty, law: sit.law });
+        updateScoreHUD();
       }
-      hazardMarker.visible = true;
 
-      feedbackTitle.innerText = success ? "¡PELIGRO ANTICIPADO!" : "PELIGRO OMITIDO";
-      feedbackTitle.style.color = success ? "var(--neon-green)" : "var(--danger)";
-      feedbackDesc.innerText = explanation;
+      // Actualizar dot
+      const dot = document.getElementById(`dot-${sit.num}`);
+      if (dot) dot.className = success ? 'round-dot done-5' : 'round-dot done-0';
+
+      // Popup rápido
+      showPopup(success ? '✅ ¡CORRECTO!' : `❌ INFRACCIÓN (-${sit.penalty} pts)`, success ? '' : 'bad');
+      setTimeout(() => { document.getElementById('reaction-popup').className = 'reaction-popup'; }, 2000);
+
+      // Sonido
+      if (success) playSuccessChime(); else playWarnBuzzer();
+
+      // Mostrar feedback modal
+      const feedbackModal = document.getElementById('feedback-modal');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackLaw   = document.getElementById('feedback-law');
+      const feedbackDesc  = document.getElementById('feedback-desc');
+      const btnNext       = document.getElementById('btn-next-round');
+
+      feedbackModal.className = success ? 'feedback-modal' : 'feedback-modal infraction';
+      feedbackTitle.style.color = success ? 'var(--neon-green)' : 'var(--danger)';
+      feedbackTitle.innerText = success ? `✅ ${sit.title}` : `❌ ${sit.title}`;
+      feedbackLaw.innerText   = sit.law;
+      feedbackDesc.innerText  = success ? sit.successTip : sit.failTip;
+      btnNext.className       = success ? 'btn-next-round' : 'btn-next-round infraction';
+
+      const isLast = (sit.num === SITUATIONS.length);
+      btnNext.innerText = isLast ? 'VER RESULTADOS 🏁' : 'SIGUIENTE ➡️';
       feedbackModal.style.display = 'block';
+
+      // Restaurar límite de velocidad si era zona especial
+      if (sit.type === 'speed_zone') {
+        setTimeout(() => { currentSpeedLimit = 60; updateSpeedLimitBadge(); }, 3000);
+      }
     }
 
-    function advanceToNextRound() {
-      feedbackModal.style.display = 'none';
-      hazardMarker.visible = false;
-      currentRoundIndex++;
+    function advanceToNextSituation() {
+      document.getElementById('feedback-modal').style.display = 'none';
+      if (hazardMarker) hazardMarker.visible = false;
 
-      if (currentRoundIndex < HAZARDS.length) {
-        // Prepare next round
-        activeHazard = HAZARDS[currentRoundIndex];
-        hazardTriggered = false;
-        roundResolved = false;
-        roundNumDisplay.innerText = currentRoundIndex + 1;
-        missionPrompt.innerHTML = `👀 <b>Peligro ${currentRoundIndex + 1}:</b> ${activeHazard.prompt}`;
-        
-        const nextDot = document.getElementById(`dot-${currentRoundIndex + 1}`);
+      currentSitIndex++;
+
+      if (currentSitIndex < SITUATIONS.length) {
+        activeSit = SITUATIONS[currentSitIndex];
+        sitTriggered = false;
+        sitResolved  = false;
+        document.getElementById('sit-num').innerText = activeSit.num;
+
+        const nextDot = document.getElementById(`dot-${activeSit.num}`);
         if (nextDot) nextDot.className = 'round-dot active';
 
-        // Reset positions for next scenario
-        resetActorsForRound(currentRoundIndex);
+        // Reset actores
+        busGroup.visible = false;
+        pedestrianGroup.visible = false;
+        if (oncomingCar) oncomingCar.visible = false;
+
+        document.getElementById('mission-prompt').innerHTML = activeSit.prompt;
         isPaused = false;
       } else {
-        // End of test - Show Final Results
-        finishTest();
+        finishExam();
       }
     }
 
-    function resetActorsForRound(idx) {
-      if (idx === 1) {
-        // Round 2: Pedestrian crossing
-        busGroup.position.set(rightLaneX, 0, -80); // bus is far ahead
-        if (busGroup.brakeLights) {
-          busGroup.brakeLights.forEach(l => l.material.color.setHex(0x440000));
-        }
-        if (busGroup.brakePointLight) {
-          busGroup.brakePointLight.intensity = 0;
-        }
-        pedestrianGroup.position.set(8.5, 0, -45); // waiting on sidewalk ahead
-      } else if (idx === 2) {
-        // Round 3: Oncoming swerving car
-        busGroup.position.set(rightLaneX, 0, -120);
-        pedestrianGroup.position.set(8.5, 0, -200);
-        oncomingCar.position.set(leftLaneX, 0, -90); // approaching
-      }
-    }
-
-    function finishTest() {
+    function finishExam() {
       isPlaying = false;
       playVictoryFanfare();
       hud.style.display = 'none';
       controlsOverlay.style.display = 'none';
-      
-      document.getElementById('results-score').innerText = `${totalScore} / 15`;
-      const rankTitle = document.getElementById('results-rank');
-      const rankText = document.getElementById('results-text');
 
-      if (totalScore >= 13) {
-        rankTitle.innerText = "🏆 CONDUCTOR PREVENTIVO EXPERTO";
-        rankText.innerText = "Has demostrado una capacidad sobresaliente para anticipar amenazas y reaccionar con máximo margen de seguridad.";
-      } else if (totalScore >= 8) {
-        rankTitle.innerText = "🟡 CONDUCTOR EN FORMACIÓN";
-        rankText.innerText = "Buenos reflejos, pero necesitas prestar mayor atención visual temprana para frenar con mayor distancia de seguridad.";
+      const scoreEl  = document.getElementById('results-score');
+      const iconEl   = document.getElementById('results-icon');
+      const rankEl   = document.getElementById('results-rank');
+      const textEl   = document.getElementById('results-text');
+      const infEl    = document.getElementById('results-infractions');
+      const heroEl   = document.getElementById('results-hero-title');
+
+      scoreEl.innerText = examScore;
+
+      const passed = examScore >= 70;
+      iconEl.innerText  = passed ? 'verified' : 'cancel';
+      iconEl.style.color = passed ? 'var(--neon-green)' : 'var(--danger)';
+      heroEl.style.color = passed ? '#fff' : 'var(--danger)';
+      heroEl.innerText   = passed ? '¡EXAMEN APROBADO!' : 'EXAMEN DESAPROBADO';
+      scoreEl.style.color = passed ? 'var(--neon-green)' : 'var(--danger)';
+
+      if (examScore === 100) {
+        rankEl.style.color = 'var(--neon-green)';
+        rankEl.innerText = '🏆 CONDUCTOR MODELO — PUNTAJE PERFECTO';
+        textEl.innerText = 'Respetaste todas las normas de tránsito. Ejemplar.';
+      } else if (examScore >= 85) {
+        rankEl.style.color = 'var(--neon-green)';
+        rankEl.innerText = '✅ MUY BUEN CONDUCTOR';
+        textEl.innerText = 'Cometiste infracciones menores. Con más práctica alcanzarás el puntaje perfecto.';
+      } else if (passed) {
+        rankEl.style.color = 'var(--neon-yellow)';
+        rankEl.innerText = '⚠️ APROBADO CON OBSERVACIONES';
+        textEl.innerText = 'Aprobaste el mínimo requerido (70 pts), pero debés reforzar el conocimiento de las normas.';
       } else {
-        rankTitle.innerText = "⚠️ RIESGO AL VOLANTE";
-        rankText.innerText = "No lograste anticipar las amenazas a tiempo. Recuerda que la vista siempre debe estar varios metros por delante del vehículo.";
+        rankEl.style.color = 'var(--danger)';
+        rankEl.innerText = '❌ DESAPROBADO — Necesitás repasar';
+        textEl.innerText = 'No alcanzaste el mínimo de 70 puntos. Estudiá la Ley 24.449 antes de volver a intentarlo.';
+      }
+
+      if (infractions.length > 0) {
+        infEl.innerHTML = '<b>Infracciones cometidas:</b><br>' +
+          infractions.map(i => `• <b>-${i.penalty} pts</b> — ${i.title}<br><span style="color:#888;font-size:11px;">${i.law}</span>`).join('<br>');
+      } else {
+        infEl.innerHTML = '<span style="color:var(--neon-green);">✅ Sin infracciones. ¡Excelente manejo!</span>';
       }
 
       resultsScreen.style.display = 'flex';
+    }
+
+    function showPopup(text, cls) {
+      const el = document.getElementById('reaction-popup');
+      el.className = `reaction-popup show${cls ? ' ' + cls : ''}`;
+      el.innerText = text;
+      setTimeout(() => { el.className = 'reaction-popup'; }, 2200);
+    }
+
+    function updateScoreHUD() {
+      const pts  = document.getElementById('score-pts');
+      const bar  = document.getElementById('score-bar-fill');
+      pts.innerText = examScore;
+      bar.style.width = examScore + '%';
+      bar.style.background = examScore >= 70 ? 'var(--neon-green)' : examScore >= 40 ? 'var(--neon-yellow)' : 'var(--danger)';
+      pts.className = 'score-pts' + (examScore < 70 ? ' bad' : examScore < 85 ? ' warn' : '');
+    }
+
+    function updateSpeedLimitBadge() {
+      const badge = document.getElementById('speed-limit-badge');
+      badge.innerText = currentSpeedLimit;
+      badge.className = 'speed-limit-badge'; // reset to red border default
+    }
+
+    function updateSpeedometer() {
+      // Velocidad actual: playerSpeed base = 0.42 → 60 km/h
+      // Cuando frena, playerSpeed se reduce → kmh baja
+      currentSpeedKmh = Math.round(playerSpeed * SPEED_TO_KMH);
+      const el = document.getElementById('speedo-kmh');
+      if (el) el.innerText = currentSpeedKmh;
+
+      // Colorear badge de límite
+      const badge = document.getElementById('speed-limit-badge');
+      if (badge) {
+        if (currentSpeedKmh > currentSpeedLimit) {
+          badge.className = 'speed-limit-badge warn';
+          // Si estamos en situación de zona escolar y se excede
+          if (activeSit && activeSit.type === 'speed_zone' && sitTriggered && !sitResolved) {
+            speedViolation = true;
+          }
+        } else {
+          badge.className = 'speed-limit-badge ok';
+        }
+      }
+    }
+
+    function resetActorsForRound(idx) {
+      // Compatibilidad con llamada desde el animate loop heredado — ya no se usa
     }
 
     function onWindowResize() {
@@ -1654,120 +2008,110 @@
           steeringWheel.rotation.z = currentSteeringAngle;
         }
 
-        // SCENARIO EVENT MANAGEMENT
-        const hazard = HAZARDS[currentRoundIndex];
-        if (hazard) {
-          // Trigger condition
-          if (!hazardTriggered && distanceTraveled >= hazard.triggerDistance) {
-            hazardTriggered = true;
-            hazardStartTime = performance.now();
-            activeHazard = hazard;
+        // ─── GESTIÓN DE SITUACIONES DEL EXAMEN VIAL ───
+        if (activeSit) {
+          // Condición de disparo de la situación actual
+          if (!sitTriggered && distanceTraveled >= activeSit.triggerDistance) {
+            triggerSituation(activeSit);
           }
 
-          // Execute developing hazard in 3D
-          if (hazardTriggered && !roundResolved) {
-            const elapsed = performance.now() - hazardStartTime;
+          // Ejecución y animación de los actores 3D
+          if (sitTriggered && !sitResolved) {
+            const elapsed = performance.now() - sitStartTime;
 
-            if (hazard.type === 'bus_brake') {
-              // Bus brake lights flash bright red
-              if (busGroup.brakeLights) {
-                busGroup.brakeLights.forEach(l => l.material.color.setHex(0xff0000));
-              }
-              if (busGroup.brakePointLight) {
-                busGroup.brakePointLight.intensity = 3.5;
-              }
-              // Bus decelerates rapidly towards player
-              busGroup.position.z += (playerSpeed - 0.12);
+            // Actualizar velocímetro en cada frame
+            updateSpeedometer();
 
-              // Timeout check: if player never reacts and gets dangerously close
-              if (busGroup.position.z > player.position.z - 3.5 || elapsed > 3500) {
-                roundResolved = true;
-                const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
-                if (dot) dot.className = 'round-dot done-0';
-                playWarnBuzzer();
-                freezeSceneForFeedback(false, hazard.missedTip);
-              }
-            } else if (hazard.type === 'pedestrian_cross') {
-              // Pedestrian steps onto the zebra crossing across lanes
+            // 1. Peatón cruzando por senda
+            if (activeSit.actor === 'pedestrian' && pedestrianGroup.visible) {
               pedestrianGroup.position.z += playerSpeed;
-              pedestrianGroup.position.x -= 0.065; // walks from right to left
-
-              // Leg walk animation
+              pedestrianGroup.position.x -= 0.055; // camina cruzando la calzada
               const walkPhase = Math.sin(Date.now() * 0.012);
               if (pedestrianGroup.children[2] && pedestrianGroup.children[3]) {
                 pedestrianGroup.children[2].rotation.x = walkPhase * 0.4;
                 pedestrianGroup.children[3].rotation.x = -walkPhase * 0.4;
               }
 
-              // Timeout check
-              if (pedestrianGroup.position.z > player.position.z - 2 || elapsed > 3500) {
-                roundResolved = true;
-                const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
-                if (dot) dot.className = 'round-dot done-0';
-                playWarnBuzzer();
-                freezeSceneForFeedback(false, hazard.missedTip);
+              // Si el jugador no frenó y está a punto de atropellarlo
+              if (pedestrianGroup.position.z > player.position.z - 3.2 && !playerBraked) {
+                resolveSituation(false);
               }
-            } else if (hazard.type === 'oncoming_swerve') {
-              // Oncoming car swerves across double yellow into player lane
-              oncomingCar.position.z += playerSpeed + 0.45;
-              if (oncomingCar.position.x < rightLaneX) {
-                oncomingCar.position.x += 0.045; // invading right lane
-              }
+            }
 
-              // Timeout check
-              if (oncomingCar.position.z > player.position.z - 4 || elapsed > 3500) {
-                roundResolved = true;
-                const dot = document.getElementById(`dot-${currentRoundIndex + 1}`);
-                if (dot) dot.className = 'round-dot done-0';
-                playWarnBuzzer();
-                freezeSceneForFeedback(false, hazard.missedTip);
+            // 2. Colectivo frenando bruscamente (distancia de seguridad)
+            else if (activeSit.actor === 'bus_brake' && busGroup.visible) {
+              busGroup.position.z += (playerSpeed - 0.13); // el colectivo reduce drásticamente su velocidad
+
+              // Si el jugador no frenó a tiempo y colisiona por alcance
+              if (busGroup.position.z > player.position.z - 3.8 && !playerBraked) {
+                resolveSituation(false);
+              }
+            }
+
+            // 3. Auto contramano que roza la línea central
+            else if (activeSit.actor === 'oncoming_swerve' && oncomingCar.visible) {
+              oncomingCar.position.z += playerSpeed + 0.45;
+              if (oncomingCar.position.x < -0.4) {
+                oncomingCar.position.x += 0.02; // amaga a invadir
               }
             }
           }
         }
       }
 
-      // Traffic lights always animate (even on start screen / results)
+      // Traffic lights always animate
       if (!isPlaying) updateTrafficLights();
 
       renderer.render(scene, camera);
     }
 
-    // START TEST BUTTON LISTENER
+    // BOTÓN INICIAR EXAMEN VIAL
     document.getElementById('btn-start').addEventListener('click', () => {
       initAudio();
-      startScreen.style.display = 'none';
-      hud.style.display = 'flex';
-      controlsOverlay.style.display = 'flex';
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('hud').style.display = 'flex';
+      document.getElementById('controls-overlay').style.display = 'flex';
 
-      currentRoundIndex = 0;
-      totalScore = 0;
+      currentSitIndex = 0;
+      examScore = 100;
+      infractions = [];
       distanceTraveled = 0;
-      scoreValDisplay.innerText = '0';
-      roundNumDisplay.innerText = '1';
-      activeHazard = HAZARDS[0];
-      hazardTriggered = false;
-      roundResolved = false;
+      playerSpeed = 0.42;
+      targetX = rightLaneX;
+      playerBraked = false;
+      signaledTurn = null;
+      signalActiveUntil = 0;
+      speedViolation = false;
+      centerLineCrossed = false;
       isPaused = false;
 
+      updateScoreHUD();
+      activeSit = SITUATIONS[0];
+      sitTriggered = false;
+      sitResolved = false;
+
+      document.getElementById('sit-num').innerText = activeSit.num;
+      document.getElementById('mission-prompt').innerHTML = activeSit.prompt;
+
       // Reset dots
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 6; i++) {
         const dot = document.getElementById(`dot-${i}`);
-        if (dot) dot.className = i === 1 ? 'round-dot active' : 'round-dot';
+        if (dot) dot.className = (i === 1) ? 'round-dot active' : 'round-dot';
       }
 
-      missionPrompt.innerHTML = `👀 <b>Peligro 1:</b> ${activeHazard.prompt}`;
-
-      // Reset actor positions
+      // Reset actores
+      busGroup.visible = false;
       busGroup.position.set(rightLaneX, 0, -26);
-      if (busGroup.brakeLights) {
-        busGroup.brakeLights.forEach(l => l.material.color.setHex(0x440000));
-      }
-      if (busGroup.brakePointLight) {
-        busGroup.brakePointLight.intensity = 0;
-      }
+      if (busGroup.brakePointLight) busGroup.brakePointLight.intensity = 0;
+
+      pedestrianGroup.visible = false;
       pedestrianGroup.position.set(8.5, 0, -100);
+
+      oncomingCar.visible = false;
       oncomingCar.position.set(leftLaneX, 0, -200);
+
+      currentSpeedLimit = 60;
+      updateSpeedLimitBadge();
 
       isPlaying = true;
     });
