@@ -48,7 +48,7 @@
 
     body {
       min-height: 100vh;
-      min-height: -webkit-fill-available;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       background-color: var(--bg);
@@ -63,32 +63,32 @@
       background: rgba(18, 22, 23, 0.96);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--outline);
-      padding: 10px 16px;
+      padding: 8px 14px;
       position: sticky;
       top: 0;
       z-index: 50;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
     .header-inner {
-      max-width: 600px;
+      max-width: 540px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
     .header-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .btn-back {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
       background: #202628;
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #fff;
@@ -99,38 +99,38 @@
     .btn-back:hover { background: #2c3437; transform: translateX(-2px); }
     .brand-title {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 16px;
-      letter-spacing: 0.5px;
+      font-size: 15px;
+      letter-spacing: 0.4px;
       color: #ffffff;
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
     .brand-title span { color: var(--accent-indigo); }
 
     /* ── BARRA DE CATEGORÍAS ── */
     .category-pills-bar {
-      max-width: 600px;
-      margin: 10px auto 4px;
+      max-width: 540px;
+      margin: 6px auto 2px;
       width: 100%;
-      padding: 0 14px;
+      padding: 0 10px;
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
     .cat-pill {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       background: #191e20;
       border: 1.5px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 8px 6px;
+      border-radius: 10px;
+      padding: 6px 4px;
       color: var(--text-muted);
       font-family: 'Archivo', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -140,24 +140,25 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
     .cat-pill.active {
-      background: rgba(99, 102, 241, 0.16);
+      background: rgba(99, 102, 241, 0.18);
       border-color: var(--accent-indigo);
       color: #ffffff;
       box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
     }
-    .cat-pill .material-symbols-outlined { font-size: 16px; }
+    .cat-pill .material-symbols-outlined { font-size: 15px; }
 
     /* ── CONTENEDOR PRINCIPAL DEL JUEGO ── */
     .main-wrap {
       flex: 1;
-      max-width: 600px;
+      max-width: 540px;
       margin: 0 auto;
       width: 100%;
-      padding: 6px 12px 14px;
+      padding: 4px 10px 8px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
       align-items: center;
+      justify-content: flex-start;
     }
 
     /* ── METRICAS / ESTADO DE PARTIDA ── */
@@ -166,17 +167,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(28, 33, 35, 0.7);
+      background: rgba(28, 33, 35, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 6px 14px;
-      font-size: 12px;
+      border-radius: 10px;
+      padding: 5px 12px;
+      font-size: 11px;
       font-weight: 700;
     }
     .timer-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       color: var(--accent-cyan);
     }
     .words-badge {
@@ -195,22 +196,22 @@
       width: 100%;
       background: linear-gradient(135deg, #181d22 0%, #1e242a 100%);
       border: 1.5px solid var(--accent-indigo);
-      border-radius: 14px;
-      padding: 10px 14px;
+      border-radius: 12px;
+      padding: 6px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-      min-height: 56px;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      min-height: 46px;
     }
     .clue-nav-btn {
       background: #252c31;
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #fff;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -223,63 +224,64 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
     }
     .clue-header-line {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 11px;
+      gap: 5px;
+      font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       color: var(--accent-yellow);
     }
     .clue-dir-badge {
       background: rgba(255, 198, 0, 0.15);
-      padding: 1px 6px;
-      border-radius: 6px;
+      padding: 1px 5px;
+      border-radius: 5px;
       border: 1px solid rgba(255, 198, 0, 0.3);
     }
     .clue-text {
-      font-size: 13px;
-      line-height: 1.35;
+      font-size: 12px;
+      line-height: 1.3;
       color: #f1f5f9;
       font-weight: 600;
     }
 
-    /* ── GRILLA DEL CRUCIGRAMA (ADAPTABLE A CUALQUIER ANCHO MÓVIL) ── */
+    /* ── GRILLA DEL CRUCIGRAMA (COMPACTA Y ADAPTABLE) ── */
     .crossword-board-wrapper {
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 4px 0;
+      padding: 2px 0;
     }
     .crossword-grid {
       display: grid;
-      gap: 3px;
+      gap: 2px;
       background: #111415;
-      padding: 8px;
-      border-radius: 16px;
+      padding: 6px;
+      border-radius: 14px;
       border: 1.5px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
       max-width: 95vw;
     }
     .grid-cell {
-      width: clamp(34px, 10.5vw, 44px);
-      height: clamp(34px, 10.5vw, 44px);
+      width: clamp(28px, 9.2vw, 42px);
+      height: clamp(28px, 9.2vw, 42px);
       background: var(--cell-bg);
       border: 1.5px solid var(--cell-border);
-      border-radius: 8px;
+      border-radius: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(16px, 4.8vw, 22px);
+      font-size: clamp(14px, 4.2vw, 20px);
       color: #ffffff;
       position: relative;
       cursor: pointer;
+      overflow: hidden;
       transition: background 0.15s, border-color 0.15s, transform 0.1s;
     }
     .grid-cell.empty {
@@ -291,9 +293,9 @@
     .grid-cell-num {
       position: absolute;
       top: 2px;
-      left: 3px;
+      left: 2px;
       font-family: 'Archivo', sans-serif;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 800;
       color: var(--text-muted);
       line-height: 1;
@@ -306,8 +308,8 @@
     .grid-cell.active-focus {
       background: rgba(255, 198, 0, 0.24);
       border-color: var(--cell-focus);
-      box-shadow: 0 0 10px rgba(255, 198, 0, 0.5);
-      transform: scale(1.05);
+      box-shadow: 0 0 8px rgba(255, 198, 0, 0.5);
+      transform: scale(1.04);
       z-index: 2;
     }
     .grid-cell.word-completed {
@@ -322,27 +324,27 @@
       max-width: 500px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       margin-top: auto;
-      padding-top: 4px;
+      padding-top: 2px;
     }
     .keyboard-row {
       display: flex;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       width: 100%;
     }
     .key-btn {
       flex: 1;
-      height: clamp(38px, 6.2vh, 46px);
-      max-width: 44px;
+      height: clamp(34px, 5.2vh, 42px);
+      max-width: 42px;
       background: #252b2e;
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-bottom: 3px solid #141819;
-      border-radius: 8px;
+      border-radius: 7px;
       color: #ffffff;
       font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(14px, 4vw, 17px);
+      font-size: clamp(13px, 3.8vw, 16px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -355,9 +357,9 @@
       background: #1c2123;
     }
     .key-btn.key-wide {
-      flex: 1.5;
-      max-width: 62px;
-      font-size: 13px;
+      flex: 1.4;
+      max-width: 56px;
+      font-size: 12px;
       background: #1e2528;
     }
     .key-btn.key-hint {
@@ -380,7 +382,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px;
+      padding: 16px;
       z-index: 100;
       opacity: 0;
       pointer-events: none;
@@ -393,14 +395,14 @@
     .modal-card {
       background: #161a1b;
       border: 2px solid var(--accent-indigo);
-      border-radius: 24px;
-      max-width: 440px;
+      border-radius: 20px;
+      max-width: 420px;
       width: 100%;
-      padding: 24px 20px;
+      padding: 22px 18px;
       text-align: center;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
       transform: translateY(20px);
       transition: transform 0.3s ease;
@@ -409,56 +411,55 @@
       transform: translateY(0);
     }
     .modal-trophy {
-      font-size: 52px;
+      font-size: 48px;
       line-height: 1;
-      margin-bottom: 2px;
     }
     .modal-title {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 22px;
+      font-size: 20px;
       color: #ffffff;
       text-transform: uppercase;
     }
     .modal-stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 8px 0;
+      gap: 8px;
+      margin: 4px 0;
     }
     .stat-box {
       background: #1f2528;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
     .stat-label {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
       font-weight: 700;
       text-transform: uppercase;
     }
     .stat-value {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 18px;
+      font-size: 16px;
       color: var(--accent-yellow);
     }
     .btn-modal-primary {
       background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-indigo-dark) 100%);
       color: #fff;
       font-family: 'Archivo Black', sans-serif;
-      font-size: 15px;
-      padding: 14px;
-      border-radius: 14px;
+      font-size: 14px;
+      padding: 12px;
+      border-radius: 12px;
       border: none;
       box-shadow: 0 4px 0 #312E81;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       text-transform: uppercase;
     }
     .btn-modal-secondary {
@@ -466,15 +467,14 @@
       border: 1.5px solid rgba(255, 255, 255, 0.2);
       color: #cbd5e1;
       font-weight: 700;
-      padding: 12px;
-      border-radius: 14px;
+      padding: 10px;
+      border-radius: 12px;
       cursor: pointer;
     }
 
-    /* Animación de palabra completada */
     @keyframes wordGlow {
       0% { transform: scale(1); filter: brightness(1); }
-      50% { transform: scale(1.08); filter: brightness(1.6); }
+      50% { transform: scale(1.06); filter: brightness(1.6); }
       100% { transform: scale(1); filter: brightness(1); }
     }
     .glow-anim {
@@ -489,14 +489,14 @@
     <div class="header-inner">
       <div class="header-left">
         <a href="juegos.html" class="btn-back" title="Volver a la Zona de Práctica">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         </a>
-        <img src="assets/brand/logo_ba.png" alt="BA" style="height:22px;filter:brightness(0) invert(1);object-fit:contain;">
+        <img src="assets/brand/logo_ba.png" alt="BA" style="height:20px;filter:brightness(0) invert(1);object-fit:contain;">
         <h1 class="brand-title">Crucigrama <span>Vial</span></h1>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <button id="btn-sound-toggle" type="button" class="btn-back" style="width:34px;height:34px;" title="Silenciar / Activar Sonido">
-          <span class="material-symbols-outlined text-[18px]" id="sound-icon">volume_up</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button id="btn-sound-toggle" type="button" class="btn-back" style="width:32px;height:32px;" title="Silenciar / Activar Sonido">
+          <span class="material-symbols-outlined text-[17px]" id="sound-icon">volume_up</span>
         </button>
       </div>
     </div>
@@ -524,14 +524,14 @@
     <!-- METRICAS DE PARTIDA -->
     <div class="game-status-strip">
       <div class="timer-badge">
-        <span class="material-symbols-outlined text-[16px]">timer</span>
+        <span class="material-symbols-outlined text-[15px]">timer</span>
         <span id="txt-timer">00:00</span>
       </div>
       <div class="words-badge">
         <span id="txt-words-count">0 / 5 palabras</span>
       </div>
       <div class="lifeline-badge" id="btn-lifeline" title="Revelar letra actual">
-        <span class="material-symbols-outlined text-[16px]">lightbulb</span>
+        <span class="material-symbols-outlined text-[15px]">lightbulb</span>
         <span id="txt-hints-left">Auxilio (2)</span>
       </div>
     </div>
@@ -539,7 +539,7 @@
     <!-- BANNER DE PISTA ACTIVA -->
     <div class="clue-banner" id="clue-banner">
       <button type="button" class="clue-nav-btn" id="btn-prev-clue" aria-label="Pista anterior">
-        <span class="material-symbols-outlined">chevron_left</span>
+        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
       </button>
       <div class="clue-content">
         <div class="clue-header-line">
@@ -549,7 +549,7 @@
         <p class="clue-text" id="clue-text">Cargando definición de la norma vial...</p>
       </div>
       <button type="button" class="clue-nav-btn" id="btn-next-clue" aria-label="Pista siguiente">
-        <span class="material-symbols-outlined">chevron_right</span>
+        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
       </button>
     </div>
 
@@ -564,44 +564,44 @@
     <div class="in-app-keyboard" id="keyboard">
       <!-- Fila 1 -->
       <div class="keyboard-row">
-        <button class="key-btn" data-key="Q">Q</button>
-        <button class="key-btn" data-key="W">W</button>
-        <button class="key-btn" data-key="E">E</button>
-        <button class="key-btn" data-key="R">R</button>
-        <button class="key-btn" data-key="T">T</button>
-        <button class="key-btn" data-key="Y">Y</button>
-        <button class="key-btn" data-key="U">U</button>
-        <button class="key-btn" data-key="I">I</button>
-        <button class="key-btn" data-key="O">O</button>
-        <button class="key-btn" data-key="P">P</button>
+        <button class="key-btn" data-key="Q" type="button">Q</button>
+        <button class="key-btn" data-key="W" type="button">W</button>
+        <button class="key-btn" data-key="E" type="button">E</button>
+        <button class="key-btn" data-key="R" type="button">R</button>
+        <button class="key-btn" data-key="T" type="button">T</button>
+        <button class="key-btn" data-key="Y" type="button">Y</button>
+        <button class="key-btn" data-key="U" type="button">U</button>
+        <button class="key-btn" data-key="I" type="button">I</button>
+        <button class="key-btn" data-key="O" type="button">O</button>
+        <button class="key-btn" data-key="P" type="button">P</button>
       </div>
       <!-- Fila 2 -->
       <div class="keyboard-row">
-        <button class="key-btn" data-key="A">A</button>
-        <button class="key-btn" data-key="S">S</button>
-        <button class="key-btn" data-key="D">D</button>
-        <button class="key-btn" data-key="F">F</button>
-        <button class="key-btn" data-key="G">G</button>
-        <button class="key-btn" data-key="H">H</button>
-        <button class="key-btn" data-key="J">J</button>
-        <button class="key-btn" data-key="K">K</button>
-        <button class="key-btn" data-key="L">L</button>
-        <button class="key-btn" data-key="Ñ">Ñ</button>
+        <button class="key-btn" data-key="A" type="button">A</button>
+        <button class="key-btn" data-key="S" type="button">S</button>
+        <button class="key-btn" data-key="D" type="button">D</button>
+        <button class="key-btn" data-key="F" type="button">F</button>
+        <button class="key-btn" data-key="G" type="button">G</button>
+        <button class="key-btn" data-key="H" type="button">H</button>
+        <button class="key-btn" data-key="J" type="button">J</button>
+        <button class="key-btn" data-key="K" type="button">K</button>
+        <button class="key-btn" data-key="L" type="button">L</button>
+        <button class="key-btn" data-key="Ñ" type="button">Ñ</button>
       </div>
       <!-- Fila 3 -->
       <div class="keyboard-row">
-        <button class="key-btn key-wide key-hint" id="key-hint-btn" title="Pista de letra">
-          <span class="material-symbols-outlined text-[18px]">lightbulb</span>
+        <button class="key-btn key-wide key-hint" id="key-hint-btn" type="button" title="Pista de letra">
+          <span class="material-symbols-outlined text-[17px]">lightbulb</span>
         </button>
-        <button class="key-btn" data-key="Z">Z</button>
-        <button class="key-btn" data-key="X">X</button>
-        <button class="key-btn" data-key="C">C</button>
-        <button class="key-btn" data-key="V">V</button>
-        <button class="key-btn" data-key="B">B</button>
-        <button class="key-btn" data-key="N">N</button>
-        <button class="key-btn" data-key="M">M</button>
-        <button class="key-btn" data-key="key-delete key-wide" id="key-del-btn" title="Borrar">
-          <span class="material-symbols-outlined text-[18px]">backspace</span>
+        <button class="key-btn" data-key="Z" type="button">Z</button>
+        <button class="key-btn" data-key="X" type="button">X</button>
+        <button class="key-btn" data-key="C" type="button">C</button>
+        <button class="key-btn" data-key="V" type="button">V</button>
+        <button class="key-btn" data-key="B" type="button">B</button>
+        <button class="key-btn" data-key="N" type="button">N</button>
+        <button class="key-btn" data-key="M" type="button">M</button>
+        <button class="key-btn key-wide key-delete" id="key-del-btn" type="button" title="Borrar">
+          <span class="material-symbols-outlined text-[17px]">backspace</span>
         </button>
       </div>
     </div>
@@ -613,7 +613,7 @@
     <div class="modal-card">
       <div class="modal-trophy">🏆</div>
       <h2 class="modal-title" id="modal-victory-title">¡Crucigrama Resuelto!</h2>
-      <p style="font-size:13px;color:var(--text-muted);" id="modal-victory-desc">
+      <p style="font-size:12px;color:var(--text-muted);" id="modal-victory-desc">
         Demostraste excelente dominio de las normas y términos de seguridad vial.
       </p>
 
@@ -656,8 +656,8 @@
           id: 'moto_1',
           name: 'Motovehículos • Seguridad y Equipamiento',
           category: 'Moto (Clase A)',
-          rows: 7,
-          cols: 7,
+          rows: 8,
+          cols: 8,
           words: [
             {
               id: 'w1', num: 1, dir: 'H', r: 1, c: 1, word: 'CASCO',
@@ -726,20 +726,24 @@
           cols: 8,
           words: [
             {
-              id: 'w1', num: 1, dir: 'V', r: 0, c: 1, word: 'METROBUS',
+              id: 'w1', num: 1, dir: 'H', r: 1, c: 0, word: 'METROBUS',
               clue: 'Carril exclusivo segregado para la circulación rápida y segura del transporte de pasajeros.'
             },
             {
-              id: 'w2', num: 2, dir: 'H', r: 3, c: 0, word: 'PRIORIDAD',
-              clue: 'Derecho de paso que asiste al colectivo al reiniciar la marcha saliendo de una parada en CABA.'
+              id: 'w2', num: 2, dir: 'V', r: 1, c: 1, word: 'ESPEJOS',
+              clue: 'Dispositivos de visión lateral y gran angular esenciales para reducir el punto ciego.'
             },
             {
-              id: 'w3', num: 3, dir: 'V', r: 3, c: 3, word: 'CIEGO',
-              clue: 'Ángulo o punto no visible en los espejos que demanda extrema atención en maniobras de giro.'
+              id: 'w3', num: 3, dir: 'H', r: 3, c: 1, word: 'PARADA',
+              clue: 'Lugar señalizado y reglamentario sobre la acera donde debe detenerse la unidad para el ascenso y descenso.'
             },
             {
-              id: 'w4', num: 4, dir: 'H', r: 5, c: 1, word: 'BUENO',
-              clue: 'Trato prioritario y respeto a los asientos reservados para ancianos, embarazadas y niños.'
+              id: 'w4', num: 4, dir: 'V', r: 3, c: 3, word: 'RAMPA',
+              clue: 'Dispositivo móvil para garantizar la accesibilidad de personas en silla de ruedas o cochecitos.'
+            },
+            {
+              id: 'w5', num: 5, dir: 'H', r: 7, c: 0, word: 'ESCALON',
+              clue: 'Nivel de acceso a la unidad que requiere peldaños antideslizantes e iluminación adecuada.'
             }
           ]
         }
@@ -806,8 +810,10 @@
         for (let i = 0; i < len; i++) {
           const r = w.dir === 'H' ? w.r : w.r + i;
           const c = w.dir === 'H' ? w.c + i : w.c;
-          const cell = gridMatrix[r][c];
+          if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
+          if (!gridMatrix[r] || !gridMatrix[r][c]) continue;
 
+          const cell = gridMatrix[r][c];
           cell.isCell = true;
           cell.char = w.word[i].toUpperCase();
           if (i === 0 && !cell.num) cell.num = w.num;
@@ -824,8 +830,11 @@
       timerInterval = setInterval(updateTimerUI, 1000);
       updateTimerUI();
 
-      // Seleccionar primera palabra
-      selectWord(words[0]);
+      // Seleccionar primera palabra y enfocar su primera celda
+      if (words.length > 0) {
+        selectWord(words[0]);
+        focusCell(words[0].r, words[0].c);
+      }
       updateWordsCountUI();
     }
 
@@ -872,10 +881,10 @@
       vibrateHaptic([30]);
       sound.playTick();
 
-      const cellData = gridMatrix[r][c];
-      if (!cellData.isCell) return;
+      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
+      if (!cellData || !cellData.isCell) return;
 
-      // Si la celda pertenece a más de una palabra (intersección) y ya está activa, alternar dirección
+      // Si la celda pertenece a más de una palabra (intersección) y ya está activa, alternar palabra
       if (activeCell.r === r && activeCell.c === c && cellData.words.length > 1) {
         const nextWord = cellData.words.find(w => w.id !== activeWord.id);
         if (nextWord) {
@@ -934,7 +943,7 @@
       sound.playTick();
 
       const { r, c } = activeCell;
-      const cellData = gridMatrix[r][c];
+      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
       if (!cellData || !cellData.isCell) return;
 
       // Asignar letra
@@ -958,7 +967,7 @@
       sound.playTick();
 
       const { r, c } = activeCell;
-      const cellData = gridMatrix[r][c];
+      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
 
       if (cellData && cellData.userChar !== '') {
         cellData.userChar = '';
@@ -967,11 +976,12 @@
           const charSpan = cellEl.querySelector('.cell-char-text');
           if (charSpan) charSpan.textContent = '';
         }
+        advanceCursor(-1);
       } else {
         // Retroceder un casillero y borrar
         advanceCursor(-1);
         const prev = activeCell;
-        const prevData = gridMatrix[prev.r][prev.c];
+        const prevData = (gridMatrix[prev.r] && gridMatrix[prev.r][prev.c]) ? gridMatrix[prev.r][prev.c] : null;
         if (prevData) {
           prevData.userChar = '';
           const prevEl = document.getElementById(`cell-${prev.r}-${prev.c}`);
@@ -997,6 +1007,11 @@
         }
       }
 
+      if (curIndex === -1) {
+        focusCell(activeWord.r, activeWord.c);
+        return;
+      }
+
       const nextIndex = curIndex + step;
       if (nextIndex >= 0 && nextIndex < len) {
         const nextR = activeWord.dir === 'H' ? activeWord.r : activeWord.r + nextIndex;
@@ -1014,7 +1029,9 @@
       for (let i = 0; i < len; i++) {
         const r = activeWord.dir === 'H' ? activeWord.r : activeWord.r + i;
         const c = activeWord.dir === 'H' ? activeWord.c + i : activeWord.c;
-        entered += gridMatrix[r][c].userChar || ' ';
+        const cell = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
+        if (!cell || !cell.isCell) return;
+        entered += cell.userChar || ' ';
       }
 
       if (entered === activeWord.word) {
@@ -1050,11 +1067,12 @@
       const nextWord = currentPuzzle.words.find(w => !completedWords.has(w.id));
       if (nextWord) {
         selectWord(nextWord);
+        // Buscar primer casillero vacío de la palabra
         const len = nextWord.word.length;
         for (let i = 0; i < len; i++) {
           const r = nextWord.dir === 'H' ? nextWord.r : nextWord.r + i;
           const c = nextWord.dir === 'H' ? nextWord.c + i : nextWord.c;
-          if (!gridMatrix[r][c].userChar) {
+          if (gridMatrix[r] && gridMatrix[r][c] && !gridMatrix[r][c].userChar) {
             focusCell(r, c);
             return;
           }
@@ -1074,7 +1092,7 @@
       if (isFinished || hintsRemaining <= 0 || !activeWord) return;
 
       const { r, c } = activeCell;
-      const cellData = gridMatrix[r][c];
+      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
       if (!cellData || !cellData.isCell) return;
 
       vibrateHaptic([50, 50, 50]);
@@ -1171,7 +1189,7 @@
     document.getElementById('key-hint-btn').addEventListener('click', useHint);
     document.getElementById('key-del-btn').addEventListener('click', deleteChar);
 
-    // Teclado virtual táctil
+    // Teclado virtual táctil (Solo botones con atributo data-key real)
     document.querySelectorAll('.key-btn[data-key]').forEach(btn => {
       btn.addEventListener('click', () => {
         inputChar(btn.dataset.key);
