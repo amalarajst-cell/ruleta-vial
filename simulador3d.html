@@ -343,8 +343,8 @@
 
       <div style="font-size:12px; margin-bottom:6px; font-weight:700; color:#fff;">Seleccioná tu vehículo:</div>
       <div style="display:flex; gap:10px; margin-bottom:10px;">
-        <button id="start-select-moto" class="btn-select-veh active" onclick="selectPlayerVehicle('moto')" style="flex:1; padding:9px;">🏍️ Moto Honda CB 750</button>
-        <button id="start-select-car" class="btn-select-veh" onclick="selectPlayerVehicle('car')" style="flex:1; padding:9px;">🚗 Aston Martin V8</button>
+        <button id="start-select-moto" class="btn-select-veh" onclick="selectPlayerVehicle('moto')" style="flex:1; padding:9px;">🏍️ Moto Honda CB 750</button>
+        <button id="start-select-car" class="btn-select-veh active" onclick="selectPlayerVehicle('car')" style="flex:1; padding:9px;">🚗 Aston Martin V8</button>
       </div>
 
       <ul style="font-size:11px; color:#aaa;">
@@ -513,6 +513,17 @@
     let centerLineCrossed = false; // para situación 6
     let speedViolation    = false; // para situación 4
 
+    // SCENE & CITY SETTINGS
+    const CHUNK_LENGTH = 70;
+    const NUM_CHUNKS = 6;
+    let scene = null;
+    let camera = null;
+    let renderer = null;
+    let player = null;
+    let playerFallback = null;
+    let roadChunks = [];
+    let windowTexture = null;
+
     // VEHICLES & ACTORS
     let busGroup = null;
     let pedestrianGroup = null;
@@ -527,10 +538,10 @@
 
     // Models & Player Vehicle Selection
     let loadedModels = { moto: null, auto: null, colectivo: null };
-    let playerVehicleType = 'moto';
+    let playerVehicleType = 'car';
     let playerMotoContainer = null;
     let playerCarContainer = null;
-    let targetCameraPos = new THREE.Vector3(0, 4.3, 10.5);
+    let targetCameraPos = new THREE.Vector3(0, 3.6, 9.2);
 
     // COCKPIT STATE
     let cockpitView = false;
@@ -557,7 +568,7 @@
 
         if (playerMotoContainer) playerMotoContainer.visible = true;
         if (playerCarContainer) playerCarContainer.visible = false;
-        if (playerFallback) playerFallback.visible = !playerMotoContainer;
+        if (playerFallback) playerFallback.visible = false;
 
         cockpitView = false;
         if (cockpitGroup) cockpitGroup.visible = false;
@@ -570,15 +581,15 @@
         if (bC2) bC2.classList.add('active');
 
         if (playerMotoContainer) playerMotoContainer.visible = false;
+        if (playerCarContainer) playerCarContainer.visible = true;
         if (playerFallback) playerFallback.visible = false;
 
-        // Car: default to cockpit view
-        cockpitView = true;
-        if (cockpitGroup) cockpitGroup.visible = true;
-        if (playerCarContainer) playerCarContainer.visible = false;
+        // Auto: vista exterior en 3ra persona por defecto para apreciar el modelo 3D
+        cockpitView = false;
+        if (cockpitGroup) cockpitGroup.visible = false;
         if (btnCam) {
           btnCam.style.display = 'inline-flex';
-          btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">videocam</span> EXTERIOR';
+          btnCam.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">directions_car</span> CABINA';
         }
         targetCameraPos.set(0, 3.6, 9.2);
       }
@@ -992,21 +1003,28 @@
       initCityEnvironment();
 
       // Player Vehicle Setup
-      playerFallback = new THREE.Mesh(
-        new THREE.BoxGeometry(1.2, 1.1, 2.4),
-        new THREE.MeshLambertMaterial({ color: 0x00f3ff, emissive: 0x00f3ff, emissiveIntensity: 0.5 })
-      );
-      playerFallback.position.y = 0.55;
       player = new THREE.Group();
       player.position.set(rightLaneX, 0, 5);
-      player.add(playerFallback);
+
+      // Pre-instanciar modelos detallados (Auto y Moto)
+      playerCarContainer = buildProceduralCar(0x0c6848, 'sedan');
+      playerCarContainer.rotation.y = Math.PI; // Mirando hacia el frente (-Z)
+      playerCarContainer.visible = (playerVehicleType === 'car');
+      player.add(playerCarContainer);
+
+      playerMotoContainer = buildProceduralMoto();
+      playerMotoContainer.rotation.y = Math.PI;
+      playerMotoContainer.visible = (playerVehicleType === 'moto');
+      player.add(playerMotoContainer);
+
+      playerFallback = playerCarContainer;
 
       // Headlight
-      const motoLight = new THREE.SpotLight(0xffffff, 3, 45, Math.PI / 6, 0.5, 1);
-      motoLight.position.set(0, 1, -1);
-      motoLight.target.position.set(0, 0, -20);
-      player.add(motoLight);
-      player.add(motoLight.target);
+      const headLight = new THREE.SpotLight(0xffffff, 3.5, 55, Math.PI / 5, 0.4, 1);
+      headLight.position.set(0, 0.9, -1.5);
+      headLight.target.position.set(0, 0, -30);
+      player.add(headLight);
+      player.add(headLight.target);
       scene.add(player);
 
       // Create Actors
@@ -1130,6 +1148,159 @@
         tl.position.set(tx, 0.62, rz);
         g.add(tl);
       });
+
+      return g;
+    }
+
+    // ─── Colectivo Porteño realista (Línea 60) ───
+    function buildProceduralBus() {
+      const g = new THREE.Group();
+      const bodyPaint  = new THREE.MeshStandardMaterial({ color: 0x0044aa, roughness: 0.35, metalness: 0.4 });
+      const whitePaint = new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.4 });
+      const redTrim    = new THREE.MeshStandardMaterial({ color: 0xd91a2a });
+      const glassMat   = new THREE.MeshStandardMaterial({ color: 0x1a3355, transparent: true, opacity: 0.65, roughness: 0.1 });
+      const chromeMat  = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.1 });
+      const darkMat    = new THREE.MeshLambertMaterial({ color: 0x111111 });
+
+      // Carrocería principal (2.7m ancho, 1.4m alto, 9.4m largo)
+      const lower = new THREE.Mesh(new THREE.BoxGeometry(2.7, 1.4, 9.4), bodyPaint);
+      lower.position.y = 1.0;
+      g.add(lower);
+
+      // Franjas decorativas tipo colectivo CABA
+      const stripeW = new THREE.Mesh(new THREE.BoxGeometry(2.72, 0.28, 9.42), whitePaint);
+      stripeW.position.y = 1.72;
+      g.add(stripeW);
+
+      const stripeR = new THREE.Mesh(new THREE.BoxGeometry(2.73, 0.12, 9.43), redTrim);
+      stripeR.position.y = 1.88;
+      g.add(stripeR);
+
+      // Techo blanco redondeado
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(2.65, 0.35, 9.2), whitePaint);
+      roof.position.y = 3.0;
+      g.add(roof);
+
+      // Ventanillas laterales
+      const winL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 8.2), glassMat);
+      winL.position.set(-1.35, 2.4, -0.2);
+      g.add(winL);
+      const winR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 8.2), glassMat);
+      winR.position.set(1.35, 2.4, -0.2);
+      g.add(winR);
+
+      // Parabrisas delantero (frente = -Z)
+      const winF = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.1, 0.1), glassMat);
+      winF.position.set(0, 2.3, -4.68);
+      g.add(winF);
+
+      // Luneta trasera (trasera = +Z)
+      const winB = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.85, 0.1), glassMat);
+      winB.position.set(0, 2.4, 4.68);
+      g.add(winB);
+
+      // Letrero LED luminoso frontal y trasero (LÍNEA 60)
+      const ledSign = new THREE.Mesh(
+        new THREE.BoxGeometry(1.8, 0.38, 0.12),
+        new THREE.MeshBasicMaterial({ color: 0x00ff88 })
+      );
+      ledSign.position.set(0, 2.95, 4.71);
+      g.add(ledSign);
+
+      // Paragolpes cromados
+      const bumpF = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.25, 0.2), chromeMat);
+      bumpF.position.set(0, 0.35, -4.75);
+      g.add(bumpF);
+      const bumpR = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.25, 0.2), chromeMat);
+      bumpR.position.set(0, 0.35, 4.75);
+      g.add(bumpR);
+
+      // Luces traseras de freno (al +Z)
+      const brakeMat = new THREE.MeshBasicMaterial({ color: 0x550000 });
+      const bL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.08), brakeMat);
+      bL.position.set(-1.05, 1.1, 4.72);
+      g.add(bL);
+      const bR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.28, 0.08), brakeMat);
+      bR.position.set(1.05, 1.1, 4.72);
+      g.add(bR);
+      g.brakeLights = [bL, bR];
+
+      // Ruedas grandes de colectivo
+      const wheelGeo = new THREE.CylinderGeometry(0.52, 0.52, 0.38, 16);
+      wheelGeo.rotateZ(Math.PI / 2);
+      [-2.8, 2.8].forEach(z => {
+        [-1.35, 1.35].forEach(x => {
+          const w = new THREE.Mesh(wheelGeo, darkMat);
+          w.position.set(x, 0.52, z);
+          g.add(w);
+        });
+      });
+
+      return g;
+    }
+
+    // ─── Moto deportiva realista (Honda CB 750) ───
+    function buildProceduralMoto() {
+      const g = new THREE.Group();
+      const bodyPaint = new THREE.MeshStandardMaterial({ color: 0xd91b24, roughness: 0.3, metalness: 0.7 });
+      const chromeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.95, roughness: 0.1 });
+      const darkMat   = new THREE.MeshLambertMaterial({ color: 0x151515 });
+
+      // Ruedas delantera y trasera
+      const tireGeo = new THREE.TorusGeometry(0.38, 0.08, 12, 24);
+      const wF = new THREE.Mesh(tireGeo, darkMat);
+      wF.position.set(0, 0.38, -0.9);
+      g.add(wF);
+      const wR = new THREE.Mesh(tireGeo, darkMat);
+      wR.position.set(0, 0.38, 0.9);
+      g.add(wR);
+
+      // Rayos de llanta cromados
+      const hubGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.12, 12);
+      hubGeo.rotateZ(Math.PI / 2);
+      const hubF = new THREE.Mesh(hubGeo, chromeMat);
+      hubF.position.set(0, 0.38, -0.9);
+      g.add(hubF);
+      const hubR = new THREE.Mesh(hubGeo, chromeMat);
+      hubR.position.set(0, 0.38, 0.9);
+      g.add(hubR);
+
+      // Bloque motor
+      const engine = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.42, 0.62), chromeMat);
+      engine.position.set(0, 0.44, 0.0);
+      g.add(engine);
+
+      // Tanque de combustible rojo
+      const tank = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.28, 0.72), bodyPaint);
+      tank.position.set(0, 0.82, -0.22);
+      g.add(tank);
+
+      // Asiento de cuero negro
+      const seat = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.12, 0.68), darkMat);
+      seat.position.set(0, 0.78, 0.38);
+      g.add(seat);
+
+      // Horquilla delantera cromada
+      const fork = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.75), chromeMat);
+      fork.position.set(0, 0.72, -0.75);
+      fork.rotation.x = 0.25;
+      g.add(fork);
+
+      // Manillar
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.04, 0.04), chromeMat);
+      bar.position.set(0, 0.98, -0.7);
+      g.add(bar);
+
+      // Faro delantero redondo
+      const hl = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), chromeMat);
+      hl.position.set(0, 0.9, -0.88);
+      g.add(hl);
+
+      // Escape cromado lateral
+      const exh = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.2), chromeMat);
+      exh.position.set(0.24, 0.3, 0.35);
+      exh.rotation.x = Math.PI / 2;
+      g.add(exh);
 
       return g;
     }
@@ -1341,11 +1512,7 @@
       busGroup = new THREE.Group();
       busGroup.position.set(rightLaneX, 0, -26);
 
-      const fallbackBus = new THREE.Mesh(
-        new THREE.BoxGeometry(2.8, 3.0, 8.2),
-        new THREE.MeshLambertMaterial({ color: 0x0066cc })
-      );
-      fallbackBus.position.y = 1.5;
+      const fallbackBus = buildProceduralBus();
       busGroup.add(fallbackBus);
       busGroup.fallback = fallbackBus;
 
@@ -1392,11 +1559,7 @@
       oncomingCar = new THREE.Group();
       oncomingCar.position.set(leftLaneX, 0, -200);
 
-      const carMesh = new THREE.Mesh(
-        new THREE.BoxGeometry(2.3, 1.4, 4.6),
-        new THREE.MeshLambertMaterial({ color: 0xff0055 })
-      );
-      carMesh.position.y = 0.7;
+      const carMesh = buildProceduralCar(0xcc1122, 'sedan');
       oncomingCar.add(carMesh);
       oncomingCar.fallback = carMesh;
 
@@ -1415,12 +1578,17 @@
 
     // LOAD 3D GLTF MODELS (Uses all 3 models downloaded by user)
     function loadModels() {
+      if (typeof THREE.GLTFLoader === 'undefined') {
+        console.warn('GLTFLoader no disponible en THREE');
+        return;
+      }
       const loader = new THREE.GLTFLoader();
 
       // 1. HONDA CB 750 (Downloaded Motorcycle)
       const motoPaths = [
         'assets/models/honda_cb_750_f_super_sport_1970.glb',
-        'assets/models/moto.glb'
+        'assets/models/moto.glb',
+        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/moto.glb'
       ];
       const tryLoadMoto = (idx) => {
         if (idx >= motoPaths.length) return;
@@ -1449,9 +1617,9 @@
             }
           });
 
+          if (playerMotoContainer) player.remove(playerMotoContainer);
           playerMotoContainer = container;
           player.add(container);
-          if (playerFallback) playerFallback.visible = false;
           container.visible = (playerVehicleType === 'moto');
         }, undefined, () => tryLoadMoto(idx + 1));
       };
@@ -1460,7 +1628,8 @@
       // 2. GENERIC TOWN BUS (Downloaded Bus)
       const busPaths = [
         'assets/models/generic_town_bus.glb',
-        'assets/models/colectivo.glb'
+        'assets/models/colectivo.glb',
+        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/colectivo.glb'
       ];
       const tryLoadBus = (idx) => {
         if (idx >= busPaths.length) return;
@@ -1503,7 +1672,8 @@
       // 3. ASTON MARTIN V8 VANTAGE (Downloaded Car)
       const carPaths = [
         'assets/models/aston_martin_v8_vantage_v600_limitededition_1998.glb',
-        'assets/models/auto.glb'
+        'assets/models/auto.glb',
+        'https://raw.githubusercontent.com/amalarajst-cell/ruleta-vial/main/assets/models/auto.glb'
       ];
       const tryLoadCar = (idx) => {
         if (idx >= carPaths.length) return;
@@ -1550,7 +1720,7 @@
             return grp;
           }
 
-          // A) Oncoming hazard car in Round 3
+          // A) Oncoming hazard car in Situation 6
           const oncomingMesh = createCarInstance(false, 0xcc1122); // Crimson red
           if (oncomingCar) {
             if (oncomingCar.fallback) oncomingCar.remove(oncomingCar.fallback);
@@ -1558,7 +1728,9 @@
           }
 
           // B) Player selectable Aston Martin
-          playerCarContainer = createCarInstance(true, 0x0c6848); // British Racing Green
+          const newCar = createCarInstance(true, 0x0c6848); // British Racing Green
+          if (playerCarContainer) player.remove(playerCarContainer);
+          playerCarContainer = newCar;
           player.add(playerCarContainer);
           playerCarContainer.visible = (playerVehicleType === 'car');
 
