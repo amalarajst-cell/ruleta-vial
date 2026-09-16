@@ -100,6 +100,7 @@
     if (cat.includes('memotest') || cat.includes('señales') || cat.includes('senales')) return 'memotest';
     if (cat.includes('simulador')) return 'simulador';
     if (cat.includes('peligros') || cat.includes('detector')) return 'peligros';
+    if (cat.includes('crucigrama') || cat.includes('crossword')) return 'crucigrama';
     return 'ruleta';
   }
 
@@ -225,6 +226,7 @@
       else if (sessionData.game === 'memotest') displayCat = 'Memotest Vial';
       else if (sessionData.game === 'simulador') displayCat = 'Simulador de Examen';
       else if (sessionData.game === 'peligros') displayCat = 'Detector de Peligros';
+      else if (sessionData.game === 'crucigrama') displayCat = 'Crucigrama Vial';
       else displayCat = 'Ruleta Vial';
     }
 
@@ -293,9 +295,9 @@
           role: effectiveRole,
           game: entry.game,
           category: displayCat,
-          question: d.question || d.title || d.signalName || 'Desafío Vial',
-          selectedAnswer: d.selected || d.userAction || '',
-          correctAnswer: d.expected || d.expectedAction || '',
+          question: d.question || d.title || d.signalName || d.clue || 'Crucigrama Vial',
+          selectedAnswer: d.selected || d.userAction || d.word || '',
+          correctAnswer: d.expected || d.expectedAction || d.word || '',
           isCorrect: d.isCorrect ? 'SI' : 'NO',
           timeSeconds: d.timeSeconds || d.timeSec || 0,
           pointsGained: d.points || d.pointsGained || 0
@@ -505,6 +507,16 @@
         borderColor: '#FF4444',
         link: 'peligros.html',
         desc: 'Anticipación y detección de puntos ciegos en la vía pública'
+      },
+      crucigrama: {
+        id: 'crucigrama',
+        name: 'CRUCIGRAMA VIAL',
+        icon: 'assets/crucigrama_icono.jpg',
+        tag: '🧩 Crucigrama',
+        color: '#818CF8',
+        borderColor: '#6366F1',
+        link: 'crucigrama.html',
+        desc: 'Crucigrama temático: Moto, Auto y Colectivo'
       }
     };
 
@@ -582,7 +594,7 @@
               <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Puntos XP Totales</div>
             </div>
             <div style="background:#1a1d1f;border:1px solid rgba(141,226,214,0.25);border-radius:16px;padding:12px 8px;text-align:center;">
-              <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / 5</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:22px;color:#8DE2D6;">${data.gamesPlayedCount} / ${Object.keys(gameCardsDef).length}</div>
               <div style="font-size:10.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-top:3px;">Juegos Registrados</div>
             </div>
             <div style="background:#1a1d1f;border:1px solid rgba(0,230,118,0.25);border-radius:16px;padding:12px 8px;text-align:center;">

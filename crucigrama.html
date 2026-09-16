@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
   <script src="js/audio.js"></script>
-  <script src="js/cloud-sync.js?v=22"></script>
+  <script src="js/cloud-sync.js?v=23"></script>
 
   <style>
     :root {
@@ -494,7 +494,8 @@
         <img src="assets/brand/logo_ba.png" alt="BA" style="height:20px;filter:brightness(0) invert(1);object-fit:contain;">
         <h1 class="brand-title">Crucigrama <span>Vial</span></h1>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="vialplay-user-pill" id="vialplay-header-user-badge"></div>
         <button id="btn-sound-toggle" type="button" class="btn-back" style="width:32px;height:32px;" title="Silenciar / Activar Sonido">
           <span class="material-symbols-outlined text-[17px]" id="sound-icon">volume_up</span>
         </button>
@@ -641,9 +642,19 @@
         <span>JUGAR OTRO DESAFÍO</span>
       </button>
 
+      <button type="button" class="btn-modal-secondary" style="border-color:#6366F1;color:#A5B4FC;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="if(window.VialCloudSync)window.VialCloudSync.openUserProfileModal('crucigrama');">
+        <span class="material-symbols-outlined" style="font-size:18px;">account_circle</span>
+        <span>VER MI ACTIVIDAD Y RANKING</span>
+      </button>
+
       <button type="button" class="btn-modal-secondary" onclick="window.location.href='juegos.html'">
         Volver a la Zona de Práctica
       </button>
+
+      <div style="font-size:11px;color:#8DE2D6;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:5px;">
+        <span class="material-symbols-outlined" style="font-size:15px;color:#00E676;">cloud_done</span>
+        <span>Sincronizado con Panel de Administración</span>
+      </div>
     </div>
   </div>
 
@@ -1149,14 +1160,19 @@
         if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
           window.VialCloudSync.syncGameSession({
             game: 'crucigrama',
-            category: currentPuzzle.category,
+            category: 'Crucigrama ' + (currentPuzzle.category || 'Vial'),
             score: finalXP,
             time: Number(elapsedSec),
             accuracy: `${totalWords}/${totalWords}`,
             details: currentPuzzle.words.map(w => ({
+              question: `[${w.dir === 'H' ? 'Horizontal' : 'Vertical'} ${w.num}] ${w.clue}`,
+              selected: w.word,
+              expected: w.word,
               word: w.word,
               clue: w.clue,
-              isCorrect: true
+              isCorrect: true,
+              points: Math.round(finalXP / totalWords),
+              timeSeconds: Number((elapsedSec / totalWords).toFixed(1))
             }))
           });
         }
@@ -1241,7 +1257,7 @@
       soundIcon.textContent = isEnabled ? 'volume_up' : 'volume_off';
     });
 
-    // Auto-detectar categoría según rol del jugador
+    // Auto-detectar categoría según rol del jugador y verificar registro
     window.addEventListener('DOMContentLoaded', () => {
       let preferredCat = 'moto';
       if (window.VialCloudSync && typeof window.VialCloudSync.getActivePlayer === 'function') {
@@ -1250,6 +1266,10 @@
         if (role.includes('auto') || role.includes('particular')) preferredCat = 'auto';
         else if (role.includes('colect') || role.includes('d1')) preferredCat = 'colectivo';
         else if (role.includes('moto')) preferredCat = 'moto';
+
+        if (!p.isRegistered && typeof window.VialCloudSync.ensurePlayerRegistered === 'function') {
+          window.VialCloudSync.ensurePlayerRegistered();
+        }
       }
       initPuzzle(preferredCat);
     });
