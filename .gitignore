@@ -11,3 +11,6 @@ Colectivo Preguntas/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Manuales de estudio (PDFs — no se suben al repo)
+*.pdf
