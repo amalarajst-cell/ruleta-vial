@@ -1,485 +1,120 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Crucigrama Vial — Seguridad y Convivencia Vial BA</title>
+  <title>Crucigrama Vial â€” Seguridad y Convivencia Vial BA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-
   <script src="js/audio.js"></script>
-  <script src="js/cloud-sync.js?v=23"></script>
-
+  <script src="js/cloud-sync.js?v=24"></script>
   <style>
     :root {
-      --bg: #0e1112;
-      --surface: #161a1b;
-      --surface-card: #1c2123;
-      --surface-hover: #262c2f;
-      --surface-active: #2e363a;
-      --text: #f0f4f5;
-      --text-muted: #8c979a;
-      
-      --accent-indigo: #6366F1;
-      --accent-indigo-dark: #4338CA;
-      --accent-cyan: #8DE2D6;
-      --accent-yellow: #FFC600;
-      --accent-green: #00E676;
-      --accent-red: #FF4444;
-      
-      --cell-bg: #1e2427;
-      --cell-border: rgba(255, 255, 255, 0.12);
-      --cell-focus: #FFC600;
-      --cell-word-focus: rgba(99, 102, 241, 0.28);
-      --cell-correct: #00E676;
-      
-      --outline: rgba(99, 102, 241, 0.28);
+      --bg:#0e1112;--surface:#161a1b;--surface-card:#1c2123;--surface-hover:#262c2f;
+      --text:#f0f4f5;--text-muted:#8c979a;
+      --accent-indigo:#6366F1;--accent-indigo-dark:#4338CA;--accent-cyan:#8DE2D6;
+      --accent-yellow:#FFC600;--accent-green:#00E676;--accent-red:#FF4444;
+      --cell-bg:#1e2427;--cell-border:rgba(255,255,255,0.12);
+      --cell-focus:#FFC600;--outline:rgba(99,102,241,0.28);
+      --lvl-basic:#22C55E;--lvl-mid:#F59E0B;--lvl-expert:#EF4444;
     }
+    *{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-tap-highlight-color:transparent;}
+    body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background-color:var(--bg);font-family:'Archivo',sans-serif;color:var(--text);overflow-x:hidden;}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+    /* HEADER */
+    .app-header{width:100%;background:rgba(18,22,23,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--outline);padding:8px 14px;position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+    .header-inner{max-width:540px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .header-left{display:flex;align-items:center;gap:8px;}
+    .btn-back{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:#202628;border:1px solid rgba(255,255,255,0.1);color:#fff;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s;}
+    .btn-back:hover{background:#2c3437;transform:translateX(-2px);}
+    .brand-title{font-family:'Archivo Black',sans-serif;font-size:15px;letter-spacing:.4px;color:#fff;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+    .brand-title span{color:var(--accent-indigo);}
 
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--bg);
-      font-family: 'Archivo', sans-serif;
-      color: var(--text);
-      overflow-x: hidden;
-    }
+    /* SELECTOR DE NIVEL */
+    .level-selector-bar{max-width:540px;margin:8px auto 2px;width:100%;padding:0 10px;display:flex;gap:6px;}
+    .level-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:12px;padding:7px 4px;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border:2px solid transparent;transition:all .2s ease;}
+    .level-btn .material-symbols-outlined{font-size:16px;}
+    .level-btn[data-level="basico"]{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;}
+    .level-btn[data-level="basico"].active{background:rgba(34,197,94,.22);border-color:var(--lvl-basic);color:#fff;box-shadow:0 0 16px rgba(34,197,94,.4);}
+    .level-btn[data-level="intermedio"]{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25);color:#fcd34d;}
+    .level-btn[data-level="intermedio"].active{background:rgba(245,158,11,.22);border-color:var(--lvl-mid);color:#fff;box-shadow:0 0 16px rgba(245,158,11,.4);}
+    .level-btn[data-level="experto"]{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#fca5a5;}
+    .level-btn[data-level="experto"].active{background:rgba(239,68,68,.22);border-color:var(--lvl-expert);color:#fff;box-shadow:0 0 16px rgba(239,68,68,.4);}
 
-    /* ── HEADER SUPERIOR ── */
-    .app-header {
-      width: 100%;
-      background: rgba(18, 22, 23, 0.96);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--outline);
-      padding: 8px 14px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-    .header-inner {
-      max-width: 540px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: #202628;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #fff;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-back:hover { background: #2c3437; transform: translateX(-2px); }
-    .brand-title {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 15px;
-      letter-spacing: 0.4px;
-      color: #ffffff;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .brand-title span { color: var(--accent-indigo); }
+    /* CATEGORÃAS */
+    .category-pills-bar{max-width:540px;margin:4px auto 2px;width:100%;padding:0 10px;display:flex;gap:6px;}
+    .cat-pill{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:#191e20;border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 4px;color:var(--text-muted);font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s ease;}
+    .cat-pill:hover{background:#232a2d;border-color:rgba(255,255,255,.2);}
+    .cat-pill.active{background:rgba(99,102,241,.18);border-color:var(--accent-indigo);color:#fff;box-shadow:0 0 12px rgba(99,102,241,.35);}
+    .cat-pill .material-symbols-outlined{font-size:15px;}
 
-    /* ── BARRA DE CATEGORÍAS ── */
-    .category-pills-bar {
-      max-width: 540px;
-      margin: 6px auto 2px;
-      width: 100%;
-      padding: 0 10px;
-      display: flex;
-      gap: 6px;
-    }
-    .cat-pill {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      background: #191e20;
-      border: 1.5px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 6px 4px;
-      color: var(--text-muted);
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .cat-pill:hover {
-      background: #232a2d;
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-    .cat-pill.active {
-      background: rgba(99, 102, 241, 0.18);
-      border-color: var(--accent-indigo);
-      color: #ffffff;
-      box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
-    }
-    .cat-pill .material-symbols-outlined { font-size: 15px; }
+    /* PROGRESS DOTS */
+    .puzzle-progress-bar{max-width:540px;margin:2px auto 0;width:100%;padding:0 10px;display:flex;align-items:center;gap:8px;}
+    .puzzle-progress-dots{display:flex;gap:5px;flex:1;}
+    .pdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);transition:all .25s;}
+    .pdot.done{background:var(--accent-green);border-color:var(--accent-green);}
+    .pdot.active{background:var(--accent-yellow);border-color:var(--accent-yellow);transform:scale(1.3);}
+    .puzzle-progress-label{font-size:10px;font-weight:700;color:var(--text-muted);white-space:nowrap;}
 
-    /* ── CONTENEDOR PRINCIPAL DEL JUEGO ── */
-    .main-wrap {
-      flex: 1;
-      max-width: 540px;
-      margin: 0 auto;
-      width: 100%;
-      padding: 4px 10px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: center;
-      justify-content: flex-start;
-    }
+    /* MAIN */
+    .main-wrap{flex:1;max-width:540px;margin:0 auto;width:100%;padding:4px 10px 8px;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:flex-start;}
+    .game-status-strip{width:100%;display:flex;align-items:center;justify-content:space-between;background:rgba(28,33,35,.75);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:5px 12px;font-size:11px;font-weight:700;}
+    .timer-badge{display:inline-flex;align-items:center;gap:4px;color:var(--accent-cyan);}
+    .words-badge{color:var(--accent-yellow);}
+    .lifeline-badge{display:inline-flex;align-items:center;gap:4px;color:#c4b5fd;cursor:pointer;}
 
-    /* ── METRICAS / ESTADO DE PARTIDA ── */
-    .game-status-strip {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(28, 33, 35, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 5px 12px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .timer-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--accent-cyan);
-    }
-    .words-badge {
-      color: var(--accent-yellow);
-    }
-    .lifeline-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: #c4b5fd;
-      cursor: pointer;
-    }
+    /* CLUE BANNER */
+    .clue-banner{width:100%;background:linear-gradient(135deg,#181d22 0%,#1e242a 100%);border:1.5px solid var(--accent-indigo);border-radius:12px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.4);min-height:46px;}
+    .clue-nav-btn{background:#252c31;border:1px solid rgba(255,255,255,.12);color:#fff;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s;}
+    .clue-nav-btn:hover{background:#323b42;}
+    .clue-content{flex:1;display:flex;flex-direction:column;gap:1px;}
+    .clue-header-line{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--accent-yellow);}
+    .clue-dir-badge{background:rgba(255,198,0,.15);padding:1px 5px;border-radius:5px;border:1px solid rgba(255,198,0,.3);}
+    .clue-text{font-size:12px;line-height:1.3;color:#f1f5f9;font-weight:600;}
 
-    /* ── BANNER DE PISTA ACTIVA (CLUE CARD) ── */
-    .clue-banner {
-      width: 100%;
-      background: linear-gradient(135deg, #181d22 0%, #1e242a 100%);
-      border: 1.5px solid var(--accent-indigo);
-      border-radius: 12px;
-      padding: 6px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-      min-height: 46px;
-    }
-    .clue-nav-btn {
-      background: #252c31;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #fff;
-      width: 28px;
-      height: 28px;
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background 0.15s;
-    }
-    .clue-nav-btn:hover { background: #323b42; }
-    .clue-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-    .clue-header-line {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--accent-yellow);
-    }
-    .clue-dir-badge {
-      background: rgba(255, 198, 0, 0.15);
-      padding: 1px 5px;
-      border-radius: 5px;
-      border: 1px solid rgba(255, 198, 0, 0.3);
-    }
-    .clue-text {
-      font-size: 12px;
-      line-height: 1.3;
-      color: #f1f5f9;
-      font-weight: 600;
-    }
+    /* GRID */
+    .crossword-board-wrapper{width:100%;display:flex;justify-content:center;align-items:center;padding:2px 0;}
+    .crossword-grid{display:grid;gap:2px;background:#111415;padding:6px;border-radius:14px;border:1.5px solid rgba(255,255,255,.1);box-shadow:0 6px 20px rgba(0,0,0,.5);max-width:95vw;}
+    .grid-cell{width:clamp(24px,8.5vw,38px);height:clamp(24px,8.5vw,38px);background:var(--cell-bg);border:1.5px solid var(--cell-border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:clamp(12px,3.8vw,17px);color:#fff;position:relative;cursor:pointer;overflow:hidden;transition:background .15s,border-color .15s,transform .1s;}
+    .grid-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
+    .grid-cell-num{position:absolute;top:2px;left:2px;font-family:'Archivo',sans-serif;font-size:7px;font-weight:800;color:var(--text-muted);line-height:1;pointer-events:none;}
+    .grid-cell.highlight-word{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.55);}
+    .grid-cell.active-focus{background:rgba(255,198,0,.24);border-color:var(--cell-focus);box-shadow:0 0 8px rgba(255,198,0,.5);transform:scale(1.04);z-index:2;}
+    .grid-cell.word-completed{background:rgba(0,230,118,.2);border-color:rgba(0,230,118,.6);color:#A7F3D0;}
 
-    /* ── GRILLA DEL CRUCIGRAMA (COMPACTA Y ADAPTABLE) ── */
-    .crossword-board-wrapper {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2px 0;
-    }
-    .crossword-grid {
-      display: grid;
-      gap: 2px;
-      background: #111415;
-      padding: 6px;
-      border-radius: 14px;
-      border: 1.5px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-      max-width: 95vw;
-    }
-    .grid-cell {
-      width: clamp(28px, 9.2vw, 42px);
-      height: clamp(28px, 9.2vw, 42px);
-      background: var(--cell-bg);
-      border: 1.5px solid var(--cell-border);
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(14px, 4.2vw, 20px);
-      color: #ffffff;
-      position: relative;
-      cursor: pointer;
-      overflow: hidden;
-      transition: background 0.15s, border-color 0.15s, transform 0.1s;
-    }
-    .grid-cell.empty {
-      background: transparent;
-      border-color: transparent;
-      cursor: default;
-      pointer-events: none;
-    }
-    .grid-cell-num {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      font-family: 'Archivo', sans-serif;
-      font-size: 8px;
-      font-weight: 800;
-      color: var(--text-muted);
-      line-height: 1;
-      pointer-events: none;
-    }
-    .grid-cell.highlight-word {
-      background: rgba(99, 102, 241, 0.22);
-      border-color: rgba(99, 102, 241, 0.55);
-    }
-    .grid-cell.active-focus {
-      background: rgba(255, 198, 0, 0.24);
-      border-color: var(--cell-focus);
-      box-shadow: 0 0 8px rgba(255, 198, 0, 0.5);
-      transform: scale(1.04);
-      z-index: 2;
-    }
-    .grid-cell.word-completed {
-      background: rgba(0, 230, 118, 0.2);
-      border-color: rgba(0, 230, 118, 0.6);
-      color: #A7F3D0;
-    }
+    /* KEYBOARD */
+    .in-app-keyboard{width:100%;max-width:500px;display:flex;flex-direction:column;gap:4px;margin-top:auto;padding-top:2px;}
+    .keyboard-row{display:flex;justify-content:center;gap:3px;width:100%;}
+    .key-btn{flex:1;height:clamp(34px,5.2vh,42px);max-width:42px;background:#252b2e;border:1px solid rgba(255,255,255,.12);border-bottom:3px solid #141819;border-radius:7px;color:#fff;font-family:'Archivo Black',sans-serif;font-size:clamp(13px,3.8vw,16px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .08s ease;}
+    .key-btn:active{transform:translateY(2px);border-bottom-width:1px;background:#1c2123;}
+    .key-btn.key-wide{flex:1.4;max-width:56px;font-size:12px;background:#1e2528;}
+    .key-btn.key-hint{background:rgba(99,102,241,.25);border-color:var(--accent-indigo);color:#c4b5fd;}
+    .key-btn.key-delete{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4);color:#fca5a5;}
 
-    /* ── TECLADO TÁCTIL IN-APP (SIN TRIBUTO AL TECLADO DEL NAVEGADOR) ── */
-    .in-app-keyboard {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: auto;
-      padding-top: 2px;
-    }
-    .keyboard-row {
-      display: flex;
-      justify-content: center;
-      gap: 3px;
-      width: 100%;
-    }
-    .key-btn {
-      flex: 1;
-      height: clamp(34px, 5.2vh, 42px);
-      max-width: 42px;
-      background: #252b2e;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-bottom: 3px solid #141819;
-      border-radius: 7px;
-      color: #ffffff;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(13px, 3.8vw, 16px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.08s ease;
-    }
-    .key-btn:active {
-      transform: translateY(2px);
-      border-bottom-width: 1px;
-      background: #1c2123;
-    }
-    .key-btn.key-wide {
-      flex: 1.4;
-      max-width: 56px;
-      font-size: 12px;
-      background: #1e2528;
-    }
-    .key-btn.key-hint {
-      background: rgba(99, 102, 241, 0.25);
-      border-color: var(--accent-indigo);
-      color: #c4b5fd;
-    }
-    .key-btn.key-delete {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-    }
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:100;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+    .modal-overlay.show{opacity:1;pointer-events:auto;}
+    .modal-card{background:#161a1b;border:2px solid var(--accent-indigo);border-radius:20px;max-width:420px;width:100%;padding:22px 18px;text-align:center;display:flex;flex-direction:column;gap:14px;box-shadow:0 16px 40px rgba(0,0,0,.8);transform:translateY(20px);transition:transform .3s ease;max-height:90vh;overflow-y:auto;}
+    .modal-overlay.show .modal-card{transform:translateY(0);}
+    .modal-trophy{font-size:48px;line-height:1;}
+    .modal-title{font-family:'Archivo Black',sans-serif;font-size:20px;color:#fff;text-transform:uppercase;}
+    .modal-level-badge{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:4px 14px;border-radius:20px;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:-6px auto 0;}
+    .modal-level-badge.basico{background:rgba(34,197,94,.2);border:1.5px solid var(--lvl-basic);color:#86efac;}
+    .modal-level-badge.intermedio{background:rgba(245,158,11,.2);border:1.5px solid var(--lvl-mid);color:#fcd34d;}
+    .modal-level-badge.experto{background:rgba(239,68,68,.2);border:1.5px solid var(--lvl-expert);color:#fca5a5;}
+    .modal-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;}
+    .stat-box{background:#1f2528;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:2px;}
+    .stat-label{font-size:10px;color:var(--text-muted);font-weight:700;text-transform:uppercase;}
+    .stat-value{font-family:'Archivo Black',sans-serif;font-size:16px;color:var(--accent-yellow);}
+    .btn-modal-primary{background:linear-gradient(135deg,var(--accent-indigo) 0%,var(--accent-indigo-dark) 100%);color:#fff;font-family:'Archivo Black',sans-serif;font-size:14px;padding:12px;border-radius:12px;border:none;box-shadow:0 4px 0 #312E81;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-transform:uppercase;}
+    .btn-modal-secondary{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:#cbd5e1;font-weight:700;padding:10px;border-radius:12px;cursor:pointer;}
 
-    /* ── MODAL RESULTADOS / VICTORIA ── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .modal-overlay.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .modal-card {
-      background: #161a1b;
-      border: 2px solid var(--accent-indigo);
-      border-radius: 20px;
-      max-width: 420px;
-      width: 100%;
-      padding: 22px 18px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
-    }
-    .modal-overlay.show .modal-card {
-      transform: translateY(0);
-    }
-    .modal-trophy {
-      font-size: 48px;
-      line-height: 1;
-    }
-    .modal-title {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 20px;
-      color: #ffffff;
-      text-transform: uppercase;
-    }
-    .modal-stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 4px 0;
-    }
-    .stat-box {
-      background: #1f2528;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .stat-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .stat-value {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 16px;
-      color: var(--accent-yellow);
-    }
-    .btn-modal-primary {
-      background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-indigo-dark) 100%);
-      color: #fff;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 14px;
-      padding: 12px;
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 4px 0 #312E81;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-transform: uppercase;
-    }
-    .btn-modal-secondary {
-      background: transparent;
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
-      color: #cbd5e1;
-      font-weight: 700;
-      padding: 10px;
-      border-radius: 12px;
-      cursor: pointer;
-    }
-
-    @keyframes wordGlow {
-      0% { transform: scale(1); filter: brightness(1); }
-      50% { transform: scale(1.06); filter: brightness(1.6); }
-      100% { transform: scale(1); filter: brightness(1); }
-    }
-    .glow-anim {
-      animation: wordGlow 0.5s ease-out;
-    }
+    @keyframes wordGlow{0%{transform:scale(1);filter:brightness(1);}50%{transform:scale(1.06);filter:brightness(1.6);}100%{transform:scale(1);filter:brightness(1);}}
+    .glow-anim{animation:wordGlow .5s ease-out;}
+    @keyframes levelPop{0%{transform:scale(.8);opacity:0;}60%{transform:scale(1.12);opacity:1;}100%{transform:scale(1);}}
+    .level-pop{animation:levelPop .35s ease-out;}
   </style>
 </head>
 <body>
@@ -488,82 +123,88 @@
   <header class="app-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="juegos.html" class="btn-back" title="Volver a la Zona de Práctica">
-          <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        <a href="juegos.html" class="btn-back" title="Volver">
+          <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
         </a>
         <img src="assets/brand/logo_ba.png" alt="BA" style="height:20px;filter:brightness(0) invert(1);object-fit:contain;">
         <h1 class="brand-title">Crucigrama <span>Vial</span></h1>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <div class="vialplay-user-pill" id="vialplay-header-user-badge"></div>
-        <button id="btn-sound-toggle" type="button" class="btn-back" style="width:32px;height:32px;" title="Silenciar / Activar Sonido">
-          <span class="material-symbols-outlined text-[17px]" id="sound-icon">volume_up</span>
+        <button id="btn-sound-toggle" type="button" class="btn-back" style="width:32px;height:32px;" title="Sonido">
+          <span class="material-symbols-outlined" style="font-size:17px;" id="sound-icon">volume_up</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- SELECTOR DE CATEGORÍAS (MOTO, AUTO, COLECTIVO) -->
-  <div class="category-pills-bar">
-    <button type="button" class="cat-pill active" data-cat="moto" id="cat-btn-moto">
-      <span class="material-symbols-outlined">two_wheeler</span>
-      <span>Moto (A)</span>
+  <!-- SELECTOR DE NIVEL -->
+  <div class="level-selector-bar">
+    <button type="button" class="level-btn active" data-level="basico" id="level-btn-basico">
+      <span class="material-symbols-outlined">school</span><span>Basico</span>
     </button>
-    <button type="button" class="cat-pill" data-cat="auto" id="cat-btn-auto">
-      <span class="material-symbols-outlined">directions_car</span>
-      <span>Auto (B)</span>
+    <button type="button" class="level-btn" data-level="intermedio" id="level-btn-intermedio">
+      <span class="material-symbols-outlined">bolt</span><span>Medio</span>
     </button>
-    <button type="button" class="cat-pill" data-cat="colectivo" id="cat-btn-colectivo">
-      <span class="material-symbols-outlined">directions_bus</span>
-      <span>Colectivo (D1)</span>
+    <button type="button" class="level-btn" data-level="experto" id="level-btn-experto">
+      <span class="material-symbols-outlined">local_fire_department</span><span>Experto</span>
     </button>
   </div>
 
-  <!-- CONTENEDOR CENTRAL -->
-  <main class="main-wrap">
+  <!-- SELECTOR DE CATEGORIAS -->
+  <div class="category-pills-bar">
+    <button type="button" class="cat-pill active" data-cat="moto" id="cat-btn-moto">
+      <span class="material-symbols-outlined">two_wheeler</span><span>Moto (A)</span>
+    </button>
+    <button type="button" class="cat-pill" data-cat="auto" id="cat-btn-auto">
+      <span class="material-symbols-outlined">directions_car</span><span>Auto (B)</span>
+    </button>
+    <button type="button" class="cat-pill" data-cat="colectivo" id="cat-btn-colectivo">
+      <span class="material-symbols-outlined">directions_bus</span><span>Colectivo</span>
+    </button>
+  </div>
 
-    <!-- METRICAS DE PARTIDA -->
+  <!-- PROGRESO -->
+  <div class="puzzle-progress-bar">
+    <div class="puzzle-progress-dots" id="puzzle-progress-dots"></div>
+    <span class="puzzle-progress-label" id="puzzle-progress-label">Puzzle 1 / 3</span>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main-wrap">
     <div class="game-status-strip">
       <div class="timer-badge">
-        <span class="material-symbols-outlined text-[15px]">timer</span>
+        <span class="material-symbols-outlined" style="font-size:15px;">timer</span>
         <span id="txt-timer">00:00</span>
       </div>
-      <div class="words-badge">
-        <span id="txt-words-count">0 / 5 palabras</span>
-      </div>
-      <div class="lifeline-badge" id="btn-lifeline" title="Revelar letra actual">
-        <span class="material-symbols-outlined text-[15px]">lightbulb</span>
-        <span id="txt-hints-left">Auxilio (2)</span>
+      <div class="words-badge"><span id="txt-words-count">0 / 5 palabras</span></div>
+      <div class="lifeline-badge" id="btn-lifeline" title="Revelar letra">
+        <span class="material-symbols-outlined" style="font-size:15px;">lightbulb</span>
+        <span id="txt-hints-left">Auxilio (3)</span>
       </div>
     </div>
 
-    <!-- BANNER DE PISTA ACTIVA -->
     <div class="clue-banner" id="clue-banner">
-      <button type="button" class="clue-nav-btn" id="btn-prev-clue" aria-label="Pista anterior">
-        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+      <button type="button" class="clue-nav-btn" id="btn-prev-clue">
+        <span class="material-symbols-outlined" style="font-size:18px;">chevron_left</span>
       </button>
       <div class="clue-content">
         <div class="clue-header-line">
-          <span class="clue-dir-badge" id="clue-dir-badge">➡️ HORIZONTAL 1</span>
+          <span class="clue-dir-badge" id="clue-dir-badge">HORIZONTAL 1</span>
           <span id="clue-len-badge">(5 letras)</span>
         </div>
-        <p class="clue-text" id="clue-text">Cargando definición de la norma vial...</p>
+        <p class="clue-text" id="clue-text">Cargando...</p>
       </div>
-      <button type="button" class="clue-nav-btn" id="btn-next-clue" aria-label="Pista siguiente">
-        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+      <button type="button" class="clue-nav-btn" id="btn-next-clue">
+        <span class="material-symbols-outlined" style="font-size:18px;">chevron_right</span>
       </button>
     </div>
 
-    <!-- TABLERO / GRILLA COMPACTA DEL CRUCIGRAMA -->
     <div class="crossword-board-wrapper">
-      <div class="crossword-grid" id="crossword-grid">
-        <!-- Generado dinámicamente por JavaScript -->
-      </div>
+      <div class="crossword-grid" id="crossword-grid"></div>
     </div>
 
-    <!-- TECLADO VIRTUAL IN-APP (SIN LEVANTAR EL TECLADO NATIVO) -->
     <div class="in-app-keyboard" id="keyboard">
-      <!-- Fila 1 -->
       <div class="keyboard-row">
         <button class="key-btn" data-key="Q" type="button">Q</button>
         <button class="key-btn" data-key="W" type="button">W</button>
@@ -576,7 +217,6 @@
         <button class="key-btn" data-key="O" type="button">O</button>
         <button class="key-btn" data-key="P" type="button">P</button>
       </div>
-      <!-- Fila 2 -->
       <div class="keyboard-row">
         <button class="key-btn" data-key="A" type="button">A</button>
         <button class="key-btn" data-key="S" type="button">S</button>
@@ -587,692 +227,626 @@
         <button class="key-btn" data-key="J" type="button">J</button>
         <button class="key-btn" data-key="K" type="button">K</button>
         <button class="key-btn" data-key="L" type="button">L</button>
-        <button class="key-btn" data-key="Ñ" type="button">Ñ</button>
+        <button class="key-btn" data-key="N" type="button">N</button>
       </div>
-      <!-- Fila 3 -->
       <div class="keyboard-row">
-        <button class="key-btn key-wide key-hint" id="key-hint-btn" type="button" title="Pista de letra">
-          <span class="material-symbols-outlined text-[17px]">lightbulb</span>
+        <button class="key-btn key-wide key-hint" id="key-hint-btn" type="button">
+          <span class="material-symbols-outlined" style="font-size:17px;">lightbulb</span>
         </button>
         <button class="key-btn" data-key="Z" type="button">Z</button>
         <button class="key-btn" data-key="X" type="button">X</button>
         <button class="key-btn" data-key="C" type="button">C</button>
         <button class="key-btn" data-key="V" type="button">V</button>
         <button class="key-btn" data-key="B" type="button">B</button>
-        <button class="key-btn" data-key="N" type="button">N</button>
         <button class="key-btn" data-key="M" type="button">M</button>
-        <button class="key-btn key-wide key-delete" id="key-del-btn" type="button" title="Borrar">
-          <span class="material-symbols-outlined text-[17px]">backspace</span>
+        <button class="key-btn" data-key="Ã‘" type="button">Ã‘</button>
+        <button class="key-btn key-wide key-delete" id="key-del-btn" type="button">
+          <span class="material-symbols-outlined" style="font-size:17px;">backspace</span>
         </button>
       </div>
     </div>
-
   </main>
 
-  <!-- MODAL DE VICTORIA / COMPLETADO -->
+  <!-- MODAL VICTORIA -->
   <div class="modal-overlay" id="modal-victory">
     <div class="modal-card">
-      <div class="modal-trophy">🏆</div>
-      <h2 class="modal-title" id="modal-victory-title">¡Crucigrama Resuelto!</h2>
-      <p style="font-size:12px;color:var(--text-muted);" id="modal-victory-desc">
-        Demostraste excelente dominio de las normas y términos de seguridad vial.
-      </p>
-
+      <div class="modal-trophy" id="modal-trophy">ðŸ†</div>
+      <h2 class="modal-title">Â¡Crucigrama Resuelto!</h2>
+      <div class="modal-level-badge basico" id="modal-level-badge">â­ BASICO</div>
+      <p style="font-size:12px;color:var(--text-muted);" id="modal-victory-desc">Excelente dominio de las normas viales.</p>
       <div class="modal-stats-grid">
-        <div class="stat-box">
-          <span class="stat-label">Tiempo Total</span>
-          <span class="stat-value" id="res-time">01:45</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Puntaje Ganado</span>
-          <span class="stat-value" style="color:var(--accent-green);" id="res-xp">+350 XP</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Palabras Acertadas</span>
-          <span class="stat-value" id="res-words">5 / 5</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Auxilios Usados</span>
-          <span class="stat-value" id="res-hints">0 de 2</span>
-        </div>
+        <div class="stat-box"><span class="stat-label">Tiempo</span><span class="stat-value" id="res-time">01:45</span></div>
+        <div class="stat-box"><span class="stat-label">Puntaje</span><span class="stat-value" style="color:var(--accent-green);" id="res-xp">+350 XP</span></div>
+        <div class="stat-box"><span class="stat-label">Palabras</span><span class="stat-value" id="res-words">5 / 5</span></div>
+        <div class="stat-box"><span class="stat-label">Auxilios</span><span class="stat-value" id="res-hints">0 de 3</span></div>
       </div>
-
       <button type="button" class="btn-modal-primary" id="btn-next-puzzle">
-        <span class="material-symbols-outlined">refresh</span>
-        <span>JUGAR OTRO DESAFÍO</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+        <span id="btn-next-puzzle-text">SIGUIENTE DESAFIO</span>
       </button>
-
       <button type="button" class="btn-modal-secondary" style="border-color:#6366F1;color:#A5B4FC;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="if(window.VialCloudSync)window.VialCloudSync.openUserProfileModal('crucigrama');">
         <span class="material-symbols-outlined" style="font-size:18px;">account_circle</span>
         <span>VER MI ACTIVIDAD Y RANKING</span>
       </button>
-
       <button type="button" class="btn-modal-secondary" onclick="window.location.href='juegos.html'">
-        Volver a la Zona de Práctica
+        Volver a la Zona de Practica
       </button>
-
       <div style="font-size:11px;color:#8DE2D6;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:5px;">
         <span class="material-symbols-outlined" style="font-size:15px;color:#00E676;">cloud_done</span>
-        <span>Sincronizado con Panel de Administración</span>
+        <span>Sincronizado con Panel de Administracion</span>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT DE LÓGICA DEL CRUCIGRAMA -->
   <script>
-    // ── BASE DE DATOS DE CRUCIGRAMAS VIALES (VERIFICADOS MATEMÁTICAMENTE) ──
-    const PUZZLES_DATA = {
-      moto: [
-        {
-          id: 'moto_1',
-          name: 'Motovehículos • Seguridad y Equipamiento',
-          category: 'Moto (Clase A)',
-          rows: 8,
-          cols: 8,
-          words: [
-            {
-              id: 'w1', num: 1, dir: 'H', r: 1, c: 1, word: 'CASCO',
-              clue: 'Elemento de protección craneal obligatorio e indelegable para el conductor y acompañante.'
-            },
-            {
-              id: 'w2', num: 2, dir: 'V', r: 0, c: 3, word: 'ASFALTO',
-              clue: 'Superficie de rodamiento cuya adherencia y tracción caen drásticamente con lluvia o aceite.'
-            },
-            {
-              id: 'w3', num: 3, dir: 'V', r: 1, c: 5, word: 'OPTICA',
-              clue: 'Faro delantero que en motos debe permanecer siempre encendido las 24 horas para ser visto.'
-            },
-            {
-              id: 'w4', num: 4, dir: 'H', r: 3, c: 1, word: 'GUANTE',
-              clue: 'Prenda de protección en manos para evitar abrasión por caída y asegurar buen agarre.'
-            },
-            {
-              id: 'w5', num: 5, dir: 'H', r: 6, c: 2, word: 'BOTAS',
-              clue: 'Calzado cerrado resistente de caña alta que protege tobillos ante fricción o impacto.'
-            }
-          ]
-        }
-      ],
-      auto: [
-        {
-          id: 'auto_1',
-          name: 'Automóviles • Prioridades y Seguridad',
-          category: 'Auto (Clase B)',
-          rows: 8,
-          cols: 8,
-          words: [
-            {
-              id: 'w1', num: 1, dir: 'V', r: 0, c: 2, word: 'SEMAFORO',
-              clue: 'Dispositivo lumínico que regula el derecho de paso en las intersecciones urbanas.'
-            },
-            {
-              id: 'w2', num: 2, dir: 'V', r: 0, c: 4, word: 'BOCINA',
-              clue: 'Dispositivo acústico de emergencia; su uso indebido en la Ciudad está prohibido por ley.'
-            },
-            {
-              id: 'w3', num: 3, dir: 'H', r: 1, c: 0, word: 'FRENOS',
-              clue: 'Sistema de seguridad activa esencial que reduce la marcha o detiene la inercia del vehículo.'
-            },
-            {
-              id: 'w4', num: 4, dir: 'H', r: 3, c: 1, word: 'BALIZA',
-              clue: 'Luces intermitentes de emergencia obligatorias para señalar avería o detención imprevista.'
-            },
-            {
-              id: 'w5', num: 5, dir: 'H', r: 5, c: 1, word: 'VOLANTE',
-              clue: 'Órgano de mando de la dirección que debe sujetarse siempre con ambas manos (posición 9 y 15).'
-            },
-            {
-              id: 'w6', num: 6, dir: 'H', r: 7, c: 1, word: 'MOTOR',
-              clue: 'Propulsor térmico o eléctrico cuyos fluidos y niveles deben revisarse antes de circular.'
-            }
-          ]
-        }
-      ],
-      colectivo: [
-        {
-          id: 'colectivo_1',
-          name: 'Colectivo • Convivencia y Transporte',
-          category: 'Colectivo (Clase D1)',
-          rows: 8,
-          cols: 8,
-          words: [
-            {
-              id: 'w1', num: 1, dir: 'H', r: 1, c: 0, word: 'METROBUS',
-              clue: 'Carril exclusivo segregado para la circulación rápida y segura del transporte de pasajeros.'
-            },
-            {
-              id: 'w2', num: 2, dir: 'V', r: 1, c: 1, word: 'ESPEJOS',
-              clue: 'Dispositivos de visión lateral y gran angular esenciales para reducir el punto ciego.'
-            },
-            {
-              id: 'w3', num: 3, dir: 'H', r: 3, c: 1, word: 'PARADA',
-              clue: 'Lugar señalizado y reglamentario sobre la acera donde debe detenerse la unidad para el ascenso y descenso.'
-            },
-            {
-              id: 'w4', num: 4, dir: 'V', r: 3, c: 3, word: 'RAMPA',
-              clue: 'Dispositivo móvil para garantizar la accesibilidad de personas en silla de ruedas o cochecitos.'
-            },
-            {
-              id: 'w5', num: 5, dir: 'H', r: 7, c: 0, word: 'ESCALON',
-              clue: 'Nivel de acceso a la unidad que requiere peldaños antideslizantes e iluminación adecuada.'
-            }
-          ]
-        }
-      ]
-    };
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// PUZZLES DATA â€” 3 niveles x 3 categorias x 3 puzzles = 27
+// Fuente: MANUAL MOTO 2023 + MANUAL_Vehiculo_4Ruedas_2023 SA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const PUZZLES_DATA = {
+  basico: {
+    moto: [
+      { id:'b_m1', name:'Moto Basico 1 - Equipamiento', category:'Moto (Clase A)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CASCO',   clue:'Proteccion craneal OBLIGATORIA para conductor y acompanante en motovehiculos.'},
+        {id:'w2',num:2,dir:'V',r:0,c:2,word:'OPTICA',  clue:'Faro delantero que debe permanecer encendido las 24 horas en moto.'},
+        {id:'w3',num:3,dir:'H',r:3,c:1,word:'GUANTE',  clue:'Prenda de proteccion en manos que evita abrasion por caida.'},
+        {id:'w4',num:4,dir:'H',r:6,c:1,word:'BOTAS',   clue:'Calzado de cana alta que protege tobillos y pies ante impactos.'},
+        {id:'w5',num:5,dir:'V',r:1,c:5,word:'ASFALTO', clue:'Superficie de rodamiento cuya adherencia cae drasticamente cuando esta mojada.'}
+      ]},
+      { id:'b_m2', name:'Moto Basico 2 - Circulacion', category:'Moto (Clase A)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'FRENO',   clue:'Sistema de seguridad que reduce la velocidad o detiene el vehiculo.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'CALLE',   clue:'Via publica urbana donde rigen las normas del Codigo de Transito.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'LUCES',   clue:'Sistema de iluminacion del vehiculo que debe funcionar correctamente siempre.'},
+        {id:'w4',num:4,dir:'V',r:3,c:2,word:'ESPEJO',  clue:'Dispositivo de vision lateral que reduce el punto ciego en maniobras.'},
+        {id:'w5',num:5,dir:'H',r:6,c:3,word:'PISTA',   clue:'Calzada donde el motociclista debe mantener distancia de seguridad.'}
+      ]},
+      { id:'b_m3', name:'Moto Basico 3 - Senales', category:'Moto (Clase A)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CEDER',   clue:'Dar paso a peatones y vehiculos con prioridad antes de ingresar a una arteria.'},
+        {id:'w2',num:2,dir:'V',r:0,c:2,word:'CURVA',   clue:'Tramo no rectilineo donde se debe reducir velocidad y centrar la trazada.'},
+        {id:'w3',num:3,dir:'H',r:3,c:1,word:'RADIO',   clue:'Medida del giro de una curva que determina la velocidad maxima segura.'},
+        {id:'w4',num:4,dir:'V',r:0,c:5,word:'MANO',    clue:'Sentido habilitado de circulacion; circular en contra es infraccion grave.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'PASO',    clue:'Prioridad que debe respetarse en cruces, rotondas y accesos.'}
+      ]}
+    ],
+    auto: [
+      { id:'b_a1', name:'Auto Basico 1 - Mando y Control', category:'Auto (Clase B)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'VOLANTE', clue:'Organo de direccion; sujetar con ambas manos en posicion 9 y 15 horas.'},
+        {id:'w2',num:2,dir:'V',r:0,c:3,word:'ESPEJO',  clue:'Los tres (central, izq, der) deben revisarse cada 5 segundos al circular.'},
+        {id:'w3',num:3,dir:'H',r:3,c:1,word:'FRENOS',  clue:'Distancia de frenado aumenta al cuadrado con la velocidad del vehiculo.'},
+        {id:'w4',num:4,dir:'V',r:3,c:6,word:'BALIZA',  clue:'Luces intermitentes de emergencia obligatorias al detenerse en zona de peligro.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'BOCINA',  clue:'Senal acustica de emergencia; su uso indebido en zona urbana esta prohibido.'}
+      ]},
+      { id:'b_a2', name:'Auto Basico 2 - Senalizacion Vial', category:'Auto (Clase B)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'SEÃ‘AL',   clue:'Indicacion vertical u horizontal que regula, advierte o informa sobre el transito.'},
+        {id:'w2',num:2,dir:'V',r:0,c:2,word:'SEMAFORO',clue:'Dispositivo luminico de 3 fases que regula el derecho de paso en intersecciones.'},
+        {id:'w3',num:3,dir:'H',r:3,c:3,word:'LINEA',   clue:'Marca horizontal (continua o discontinua) que separa carriles y sentidos.'},
+        {id:'w4',num:4,dir:'V',r:0,c:5,word:'PARADA',  clue:'Lugar senalizado donde se detiene el transporte publico para pasajeros.'},
+        {id:'w5',num:5,dir:'H',r:6,c:3,word:'VERDE',   clue:'Fase del semaforo que habilita el paso; verificar interseccion despejada.'}
+      ]},
+      { id:'b_a3', name:'Auto Basico 3 - Seguridad Pasiva', category:'Auto (Clase B)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CINTURON',clue:'Elemento pasivo obligatorio para todos los ocupantes; reduce mortalidad 45%.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'AIRBAG',  clue:'Bolsa de aire que se infla en ms ante impacto frontal para proteger al conductor.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'BUTACA',  clue:'Asiento con apoyacabezas que debe regularse para reducir el efecto latigo.'},
+        {id:'w4',num:4,dir:'H',r:6,c:0,word:'CASCO',   clue:'Proteccion craneal obligatoria para motos; no aplica a ocupantes de autos.'},
+        {id:'w5',num:5,dir:'V',r:3,c:6,word:'MOTOR',   clue:'Propulsor cuyo estado mecanico debe revisarse segun plan de mantenimiento.'}
+      ]}
+    ],
+    colectivo: [
+      { id:'b_c1', name:'Colectivo Basico 1 - Operacion', category:'Colectivo (Clase D1)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'METROBUS',clue:'Carril exclusivo segregado para circulacion rapida del transporte masivo.'},
+        {id:'w2',num:2,dir:'V',r:0,c:1,word:'ESPEJOS', clue:'Dispositivos gran angulares para detectar puntos ciegos en vehiculos largos.'},
+        {id:'w3',num:3,dir:'H',r:3,c:2,word:'RAMPA',   clue:'Accesorio de accesibilidad universal para sillas de ruedas y cochecitos.'},
+        {id:'w4',num:4,dir:'V',r:0,c:6,word:'PARADA',  clue:'Lugar reglamentario donde la unidad debe detenerse para pasajeros.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'ESCALON', clue:'Peldano de acceso que debe ser antideslizante y con buena iluminacion.'}
+      ]},
+      { id:'b_c2', name:'Colectivo Basico 2 - Pasajeros', category:'Colectivo (Clase D1)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'PUERTA',  clue:'Acceso principal; deben cerrarse antes de que el colectivo circule.'},
+        {id:'w2',num:2,dir:'V',r:0,c:3,word:'PASAJE',  clue:'Tarifa que abona el usuario para usar el transporte publico.'},
+        {id:'w3',num:3,dir:'H',r:3,c:3,word:'SALDO',   clue:'Credito en la tarjeta SUBE para abonar el transporte sin efectivo.'},
+        {id:'w4',num:4,dir:'V',r:3,c:0,word:'RAMPA',   clue:'Accesorio de descenso para personas con movilidad reducida; uso obligatorio.'},
+        {id:'w5',num:5,dir:'H',r:6,c:2,word:'FRENO',   clue:'El conductor debe frenar suavemente para evitar caidas internas de pasajeros.'}
+      ]},
+      { id:'b_c3', name:'Colectivo Basico 3 - Puntos Ciegos', category:'Colectivo (Clase D1)', level:'basico', rows:8, cols:8, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CIEGO',   clue:'Punto ____: zona sin cobertura visual directa ni por espejo en grandes unidades.'},
+        {id:'w2',num:2,dir:'V',r:0,c:1,word:'GIRO',    clue:'Maniobra de cambio de direccion que exige seÃ±alizar con suficiente anticipacion.'},
+        {id:'w3',num:3,dir:'H',r:2,c:2,word:'BOCINA',  clue:'Senal acustica usable solo en situaciones de peligro, nunca para urgir el paso.'},
+        {id:'w4',num:4,dir:'V',r:0,c:5,word:'CINTURON',clue:'Obligatorio para el conductor del colectivo en todo momento segun normativa.'},
+        {id:'w5',num:5,dir:'H',r:5,c:0,word:'LUCES',   clue:'Iluminacion obligatoria en lluvia, niebla o tuneles.'}
+      ]}
+    ]
+  },
+  intermedio: {
+    moto: [
+      { id:'i_m1', name:'Moto Intermedio 1 - Dinamica', category:'Moto (Clase A)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'TRACCION', clue:'Fuerza del motor a la rueda trasera; cae drasticamente en superficie mojada.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'INERCIA',  clue:'Resistencia del vehiculo a cambiar su estado de movimiento; aumenta con velocidad.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'RODAJE',   clue:'Periodo de neumaticos nuevos donde debe evitarse el frenado brusco.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'DERRAPE',  clue:'Perdida de traccion lateral por exceso de velocidad en curva o superficie resbaladiza.'},
+        {id:'w5',num:5,dir:'H',r:5,c:3,word:'FRENO',    clue:'En moto: delantero 70% y trasero 30%, aplicados de forma progresiva.'},
+        {id:'w6',num:6,dir:'V',r:0,c:2,word:'VELOCIDAD',clue:'Limite urbano en moto es 60 km/h salvo seÃ±al; aumenta distancia de frenado.'}
+      ]},
+      { id:'i_m2', name:'Moto Intermedio 2 - Codigo y Licencias', category:'Moto (Clase A)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'LICENCIA', clue:'Habilitacion para conducir; categoria A para motovehiculos, emitida por autoridad.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'SANCION',  clue:'Penalidad economica o restrictiva ante una infraccion de transito.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'PRIORIDAD',clue:'La derecha tiene preferencia en cruces sin seÃ±al segun el Codigo Vial.'},
+        {id:'w4',num:4,dir:'V',r:0,c:2,word:'SEGURO',   clue:'Poliza de responsabilidad civil obligatoria para circular en via publica.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'MULTA',    clue:'Sancion pecuniaria aplicada al infractor de las normas de transito.'},
+        {id:'w6',num:6,dir:'V',r:4,c:8,word:'PLACA',    clue:'Identificacion alfanumerica visible en el vehiculo; obligatoria y legible.'}
+      ]},
+      { id:'i_m3', name:'Moto Intermedio 3 - Visibilidad', category:'Moto (Clase A)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CAMBIO',   clue:'Maniobra de carril que exige espejos, angulo ciego y seÃ±al de giro.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'CARRIL',   clue:'Franja longitudinal en que se divide la calzada para ordenar la circulacion.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'ADELANTAR',clue:'Maniobra de sobrepaso que requiere via libre y distancia suficiente para retorno.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'NIEBLA',   clue:'Condicion que reduce visibilidad; encender luces bajas y reducir velocidad.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'DISTANCIA',clue:'Espacio minimo respecto al vehiculo de adelante; equivale a 2 segundos de margen.'},
+        {id:'w6',num:6,dir:'V',r:4,c:2,word:'SENAL',    clue:'Indicacion luminosa o gestual del conductor para comunicar una maniobra.'}
+      ]}
+    ],
+    auto: [
+      { id:'i_a1', name:'Auto Intermedio 1 - Dinamica Vial', category:'Auto (Clase B)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'FRENADA',  clue:'Distancia de detension aumenta al cuadrado respecto a la velocidad.'},
+        {id:'w2',num:2,dir:'V',r:0,c:3,word:'INERCIA',  clue:'Tendencia a mantener movimiento; explica el deslizamiento post-frenado.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'ACUAPLANE', clue:'Neumatico pierde contacto con asfalto por capa de agua; se pierde control.'},
+        {id:'w4',num:4,dir:'V',r:0,c:6,word:'NEUMATICO',clue:'Su presion y dibujo determinan la adherencia vial; revision mensual.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'COLISION', clue:'Choque entre vehiculos; consecuencias amplificadas con exceso de velocidad.'},
+        {id:'w6',num:6,dir:'V',r:4,c:4,word:'CURVA',    clue:'Sector donde debe reducirse velocidad y trazarse con suavidad.'}
+      ]},
+      { id:'i_a2', name:'Auto Intermedio 2 - Alcohol y Drogas', category:'Auto (Clase B)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'ALCOHOL',  clue:'A partir de 0,5 g/L en sangre inhibe reflejos; limite 0 para motos y jovenes.'},
+        {id:'w2',num:2,dir:'V',r:0,c:3,word:'REFLEJO',  clue:'Capacidad de respuesta involuntaria; se deteriora con alcohol, drogas o sueno.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'FATIGA',   clue:'Estado de cansancio extremo que reduce alertas y tiempo de reaccion.'},
+        {id:'w4',num:4,dir:'V',r:0,c:6,word:'DROGAS',   clue:'PsicotrÃ³picos que alteran percepcion; su deteccion en controles es sancion grave.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'SUENO',    clue:'Somnolencia responsable del 30% de accidentes en rutas; la pausa es obligatoria.'},
+        {id:'w6',num:6,dir:'V',r:4,c:7,word:'VISTA',    clue:'Sentido primario de la conduccion; el alcohol reduce el campo visual 30%.'}
+      ]},
+      { id:'i_a3', name:'Auto Intermedio 3 - Autopistas', category:'Auto (Clase B)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'AUTOPISTA',clue:'Via de alta velocidad con accesos regulados, sin cruces a nivel.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'PEAJE',    clue:'Sistema de cobro de tarifa para el uso de autopistas concesionadas.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'BANQUINA', clue:'Franja lateral reservada para emergencias; no debe usarse para circular.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'LIMITE',   clue:'Velocidad maxima legal; 130 km/h en autopistas salvo indicacion contraria.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'CARAVANA', clue:'Fila de vehiculos; mantener minimo 50 metros de distancia con el de adelante.'},
+        {id:'w6',num:6,dir:'V',r:3,c:8,word:'RADAR',    clue:'Dispositivo que mide velocidad para control policial de infracciones.'}
+      ]}
+    ],
+    colectivo: [
+      { id:'i_c1', name:'Colectivo Intermedio 1 - Habilitacion', category:'Colectivo (Clase D1)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CHOFER',   clue:'Conductor de transporte publico que debe poseer licencia profesional D o E.'},
+        {id:'w2',num:2,dir:'V',r:0,c:3,word:'CURSO',    clue:'Capacitacion obligatoria periodica para conductores profesionales.'},
+        {id:'w3',num:3,dir:'V',r:0,c:6,word:'SALUD',    clue:'Estado fisico y mental que se debe acreditar con examen psicofisico periodico.'},
+        {id:'w4',num:4,dir:'H',r:4,c:0,word:'JORNADA',  clue:'Periodo maximo de conduccion continua; normativa limita horas para prevenir fatiga.'},
+        {id:'w5',num:5,dir:'V',r:4,c:8,word:'REPOSO',   clue:'Periodo obligatorio entre jornadas para recuperar la capacidad de alerta.'},
+        {id:'w6',num:6,dir:'H',r:7,c:0,word:'APTO',     clue:'Condicion acreditada tras superar el examen psicofisico; habilita para conducir.'}
+      ]},
+      { id:'i_c2', name:'Colectivo Intermedio 2 - Intersecciones', category:'Colectivo (Clase D1)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'GIRO',     clue:'Maniobra en vehiculos grandes que requiere seÃ±al anticipada y radio amplio.'},
+        {id:'w2',num:2,dir:'V',r:0,c:2,word:'ROTONDA',  clue:'Interseccion circular; prioridad del vehiculo que ya circula dentro.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'SEÃ‘AL',    clue:'Indicacion previa que el conductor emite antes de cualquier maniobra.'},
+        {id:'w4',num:4,dir:'V',r:0,c:5,word:'CRUCE',    clue:'Interseccion de vias; exige velocidad reducida y atencion especial.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'PEATONES', clue:'Usuarios mas vulnerables; siempre tienen prioridad en la senda peatonal.'},
+        {id:'w6',num:6,dir:'V',r:3,c:7,word:'AVANCE',   clue:'Movimiento hacia adelante de la unidad; en parada debe ser lento y progresivo.'}
+      ]},
+      { id:'i_c3', name:'Colectivo Intermedio 3 - Emergencias', category:'Colectivo (Clase D1)', level:'intermedio', rows:9, cols:9, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'EVACUACION',clue:'Desalojo ordenado de la unidad ante una emergencia o accidente.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'EXTINTOR', clue:'Equipo obligatorio; el conductor debe conocer su ubicacion y forma de uso.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'BOTIQUIN', clue:'Caja de primeros auxilios de porte obligatorio en toda unidad de transporte.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'SALIDA',   clue:'Puerta de emergencia posterior; seÃ±alizada, desbloqueada y libre de obstaculos.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'RADIO',    clue:'Sistema de comunicaciones para reportar incidentes a la central de operaciones.'},
+        {id:'w6',num:6,dir:'V',r:4,c:3,word:'AVISO',    clue:'Notificacion inmediata a central y emergencias ante cualquier incidente.'}
+      ]}
+    ]
+  },
+  experto: {
+    moto: [
+      { id:'e_m1', name:'Moto Experto 1 - Accidentologia', category:'Moto (Clase A)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'ENERGIA',   clue:'Magnitud fisica (1/2mv2) que aumenta con el cuadrado de la velocidad; su disipacion causa lesiones.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'TRAUMA',    clue:'Lesion corporal producida por la energia cinetica liberada en colision o caida.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'VICTIMA',   clue:'Persona afectada por un siniestro; motociclistas encabezan la estadistica en Argentina.'},
+        {id:'w4',num:4,dir:'V',r:0,c:8,word:'CASCO',     clue:'Reductor del riesgo de muerte en 40%; debe ser certificado ECE 22.06 o DOT.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'AIRBAG',    clue:'Chaleco inflable para motociclistas; activacion en 100 ms ante impacto frontal.'},
+        {id:'w6',num:6,dir:'V',r:3,c:6,word:'FUERZA',    clue:'Masa por aceleracion; a 60 km/h el impacto equivale a caer de un tercer piso.'},
+        {id:'w7',num:7,dir:'H',r:8,c:0,word:'SINIESTRO', clue:'Evento vial con victimas o daÃ±os; su analisis revela causas y permite prevencion.'}
+      ]},
+      { id:'e_m2', name:'Moto Experto 2 - Normativa Tecnica', category:'Moto (Clase A)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'HOMOLOGADO',clue:'Equipo certificado bajo norma ECE o IRAM; garantia de proteccion verificada.'},
+        {id:'w2',num:2,dir:'V',r:0,c:6,word:'NORMA',     clue:'Estandar tecnico (ISO, IRAM, ECE) que define requisitos minimos de seguridad.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'REGLAMENTO',clue:'Norma que especifica detalles tecnicos de circulacion complementando la ley.'},
+        {id:'w4',num:4,dir:'V',r:0,c:3,word:'RESOLUCION',clue:'Acto administrativo que establece requisitos tecnicos para vehiculos y accesorios.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'ANTILOCK',  clue:'Sistema ABS que impide bloqueo de ruedas y mantiene estabilidad al frenar.'},
+        {id:'w6',num:6,dir:'V',r:4,c:5,word:'SEGURO',    clue:'RC Obligatoria: poliza que cubre daÃ±os a terceros; ausencia implica infraccion grave.'}
+      ]},
+      { id:'e_m3', name:'Moto Experto 3 - Factores de Riesgo', category:'Moto (Clase A)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'TEMERARIO', clue:'Conductor que asume riesgos extremos injustificados poniendo en peligro a terceros.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'ALCOHOLEMIA',clue:'Concentracion de alcohol en sangre; limite para motos es 0.0 g/L en Argentina.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'TACOMETRO', clue:'Instrumento que indica las RPM del motor; ayuda a gestionar la caja de cambios.'},
+        {id:'w4',num:4,dir:'V',r:0,c:8,word:'DERIVA',    clue:'Desplazamiento lateral respecto a la trayectoria prevista por perdida de adherencia.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'MORTALIDAD',clue:'Tasa de fallecidos por siniestros; motociclistas son el grupo mas afectado.'},
+        {id:'w6',num:6,dir:'V',r:4,c:3,word:'ESCUDO',    clue:'Elemento de indumentaria (rodilleras, coderas, peto) que protege zonas vitales.'}
+      ]}
+    ],
+    auto: [
+      { id:'e_a1', name:'Auto Experto 1 - Sistemas Electronicos', category:'Auto (Clase B)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'ESTABILIDAD',clue:'El ESP actua para preservarla ante un derrape; propiedad critica en emergencias.'},
+        {id:'w2',num:2,dir:'V',r:0,c:7,word:'SENSOR',    clue:'Dispositivo que mide parametros del vehiculo (velocidad, presion, angulo) en tiempo real.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'BLOQUEO',   clue:'Condicion de rueda que deja de girar al frenar; el ABS lo previene.'},
+        {id:'w4',num:4,dir:'V',r:0,c:3,word:'ELECTRON',  clue:'Base de sistemas modernos de seguridad activa: ABS, ESP, control de traccion.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'AIRBAG',    clue:'Trabaja junto al cinturon para reducir lesiones en impacto; suplementario.'},
+        {id:'w6',num:6,dir:'V',r:4,c:5,word:'RADAR',     clue:'Sensor de distancia y velocidad usado en sistemas de frenado autonomo AEB.'},
+        {id:'w7',num:7,dir:'H',r:8,c:3,word:'PANTALLA',  clue:'Distraccion critica al volante; mirar celular a 90 km/h es 75 metros a ciegas.'}
+      ]},
+      { id:'e_a2', name:'Auto Experto 2 - Responsabilidad Civil y Penal', category:'Auto (Clase B)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CULPOSO',   clue:'Tipo de homicidio por conduccion negligente; pena de 3 a 6 aÃ±os en Argentina.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'NEGLIGENCIA',clue:'Omision de la diligencia debida que genera riesgo y responsabilidad legal.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'IMPUTADO',  clue:'Persona a quien se le atribuye responsabilidad penal en un siniestro con victimas.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'PERITOS',   clue:'Especialistas en accidentologia que reconstruyen un siniestro para la Justicia.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'FUGA',      clue:'Abandono del siniestro sin prestar auxilio; delito con pena de prision efectiva.'},
+        {id:'w6',num:6,dir:'V',r:4,c:5,word:'SEGURO',    clue:'RC Obligatoria; el conductor responde solidariamente ante la victima.'},
+        {id:'w7',num:7,dir:'H',r:8,c:3,word:'JUICIO',    clue:'Proceso legal donde se determina la responsabilidad civil o penal vial.'}
+      ]},
+      { id:'e_a3', name:'Auto Experto 3 - Conduccion Eficiente', category:'Auto (Clase B)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'EFICIENCIA',clue:'Optimizacion del consumo mediante aceleracion suave y anticipacion al trafico.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'EMISION',   clue:'CO2 y gases contaminantes liberados; se reducen con conduccion eficiente.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'GASOIL',    clue:'Carburante diesel cuya combustion incompleta genera particulas finas PM2.5.'},
+        {id:'w4',num:4,dir:'V',r:0,c:8,word:'FILTRO',    clue:'Componente que retiene particulas de los gases de escape del motor.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'NEUMATICO', clue:'Presion correcta reduce 3% el consumo; baja presion aumenta resistencia.'},
+        {id:'w6',num:6,dir:'V',r:4,c:4,word:'MARCHA',    clue:'Relacion de transmision; la conduccion eficiente sube de marcha lo antes posible.'}
+      ]}
+    ],
+    colectivo: [
+      { id:'e_c1', name:'Colectivo Experto 1 - Reglamento Tecnico', category:'Colectivo (Clase D1)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'REGLAMENTO',clue:'Norma que regula dimensiones, equipamiento y condiciones de habilitacion del colectivo.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'INSPECCION',clue:'Verificacion tecnica periodica; detecta fallas en frenos, luces y carroceria.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'NEUMATICO', clue:'En colectivos: dibujo minimo 2 mm; presion controlada en frio segun norma.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'CAMARA',    clue:'Sistema de videovigilancia interior que registra incidentes en la unidad.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'APROBADO',  clue:'Estado de la unidad tras superar la revision tecnica; habilita para circular.'},
+        {id:'w6',num:6,dir:'V',r:4,c:9,word:'FRENOS',    clue:'Sistema critico; revision de pastillas y discos obligatoria cada 30.000 km.'}
+      ]},
+      { id:'e_c2', name:'Colectivo Experto 2 - Accidentologia', category:'Colectivo (Clase D1)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'SINIESTRO', clue:'Evento vial con victimas; su analisis revela causas y permite prevencion futura.'},
+        {id:'w2',num:2,dir:'V',r:0,c:5,word:'PASAJERO',  clue:'En frenadas bruscas puede caer y lesionarse; el conductor es responsable.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'RECORRIDO', clue:'Trayecto habilitado que el colectivo debe cumplir sin desviaciones.'},
+        {id:'w4',num:4,dir:'V',r:0,c:8,word:'VELOCIDAD', clue:'En zona urbana: 40 km/h en avenidas y 30 km/h en calles para colectivos.'},
+        {id:'w5',num:5,dir:'H',r:7,c:0,word:'PROTOCOLO', clue:'Pasos a seguir ante siniestro: asegurar zona, dar aviso y prestar auxilio.'},
+        {id:'w6',num:6,dir:'V',r:4,c:4,word:'LESION',    clue:'DaÃ±o fisico sufrido por pasajero; puede generar responsabilidad civil y penal.'}
+      ]},
+      { id:'e_c3', name:'Colectivo Experto 3 - Sustentabilidad', category:'Colectivo (Clase D1)', level:'experto', rows:10, cols:10, words:[
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'METANO',    clue:'Principal componente del GNC; mas limpio que diesel con menor emision de CO2.'},
+        {id:'w2',num:2,dir:'V',r:0,c:4,word:'VERDE',     clue:'Certificacion de unidad de baja emision; Argentina impulsa flotas electricas y GNC.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'ELECTRICO', clue:'Propulsion que elimina emisiones directas y reduce el ruido en zonas urbanas.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'EMISION',   clue:'Liberacion de gases contaminantes; flota de colectivos representa 15% del total urbano.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'BATERIA',   clue:'Almacenamiento de energia electrica en colectivos; vida util 8 a 10 aÃ±os.'},
+        {id:'w6',num:6,dir:'V',r:3,c:5,word:'RECARGA',   clue:'Reabastecimiento de energia en unidades electricas; lento (5h) o rapido (45 min).'}
+      ]}
+    ]
+  }
+};
 
-    // ── ESTADO DE LA PARTIDA ──
-    let currentCategory = 'moto';
-    let currentPuzzle = null;
-    let gridMatrix = [];
-    let activeWord = null;
-    let activeCell = { r: 0, c: 0 };
-    let hintsRemaining = 2;
-    let hintsUsed = 0;
-    let startTime = 0;
-    let timerInterval = null;
-    let completedWords = new Set();
-    let isFinished = false;
+// CONFIGURACION POR NIVEL
+const LEVEL_CONFIG = {
+  basico:     {label:'BASICO',    hintsMax:3, xpBase:300, xpTimeRef:120, badgeClass:'basico',     trophy:'ðŸŽ–ï¸',  desc:'Buen comienzo â€” dominas los conceptos fundamentales de la seguridad vial.'},
+  intermedio: {label:'INTERMEDIO',hintsMax:2, xpBase:500, xpTimeRef:180, badgeClass:'intermedio', trophy:'ðŸ…',  desc:'Muy bien! Aplicas normas complejas con soltura y precision.'},
+  experto:    {label:'EXPERTO',   hintsMax:1, xpBase:800, xpTimeRef:300, badgeClass:'experto',    trophy:'ðŸ†',  desc:'Maximo nivel! Tu conocimiento tecnico-normativo es excepcional.'}
+};
 
-    // Inicialización del audio
-    const sound = (typeof audioSystem !== 'undefined') ? audioSystem : new SoundSystem();
+// ESTADO
+let currentLevel    = 'basico';
+let currentCategory = 'moto';
+let currentPuzzleIndex = 0;
+let completedPuzzlesInLevel = {};
+let currentPuzzle   = null;
+let gridMatrix      = [];
+let activeWord      = null;
+let activeCell      = {r:0,c:0};
+let hintsRemaining  = 3;
+let hintsUsed       = 0;
+let startTime       = 0;
+let timerInterval   = null;
+let completedWords  = new Set();
+let isFinished      = false;
 
-    // ── DISPARAR VIBRACIÓN TÁCTIL FÍSICA EN SMARTPHONES ──
-    function vibrateHaptic(pattern) {
-      try {
-        if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-          navigator.vibrate(pattern);
-        }
-      } catch (e) {}
+const sound = (typeof audioSystem!=='undefined') ? audioSystem : new SoundSystem();
+
+function vibrateHaptic(p){try{if(navigator&&'vibrate' in navigator)navigator.vibrate(p);}catch(e){}}
+
+function getPuzzles(){
+  return (PUZZLES_DATA[currentLevel]&&PUZZLES_DATA[currentLevel][currentCategory])
+    ? PUZZLES_DATA[currentLevel][currentCategory] : [];
+}
+
+function updateProgressUI(){
+  const puzzles=getPuzzles();
+  const dotsEl=document.getElementById('puzzle-progress-dots');
+  const labelEl=document.getElementById('puzzle-progress-label');
+  const doneSet=(completedPuzzlesInLevel[currentLevel]&&completedPuzzlesInLevel[currentLevel][currentCategory])
+    ? completedPuzzlesInLevel[currentLevel][currentCategory] : new Set();
+  dotsEl.innerHTML='';
+  puzzles.forEach((p,i)=>{
+    const dot=document.createElement('div');
+    dot.className='pdot';
+    if(doneSet.has(p.id)) dot.classList.add('done');
+    else if(i===currentPuzzleIndex) dot.classList.add('active');
+    dotsEl.appendChild(dot);
+  });
+  labelEl.textContent=`Puzzle ${currentPuzzleIndex+1} / ${puzzles.length}`;
+}
+
+function initPuzzle(lv,cat,idx){
+  currentLevel=lv||currentLevel;
+  currentCategory=cat||currentCategory;
+  const cfg=LEVEL_CONFIG[currentLevel];
+  const puzzles=getPuzzles();
+  if(!puzzles||!puzzles.length) return;
+  currentPuzzleIndex=(idx!==undefined)?Math.min(idx,puzzles.length-1):currentPuzzleIndex;
+  currentPuzzle=puzzles[currentPuzzleIndex];
+  hintsRemaining=cfg.hintsMax;hintsUsed=0;
+  completedWords.clear();isFinished=false;
+  document.getElementById('txt-hints-left').textContent=`Auxilio (${hintsRemaining})`;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',b.dataset.level===currentLevel));
+  document.querySelectorAll('.cat-pill').forEach(b=>b.classList.toggle('active',b.dataset.cat===currentCategory));
+  const{rows,cols,words}=currentPuzzle;
+  gridMatrix=Array.from({length:rows},()=>Array.from({length:cols},()=>({isCell:false,char:'',userChar:'',num:null,words:[]})));
+  words.forEach(w=>{
+    for(let i=0;i<w.word.length;i++){
+      const r=w.dir==='H'?w.r:w.r+i;
+      const c=w.dir==='H'?w.c+i:w.c;
+      if(r<0||r>=rows||c<0||c>=cols)continue;
+      const cell=gridMatrix[r][c];
+      cell.isCell=true;cell.char=w.word[i].toUpperCase();
+      if(i===0&&!cell.num)cell.num=w.num;
+      cell.words.push(w);
     }
+  });
+  renderGrid();
+  clearInterval(timerInterval);startTime=performance.now();
+  timerInterval=setInterval(updateTimerUI,1000);updateTimerUI();
+  if(words.length){selectWord(words[0]);focusCell(words[0].r,words[0].c);}
+  updateWordsCountUI();updateProgressUI();
+}
 
-    // ── INICIALIZAR CRUCIGRAMA ──
-    function initPuzzle(catKey) {
-      currentCategory = catKey;
-      const puzzlesList = PUZZLES_DATA[catKey] || PUZZLES_DATA.moto;
-      currentPuzzle = puzzlesList[0];
+function renderGrid(){
+  const g=document.getElementById('crossword-grid');
+  const{rows,cols}=currentPuzzle;
+  g.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  g.innerHTML='';
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const d=gridMatrix[r][c];
+    const div=document.createElement('div');
+    div.className='grid-cell';div.id=`cell-${r}-${c}`;
+    if(!d.isCell){div.classList.add('empty');}
+    else{
+      if(d.num){const n=document.createElement('span');n.className='grid-cell-num';n.textContent=d.num;div.appendChild(n);}
+      const s=document.createElement('span');s.className='cell-char-text';s.textContent=d.userChar||'';div.appendChild(s);
+      div.addEventListener('click',()=>handleCellClick(r,c));
+    }
+    g.appendChild(div);
+  }
+}
 
-      hintsRemaining = 2;
-      hintsUsed = 0;
-      completedWords.clear();
-      isFinished = false;
-      document.getElementById('txt-hints-left').textContent = `Auxilio (${hintsRemaining})`;
+function handleCellClick(r,c){
+  vibrateHaptic([30]);sound.playTick();
+  const d=(gridMatrix[r]&&gridMatrix[r][c])?gridMatrix[r][c]:null;
+  if(!d||!d.isCell)return;
+  if(activeCell.r===r&&activeCell.c===c&&d.words.length>1){
+    const nw=d.words.find(w=>w.id!==activeWord.id);
+    if(nw){selectWord(nw);focusCell(r,c);return;}
+  }
+  if(!activeWord||!d.words.some(w=>w.id===activeWord.id))selectWord(d.words[0]);
+  focusCell(r,c);
+}
+function selectWord(w){activeWord=w;updateClueBannerUI();highlightWordCells();}
+function focusCell(r,c){
+  activeCell={r,c};
+  document.querySelectorAll('.grid-cell').forEach(e=>e.classList.remove('active-focus'));
+  const e=document.getElementById(`cell-${r}-${c}`);if(e)e.classList.add('active-focus');
+}
+function highlightWordCells(){
+  document.querySelectorAll('.grid-cell').forEach(e=>e.classList.remove('highlight-word'));
+  if(!activeWord)return;
+  for(let i=0;i<activeWord.word.length;i++){
+    const r=activeWord.dir==='H'?activeWord.r:activeWord.r+i;
+    const c=activeWord.dir==='H'?activeWord.c+i:activeWord.c;
+    const e=document.getElementById(`cell-${r}-${c}`);if(e)e.classList.add('highlight-word');
+  }
+}
+function updateClueBannerUI(){
+  if(!activeWord)return;
+  const d=activeWord.dir==='H'?'HORIZONTAL':'VERTICAL';
+  document.getElementById('clue-dir-badge').textContent=`${d} ${activeWord.num}`;
+  document.getElementById('clue-len-badge').textContent=`(${activeWord.word.length} letras)`;
+  document.getElementById('clue-text').textContent=activeWord.clue;
+}
 
-      // Actualizar botón de categorías
-      document.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.cat === catKey);
-      });
-
-      // Crear matriz vacía
-      const { rows, cols, words } = currentPuzzle;
-      gridMatrix = Array.from({ length: rows }, () => 
-        Array.from({ length: cols }, () => ({
-          isCell: false,
-          char: '',
-          userChar: '',
-          num: null,
-          words: []
+function inputChar(ch){
+  if(isFinished||!activeWord)return;
+  vibrateHaptic([30]);sound.playTick();
+  const{r,c}=activeCell;
+  const d=(gridMatrix[r]&&gridMatrix[r][c])?gridMatrix[r][c]:null;
+  if(!d||!d.isCell)return;
+  d.userChar=ch.toUpperCase();
+  const e=document.getElementById(`cell-${r}-${c}`);
+  if(e){const s=e.querySelector('.cell-char-text');if(s)s.textContent=d.userChar;}
+  checkWord();advanceCursor(1);
+}
+function deleteChar(){
+  if(isFinished||!activeWord)return;
+  vibrateHaptic([30]);sound.playTick();
+  const{r,c}=activeCell;
+  const d=(gridMatrix[r]&&gridMatrix[r][c])?gridMatrix[r][c]:null;
+  if(d&&d.userChar!==''){
+    d.userChar='';
+    const e=document.getElementById(`cell-${r}-${c}`);
+    if(e){const s=e.querySelector('.cell-char-text');if(s)s.textContent='';}
+    advanceCursor(-1);
+  } else {
+    advanceCursor(-1);
+    const p=activeCell;
+    const pd=(gridMatrix[p.r]&&gridMatrix[p.r][p.c])?gridMatrix[p.r][p.c]:null;
+    if(pd){pd.userChar='';const pe=document.getElementById(`cell-${p.r}-${p.c}`);if(pe){const ps=pe.querySelector('.cell-char-text');if(ps)ps.textContent='';}}
+  }
+}
+function advanceCursor(step){
+  if(!activeWord)return;
+  const len=activeWord.word.length;let curIdx=-1;
+  for(let i=0;i<len;i++){
+    const r=activeWord.dir==='H'?activeWord.r:activeWord.r+i;
+    const c=activeWord.dir==='H'?activeWord.c+i:activeWord.c;
+    if(r===activeCell.r&&c===activeCell.c){curIdx=i;break;}
+  }
+  if(curIdx===-1){focusCell(activeWord.r,activeWord.c);return;}
+  const ni=curIdx+step;
+  if(ni>=0&&ni<len){
+    const nr=activeWord.dir==='H'?activeWord.r:activeWord.r+ni;
+    const nc=activeWord.dir==='H'?activeWord.c+ni:activeWord.c;
+    focusCell(nr,nc);
+  }
+}
+function checkWord(){
+  if(!activeWord)return;
+  const len=activeWord.word.length;let entered='';
+  for(let i=0;i<len;i++){
+    const r=activeWord.dir==='H'?activeWord.r:activeWord.r+i;
+    const c=activeWord.dir==='H'?activeWord.c+i:activeWord.c;
+    const cell=(gridMatrix[r]&&gridMatrix[r][c])?gridMatrix[r][c]:null;
+    if(!cell||!cell.isCell)return;
+    entered+=cell.userChar||' ';
+  }
+  if(entered===activeWord.word&&!completedWords.has(activeWord.id)){
+    completedWords.add(activeWord.id);
+    vibrateHaptic([50,50,50]);sound.playCorrect();
+    for(let i=0;i<len;i++){
+      const r=activeWord.dir==='H'?activeWord.r:activeWord.r+i;
+      const c=activeWord.dir==='H'?activeWord.c+i:activeWord.c;
+      const e=document.getElementById(`cell-${r}-${c}`);
+      if(e){e.classList.add('word-completed','glow-anim');setTimeout(()=>e.classList.remove('glow-anim'),500);}
+    }
+    updateWordsCountUI();
+    if(completedWords.size===currentPuzzle.words.length)handleVictory();
+    else setTimeout(jumpNext,400);
+  }
+}
+function jumpNext(){
+  const nw=currentPuzzle.words.find(w=>!completedWords.has(w.id));
+  if(nw){
+    selectWord(nw);
+    for(let i=0;i<nw.word.length;i++){
+      const r=nw.dir==='H'?nw.r:nw.r+i;
+      const c=nw.dir==='H'?nw.c+i:nw.c;
+      if(gridMatrix[r]&&gridMatrix[r][c]&&!gridMatrix[r][c].userChar){focusCell(r,c);return;}
+    }
+    focusCell(nw.r,nw.c);
+  }
+}
+function updateWordsCountUI(){
+  document.getElementById('txt-words-count').textContent=`${completedWords.size} / ${currentPuzzle.words.length} palabras`;
+}
+function useHint(){
+  if(isFinished||hintsRemaining<=0||!activeWord)return;
+  const{r,c}=activeCell;
+  const d=(gridMatrix[r]&&gridMatrix[r][c])?gridMatrix[r][c]:null;
+  if(!d||!d.isCell)return;
+  vibrateHaptic([50,50,50]);sound.playCorrect();
+  hintsRemaining--;hintsUsed++;
+  document.getElementById('txt-hints-left').textContent=`Auxilio (${hintsRemaining})`;
+  d.userChar=d.char;
+  const e=document.getElementById(`cell-${r}-${c}`);
+  if(e){const s=e.querySelector('.cell-char-text');if(s){s.textContent=d.char;s.style.color='var(--accent-cyan)';}}
+  checkWord();advanceCursor(1);
+}
+function updateTimerUI(){
+  if(isFinished)return;
+  const sec=Math.floor((performance.now()-startTime)/1000);
+  document.getElementById('txt-timer').textContent=
+    `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+}
+function handleVictory(){
+  isFinished=true;clearInterval(timerInterval);
+  const cfg=LEVEL_CONFIG[currentLevel];
+  const sec=Math.floor((performance.now()-startTime)/1000);
+  const timeStr=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+  const total=currentPuzzle.words.length;
+  const xp=Math.max(cfg.xpBase*0.3|0,cfg.xpBase+Math.max(0,cfg.xpTimeRef-sec)*2-hintsUsed*50);
+  vibrateHaptic([50,50,200,50,50]);sound.playFanfare();
+  if(!completedPuzzlesInLevel[currentLevel])completedPuzzlesInLevel[currentLevel]={};
+  if(!completedPuzzlesInLevel[currentLevel][currentCategory])completedPuzzlesInLevel[currentLevel][currentCategory]=new Set();
+  completedPuzzlesInLevel[currentLevel][currentCategory].add(currentPuzzle.id);
+  try{
+    if(window.VialCloudSync&&typeof window.VialCloudSync.syncGameSession==='function'){
+      window.VialCloudSync.syncGameSession({
+        game:'crucigrama',
+        category:`Crucigrama ${currentPuzzle.category} [${cfg.label}]`,
+        score:xp,time:sec,accuracy:`${total}/${total}`,
+        details:currentPuzzle.words.map(w=>({
+          question:`[${w.dir==='H'?'Horizontal':'Vertical'} ${w.num}] ${w.clue}`,
+          selected:w.word,expected:w.word,word:w.word,clue:w.clue,
+          isCorrect:true,points:Math.round(xp/total),timeSeconds:+(sec/total).toFixed(1)
         }))
-      );
-
-      // Poblar palabras y celdas
-      words.forEach(w => {
-        const len = w.word.length;
-        for (let i = 0; i < len; i++) {
-          const r = w.dir === 'H' ? w.r : w.r + i;
-          const c = w.dir === 'H' ? w.c + i : w.c;
-          if (r < 0 || r >= rows || c < 0 || c >= cols) continue;
-          if (!gridMatrix[r] || !gridMatrix[r][c]) continue;
-
-          const cell = gridMatrix[r][c];
-          cell.isCell = true;
-          cell.char = w.word[i].toUpperCase();
-          if (i === 0 && !cell.num) cell.num = w.num;
-          cell.words.push(w);
-        }
       });
-
-      // Renderizar grilla en el DOM
-      renderGridDOM();
-
-      // Iniciar cronómetro
-      clearInterval(timerInterval);
-      startTime = performance.now();
-      timerInterval = setInterval(updateTimerUI, 1000);
-      updateTimerUI();
-
-      // Seleccionar primera palabra y enfocar su primera celda
-      if (words.length > 0) {
-        selectWord(words[0]);
-        focusCell(words[0].r, words[0].c);
-      }
-      updateWordsCountUI();
     }
+  }catch(err){console.warn('CloudSync error:',err);}
+  const puzzles=getPuzzles();
+  const hasNext=currentPuzzleIndex<puzzles.length-1;
+  document.getElementById('btn-next-puzzle-text').textContent=hasNext?'SIGUIENTE DESAFIO':'REPETIR CATEGORIA';
+  document.getElementById('btn-next-puzzle').querySelector('.material-symbols-outlined').textContent=hasNext?'arrow_forward':'refresh';
+  document.getElementById('modal-trophy').textContent=cfg.trophy;
+  const badge=document.getElementById('modal-level-badge');
+  badge.textContent=cfg.label;badge.className=`modal-level-badge ${cfg.badgeClass} level-pop`;
+  document.getElementById('modal-victory-desc').textContent=cfg.desc;
+  document.getElementById('res-time').textContent=timeStr;
+  document.getElementById('res-xp').textContent=`+${xp} XP`;
+  document.getElementById('res-words').textContent=`${total} / ${total}`;
+  document.getElementById('res-hints').textContent=`${hintsUsed} de ${cfg.hintsMax}`;
+  document.getElementById('modal-victory').classList.add('show');
+  updateProgressUI();
+}
+function navClue(delta){
+  if(!activeWord)return;
+  const ws=currentPuzzle.words;
+  const idx=ws.findIndex(w=>w.id===activeWord.id);
+  const ni=(idx+delta+ws.length)%ws.length;
+  selectWord(ws[ni]);focusCell(ws[ni].r,ws[ni].c);
+}
 
-    // ── RENDERIZAR TABLERO ──
-    function renderGridDOM() {
-      const gridEl = document.getElementById('crossword-grid');
-      const { rows, cols } = currentPuzzle;
+// EVENTOS
+document.getElementById('btn-prev-clue').addEventListener('click',()=>navClue(-1));
+document.getElementById('btn-next-clue').addEventListener('click',()=>navClue(1));
+document.getElementById('btn-lifeline').addEventListener('click',useHint);
+document.getElementById('key-hint-btn').addEventListener('click',useHint);
+document.getElementById('key-del-btn').addEventListener('click',deleteChar);
+document.querySelectorAll('.key-btn[data-key]').forEach(b=>b.addEventListener('click',()=>inputChar(b.dataset.key)));
+window.addEventListener('keydown',e=>{
+  if(isFinished)return;
+  if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();deleteChar();}
+  else if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();advanceCursor(1);}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();advanceCursor(-1);}
+  else if(e.key==='Tab'){e.preventDefault();navClue(1);}
+  else if(/^[a-zA-ZÃ±Ã‘]$/.test(e.key)){e.preventDefault();inputChar(e.key);}
+});
+document.querySelectorAll('.level-btn').forEach(b=>b.addEventListener('click',()=>{
+  currentPuzzleIndex=0;initPuzzle(b.dataset.level,currentCategory,0);
+}));
+document.querySelectorAll('.cat-pill').forEach(b=>b.addEventListener('click',()=>{
+  currentPuzzleIndex=0;initPuzzle(currentLevel,b.dataset.cat,0);
+}));
+document.getElementById('btn-next-puzzle').addEventListener('click',()=>{
+  document.getElementById('modal-victory').classList.remove('show');
+  const p=getPuzzles();
+  if(currentPuzzleIndex<p.length-1){currentPuzzleIndex++;initPuzzle(currentLevel,currentCategory,currentPuzzleIndex);}
+  else{currentPuzzleIndex=0;initPuzzle(currentLevel,currentCategory,0);}
+});
+const btnS=document.getElementById('btn-sound-toggle'),sIco=document.getElementById('sound-icon');
+btnS.addEventListener('click',()=>{sIco.textContent=sound.toggleSound()?'volume_up':'volume_off';});
 
-      gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-      gridEl.innerHTML = '';
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const cellData = gridMatrix[r][c];
-          const cellDiv = document.createElement('div');
-          cellDiv.className = 'grid-cell';
-          cellDiv.id = `cell-${r}-${c}`;
-
-          if (!cellData.isCell) {
-            cellDiv.classList.add('empty');
-          } else {
-            if (cellData.num) {
-              const numSpan = document.createElement('span');
-              numSpan.className = 'grid-cell-num';
-              numSpan.textContent = cellData.num;
-              cellDiv.appendChild(numSpan);
-            }
-
-            const charSpan = document.createElement('span');
-            charSpan.className = 'cell-char-text';
-            charSpan.textContent = cellData.userChar || '';
-            cellDiv.appendChild(charSpan);
-
-            cellDiv.addEventListener('click', () => handleCellClick(r, c));
-          }
-
-          gridEl.appendChild(cellDiv);
-        }
-      }
-    }
-
-    // ── SELECCIÓN DE PALABRA Y FOCO DE CELDA ──
-    function handleCellClick(r, c) {
-      vibrateHaptic([30]);
-      sound.playTick();
-
-      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
-      if (!cellData || !cellData.isCell) return;
-
-      // Si la celda pertenece a más de una palabra (intersección) y ya está activa, alternar palabra
-      if (activeCell.r === r && activeCell.c === c && cellData.words.length > 1) {
-        const nextWord = cellData.words.find(w => w.id !== activeWord.id);
-        if (nextWord) {
-          selectWord(nextWord);
-          focusCell(r, c);
-          return;
-        }
-      }
-
-      // Si la celda no pertenece a la palabra activa actual, seleccionar la palabra de esa celda
-      if (!activeWord || !cellData.words.some(w => w.id === activeWord.id)) {
-        selectWord(cellData.words[0]);
-      }
-
-      focusCell(r, c);
-    }
-
-    function selectWord(word) {
-      activeWord = word;
-      updateClueBannerUI();
-      highlightWordCells();
-    }
-
-    function focusCell(r, c) {
-      activeCell = { r, c };
-      document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('active-focus'));
-      const activeEl = document.getElementById(`cell-${r}-${c}`);
-      if (activeEl) activeEl.classList.add('active-focus');
-    }
-
-    function highlightWordCells() {
-      document.querySelectorAll('.grid-cell').forEach(el => el.classList.remove('highlight-word'));
-      if (!activeWord) return;
-
-      const len = activeWord.word.length;
-      for (let i = 0; i < len; i++) {
-        const r = activeWord.dir === 'H' ? activeWord.r : activeWord.r + i;
-        const c = activeWord.dir === 'H' ? activeWord.c + i : activeWord.c;
-        const cellEl = document.getElementById(`cell-${r}-${c}`);
-        if (cellEl) cellEl.classList.add('highlight-word');
-      }
-    }
-
-    function updateClueBannerUI() {
-      if (!activeWord) return;
-      const dirText = activeWord.dir === 'H' ? '➡️ HORIZONTAL' : '⬇️ VERTICAL';
-      document.getElementById('clue-dir-badge').textContent = `${dirText} ${activeWord.num}`;
-      document.getElementById('clue-len-badge').textContent = `(${activeWord.word.length} letras)`;
-      document.getElementById('clue-text').textContent = activeWord.clue;
-    }
-
-    // ── ENTRADA DE TEXTO Y NAVEGACIÓN AUTOMÁTICA ──
-    function inputChar(char) {
-      if (isFinished || !activeWord) return;
-      vibrateHaptic([30]);
-      sound.playTick();
-
-      const { r, c } = activeCell;
-      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
-      if (!cellData || !cellData.isCell) return;
-
-      // Asignar letra
-      cellData.userChar = char.toUpperCase();
-      const cellEl = document.getElementById(`cell-${r}-${c}`);
-      if (cellEl) {
-        const charSpan = cellEl.querySelector('.cell-char-text');
-        if (charSpan) charSpan.textContent = cellData.userChar;
-      }
-
-      // Verificar si la palabra se completó correctamente
-      checkActiveWordCompletion();
-
-      // Avanzar al siguiente casillero de la palabra
-      advanceCursor(1);
-    }
-
-    function deleteChar() {
-      if (isFinished || !activeWord) return;
-      vibrateHaptic([30]);
-      sound.playTick();
-
-      const { r, c } = activeCell;
-      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
-
-      if (cellData && cellData.userChar !== '') {
-        cellData.userChar = '';
-        const cellEl = document.getElementById(`cell-${r}-${c}`);
-        if (cellEl) {
-          const charSpan = cellEl.querySelector('.cell-char-text');
-          if (charSpan) charSpan.textContent = '';
-        }
-        advanceCursor(-1);
-      } else {
-        // Retroceder un casillero y borrar
-        advanceCursor(-1);
-        const prev = activeCell;
-        const prevData = (gridMatrix[prev.r] && gridMatrix[prev.r][prev.c]) ? gridMatrix[prev.r][prev.c] : null;
-        if (prevData) {
-          prevData.userChar = '';
-          const prevEl = document.getElementById(`cell-${prev.r}-${prev.c}`);
-          if (prevEl) {
-            const charSpan = prevEl.querySelector('.cell-char-text');
-            if (charSpan) charSpan.textContent = '';
-          }
-        }
-      }
-    }
-
-    function advanceCursor(step = 1) {
-      if (!activeWord) return;
-      const len = activeWord.word.length;
-      let curIndex = -1;
-
-      for (let i = 0; i < len; i++) {
-        const r = activeWord.dir === 'H' ? activeWord.r : activeWord.r + i;
-        const c = activeWord.dir === 'H' ? activeWord.c + i : activeWord.c;
-        if (r === activeCell.r && c === activeCell.c) {
-          curIndex = i;
-          break;
-        }
-      }
-
-      if (curIndex === -1) {
-        focusCell(activeWord.r, activeWord.c);
-        return;
-      }
-
-      const nextIndex = curIndex + step;
-      if (nextIndex >= 0 && nextIndex < len) {
-        const nextR = activeWord.dir === 'H' ? activeWord.r : activeWord.r + nextIndex;
-        const nextC = activeWord.dir === 'H' ? activeWord.c + nextIndex : activeWord.c;
-        focusCell(nextR, nextC);
-      }
-    }
-
-    // ── VERIFICACIÓN DE PALABRA Y VICTORIA ──
-    function checkActiveWordCompletion() {
-      if (!activeWord) return;
-      const len = activeWord.word.length;
-      let entered = '';
-
-      for (let i = 0; i < len; i++) {
-        const r = activeWord.dir === 'H' ? activeWord.r : activeWord.r + i;
-        const c = activeWord.dir === 'H' ? activeWord.c + i : activeWord.c;
-        const cell = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
-        if (!cell || !cell.isCell) return;
-        entered += cell.userChar || ' ';
-      }
-
-      if (entered === activeWord.word) {
-        if (!completedWords.has(activeWord.id)) {
-          completedWords.add(activeWord.id);
-          vibrateHaptic([50, 50, 50]);
-          sound.playCorrect();
-
-          // Resaltar celdas completadas con brillo verde
-          for (let i = 0; i < len; i++) {
-            const r = activeWord.dir === 'H' ? activeWord.r : activeWord.r + i;
-            const c = activeWord.dir === 'H' ? activeWord.c + i : activeWord.c;
-            const el = document.getElementById(`cell-${r}-${c}`);
-            if (el) {
-              el.classList.add('word-completed', 'glow-anim');
-              setTimeout(() => el.classList.remove('glow-anim'), 500);
-            }
-          }
-
-          updateWordsCountUI();
-
-          // Verificar si se completó todo el crucigrama
-          if (completedWords.size === currentPuzzle.words.length) {
-            handleVictory();
-          } else {
-            setTimeout(jumpToNextIncompleteWord, 400);
-          }
-        }
-      }
-    }
-
-    function jumpToNextIncompleteWord() {
-      const nextWord = currentPuzzle.words.find(w => !completedWords.has(w.id));
-      if (nextWord) {
-        selectWord(nextWord);
-        // Buscar primer casillero vacío de la palabra
-        const len = nextWord.word.length;
-        for (let i = 0; i < len; i++) {
-          const r = nextWord.dir === 'H' ? nextWord.r : nextWord.r + i;
-          const c = nextWord.dir === 'H' ? nextWord.c + i : nextWord.c;
-          if (gridMatrix[r] && gridMatrix[r][c] && !gridMatrix[r][c].userChar) {
-            focusCell(r, c);
-            return;
-          }
-        }
-        focusCell(nextWord.r, nextWord.c);
-      }
-    }
-
-    function updateWordsCountUI() {
-      const total = currentPuzzle.words.length;
-      const count = completedWords.size;
-      document.getElementById('txt-words-count').textContent = `${count} / ${total} palabras`;
-    }
-
-    // ── COMODÍN / PISTA DE AUXILIO (💡) ──
-    function useHint() {
-      if (isFinished || hintsRemaining <= 0 || !activeWord) return;
-
-      const { r, c } = activeCell;
-      const cellData = (gridMatrix[r] && gridMatrix[r][c]) ? gridMatrix[r][c] : null;
-      if (!cellData || !cellData.isCell) return;
-
-      vibrateHaptic([50, 50, 50]);
-      sound.playCorrect();
-
-      hintsRemaining--;
-      hintsUsed++;
-      document.getElementById('txt-hints-left').textContent = `Auxilio (${hintsRemaining})`;
-
-      cellData.userChar = cellData.char;
-      const cellEl = document.getElementById(`cell-${r}-${c}`);
-      if (cellEl) {
-        const charSpan = cellEl.querySelector('.cell-char-text');
-        if (charSpan) {
-          charSpan.textContent = cellData.char;
-          charSpan.style.color = 'var(--accent-cyan)';
-        }
-      }
-
-      checkActiveWordCompletion();
-      advanceCursor(1);
-    }
-
-    // ── CRONÓMETRO ──
-    function updateTimerUI() {
-      if (isFinished) return;
-      const elapsedSec = Math.floor((performance.now() - startTime) / 1000);
-      const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
-      const secs = String(elapsedSec % 60).padStart(2, '0');
-      document.getElementById('txt-timer').textContent = `${mins}:${secs}`;
-    }
-
-    // ── FIN DEL JUEGO / VICTORIA ──
-    function handleVictory() {
-      isFinished = true;
-      clearInterval(timerInterval);
-
-      const elapsedSec = Math.floor((performance.now() - startTime) / 1000);
-      const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
-      const secs = String(elapsedSec % 60).padStart(2, '0');
-      const timeStr = `${mins}:${secs}`;
-
-      const totalWords = currentPuzzle.words.length;
-      const basePoints = 300;
-      const speedBonus = Math.max(0, 180 - elapsedSec) * 2;
-      const hintPenalty = hintsUsed * 40;
-      const finalXP = Math.max(100, basePoints + speedBonus - hintPenalty);
-
-      vibrateHaptic([50, 50, 50]);
-      sound.playFanfare();
-
-      // Guardar sesión en CloudSync y Ranking
-      try {
-        if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
-          window.VialCloudSync.syncGameSession({
-            game: 'crucigrama',
-            category: 'Crucigrama ' + (currentPuzzle.category || 'Vial'),
-            score: finalXP,
-            time: Number(elapsedSec),
-            accuracy: `${totalWords}/${totalWords}`,
-            details: currentPuzzle.words.map(w => ({
-              question: `[${w.dir === 'H' ? 'Horizontal' : 'Vertical'} ${w.num}] ${w.clue}`,
-              selected: w.word,
-              expected: w.word,
-              word: w.word,
-              clue: w.clue,
-              isCorrect: true,
-              points: Math.round(finalXP / totalWords),
-              timeSeconds: Number((elapsedSec / totalWords).toFixed(1))
-            }))
-          });
-        }
-      } catch (err) {
-        console.warn('Error sincronizando crucigrama:', err);
-      }
-
-      // Mostrar modal
-      document.getElementById('res-time').textContent = timeStr;
-      document.getElementById('res-xp').textContent = `+${finalXP} XP`;
-      document.getElementById('res-words').textContent = `${totalWords} / ${totalWords}`;
-      document.getElementById('res-hints').textContent = `${hintsUsed} de 2`;
-
-      document.getElementById('modal-victory').classList.add('show');
-    }
-
-    // ── CONTROLES DE PISTAS ANTERIOR / SIGUIENTE ──
-    function navClue(delta) {
-      if (!activeWord) return;
-      const words = currentPuzzle.words;
-      const curIdx = words.findIndex(w => w.id === activeWord.id);
-      let nextIdx = (curIdx + delta + words.length) % words.length;
-      selectWord(words[nextIdx]);
-      focusCell(words[nextIdx].r, words[nextIdx].c);
-    }
-
-    document.getElementById('btn-prev-clue').addEventListener('click', () => navClue(-1));
-    document.getElementById('btn-next-clue').addEventListener('click', () => navClue(1));
-    document.getElementById('btn-lifeline').addEventListener('click', useHint);
-    document.getElementById('key-hint-btn').addEventListener('click', useHint);
-    document.getElementById('key-del-btn').addEventListener('click', deleteChar);
-
-    // Teclado virtual táctil (Solo botones con atributo data-key real)
-    document.querySelectorAll('.key-btn[data-key]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        inputChar(btn.dataset.key);
-      });
-    });
-
-    // Soporte para teclado físico (computadora)
-    window.addEventListener('keydown', (e) => {
-      if (isFinished) return;
-      if (e.key === 'Backspace' || e.key === 'Delete') {
-        e.preventDefault();
-        deleteChar();
-      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        advanceCursor(1);
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        advanceCursor(-1);
-      } else if (e.key === 'Tab') {
-        e.preventDefault();
-        navClue(1);
-      } else if (/^[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/.test(e.key)) {
-        e.preventDefault();
-        inputChar(e.key);
-      }
-    });
-
-    // Pestañas de categorías
-    document.querySelectorAll('.cat-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.dataset.cat;
-        initPuzzle(cat);
-      });
-    });
-
-    // Botón jugar otro desafío
-    document.getElementById('btn-next-puzzle').addEventListener('click', () => {
-      document.getElementById('modal-victory').classList.remove('show');
-      const cats = ['moto', 'auto', 'colectivo'];
-      const nextCat = cats[(cats.indexOf(currentCategory) + 1) % cats.length];
-      initPuzzle(nextCat);
-    });
-
-    // Toggle de sonido
-    const btnSound = document.getElementById('btn-sound-toggle');
-    const soundIcon = document.getElementById('sound-icon');
-    btnSound.addEventListener('click', () => {
-      const isEnabled = sound.toggleSound();
-      soundIcon.textContent = isEnabled ? 'volume_up' : 'volume_off';
-    });
-
-    // Auto-detectar categoría según rol del jugador y verificar registro
-    window.addEventListener('DOMContentLoaded', () => {
-      let preferredCat = 'moto';
-      if (window.VialCloudSync && typeof window.VialCloudSync.getActivePlayer === 'function') {
-        const p = window.VialCloudSync.getActivePlayer();
-        const role = (p.role || '').toLowerCase();
-        if (role.includes('auto') || role.includes('particular')) preferredCat = 'auto';
-        else if (role.includes('colect') || role.includes('d1')) preferredCat = 'colectivo';
-        else if (role.includes('moto')) preferredCat = 'moto';
-
-        if (!p.isRegistered && typeof window.VialCloudSync.ensurePlayerRegistered === 'function') {
-          window.VialCloudSync.ensurePlayerRegistered();
-        }
-      }
-      initPuzzle(preferredCat);
-    });
+window.addEventListener('DOMContentLoaded',()=>{
+  let cat='moto';
+  if(window.VialCloudSync&&typeof window.VialCloudSync.getActivePlayer==='function'){
+    const p=window.VialCloudSync.getActivePlayer();
+    const role=(p.role||'').toLowerCase();
+    if(role.includes('auto')||role.includes('particular'))cat='auto';
+    else if(role.includes('colect')||role.includes('d1'))cat='colectivo';
+    if(!p.isRegistered&&typeof window.VialCloudSync.ensurePlayerRegistered==='function')
+      window.VialCloudSync.ensurePlayerRegistered();
+  }
+  currentPuzzleIndex=0;initPuzzle('basico',cat,0);
+});
   </script>
 </body>
 </html>
