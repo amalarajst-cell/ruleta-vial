@@ -665,12 +665,46 @@
         });
       });
 
-      // Renderizar tarjetas de los 5 juegos
+      // ── FUNCIÓN AUXILIAR: Calcular Ranking por Juego ──
+      function getGameRanking(gameKey) {
+        try {
+          const allData = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+          const gameData = allData.filter(e => getEntryGame(e) === gameKey);
+          gameData.sort(compareParticipants);
+          return gameData;
+        } catch(e) { return []; }
+      }
+
+      // Renderizar tarjetas de los juegos (ahora con Rankings)
       const cardsWrap = document.getElementById('vp-game-cards-container');
       Object.keys(gameCardsDef).forEach(key => {
         const def = gameCardsDef[key];
         const gameEntry = data.myGames.find(g => getEntryGame(g) === key);
         const isCompleted = !!gameEntry;
+        
+        // Calcular ranking específico
+        const rankingList = getGameRanking(key);
+        let myPos = -1;
+        if (isCompleted) {
+          const myId = (player.email || player.name || '').toLowerCase().trim();
+          myPos = rankingList.findIndex(e => (e.email || e.name || '').toLowerCase().trim() === myId) + 1;
+        }
+        
+        let rankHtml = '';
+        if (isCompleted && myPos > 0) {
+          let medal = '';
+          if (myPos === 1) medal = '🥇';
+          else if (myPos === 2) medal = '🥈';
+          else if (myPos === 3) medal = '🥉';
+          
+          rankHtml = `
+            <div style="background:rgba(255,255,255,0.08);padding:4px 8px;border-radius:6px;font-size:11px;font-weight:800;color:#fff;display:inline-block;margin-bottom:4px;border:1px solid rgba(255,255,255,0.1);">
+              ${medal} Puesto #${myPos} de ${rankingList.length}
+            </div>
+          `;
+        } else {
+          rankHtml = `<div style="font-size:11px;color:#64748b;margin-bottom:4px;font-weight:600;">Sin clasificar</div>`;
+        }
 
         const card = document.createElement('div');
         card.style.cssText = `
@@ -686,42 +720,55 @@
           cursor: pointer;
           transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
           box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+          position: relative;
+          overflow: hidden;
         `;
+        
+        // Brillo sutil si está en el top 3
+        if (isCompleted && myPos > 0 && myPos <= 3) {
+          card.style.boxShadow = `0 6px 16px rgba(0,0,0,0.45), 0 0 20px ${def.borderColor}55`;
+          card.innerHTML += `<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 0%, ${def.borderColor}22 0%, transparent 60%);pointer-events:none;"></div>`;
+        }
 
-        card.innerHTML = `
-          <div style="position:relative;">
-            <img src="${def.icon}" alt="${def.name}" style="width:64px;height:64px;object-fit:contain;border-radius:50%;box-shadow:0 6px 16px rgba(0,0,0,0.6);border:2.5px solid ${def.borderColor};">
+        card.innerHTML += `
+          <div style="position:relative;z-index:2;">
+            <img src="${def.icon}" alt="${def.name}" style="width:64px;height:64px;object-fit:contain;border-radius:50%;box-shadow:0 6px 16px rgba(0,0,0,0.6);border:2.5px solid ${def.borderColor};background:#131516;">
             ${isCompleted ? `
               <span style="position:absolute;bottom:-2px;right:-2px;background:#00E676;color:#000;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;border:1.5px solid #131516;">✓</span>
             ` : ''}
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:3px;width:100%;">
+          <div style="display:flex;flex-direction:column;gap:4px;width:100%;z-index:2;">
             <div style="font-family:'Archivo Black',sans-serif;font-size:13px;color:${def.color};letter-spacing:0.3px;line-height:1.2;">
               ${def.name}
             </div>
-            <div style="font-size:11px;color:#94a3b8;font-weight:700;">
-              ${isCompleted ? `<strong style="color:#fff;">${gameEntry.score} XP</strong> • ${gameEntry.accuracy || 'Completado'}` : 'Sin partidas'}
+            ${rankHtml}
+            <div style="font-size:10.5px;color:#94a3b8;font-weight:700;">
+              ${isCompleted ? `<strong style="color:#fff;">${gameEntry.score} XP</strong> • ${gameEntry.time > 0 ? gameEntry.time+'s' : (gameEntry.accuracy || 'Completado')}` : 'Aún no jugaste'}
             </div>
           </div>
 
-          <button type="button" style="width:100%;padding:6px 8px;border-radius:8px;background:${isCompleted ? def.borderColor : 'rgba(255,255,255,0.06)'};color:${isCompleted ? '#000' : def.color};border:1px solid ${def.borderColor};font-size:11px;font-weight:900;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;">
-            <span>${isCompleted ? 'VER ACTIVIDAD' : 'COMENZAR'}</span>
+          <button type="button" style="width:100%;padding:6px 8px;border-radius:8px;background:${isCompleted ? def.borderColor : 'rgba(255,255,255,0.06)'};color:${isCompleted ? '#000' : def.color};border:1px solid ${def.borderColor};font-size:11px;font-weight:900;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;z-index:2;">
+            <span>${isCompleted ? 'VER DETALLE Y RANKING' : 'JUGAR AHORA'}</span>
             <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
           </button>
         `;
 
         card.addEventListener('mouseenter', () => {
           card.style.transform = 'translateY(-4px)';
-          card.style.boxShadow = `0 10px 24px rgba(0,0,0,0.6), 0 0 16px ${def.borderColor}44`;
+          card.style.boxShadow = `0 10px 24px rgba(0,0,0,0.6), 0 0 16px ${def.borderColor}66`;
         });
         card.addEventListener('mouseleave', () => {
           card.style.transform = 'translateY(0)';
-          card.style.boxShadow = '0 6px 16px rgba(0,0,0,0.45)';
+          card.style.boxShadow = (isCompleted && myPos > 0 && myPos <= 3) ? `0 6px 16px rgba(0,0,0,0.45), 0 0 20px ${def.borderColor}55` : '0 6px 16px rgba(0,0,0,0.45)';
         });
 
         card.addEventListener('click', () => {
-          renderDetailView(key);
+          if (!isCompleted) {
+            window.location.href = def.link;
+          } else {
+            renderDetailView(key);
+          }
         });
 
         cardsWrap.appendChild(card);
@@ -735,16 +782,66 @@
       const isCompleted = !!gameEntry;
       const gameResponses = data.myResponses.filter(r => (r.game || 'ruleta') === gameKey);
 
+      // Obtener el ranking de este juego para mostrar el top 10
+      let gameRanking = [];
+      try {
+        const allData = JSON.parse(localStorage.getItem('vex_leaderboard') || '[]');
+        gameRanking = allData.filter(e => getEntryGame(e) === gameKey);
+        gameRanking.sort(compareParticipants);
+      } catch(e) {}
+      
+      let top10Html = '';
+      if (gameRanking.length > 0) {
+        top10Html = `
+          <div style="margin-top:24px;">
+            <div style="font-family:'Archivo Black',sans-serif;font-size:15px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+              <span class="material-symbols-outlined" style="color:${def.color};font-size:20px;">leaderboard</span>
+              <span>Top 10 de Jugadores</span>
+            </div>
+            
+            <div style="background:#1c1f21;border:1px solid #2b3033;border-radius:12px;overflow:hidden;">
+              <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left;">
+                <thead style="background:rgba(255,255,255,0.03);border-bottom:1px solid #2b3033;">
+                  <tr>
+                    <th style="padding:10px 12px;color:#94a3b8;font-weight:800;width:50px;text-align:center;">Pos</th>
+                    <th style="padding:10px 12px;color:#94a3b8;font-weight:800;">Piloto</th>
+                    <th style="padding:10px 12px;color:#94a3b8;font-weight:800;text-align:right;">XP</th>
+                    <th style="padding:10px 12px;color:#94a3b8;font-weight:800;text-align:right;">Tiempo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${gameRanking.slice(0, 10).map((r, i) => {
+                    const isMe = (r.email || r.name || '').toLowerCase().trim() === (player.email || player.name || '').toLowerCase().trim();
+                    const rankStr = (i === 0) ? '🥇' : (i === 1) ? '🥈' : (i === 2) ? '🥉' : `#${i+1}`;
+                    return `
+                      <tr style="${isMe ? `background:rgba(255,255,255,0.06);border-left:3px solid ${def.color};` : 'border-bottom:1px solid rgba(255,255,255,0.03);'}">
+                        <td style="padding:10px 12px;font-family:'Archivo Black',sans-serif;text-align:center;color:${i<3?def.color:'#fff'};">${rankStr}</td>
+                        <td style="padding:10px 12px;">
+                          <div style="font-weight:700;color:${isMe ? def.color : '#fff'};">${r.name}</div>
+                          <div style="font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;">${r.role}</div>
+                        </td>
+                        <td style="padding:10px 12px;text-align:right;font-family:'Archivo Black',sans-serif;color:${def.color};">${r.score}</td>
+                        <td style="padding:10px 12px;text-align:right;color:#94a3b8;font-weight:700;">${Number(r.time) > 0 ? r.time+'s' : '-'}</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
       dynamicContainer.innerHTML = `
         <!-- 1. Cabecera con botón de regreso -->
         <div style="background:linear-gradient(135deg,#1e2225 0%,#15181a 100%);padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div style="display:flex;align-items:center;gap:12px;">
             <button type="button" id="vp-btn-back-to-games" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#FFFFFF;padding:7px 14px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
               <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
-              <span>Volver a Mis Juegos</span>
+              <span>Volver</span>
             </button>
             <div style="display:flex;align-items:center;gap:10px;">
-              <img src="${def.icon}" alt="${def.name}" style="width:34px;height:34px;border-radius:50%;border:1.5px solid ${def.borderColor};object-fit:contain;">
+              <img src="${def.icon}" alt="${def.name}" style="width:34px;height:34px;border-radius:50%;border:1.5px solid ${def.borderColor};object-fit:contain;background:#131516;">
               <div>
                 <h2 style="font-size:17px;font-weight:900;color:${def.color};margin:0;font-family:'Archivo Black',sans-serif;letter-spacing:0.5px;">${def.name}</h2>
                 <p style="font-size:11px;color:#8DE2D6;margin:1px 0 0;font-weight:600;">${def.desc}</p>

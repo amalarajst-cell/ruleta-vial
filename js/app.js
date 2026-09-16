@@ -1213,31 +1213,108 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── RENDER LEADERBOARD UI ─────────────────────────────────
+  let currentRankingGame = 'ruleta';
+
   function renderLeaderboardUI() {
+    const gameCardsDef = {
+      ruleta: { name: 'RULETA VIAL', icon: 'assets/ruleta_icono.jpg', color: '#FFC600', borderColor: '#FFC600' },
+      reaccion: { name: 'TIEMPO REACCIÓN', icon: 'assets/reaccion_icono.jpg', color: '#00E676', borderColor: '#00E676' },
+      memotest: { name: 'MEMOTEST', icon: 'assets/memotest_icono.jpg', color: '#FF9100', borderColor: '#FF9100' },
+      alcoholemia: { name: 'ALCOHOLEMIA', icon: 'assets/alcoholemia_icono.jpg', color: '#C084FC', borderColor: '#A855F7' },
+      simulador: { name: 'SIMULADOR', icon: 'assets/simulador_icono.jpg', color: '#38BDF8', borderColor: '#38BDF8' },
+      peligros: { name: 'PELIGROS', icon: 'assets/peligros_icono.jpg', color: '#FF4444', borderColor: '#FF4444' },
+      crucigrama: { name: 'CRUCIGRAMA', icon: 'assets/crucigrama_icono.jpg', color: '#818CF8', borderColor: '#6366F1' }
+    };
+
     const cleanMyEmail = (playerEmail || '').toLowerCase().trim();
-    const myIndex = leaderboard.findIndex(e => (e.email || '').toLowerCase().trim() === cleanMyEmail);
+    const cleanMyName = (playerName || '').toLowerCase().trim();
+    const myId = cleanMyEmail || cleanMyName;
+
+    // Helper para rankear por juego
+    function getGameRanking(gameKey) {
+      let gameData = leaderboard.filter(e => (window.VialCloudSync ? window.VialCloudSync.getEntryGame(e) : e.game) === gameKey);
+      if(window.VialCloudSync) gameData.sort(window.VialCloudSync.compareParticipants);
+      return gameData;
+    }
+
+    const cardsContainer = document.getElementById('ranking-game-cards-container');
+    if (cardsContainer) {
+      cardsContainer.innerHTML = '';
+      Object.keys(gameCardsDef).forEach(key => {
+        const def = gameCardsDef[key];
+        const rankingList = getGameRanking(key);
+        
+        let myPos = -1;
+        if (myId) {
+          myPos = rankingList.findIndex(e => ((e.email||'').toLowerCase().trim() === myId || (e.name||'').toLowerCase().trim() === myId)) + 1;
+        }
+
+        const isSelected = (currentRankingGame === key);
+        
+        let rankHtml = '';
+        if (myPos > 0) {
+          let medal = myPos === 1 ? '🥇' : myPos === 2 ? '🥈' : myPos === 3 ? '🥉' : '';
+          rankHtml = `
+            <div style="background:rgba(255,255,255,0.08);padding:3px 6px;border-radius:4px;font-size:10px;font-weight:800;color:#fff;border:1px solid rgba(255,255,255,0.1);">
+              ${medal} Puesto #${myPos}
+            </div>
+          `;
+        } else {
+          rankHtml = `<div style="font-size:10px;color:var(--tertiary);font-weight:600;">Sin clasificar</div>`;
+        }
+
+        const card = document.createElement('div');
+        card.style.cssText = `
+          background: ${isSelected ? 'rgba(255,255,255,0.08)' : 'var(--surface-variant)'};
+          border: 2px solid ${isSelected ? def.borderColor : 'transparent'};
+          border-radius: 14px;
+          padding: 12px 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 8px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        `;
+        
+        card.innerHTML = `
+          <img src="${def.icon}" alt="${def.name}" style="width:40px;height:40px;object-fit:contain;border-radius:50%;border:2px solid ${def.borderColor};background:#131516;">
+          <div style="font-family:var(--font-display);font-size:11px;color:${def.color};line-height:1.2;">${def.name}</div>
+          ${rankHtml}
+        `;
+
+        card.addEventListener('click', () => {
+          currentRankingGame = key;
+          renderLeaderboardUI();
+        });
+        cardsContainer.appendChild(card);
+      });
+    }
+
+    // Lógica para la tabla y la tarjeta personal (solo del juego seleccionado)
+    const selectedRanking = getGameRanking(currentRankingGame);
+    const def = gameCardsDef[currentRankingGame];
+
+    const myIndex = myId ? selectedRanking.findIndex(e => ((e.email||'').toLowerCase().trim() === myId || (e.name||'').toLowerCase().trim() === myId)) : -1;
 
     if (rankUserPosCard) {
+      rankUserPosCard.style.display = 'block';
+      rankUserPosCard.style.borderColor = def.borderColor;
       if (playerName) {
-        const rankText = myIndex >= 0 ? `Puesto #${myIndex + 1} de ${leaderboard.length}` : 'Aún sin posición (¡Girá la ruleta!)';
+        const rankText = myIndex >= 0 ? `Puesto #${myIndex + 1} de ${selectedRanking.length}` : 'Aún sin posición (¡Juégalo!)';
         rankUserPosCard.innerHTML = `
           <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.06);border:2px solid var(--secondary-container);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.06);border:2px solid ${def.borderColor};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <img src="${getRoleIcon(playerRole)}" style="width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1);">
             </div>
             <div>
-              <div style="font-size:11px;font-weight:700;color:var(--tertiary);text-transform:uppercase;">Tu Perfil Vial</div>
+              <div style="font-size:11px;font-weight:700;color:${def.color};text-transform:uppercase;">Tu Perfil Vial • ${def.name}</div>
               <div style="font-family:var(--font-display);font-size:18px;color:var(--on-surface);">${playerName}</div>
-              <div style="font-size:12px;font-weight:700;color:var(--secondary-container);">${rankText}</div>
+              <div style="font-size:12px;font-weight:700;color:var(--on-surface-variant);">${rankText}</div>
             </div>
-            <button id="btn-change-player-from-rank" style="margin-left:auto;padding:6px 12px;border:1px solid rgba(255,255,255,0.2);border-radius:10px;background:rgba(255,255,255,0.06);color:var(--on-surface-variant);font-size:11px;font-weight:700;cursor:pointer;">
-              Cambiar
-            </button>
           </div>
         `;
-        document.getElementById('btn-change-player-from-rank')?.addEventListener('click', () => {
-          showScreen('register');
-        });
       } else {
         rankUserPosCard.innerHTML = `
           <div style="text-align:center;padding:12px;">
@@ -1248,58 +1325,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Render Top 3 Podium of Honor
-    if (rankPodiumContainer) {
-      if (leaderboard.length >= 1) {
-        const top1 = leaderboard[0];
-        const top2 = leaderboard.length >= 2 ? leaderboard[1] : null;
-        const top3 = leaderboard.length >= 3 ? leaderboard[2] : null;
-
-        rankPodiumContainer.style.display = 'grid';
-        rankPodiumContainer.innerHTML = `
-          <!-- 2nd Place Plata -->
-          <div class="podium-card second">
-            <img src="assets/medals/plata.png" class="podium-img" alt="2° Lugar Plata">
-            <span style="font-family:var(--font-display);font-size:11px;color:#CBD5E1;letter-spacing:0.5px;">2° LUGAR</span>
-            <span style="font-weight:700;font-size:12px;color:var(--on-surface);max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-              ${top2 ? top2.name : '—'}
-            </span>
-            <span style="font-family:var(--font-display);font-size:11px;color:var(--tertiary);">
-              ${top2 ? top2.score + ' XP' : '—'}
-            </span>
-          </div>
-
-          <!-- 1st Place Oro -->
-          <div class="podium-card first">
-            <img src="assets/medals/oro.png" class="podium-img" alt="1° Lugar Oro">
-            <span style="font-family:var(--font-display);font-size:12px;color:var(--secondary-container);letter-spacing:0.5px;">1° LUGAR</span>
-            <span style="font-weight:700;font-size:13px;color:var(--on-surface);max-width:98px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-              ${top1 ? top1.name : '—'}
-            </span>
-            <span style="font-family:var(--font-display);font-size:12px;color:var(--secondary-container);">
-              ${top1 ? top1.score + ' XP' : '—'}
-            </span>
-          </div>
-
-          <!-- 3rd Place Bronce -->
-          <div class="podium-card third">
-            <img src="assets/medals/bronce.png" class="podium-img" alt="3° Lugar Bronce">
-            <span style="font-family:var(--font-display);font-size:11px;color:#CD7F32;letter-spacing:0.5px;">3° LUGAR</span>
-            <span style="font-weight:700;font-size:12px;color:var(--on-surface);max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-              ${top3 ? top3.name : '—'}
-            </span>
-            <span style="font-family:var(--font-display);font-size:11px;color:var(--tertiary);">
-              ${top3 ? top3.score + ' XP' : '—'}
-            </span>
-          </div>
-        `;
-      } else {
-        rankPodiumContainer.style.display = 'none';
-      }
-    }
-
+    // Tabla de Posiciones
     const filterTerm = (rankSearchInput?.value || '').toLowerCase().trim();
-    const filtered = leaderboard.filter(e => {
+    const filtered = selectedRanking.filter(e => {
       if (!filterTerm) return true;
       return (e.name || '').toLowerCase().includes(filterTerm) ||
              (e.email || '').toLowerCase().includes(filterTerm) ||
@@ -1311,13 +1339,13 @@ document.addEventListener('DOMContentLoaded', () => {
         rankTableBody.innerHTML = `
           <tr>
             <td colspan="4" style="text-align:center;padding:24px;color:var(--on-surface-variant);">
-              No se encontraron participantes.
+              No hay jugadores clasificados en este juego.
             </td>
           </tr>
         `;
       } else {
         rankTableBody.innerHTML = filtered.map((e, idx) => {
-          const originalIdx = leaderboard.indexOf(e);
+          const originalIdx = selectedRanking.indexOf(e);
           let medalMarkup = `#${originalIdx + 1}`;
           if (originalIdx === 0) {
             medalMarkup = `<img src="assets/medals/oro.png" class="medal-icon" alt="1°" title="1° Lugar (Oro)">`;
@@ -1326,24 +1354,24 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (originalIdx === 2) {
             medalMarkup = `<img src="assets/medals/bronce.png" class="medal-icon" alt="3°" title="3° Lugar (Bronce)">`;
           }
-          const isMe = cleanMyEmail && (e.email || '').toLowerCase().trim() === cleanMyEmail;
+          const isMe = myId && ((e.email||'').toLowerCase().trim() === myId || (e.name||'').toLowerCase().trim() === myId);
           const userIcon = getRoleIcon(e.role || e.category);
           return `
-            <tr style="${isMe ? 'background:rgba(255,198,0,0.12);font-weight:bold;' : ''}">
-              <td class="rank-medal" style="text-align:center;width:44px;">${medalMarkup}</td>
+            <tr style="${isMe ? `background:rgba(255,255,255,0.06);border-left:3px solid ${def.color};` : ''}">
+              <td class="rank-medal" style="text-align:center;width:44px;color:${originalIdx<3?def.color:''}">${medalMarkup}</td>
               <td>
                 <div style="display:flex;align-items:center;gap:8px;">
                   <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <img src="${userIcon}" style="width:16px;height:16px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
                   </div>
                   <div>
-                    <span style="color:${isMe ? 'var(--secondary-container)' : 'var(--on-surface)'}">${e.name}</span>
+                    <span style="color:${isMe ? def.color : 'var(--on-surface)'};font-weight:${isMe ? '800' : '500'}">${e.name}</span>
                     <div style="font-size:10px;color:var(--tertiary);">${e.category || 'Vial'}</div>
                   </div>
                 </div>
               </td>
-              <td style="text-align:right;font-family:var(--font-display);font-size:16px;color:var(--secondary-container);">${e.score}</td>
-              <td style="text-align:right;font-family:var(--font-display);font-size:13px;color:var(--tertiary);">${Number(e.time).toFixed(2)}s</td>
+              <td style="text-align:right;font-family:var(--font-display);font-size:16px;color:${def.color};">${e.score}</td>
+              <td style="text-align:right;font-family:var(--font-display);font-size:13px;color:var(--tertiary);">${Number(e.time)>0 ? Number(e.time).toFixed(2)+'s' : '-'}</td>
             </tr>
           `;
         }).join('');
