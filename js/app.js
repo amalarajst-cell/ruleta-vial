@@ -8,14 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── SCREEN MANAGEMENT ─────────────────────────────────────
   const screens = {
-    register:  document.getElementById('screen-register'),
-    practice:  document.getElementById('screen-hub'),
-    hub:       document.getElementById('screen-hub'),
-    roulette:  document.getElementById('screen-roulette'),
-    quiz:      document.getElementById('screen-quiz'),
-    results:   document.getElementById('screen-results'),
-    ranking:   document.getElementById('screen-ranking'),
-    admin:     document.getElementById('screen-admin')
+    register:    document.getElementById('screen-register'),
+    campaign:    document.getElementById('screen-campaign'),
+    practice:    document.getElementById('screen-hub'),
+    hub:         document.getElementById('screen-hub'),
+    multiplayer: document.getElementById('screen-multiplayer'),
+    roulette:    document.getElementById('screen-roulette'),
+    quiz:        document.getElementById('screen-quiz'),
+    results:     document.getElementById('screen-results'),
+    ranking:     document.getElementById('screen-ranking'),
+    admin:       document.getElementById('screen-admin')
   };
 
   window.showScreen = showScreen;
@@ -2361,6 +2363,98 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     render();
+  }
+
+  // ── MULTIPLAYER PIN CONTROLLER ────────────────────────────
+  let currentPin = '';
+  const pinSlots = [
+    document.getElementById('pin-slot-0'),
+    document.getElementById('pin-slot-1'),
+    document.getElementById('pin-slot-2'),
+    document.getElementById('pin-slot-3'),
+    document.getElementById('pin-slot-4'),
+    document.getElementById('pin-slot-5')
+  ];
+  const mpStatusMsg = document.getElementById('mp-status-msg');
+
+  function updatePinDisplay() {
+    pinSlots.forEach((slot, idx) => {
+      if (!slot) return;
+      if (idx < currentPin.length) {
+        slot.textContent = currentPin[idx];
+        slot.classList.add('filled');
+        slot.classList.remove('current-focus');
+      } else if (idx === currentPin.length) {
+        slot.textContent = '';
+        slot.classList.remove('filled');
+        slot.classList.add('current-focus');
+      } else {
+        slot.textContent = '';
+        slot.classList.remove('filled', 'current-focus');
+      }
+    });
+
+    if (mpStatusMsg) {
+      if (currentPin.length === 0) {
+        mpStatusMsg.className = 'mp-status-feedback';
+        mpStatusMsg.innerHTML = '<span class="material-symbols-outlined text-[18px]">info</span><span>Esperando ingreso de PIN...</span>';
+      } else if (currentPin.length < 4) {
+        mpStatusMsg.className = 'mp-status-feedback';
+        mpStatusMsg.innerHTML = `<span class="material-symbols-outlined text-[18px]">dialpad</span><span>Ingresados ${currentPin.length}/6 dígitos (mínimo 4)</span>`;
+      } else {
+        mpStatusMsg.className = 'mp-status-feedback success';
+        mpStatusMsg.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span><span>PIN listo. Tocá "Unirme" para conectar</span>';
+      }
+    }
+  }
+
+  // Keypad click handler
+  document.querySelectorAll('.mp-key[data-digit]').forEach(key => {
+    key.addEventListener('click', () => {
+      if (currentPin.length < 6) {
+        currentPin += key.dataset.digit;
+        if (typeof playSound === 'function') playSound('click');
+        updatePinDisplay();
+      }
+    });
+  });
+
+  const btnClearPin = document.getElementById('mp-btn-clear');
+  if (btnClearPin) {
+    btnClearPin.addEventListener('click', () => {
+      if (currentPin.length > 0) {
+        currentPin = currentPin.slice(0, -1);
+        if (typeof playSound === 'function') playSound('click');
+        updatePinDisplay();
+      }
+    });
+  }
+
+  const btnJoinPin = document.getElementById('mp-btn-join');
+  if (btnJoinPin) {
+    btnJoinPin.addEventListener('click', () => {
+      if (currentPin.length < 4) {
+        if (mpStatusMsg) {
+          mpStatusMsg.className = 'mp-status-feedback error';
+          mpStatusMsg.innerHTML = '<span class="material-symbols-outlined text-[18px]">warning</span><span>El PIN debe tener al menos 4 dígitos</span>';
+        }
+        if (typeof playSound === 'function') playSound('wrong');
+        return;
+      }
+
+      if (mpStatusMsg) {
+        mpStatusMsg.className = 'mp-status-feedback';
+        mpStatusMsg.innerHTML = '<span class="material-symbols-outlined text-[18px] rotating">sync</span><span>Buscando sala ' + currentPin + ' en vivo...</span>';
+      }
+
+      setTimeout(() => {
+        if (mpStatusMsg) {
+          mpStatusMsg.className = 'mp-status-feedback success';
+          mpStatusMsg.innerHTML = `<span class="material-symbols-outlined text-[18px]">wifi</span><span>¡Sala ${currentPin} encontrada! Esperando que el moderador inicie la partida...</span>`;
+        }
+        if (typeof playSound === 'function') playSound('correct');
+      }, 1200);
+    });
   }
 
   // ── BOTTOM NAVIGATION HANDLERS ────────────────────────────

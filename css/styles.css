@@ -3075,5 +3075,379 @@ body.admin-mode .bottom-nav {
   background: rgba(56, 189, 248, 0.06);
 }
 
+/* ============================================================
+   SATELLITE CAMPAIGN MAP STYLES
+   ============================================================ */
+.satellite-map-container {
+  position: relative;
+  width: 100%;
+  height: 720px;
+  background: radial-gradient(ellipse at 50% 30%, #172428 0%, #0d1315 70%, #080b0c 100%);
+  border: 1.5px solid rgba(141, 226, 214, 0.25);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(0, 229, 138, 0.05);
+}
 
+/* Retícula Satelital y Coordenadas */
+.satellite-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(141, 226, 214, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(141, 226, 214, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
 
+.satellite-coord {
+  position: absolute;
+  font-family: 'Space Grotesk', monospace, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: rgba(141, 226, 214, 0.45);
+  pointer-events: none;
+  z-index: 2;
+}
+.satellite-coord.top-left {
+  top: 12px;
+  left: 14px;
+}
+.satellite-coord.bottom-right {
+  bottom: 12px;
+  right: 14px;
+}
+
+/* Rutas SVG */
+.satellite-route-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.satellite-path-line {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 8 8;
+  animation: satPathDash 25s linear infinite;
+}
+
+.satellite-path-line.completed {
+  stroke: url(#routeGradActive);
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 138, 0.8));
+}
+
+.satellite-path-line.active {
+  stroke: url(#routeGradActive);
+  filter: drop-shadow(0 0 8px rgba(141, 226, 214, 0.9));
+}
+
+.satellite-path-line.locked {
+  stroke: url(#routeGradLocked);
+  opacity: 0.4;
+}
+
+@keyframes satPathDash {
+  to {
+    stroke-dashoffset: -400;
+  }
+}
+
+/* Capa de Nodos / Paradas */
+.satellite-nodes-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.sat-node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.sat-node:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+.sat-node-core {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s;
+}
+
+/* Nodo Completado */
+.sat-node.completed .sat-node-core {
+  background: #00E58A;
+  color: #121414;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 16px rgba(0, 229, 138, 0.6);
+}
+
+/* Nodo Activo (En Curso) */
+.sat-node.active .sat-node-core {
+  background: var(--secondary-container);
+  color: #121414;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 20px rgba(255, 198, 0, 0.8);
+  animation: pulseGlow 2s infinite;
+}
+
+.sat-node-radar-ping {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--secondary-container);
+  top: -12px;
+  left: -12px;
+  animation: radarPing 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes radarPing {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,198,0,0.7); }
+  50% { transform: scale(1.08); box-shadow: 0 0 26px rgba(255,198,0,1); }
+}
+
+/* Nodo Bloqueado */
+.sat-node.locked .sat-node-core {
+  background: #1C2123;
+  color: #697477;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Nodo Boss Meta */
+.sat-node-boss .boss-core {
+  background: linear-gradient(135deg, #FFC600, #FF9100) !important;
+  color: #121414 !important;
+  border: 2px solid #FFFFFF !important;
+  box-shadow: 0 0 22px rgba(255, 198, 0, 0.8) !important;
+}
+
+.sat-node-card {
+  background: rgba(18, 22, 24, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(141, 226, 214, 0.2);
+  border-radius: 12px;
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  max-width: 220px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.sat-node.active .sat-node-card {
+  border-color: rgba(255, 198, 0, 0.6);
+  background: rgba(26, 28, 24, 0.92);
+}
+
+.sat-node.completed .sat-node-card {
+  border-color: rgba(0, 229, 138, 0.4);
+}
+
+.sat-node-tag {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: var(--tertiary);
+  text-transform: uppercase;
+}
+
+.sat-node-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-top: 1px;
+}
+
+.sat-node-sub {
+  font-size: 10px;
+  color: var(--on-surface-variant);
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   MULTIPLAYER LIVE PIN SCREEN STYLES
+   ============================================================ */
+.multiplayer-hero-badge {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: rgba(255, 198, 0, 0.12);
+  border: 2px solid var(--secondary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 24px rgba(255, 198, 0, 0.35);
+}
+
+.pin-display-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.pin-slot {
+  width: 48px;
+  height: 60px;
+  background: #191E20;
+  border: 2px solid rgba(141, 226, 214, 0.25);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pin-slot.filled {
+  border-color: var(--secondary-container);
+  background: #252824;
+  color: var(--secondary-container);
+  box-shadow: 0 0 16px rgba(255, 198, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.pin-slot.current-focus {
+  border-color: var(--tertiary);
+  box-shadow: 0 0 12px rgba(141, 226, 214, 0.5);
+}
+
+.mp-status-feedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--on-surface-variant);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 38px;
+  transition: all 0.2s;
+}
+
+.mp-status-feedback.error {
+  color: #FF5252;
+  border-color: rgba(255, 82, 82, 0.4);
+  background: rgba(255, 82, 82, 0.08);
+}
+
+.mp-status-feedback.success {
+  color: var(--success);
+  border-color: rgba(0, 229, 138, 0.4);
+  background: rgba(0, 229, 138, 0.08);
+}
+
+/* Teclado Virtual */
+.mp-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.mp-key {
+  height: 56px;
+  background: #1C2224;
+  border: 1.5px solid rgba(141, 226, 214, 0.2);
+  border-radius: 14px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 #0E1213, 0 6px 16px rgba(0, 0, 0, 0.4);
+  transition: all 0.12s;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.mp-key:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0E1213, 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mp-key-clear {
+  color: #FF8A80;
+  background: rgba(255, 82, 82, 0.08);
+  border-color: rgba(255, 82, 82, 0.3);
+}
+
+.mp-key-join {
+  color: #121414;
+  background: var(--secondary-container);
+  border-color: var(--secondary-container);
+  box-shadow: 0 4px 0 #B28B00, 0 6px 16px rgba(255, 198, 0, 0.4);
+}
+
+.mp-key-join:active {
+  box-shadow: 0 1px 0 #B28B00;
+}
+
+/* Bottom Nav Compact Responsive (4 items) */
+@media (max-width: 480px) {
+  .bottom-nav {
+    height: 64px;
+  }
+  .bottom-nav-inner {
+    padding: 0 8px;
+  }
+  .nav-item {
+    padding: 4px 8px;
+    font-size: 10px;
+    gap: 1px;
+  }
+  .nav-item .material-symbols-outlined {
+    font-size: 22px !important;
+  }
+  .pin-slot {
+    width: 42px;
+    height: 52px;
+    font-size: 24px;
+  }
+  .pin-display-container {
+    gap: 6px;
+  }
+  .mp-key {
+    height: 52px;
+    font-size: 20px;
+  }
+}
