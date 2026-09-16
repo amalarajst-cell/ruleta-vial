@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -33,8 +33,10 @@
     .brand-title span{color:var(--accent-indigo);}
 
     /* SELECTOR DE NIVEL */
-    .level-selector-bar{max-width:540px;margin:8px auto 2px;width:100%;padding:0 10px;display:flex;gap:6px;}
-    .level-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border-radius:12px;padding:7px 4px;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border:2px solid transparent;transition:all .2s ease;}
+    .level-selector-bar{max-width:540px;margin:8px auto 2px;width:100%;padding:0 10px;display:flex;gap:6px;min-height:0;}
+    /* Botones de nivel — solo se muestran si tienen la clase .unlocked */
+    .level-btn{flex:1;display:none;align-items:center;justify-content:center;gap:5px;border-radius:12px;padding:7px 4px;font-family:'Archivo Black',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;border:2px solid transparent;transition:all .2s ease;}
+    .level-btn.unlocked{display:flex;}
     .level-btn .material-symbols-outlined{font-size:16px;}
     .level-btn[data-level="basico"]{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;}
     .level-btn[data-level="basico"].active{background:rgba(34,197,94,.22);border-color:var(--lvl-basic);color:#fff;box-shadow:0 0 16px rgba(34,197,94,.4);}
@@ -42,6 +44,8 @@
     .level-btn[data-level="intermedio"].active{background:rgba(245,158,11,.22);border-color:var(--lvl-mid);color:#fff;box-shadow:0 0 16px rgba(245,158,11,.4);}
     .level-btn[data-level="experto"]{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.25);color:#fca5a5;}
     .level-btn[data-level="experto"].active{background:rgba(239,68,68,.22);border-color:var(--lvl-expert);color:#fff;box-shadow:0 0 16px rgba(239,68,68,.4);}
+    /* Ocultar la barra completa si solo hay 1 nivel (basico solo) */
+    .level-selector-bar:has(.level-btn.unlocked:nth-child(1):last-of-type){display:none;}
 
     /* CATEGORÃAS */
     .category-pills-bar{max-width:540px;margin:4px auto 2px;width:100%;padding:0 10px;display:flex;gap:6px;}
@@ -115,6 +119,25 @@
     .glow-anim{animation:wordGlow .5s ease-out;}
     @keyframes levelPop{0%{transform:scale(.8);opacity:0;}60%{transform:scale(1.12);opacity:1;}100%{transform:scale(1);}}
     .level-pop{animation:levelPop .35s ease-out;}
+
+    /* OVERLAY DE DESBLOQUEO */
+    .unlock-overlay{position:fixed;inset:0;background:rgba(0,0,0,0);backdrop-filter:blur(0px);display:flex;align-items:center;justify-content:center;z-index:200;pointer-events:none;transition:background .4s,backdrop-filter .4s;}
+    .unlock-overlay.show{background:rgba(0,0,0,.88);backdrop-filter:blur(12px);pointer-events:auto;}
+    .unlock-card{background:#161a1b;border-radius:24px;padding:28px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:360px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.9);transform:scale(.7) translateY(40px);opacity:0;transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .4s ease;}
+    .unlock-overlay.show .unlock-card{transform:scale(1) translateY(0);opacity:1;}
+    .unlock-icon{font-size:60px;line-height:1;animation:unlockBounce .6s ease-out .3s both;}
+    @keyframes unlockBounce{0%{transform:scale(0) rotate(-20deg);}60%{transform:scale(1.25) rotate(8deg);}80%{transform:scale(.95) rotate(-3deg);}100%{transform:scale(1) rotate(0);}}
+    .unlock-title{font-family:'Archivo Black',sans-serif;font-size:22px;text-transform:uppercase;color:#fff;}
+    .unlock-subtitle{font-size:13px;color:var(--text-muted);line-height:1.4;}
+    .unlock-badge{padding:6px 18px;border-radius:20px;font-family:'Archivo Black',sans-serif;font-size:13px;text-transform:uppercase;}
+    .unlock-badge.intermedio{background:rgba(245,158,11,.2);border:2px solid var(--lvl-mid);color:#fcd34d;}
+    .unlock-badge.experto{background:rgba(239,68,68,.2);border:2px solid var(--lvl-expert);color:#fca5a5;}
+    @keyframes shimmer{0%,100%{opacity:1;}50%{opacity:.6;}}
+    .unlock-btn{background:linear-gradient(135deg,var(--accent-indigo),var(--accent-indigo-dark));color:#fff;font-family:'Archivo Black',sans-serif;font-size:14px;padding:13px 28px;border-radius:14px;border:none;cursor:pointer;text-transform:uppercase;box-shadow:0 6px 0 #312E81;}
+    /* Confetti particles */
+    .confetti-wrap{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;}
+    .cp{position:absolute;top:-10px;width:8px;height:8px;border-radius:2px;animation:fall linear forwards;}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
   </style>
 </head>
 <body>
@@ -138,9 +161,9 @@
     </div>
   </header>
 
-  <!-- SELECTOR DE NIVEL -->
-  <div class="level-selector-bar">
-    <button type="button" class="level-btn active" data-level="basico" id="level-btn-basico">
+  <!-- SELECTOR DE NIVEL (los botones se muestran/ocultan segun desbloqueo) -->
+  <div class="level-selector-bar" id="level-selector-bar">
+    <button type="button" class="level-btn unlocked active" data-level="basico" id="level-btn-basico">
       <span class="material-symbols-outlined">school</span><span>Basico</span>
     </button>
     <button type="button" class="level-btn" data-level="intermedio" id="level-btn-intermedio">
@@ -149,6 +172,18 @@
     <button type="button" class="level-btn" data-level="experto" id="level-btn-experto">
       <span class="material-symbols-outlined">local_fire_department</span><span>Experto</span>
     </button>
+  </div>
+
+  <!-- OVERLAY CELEBRACION DE DESBLOQUEO -->
+  <div class="unlock-overlay" id="unlock-overlay">
+    <div class="confetti-wrap" id="confetti-wrap"></div>
+    <div class="unlock-card">
+      <div class="unlock-icon" id="unlock-icon">🔓</div>
+      <div class="unlock-title">¡Nivel Desbloqueado!</div>
+      <div class="unlock-badge" id="unlock-badge">INTERMEDIO</div>
+      <div class="unlock-subtitle" id="unlock-subtitle">Completaste todos los desafios del nivel anterior. ¡Estas listo para el siguiente reto!</div>
+      <button class="unlock-btn" id="unlock-btn-ok">JUGAR AHORA</button>
+    </div>
   </div>
 
   <!-- SELECTOR DE CATEGORIAS -->
@@ -543,7 +578,71 @@ let timerInterval   = null;
 let completedWords  = new Set();
 let isFinished      = false;
 
-const sound = (typeof audioSystem!=='undefined') ? audioSystem : new SoundSystem();
+// ── SISTEMA DE DESBLOQUEO PROGRESIVO ──────────────────────
+const LS_KEY = 'vial_crucigrama_unlocked';
+// niveles[i] requiere completar PUZZLES_TO_UNLOCK puzzles del nivel anterior
+const LEVEL_ORDER  = ['basico','intermedio','experto'];
+const PUZZLES_TO_UNLOCK = 3; // cuantos puzzles de cualquier categoria antes de desbloquear
+
+function loadUnlocked(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : ['basico'];
+  }catch(e){return ['basico'];}
+}
+function saveUnlocked(arr){
+  try{localStorage.setItem(LS_KEY,JSON.stringify(arr));}catch(e){}
+}
+let unlockedLevels = loadUnlocked();
+
+function applyUnlockUI(){
+  document.querySelectorAll('.level-btn').forEach(b=>{
+    if(unlockedLevels.includes(b.dataset.level)) b.classList.add('unlocked');
+    else b.classList.remove('unlocked');
+  });
+}
+
+// Cuenta cuantos puzzles del nivel 'lv' fueron completados en total (todas las categorias)
+function countCompleted(lv){
+  if(!completedPuzzlesInLevel[lv]) return 0;
+  let n=0;
+  Object.values(completedPuzzlesInLevel[lv]).forEach(s=>n+=s.size);
+  return n;
+}
+
+// Lanza el overlay de celebracion cuando se desbloquea el nivel nextLv
+function triggerUnlockCelebration(nextLv){
+  const cfg=LEVEL_CONFIG[nextLv];
+  const icons={intermedio:'🔓',experto:'💎'};
+  const subtitles={
+    intermedio:'Completaste los desafios Basicos. Ahora enfrentaras preguntas mas complejas. Buena suerte!',
+    experto:'Superaste el nivel Intermedio. El nivel Experto te espera con normativa tecnica avanzada!'
+  };
+  document.getElementById('unlock-icon').textContent=icons[nextLv]||'🔓';
+  const badge=document.getElementById('unlock-badge');
+  badge.textContent=cfg.label;
+  badge.className='unlock-badge '+nextLv;
+  document.getElementById('unlock-subtitle').textContent=subtitles[nextLv]||'';
+
+  // Confetti
+  const wrap=document.getElementById('confetti-wrap');
+  wrap.innerHTML='';
+  const colors=['#FFC600','#6366F1','#00E676','#8DE2D6','#EF4444','#F59E0B'];
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div');
+    p.className='cp';
+    p.style.left=`${Math.random()*100}%`;
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration=`${1.5+Math.random()*2}s`;
+    p.style.animationDelay=`${Math.random()*.8}s`;
+    p.style.width=p.style.height=`${6+Math.floor(Math.random()*8)}px`;
+    p.style.borderRadius=Math.random()>.5?'50%':'2px';
+    wrap.appendChild(p);
+  }
+
+  vibrateHaptic([80,60,80,60,200]);
+  document.getElementById('unlock-overlay').classList.add('show');
+}
 
 function vibrateHaptic(p){try{if(navigator&&'vibrate' in navigator)navigator.vibrate(p);}catch(e){}}
 
@@ -765,9 +864,25 @@ function handleVictory(){
   const total=currentPuzzle.words.length;
   const xp=Math.max(cfg.xpBase*0.3|0,cfg.xpBase+Math.max(0,cfg.xpTimeRef-sec)*2-hintsUsed*50);
   vibrateHaptic([50,50,200,50,50]);sound.playFanfare();
+
+  // Registrar puzzle completado en memoria
   if(!completedPuzzlesInLevel[currentLevel])completedPuzzlesInLevel[currentLevel]={};
   if(!completedPuzzlesInLevel[currentLevel][currentCategory])completedPuzzlesInLevel[currentLevel][currentCategory]=new Set();
   completedPuzzlesInLevel[currentLevel][currentCategory].add(currentPuzzle.id);
+
+  // ── VERIFICAR DESBLOQUEO DEL SIGUIENTE NIVEL ──
+  const nextLvIdx = LEVEL_ORDER.indexOf(currentLevel)+1;
+  if(nextLvIdx < LEVEL_ORDER.length){
+    const nextLv = LEVEL_ORDER[nextLvIdx];
+    if(!unlockedLevels.includes(nextLv) && countCompleted(currentLevel) >= PUZZLES_TO_UNLOCK){
+      unlockedLevels.push(nextLv);
+      saveUnlocked(unlockedLevels);
+      applyUnlockUI();
+      // Mostrar celebracion despues de cerrar el modal de victoria
+      setTimeout(()=>triggerUnlockCelebration(nextLv), 400);
+    }
+  }
+
   try{
     if(window.VialCloudSync&&typeof window.VialCloudSync.syncGameSession==='function'){
       window.VialCloudSync.syncGameSession({
@@ -782,6 +897,7 @@ function handleVictory(){
       });
     }
   }catch(err){console.warn('CloudSync error:',err);}
+
   const puzzles=getPuzzles();
   const hasNext=currentPuzzleIndex<puzzles.length-1;
   document.getElementById('btn-next-puzzle-text').textContent=hasNext?'SIGUIENTE DESAFIO':'REPETIR CATEGORIA';
@@ -821,6 +937,7 @@ window.addEventListener('keydown',e=>{
   else if(/^[a-zA-ZÃ±Ã‘]$/.test(e.key)){e.preventDefault();inputChar(e.key);}
 });
 document.querySelectorAll('.level-btn').forEach(b=>b.addEventListener('click',()=>{
+  if(!b.classList.contains('unlocked'))return;
   currentPuzzleIndex=0;initPuzzle(b.dataset.level,currentCategory,0);
 }));
 document.querySelectorAll('.cat-pill').forEach(b=>b.addEventListener('click',()=>{
@@ -835,7 +952,18 @@ document.getElementById('btn-next-puzzle').addEventListener('click',()=>{
 const btnS=document.getElementById('btn-sound-toggle'),sIco=document.getElementById('sound-icon');
 btnS.addEventListener('click',()=>{sIco.textContent=sound.toggleSound()?'volume_up':'volume_off';});
 
+// Boton del overlay de desbloqueo: cerrar y jugar el nivel nuevo
+document.getElementById('unlock-btn-ok').addEventListener('click',()=>{
+  document.getElementById('unlock-overlay').classList.remove('show');
+  const nextLv=unlockedLevels[unlockedLevels.length-1];
+  currentPuzzleIndex=0;
+  initPuzzle(nextLv,currentCategory,0);
+});
+
 window.addEventListener('DOMContentLoaded',()=>{
+  // Restaurar niveles desbloqueados del localStorage
+  applyUnlockUI();
+
   let cat='moto';
   if(window.VialCloudSync&&typeof window.VialCloudSync.getActivePlayer==='function'){
     const p=window.VialCloudSync.getActivePlayer();
