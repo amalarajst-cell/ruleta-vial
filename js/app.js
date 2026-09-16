@@ -1255,32 +1255,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (myPos > 0) {
           let medal = myPos === 1 ? '🥇' : myPos === 2 ? '🥈' : myPos === 3 ? '🥉' : '';
           rankHtml = `
-            <div style="background:rgba(255,255,255,0.08);padding:3px 6px;border-radius:4px;font-size:10px;font-weight:800;color:#fff;border:1px solid rgba(255,255,255,0.1);">
+            <div style="background:rgba(255,255,255,0.08);padding:6px 12px;border-radius:8px;font-size:13px;font-weight:900;color:#fff;border:1px solid rgba(255,255,255,0.15);">
               ${medal} Puesto #${myPos}
             </div>
           `;
         } else {
-          rankHtml = `<div style="font-size:10px;color:var(--tertiary);font-weight:600;">Sin clasificar</div>`;
+          rankHtml = `<div style="font-size:12px;color:var(--tertiary);font-weight:700;">Sin clasificar</div>`;
         }
 
         const card = document.createElement('div');
         card.style.cssText = `
           background: ${isSelected ? 'rgba(255,255,255,0.08)' : 'var(--surface-variant)'};
-          border: 2px solid ${isSelected ? def.borderColor : 'transparent'};
-          border-radius: 14px;
-          padding: 12px 8px;
+          border: 2.5px solid ${isSelected ? def.borderColor : 'transparent'};
+          border-radius: 16px;
+          padding: 16px 12px;
           display: flex;
           flex-direction: column;
           align-items: center;
           text-align: center;
-          gap: 8px;
+          gap: 12px;
           cursor: pointer;
           transition: all 0.2s ease;
+          ${isSelected ? `box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 16px ${def.borderColor}40; transform: translateY(-2px);` : 'box-shadow: 0 4px 12px rgba(0,0,0,0.3);'}
         `;
         
         card.innerHTML = `
-          <img src="${def.icon}" alt="${def.name}" style="width:40px;height:40px;object-fit:contain;border-radius:50%;border:2px solid ${def.borderColor};background:#131516;">
-          <div style="font-family:var(--font-display);font-size:11px;color:${def.color};line-height:1.2;">${def.name}</div>
+          <img src="${def.icon}" alt="${def.name}" style="width:64px;height:64px;object-fit:contain;border-radius:50%;border:2.5px solid ${def.borderColor};background:#131516;box-shadow:0 6px 12px rgba(0,0,0,0.5);">
+          <div style="font-family:var(--font-display);font-size:14px;color:${def.color};line-height:1.2;letter-spacing:0.5px;">${def.name}</div>
           ${rankHtml}
         `;
 
