@@ -2450,10 +2450,91 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (mpStatusMsg) {
           mpStatusMsg.className = 'mp-status-feedback success';
-          mpStatusMsg.innerHTML = `<span class="material-symbols-outlined text-[18px]">wifi</span><span>¡Sala ${currentPin} encontrada! Esperando que el moderador inicie la partida...</span>`;
+          mpStatusMsg.innerHTML = `<span class="material-symbols-outlined text-[18px]">wifi</span><span>¡Conectado a la Sala ${currentPin}! Mirá el proyector...</span>`;
         }
         if (typeof playSound === 'function') playSound('correct');
-      }, 1200);
+
+        // Inicializar sesión en vivo como participante
+        if (window.LiveGameSession) {
+          const live = new window.LiveGameSession(currentPin, false);
+          const pName = playerName || 'Participante';
+          const myPlayer = live.joinPlayer({
+            name: pName,
+            role: playerRole || 'Auto (Cat B)',
+            avatar: playerAvatar
+          });
+
+          // Ocultar teclado y mostrar vista de juego activa
+          const pinDisplay = document.querySelector('.pin-display-container');
+          const keypad = document.querySelector('.mp-keypad');
+          const activeGamepad = document.getElementById('mp-active-gamepad');
+          const reactionButtons = document.getElementById('mp-reaction-buttons');
+          const instructionText = document.getElementById('mp-gamepad-instruction');
+          const feedbackBox = document.getElementById('mp-response-feedback');
+          const feedbackTime = document.getElementById('mp-feedback-time');
+          const activePinDisplay = document.getElementById('mp-active-room-pin');
+
+          if (pinDisplay) pinDisplay.style.display = 'none';
+          if (keypad) keypad.style.display = 'none';
+          if (activePinDisplay) activePinDisplay.textContent = `PIN: ${currentPin}`;
+          if (activeGamepad) activeGamepad.style.display = 'flex';
+
+          let stimulusActiveStartTime = 0;
+          let hasAnsweredRound = false;
+
+          // Evento: Cuenta regresiva iniciada en el proyector
+          live.on('countdown', (data) => {
+            hasAnsweredRound = false;
+            if (reactionButtons) reactionButtons.style.display = 'none';
+            if (feedbackBox) feedbackBox.style.display = 'none';
+            if (instructionText) {
+              instructionText.innerHTML = `<strong style="color:var(--secondary-container);font-size:18px;">¡ATENCIÓN! La ronda comenzará en instantes...</strong>`;
+            }
+          });
+
+          // Evento: ¡Estímulo activado en la pantalla gigante!
+          live.on('stimulus', (data) => {
+            stimulusActiveStartTime = Date.now();
+            hasAnsweredRound = false;
+            if (reactionButtons) reactionButtons.style.display = 'grid';
+            if (feedbackBox) feedbackBox.style.display = 'none';
+            if (instructionText) {
+              instructionText.innerHTML = `<strong style="color:#00E676;font-size:18px;">¡REACCIONÁ YA EN TU PANTALLA!</strong>`;
+            }
+            if (navigator.vibrate) navigator.vibrate(150);
+          });
+
+          // Configurar pulsadores táctiles
+          document.querySelectorAll('.mp-action-btn').forEach(btn => {
+            btn.onclick = () => {
+              if (hasAnsweredRound || !stimulusActiveStartTime) return;
+              hasAnsweredRound = true;
+              const reactionMs = Date.now() - stimulusActiveStartTime;
+              const chosenAction = btn.dataset.action;
+
+              live.submitReaction(myPlayer.id, chosenAction, reactionMs);
+
+              if (reactionButtons) reactionButtons.style.display = 'none';
+              if (feedbackBox) feedbackBox.style.display = 'block';
+              if (feedbackTime) {
+                feedbackTime.textContent = `Reaccionaste en ${(reactionMs / 1000).toFixed(2)} s`;
+              }
+              if (instructionText) {
+                instructionText.textContent = '¡Esperando resultados en la pantalla gigante!';
+              }
+              if (typeof playSound === 'function') playSound('click');
+            };
+          });
+
+          // Evento: Ronda cerrada / Podio
+          live.on('round_ended', () => {
+            if (reactionButtons) reactionButtons.style.display = 'none';
+            if (instructionText) {
+              instructionText.innerHTML = `🏁 ¡Ronda finalizada! Mirá las posiciones en la pantalla.`;
+            }
+          });
+        }
+      }, 1000);
     });
   }
 

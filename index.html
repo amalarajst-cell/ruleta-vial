@@ -706,12 +706,51 @@
         </button>
       </div>
 
-      <!-- Banner de información de anfitrión -->
       <div style="background:rgba(255,255,255,0.03);border:1px dashed rgba(141,226,214,0.25);border-radius:14px;padding:14px 18px;width:100%;text-align:center;">
         <span style="font-size:12px;color:var(--on-surface-variant);">
           ¿Sos moderador o capacitador? <br>
-          <a href="admin_control.html" style="color:var(--tertiary);text-decoration:underline;font-weight:700;">Crear y proyectar sala desde el Panel Host</a>
+          <a href="live_host.html" style="color:var(--tertiary);text-decoration:underline;font-weight:700;">Abrir Pantalla Proyector / Host en Vivo</a>
         </span>
+      </div>
+
+      <!-- VISTA DINÁMICA DEL PARTICIPANTE CUANDO ESTÁ EN SALA -->
+      <div id="mp-active-gamepad" style="display:none;width:100%;flex-direction:column;gap:18px;align-items:center;">
+        <div style="background:#16181b;border:1.5px solid rgba(255,198,0,0.4);border-radius:20px;padding:16px 20px;width:100%;text-align:center;">
+          <span style="font-size:11px;font-weight:800;color:var(--tertiary);text-transform:uppercase;letter-spacing:1px;">Estás en la Sala</span>
+          <div style="font-family:var(--font-display);font-size:24px;color:#ffffff;margin-top:2px;" id="mp-active-room-pin">PIN: 2026</div>
+          <div style="font-size:13px;color:var(--on-surface-variant);margin-top:6px;" id="mp-gamepad-instruction">
+            ¡Mirá la pantalla gigante! Esperando el próximo estímulo...
+          </div>
+        </div>
+
+        <!-- BOTONERA DE REACCIÓN EN VIVO -->
+        <div id="mp-reaction-buttons" style="display:none;grid-template-columns:repeat(2, 1fr);gap:12px;width:100%;">
+          <button type="button" class="mp-action-btn" data-action="frenar" style="height:110px;border-radius:18px;background:#FF4444;color:#fff;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #b30000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+            <span class="material-symbols-outlined text-[32px]">hand_bones</span>
+            <span>FRENAR</span>
+          </button>
+          <button type="button" class="mp-action-btn" data-action="reducir" style="height:110px;border-radius:18px;background:#38BDF8;color:#000;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #0284c7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+            <span class="material-symbols-outlined text-[32px]">speed</span>
+            <span>REDUCIR</span>
+          </button>
+          <button type="button" class="mp-action-btn" data-action="esquivar" style="height:110px;border-radius:18px;background:#FF9100;color:#000;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #c45500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+            <span class="material-symbols-outlined text-[32px]">swap_horiz</span>
+            <span>ESQUIVAR</span>
+          </button>
+          <button type="button" class="mp-action-btn" data-action="continuar" style="height:110px;border-radius:18px;background:#00E676;color:#000;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #00a352;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+            <span class="material-symbols-outlined text-[32px]">check_circle</span>
+            <span>CONTINUAR</span>
+          </button>
+        </div>
+
+        <!-- FEEDBACK TRAS RESPONDER -->
+        <div id="mp-response-feedback" style="display:none;background:rgba(0,230,118,0.1);border:1.5px solid #00E676;border-radius:16px;padding:16px;width:100%;text-align:center;">
+          <span class="material-symbols-outlined text-[32px]" style="color:#00E676;">verified</span>
+          <div style="font-family:var(--font-display);font-size:18px;color:#ffffff;margin-top:4px;" id="mp-feedback-time">
+            ¡Reacción registrada!
+          </div>
+          <span style="font-size:12px;color:var(--on-surface-variant);">Tu tiempo fue enviado a la pantalla gigante</span>
+        </div>
       </div>
 
     </div>
@@ -1176,6 +1215,7 @@
 
   <!-- Scripts -->
   <script src="js/cloud-sync.js?v=23"></script>
+  <script src="js/realtime-live.js?v=1"></script>
   <script src="js/questions.js?v=8"></script>
   <script src="js/colectivo_questions.js?v=8"></script>
   <script src="js/moto_questions.js?v=8"></script>
