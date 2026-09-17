@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <!-- QRCode.js para generación nativa sin fallos -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -328,16 +330,21 @@
     <!-- 1. LOBBY DE ESPERA -->
     <div class="lobby-view" id="view-lobby">
       <div class="qr-and-instructions">
-        <div class="qr-box">
-          <img id="host-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=http://127.0.0.1:8080/index.html?screen=multiplayer" alt="QR Acceso">
+        <div class="qr-box" style="display:flex;align-items:center;justify-content:center;">
+          <div id="qr-host-container" style="background:#ffffff;padding:10px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.5);width:170px;height:170px;display:flex;align-items:center;justify-content:center;">
+            <!-- Renderizado dinámicamente por QRCode.js -->
+          </div>
         </div>
         <div class="instructions-text">
           <h2>¡Unite ahora con tu celular!</h2>
           <p>
-            1. Escaneá el código QR o ingresá a la app.<br>
-            2. Tocá <strong>"En Vivo"</strong> en la barra inferior.<br>
-            3. Ingresá el PIN <strong style="color:#FFC600;font-size:24px;">2026</strong>.
+            1. Escaneá el código QR con la cámara.<br>
+            2. Ingresarás automáticamente a la sala con el PIN <strong style="color:#FFC600;font-size:24px;">2026</strong>.<br>
+            3. ¡Preparate para reaccionar al estímulo!
           </p>
+          <div style="margin-top:12px;font-size:13px;color:#8DE2D6;font-family:monospace;" id="host-url-preview">
+            https://amalarajst-cell.github.io/ruleta-vial/?pin=2026
+          </div>
         </div>
       </div>
 
@@ -423,6 +430,33 @@
       const stimulusIcon = document.getElementById('stimulus-icon');
       const liveResponsesCount = document.getElementById('live-responses-count');
       const podiumTableBody = document.getElementById('podium-table-body');
+
+      // URL destino para que los participantes ingresen directamente a la sala con PIN
+      const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+      const targetBase = isLocal ? window.location.origin + window.location.pathname.replace('live_host.html', 'index.html') : 'https://amalarajst-cell.github.io/ruleta-vial/';
+      const liveJoinUrl = `${targetBase}?pin=${PIN}`;
+
+      const hostUrlPreview = document.getElementById('host-url-preview');
+      if (hostUrlPreview) hostUrlPreview.textContent = liveJoinUrl;
+
+      // Renderizar código QR dinámico
+      const qrContainer = document.getElementById('qr-host-container');
+      if (qrContainer) {
+        qrContainer.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+          new QRCode(qrContainer, {
+            text: liveJoinUrl,
+            width: 150,
+            height: 150,
+            colorDark: "#000000",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        } else {
+          // Fallback con API externa si no cargó el script
+          qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(liveJoinUrl)}" style="width:150px;height:150px;" alt="QR Vivo">`;
+        }
+      }
 
       // Estímulos de prueba de Tiempo de Reacción
       const stimuli = [

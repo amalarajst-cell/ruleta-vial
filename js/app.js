@@ -2557,8 +2557,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const targetScreen = urlParams.get('screen');
+  const queryPin = urlParams.get('pin');
 
-  if (targetScreen && screens[targetScreen]) {
+  if (queryPin) {
+    // Si viene con PIN en la URL (por ejemplo escaneando el QR del vivo)
+    if (!playerName) {
+      localStorage.setItem('vialplay_player_name', 'Participante');
+      playerName = 'Participante';
+    }
+    updateHeaderDisplay();
+    showScreen('multiplayer');
+
+    // Autocompletar PIN y conectarse
+    setTimeout(() => {
+      currentPin = queryPin.trim();
+      updatePinDisplay();
+      const btnJoin = document.getElementById('mp-btn-join');
+      if (btnJoin) btnJoin.click();
+    }, 400);
+
+  } else if (targetScreen && screens[targetScreen]) {
+    if (targetScreen === 'multiplayer' && !playerName) {
+      localStorage.setItem('vialplay_player_name', 'Participante');
+      playerName = 'Participante';
+    }
     updateHeaderDisplay();
     showScreen(targetScreen);
   } else if (playerName) {
