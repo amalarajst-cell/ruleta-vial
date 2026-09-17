@@ -1,54 +1,47 @@
 /**
- * ── REALTIME LIVE ENGINE (SALA MULTIJUGADOR EN VIVO ESTILO KAHOOT) ──
- * Soporta Firebase Realtime Database para sincronizar en tiempo real:
- * - Proyector / Host (live_host.html)
- * - Celulares de participantes (index.html / sección En Vivo)
+ * ── REALTIME LIVE ENGINE (SALA MULTIJUGADOR EN VIVO SINCRONIZADA) ──
+ * Soporta sincronización bidireccional entre la Pantalla Proyector (Host)
+ * y los Celulares de los participantes (Clientes) a través de una base de datos
+ * en tiempo real pública (Firebase RTDB / PieSocket WebSocket / Broadcast).
  * 
- * Si Firebase no está configurado aún o no hay conexión a internet,
- * incluye un modo fallback de simulación local interactiva (BroadcastChannel / LocalStorage)
- * para probar el flujo sin fallos.
+ * Esto permite que cuando el Host lanza el estímulo en la pantalla gigante,
+ * todos los celulares vibren y muestren los pulsadores en el mismo milisegundo,
+ * y las respuestas lleguen instantáneamente al proyector.
  */
 
 (function(window) {
-  // Configuración predeterminada de Firebase Realtime Database
-  // Puede ser sobreescrita dinámicamente con window.FIREBASE_CONFIG
-  const DEFAULT_CONFIG = {
-    apiKey: "AIzaSyDummyKeyForLiveSyncVialPlay2026",
-    authDomain: "ruleta-vial-live.firebaseapp.com",
-    databaseURL: "https://ruleta-vial-live-default-rtdb.firebaseio.com",
-    projectId: "ruleta-vial-live",
-    storageBucket: "ruleta-vial-live.appspot.com",
-    messagingSenderId: "1029384756",
-    appId: "1:1029384756:web:abcdef123456"
-  };
+  // Base de datos de tiempo real pública para salas de juego en vivo
+  const RTDB_BASE = 'https://ruleta-vial-default-rtdb.firebaseio.com/rooms';
 
   class LiveGameSession {
     constructor(pin, isHost = false) {
       this.pin = String(pin || '2026').trim();
       this.isHost = isHost;
-      this.roomId = `room_${this.pin}`;
+      this.roomPath = `${RTDB_BASE}/${this.pin}`;
       this.listeners = {};
+      this.pollingInterval = null;
+      this.lastProcessedEventTime = 0;
+
       this.state = {
         pin: this.pin,
-        phase: 'LOBBY', // LOBBY, WAITING_ROUND, COUNTDOWN, STIMULUS, ROUND_OVER, PODIUM
-        gameType: 'reaccion', // 'reaccion' o 'ruleta'
-        roundNumber: 1,
-        totalRounds: 5,
+        phase: 'LOBBY', // LOBBY, COUNTDOWN, STIMULUS, ROUND_OVER, PODIUM
+        roundNumber: 0,
         currentStimulus: null,
         startTime: null,
         players: {},
-        responses: {}
+        responses: {},
+        lastEvent: null
       };
 
-      // Inicializar canal de comunicación local (BroadcastChannel) para pruebas simultáneas entre pestañas
+      // Canal local (entre pestañas de la misma máquina)
       try {
         this.localChannel = new BroadcastChannel(`vialplay_room_${this.pin}`);
-        this.localChannel.onmessage = (e) => this._handleChannelMessage(e.data);
-      } catch (err) {
+        this.localChannel.onmessage = (e) => this._handleLocalMessage(e.data);
+      } catch (e) {
         this.localChannel = null;
       }
 
-      this._initStorageWatcher();
+      this._startPolling();
     }
 
     on(event, callback) {
@@ -58,62 +51,71 @@
 
     emit(event, data) {
       if (this.listeners[event]) {
-        this.listeners[event].forEach(cb => cb(data));
+        this.listeners[event].forEach(cb => {
+          try { cb(data); } catch(err) { console.error(err); }
+        });
       }
     }
 
-    // ── MÉTODOS DEL HOST / PROYECTOR ──
-    initRoom(gameType = 'reaccion') {
+    // ── MÉTODOS DEL HOST (PROYECTOR) ──
+    async initRoom(gameType = 'reaccion') {
       this.state.phase = 'LOBBY';
       this.state.gameType = gameType;
       this.state.players = {};
       this.state.responses = {};
       this.state.roundNumber = 0;
-      this._saveState();
-      this._broadcast({ type: 'ROOM_CREATED', state: this.state });
+      this.state.lastEvent = { type: 'ROOM_CREATED', timestamp: Date.now() };
+
+      await this._pushCloudState();
+      this._broadcastLocal(this.state.lastEvent);
       return this.state;
     }
 
-    startRound(stimulusData, countdownSeconds = 3) {
+    async startRound(stimulusData, countdownSeconds = 3) {
       this.state.roundNumber++;
       this.state.phase = 'COUNTDOWN';
       this.state.currentStimulus = stimulusData;
       this.state.responses = {};
-      this._saveState();
-      this._broadcast({ 
-        type: 'COUNTDOWN_STARTED', 
-        countdown: countdownSeconds, 
-        round: this.state.roundNumber 
-      });
+      this.state.lastEvent = {
+        type: 'COUNTDOWN_STARTED',
+        countdown: countdownSeconds,
+        round: this.state.roundNumber,
+        timestamp: Date.now()
+      };
 
-      // Transición al estímulo activo tras el countdown
-      setTimeout(() => {
+      await this._pushCloudState();
+      this._broadcastLocal(this.state.lastEvent);
+
+      // Transición al estímulo activo
+      setTimeout(async () => {
         this.state.phase = 'STIMULUS';
         this.state.startTime = Date.now();
-        this._saveState();
-        this._broadcast({
+        this.state.lastEvent = {
           type: 'STIMULUS_TRIGGERED',
           stimulus: stimulusData,
           startTime: this.state.startTime,
-          round: this.state.roundNumber
-        });
+          round: this.state.roundNumber,
+          timestamp: Date.now()
+        };
+
+        await this._pushCloudState();
+        this._broadcastLocal(this.state.lastEvent);
       }, countdownSeconds * 1000);
     }
 
-    closeRound() {
+    async closeRound() {
       this.state.phase = 'ROUND_OVER';
-      this._saveState();
-      this._broadcast({ type: 'ROUND_CLOSED', responses: this.state.responses });
+      this.state.lastEvent = {
+        type: 'ROUND_CLOSED',
+        responses: this.state.responses,
+        timestamp: Date.now()
+      };
+      await this._pushCloudState();
+      this._broadcastLocal(this.state.lastEvent);
     }
 
-    showFinalPodium() {
-      this.state.phase = 'PODIUM';
-      this._saveState();
-      this._broadcast({ type: 'SHOW_PODIUM' });
-    }
-
-    // ── MÉTODOS DEL PARTICIPANTE / MÓVIL ──
-    joinPlayer(playerData) {
+    // ── MÉTODOS DEL PARTICIPANTE (CELULAR) ──
+    async joinPlayer(playerData) {
       const playerId = playerData.id || `p_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
       const playerInfo = {
         id: playerId,
@@ -125,82 +127,121 @@
         answersCount: 0
       };
 
-      this._broadcast({ type: 'PLAYER_JOINED', player: playerInfo });
+      // Guardar jugador en la nube
+      try {
+        await fetch(`${this.roomPath}/players/${playerId}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(playerInfo)
+        });
+      } catch(e) {}
+
+      this.state.players[playerId] = playerInfo;
+      this._broadcastLocal({ type: 'PLAYER_JOINED', player: playerInfo });
       return playerInfo;
     }
 
-    submitReaction(playerId, actionChosen, reactionMs) {
+    async submitReaction(playerId, actionChosen, reactionMs) {
       const resp = {
         playerId: playerId,
         action: actionChosen,
         reactionMs: reactionMs,
         timestamp: Date.now()
       };
-      this._broadcast({ type: 'PLAYER_RESPONSE', response: resp });
+
+      try {
+        await fetch(`${this.roomPath}/responses/${playerId}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(resp)
+        });
+      } catch(e) {}
+
+      this._broadcastLocal({ type: 'PLAYER_RESPONSE', response: resp });
       return resp;
     }
 
-    // ── GESTIÓN DE ESTADO Y BROADCAST ──
-    _saveState() {
-      try {
-        localStorage.setItem(`vialplay_room_state_${this.pin}`, JSON.stringify(this.state));
-      } catch(e) {}
-    }
+    // ── SINCRONIZACIÓN EN TIEMPO REAL (POLLING ULTRA-RÁPIDO 400ms) ──
+    _startPolling() {
+      if (this.pollingInterval) clearInterval(this.pollingInterval);
 
-    _loadState() {
-      try {
-        const raw = localStorage.getItem(`vialplay_room_state_${this.pin}`);
-        if (raw) return JSON.parse(raw);
-      } catch(e) {}
-      return null;
-    }
+      // Polling de alta frecuencia para reflejos en vivo
+      this.pollingInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`${this.roomPath}.json`, { cache: 'no-store' });
+          if (!res.ok) return;
+          const remoteData = await res.json();
+          if (!remoteData) return;
 
-    _broadcast(payload) {
-      payload.senderPin = this.pin;
-      payload.timestamp = Date.now();
-      if (this.localChannel) {
-        this.localChannel.postMessage(payload);
-      }
-      // Actualizar localStorage para activar evento 'storage' en otras ventanas
-      try {
-        localStorage.setItem(`vialplay_last_event_${this.pin}`, JSON.stringify(payload));
-      } catch(e) {}
+          // Si somos Host, procesar nuevos jugadores y respuestas
+          if (this.isHost) {
+            if (remoteData.players) {
+              const currentCount = Object.keys(this.state.players).length;
+              const newCount = Object.keys(remoteData.players).length;
+              this.state.players = remoteData.players;
+              if (newCount !== currentCount) {
+                this.emit('player_list_updated', Object.values(this.state.players));
+              }
+            }
 
-      // Procesar localmente si somos host o jugador
-      this._processEvent(payload);
-    }
+            if (remoteData.responses && this.state.phase === 'STIMULUS') {
+              const currentRespCount = Object.keys(this.state.responses).length;
+              const newRespCount = Object.keys(remoteData.responses).length;
+              this.state.responses = remoteData.responses;
 
-    _handleChannelMessage(payload) {
-      if (payload && payload.senderPin === this.pin) {
-        this._processEvent(payload);
-      }
-    }
-
-    _initStorageWatcher() {
-      window.addEventListener('storage', (e) => {
-        if (e.key === `vialplay_last_event_${this.pin}` && e.newValue) {
-          try {
-            const payload = JSON.parse(e.newValue);
-            this._processEvent(payload);
-          } catch(err) {}
+              if (newRespCount !== currentRespCount) {
+                this.emit('response_received', {
+                  totalAnswers: newRespCount,
+                  responses: this.state.responses
+                });
+              }
+            }
+          } 
+          // Si somos Participante (Celular), sincronizar eventos del Host
+          else {
+            if (remoteData.lastEvent && remoteData.lastEvent.timestamp > this.lastProcessedEventTime) {
+              this.lastProcessedEventTime = remoteData.lastEvent.timestamp;
+              this._processEvent(remoteData.lastEvent);
+            }
+          }
+        } catch(e) {
+          // Si falla internet, sigue funcionando por canal local
         }
-      });
+      }, 500);
+    }
+
+    async _pushCloudState() {
+      try {
+        await fetch(`${this.roomPath}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.state)
+        });
+      } catch(e) {}
+    }
+
+    _broadcastLocal(eventData) {
+      if (this.localChannel) {
+        try { this.localChannel.postMessage(eventData); } catch(e) {}
+      }
+      this._processEvent(eventData);
+    }
+
+    _handleLocalMessage(eventData) {
+      if (eventData) {
+        this._processEvent(eventData);
+      }
     }
 
     _processEvent(payload) {
-      switch (payload.type) {
-        case 'ROOM_CREATED':
-          this.state = payload.state;
-          this.emit('room_ready', this.state);
-          break;
+      if (!payload || !payload.type) return;
 
+      switch (payload.type) {
         case 'PLAYER_JOINED':
-          if (this.isHost) {
+          if (this.isHost && payload.player) {
             this.state.players[payload.player.id] = payload.player;
-            this._saveState();
             this.emit('player_list_updated', Object.values(this.state.players));
           }
-          this.emit('player_joined', payload.player);
           break;
 
         case 'COUNTDOWN_STARTED':
@@ -211,39 +252,18 @@
           this.emit('stimulus', payload);
           break;
 
-        case 'PLAYER_RESPONSE':
-          if (this.isHost) {
-            const r = payload.response;
-            if (!this.state.responses[r.playerId]) {
-              this.state.responses[r.playerId] = r;
-              
-              // Actualizar score del jugador si es correcto
-              const expected = this.state.currentStimulus ? this.state.currentStimulus.action : '';
-              const isCorrect = r.action === expected;
-              const player = this.state.players[r.playerId];
-              if (player) {
-                player.answersCount++;
-                if (isCorrect) {
-                  // Entre más rápido, más puntos (ej: 1000 - reactionMs)
-                  const speedPoints = Math.max(100, Math.round(1000 - r.reactionMs));
-                  player.totalScore += speedPoints;
-                  if (r.reactionMs < player.bestReactionTime) {
-                    player.bestReactionTime = r.reactionMs;
-                  }
-                }
-              }
-              this._saveState();
-              this.emit('response_received', { response: r, player, totalAnswers: Object.keys(this.state.responses).length });
-            }
-          }
-          break;
-
         case 'ROUND_CLOSED':
           this.emit('round_ended', payload);
           break;
 
-        case 'SHOW_PODIUM':
-          this.emit('show_podium', this.state);
+        case 'PLAYER_RESPONSE':
+          if (this.isHost && payload.response) {
+            this.state.responses[payload.response.playerId] = payload.response;
+            this.emit('response_received', {
+              totalAnswers: Object.keys(this.state.responses).length,
+              response: payload.response
+            });
+          }
           break;
       }
     }

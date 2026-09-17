@@ -432,9 +432,8 @@
       const podiumTableBody = document.getElementById('podium-table-body');
 
       // URL destino para que los participantes ingresen directamente a la sala con PIN
-      const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
-      const targetBase = isLocal ? window.location.origin + window.location.pathname.replace('live_host.html', 'index.html') : 'https://amalarajst-cell.github.io/ruleta-vial/';
-      const liveJoinUrl = `${targetBase}?pin=${PIN}`;
+      // SIEMPRE generamos la URL pública de GitHub Pages para que cualquier celular con internet pueda entrar
+      const liveJoinUrl = `https://amalarajst-cell.github.io/ruleta-vial/?pin=${PIN}`;
 
       const hostUrlPreview = document.getElementById('host-url-preview');
       if (hostUrlPreview) hostUrlPreview.textContent = liveJoinUrl;
