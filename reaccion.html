@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Tiempo de Reacción — Seguridad Vial BA</title>
+  <title>Test de Reacción — Seguridad Vial BA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
@@ -21,6 +21,7 @@
       --accent-yellow: #FFC600;
       --accent-red: #FF4444;
       --accent-green: #00E676;
+      --accent-blue: #2979FF;
       --accent-amber: #FFA000;
       --accent-purple: #A855F7;
       --outline: rgba(141, 226, 214, 0.18);
@@ -47,10 +48,10 @@
     /* ── HEADER ── */
     .app-header {
       width: 100%;
-      background: rgba(18, 22, 23, 0.95);
+      background: rgba(18, 22, 23, 0.96);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--outline);
-      padding: 12px 20px;
+      padding: 10px 18px;
       position: sticky;
       top: 0;
       z-index: 50;
@@ -69,7 +70,7 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn-back {
@@ -95,19 +96,12 @@
     .brand-logo-wrap {
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo-img {
-      height: 24px;
-      width: auto;
-      filter: brightness(0) invert(1);
-      opacity: 0.95;
+      gap: 8px;
     }
 
     .header-title-text {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 16px;
+      font-size: 15px;
       letter-spacing: 0.4px;
       color: #ffffff;
       text-transform: uppercase;
@@ -130,16 +124,57 @@
     /* ── MAIN CONTENT ── */
     .main-wrap {
       flex: 1;
-      max-width: 660px;
+      max-width: 680px;
       margin: 0 auto;
       width: 100%;
-      padding: 10px 16px 16px;
+      padding: 10px 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
-    /* ── STATUS / ROUND BAR ── */
+    /* ── LEVEL SELECTOR BAR ── */
+    .level-selector-wrap {
+      display: flex;
+      background: rgba(29, 34, 36, 0.85);
+      border: 1px solid var(--outline);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .level-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      border-radius: 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+    }
+
+    .level-tab-btn.active {
+      background: var(--accent-cyan);
+      color: #0e1112;
+      box-shadow: 0 2px 10px rgba(141, 226, 214, 0.4);
+    }
+
+    .level-tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    /* ── STATUS BAR ── */
     .status-bar {
       display: flex;
       align-items: center;
@@ -162,7 +197,7 @@
     .round-badge {
       background: var(--accent-cyan);
       color: #0e1112;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 900;
@@ -200,11 +235,11 @@
 
     /* ── CENTRAL STIMULUS DISPLAY (ARENA) ── */
     .stimulus-card {
-      min-height: 205px;
+      min-height: 220px;
       background: linear-gradient(180deg, #181d1f 0%, #101415 100%);
       border: 2px solid var(--outline);
       border-radius: 20px;
-      padding: 16px 16px 14px;
+      padding: 18px 16px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -216,7 +251,6 @@
       transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
     }
 
-    /* Progress timer bar on top of card */
     .card-timer-bar {
       position: absolute;
       top: 0;
@@ -236,7 +270,7 @@
       transition: transform 0.05s linear;
     }
 
-    /* Stimulus States */
+    /* Estados de la arena */
     .stimulus-card.state-idle {
       border-color: var(--accent-cyan);
       cursor: pointer;
@@ -278,31 +312,36 @@
       box-shadow: 0 0 30px rgba(255, 68, 68, 0.4);
     }
 
-    /* Category Pill */
+    /* Categoría Pill */
     .stimulus-category-badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 9999px;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       background: rgba(255, 255, 255, 0.08);
       color: var(--text-muted);
     }
 
-    .cat-frenar { background: rgba(255, 68, 68, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 68, 68, 0.4); }
-    .cat-reducir { background: rgba(255, 198, 0, 0.2); color: #ffc600; border: 1px solid rgba(255, 198, 0, 0.4); }
-    .cat-esquivar { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
-    .cat-continuar { background: rgba(0, 230, 118, 0.2); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.4); }
+    .cat-color-rojo { background: rgba(255, 68, 68, 0.25); color: #ff6b6b; border: 1px solid #ff4444; }
+    .cat-color-verde { background: rgba(0, 230, 118, 0.25); color: #00e676; border: 1px solid #00e676; }
+    .cat-color-amarillo { background: rgba(255, 198, 0, 0.25); color: #ffc600; border: 1px solid #ffc600; }
+    .cat-color-azul { background: rgba(41, 121, 255, 0.25); color: #82b1ff; border: 1px solid #2979ff; }
 
-    /* Visual Sign Container */
+    .cat-frenar { background: rgba(255, 68, 68, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 68, 68, 0.4); }
+    .cat-acelerador { background: rgba(255, 160, 0, 0.2); color: #ffb74d; border: 1px solid rgba(255, 160, 0, 0.4); }
+    .cat-esquivar { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+    .cat-omitir { background: rgba(0, 230, 118, 0.2); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.4); }
+
+    /* Visual Element Wrap */
     .stimulus-visual-wrap {
-      width: 78px;
-      height: 78px;
+      width: 86px;
+      height: 86px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -310,14 +349,23 @@
       position: relative;
     }
 
-    /* Road sign graphic representations */
+    /* Gráficos de Señales y Colores */
+    .color-orb {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      box-shadow: 0 0 25px currentColor;
+      transition: all 0.15s ease;
+    }
+
     .sign-pare {
-      width: 74px;
-      height: 74px;
+      width: 78px;
+      height: 78px;
       background: #D32F2F;
       color: #fff;
       font-family: 'Archivo Black', sans-serif;
-      font-size: 19px;
+      font-size: 20px;
       letter-spacing: 0.8px;
       display: flex;
       align-items: center;
@@ -328,8 +376,8 @@
     }
 
     .sign-preventiva {
-      width: 66px;
-      height: 66px;
+      width: 70px;
+      height: 70px;
       background: #FFC107;
       color: #121414;
       display: flex;
@@ -340,27 +388,24 @@
       border: 2.5px solid #121414;
       box-shadow: 0 4px 15px rgba(255, 193, 7, 0.6);
     }
-
-    .sign-preventiva > * {
-      transform: rotate(-45deg);
-    }
+    .sign-preventiva > * { transform: rotate(-45deg); }
 
     .sign-informativa {
-      width: 70px;
-      height: 70px;
+      width: 74px;
+      height: 74px;
       background: #1976D2;
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 2.5px solid #fff;
       box-shadow: 0 4px 15px rgba(25, 118, 210, 0.6);
     }
 
     .sign-maniobra {
-      width: 70px;
-      height: 70px;
+      width: 74px;
+      height: 74px;
       background: #7B1FA2;
       color: #fff;
       display: flex;
@@ -371,13 +416,9 @@
       box-shadow: 0 4px 15px rgba(123, 31, 162, 0.6);
     }
 
-    .sign-icon-lg {
-      font-size: 38px;
-    }
-
     .stimulus-title {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 19px;
+      font-size: 20px;
       line-height: 1.15;
       letter-spacing: 0.3px;
       text-transform: uppercase;
@@ -385,22 +426,76 @@
     }
 
     .stimulus-desc {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.85);
-      max-width: 440px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.88);
+      max-width: 480px;
       line-height: 1.35;
+    }
+
+    /* Pop-up de distracción ficticia (Nivel 3) */
+    .distraction-popup {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      background: rgba(18, 24, 28, 0.96);
+      border: 2px solid #25D366;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(37, 211, 102, 0.4);
+      z-index: 20;
+      animation: slide-down 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes slide-down {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .distraction-popup .wa-icon {
+      width: 34px;
+      height: 34px;
+      background: #25D366;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .distraction-popup .wa-content {
+      text-align: left;
+      flex: 1;
+    }
+
+    .distraction-popup .wa-sender {
+      font-size: 11px;
+      font-weight: 800;
+      color: #25D366;
+      text-transform: uppercase;
+    }
+
+    .distraction-popup .wa-text {
+      font-size: 12px;
+      color: #fff;
+      font-weight: 600;
     }
 
     /* Live reaction time timer badge in stimulus */
     .live-timer-badge {
       display: none;
-      margin-top: 8px;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 3px 12px;
+      margin-top: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 4px 14px;
       border-radius: 9999px;
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
       color: var(--accent-cyan);
       letter-spacing: 0.8px;
@@ -411,8 +506,8 @@
       display: none;
       align-items: center;
       gap: 8px;
-      margin-top: 8px;
-      padding: 6px 14px;
+      margin-top: 10px;
+      padding: 7px 16px;
       border-radius: 10px;
       font-size: 12px;
       font-weight: 700;
@@ -430,7 +525,7 @@
       color: #ff8a80;
     }
 
-    /* ── 4-ACTION CONTROLS GRID ── */
+    /* ── ACTION CONTROLS GRID ── */
     .actions-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -441,20 +536,6 @@
       .actions-grid {
         grid-template-columns: repeat(4, 1fr);
         gap: 8px;
-      }
-      .btn-action {
-        padding: 10px 6px;
-      }
-      .btn-action-icon-circle {
-        width: 36px;
-        height: 36px;
-        font-size: 20px;
-      }
-      .btn-action-title {
-        font-size: 11px;
-      }
-      .btn-action-sub {
-        font-size: 9px;
       }
     }
 
@@ -467,7 +548,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 4px;
+      gap: 5px;
       cursor: pointer;
       transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
       position: relative;
@@ -475,12 +556,12 @@
     }
 
     .btn-action:active {
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
 
     .btn-action.disabled {
-      opacity: 0.55;
-      cursor: pointer;
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-key-hint {
@@ -497,13 +578,13 @@
     }
 
     .btn-action-icon-circle {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
       transition: transform 0.15s ease;
     }
 
@@ -521,75 +602,65 @@
       line-height: 1.2;
     }
 
-    /* Action 1: FRENAR */
-    .btn-action.btn-frenar {
-      border-color: rgba(255, 68, 68, 0.35);
-      background: linear-gradient(180deg, #241919 0%, #1a1313 100%);
+    /* Variantes Nivel 1: COLORES */
+    .btn-color-rojo {
+      background: linear-gradient(180deg, #2a1515 0%, #170d0d 100%);
+      border-color: rgba(255, 68, 68, 0.4);
     }
-    .btn-action.btn-frenar:hover {
-      border-color: var(--accent-red);
-      box-shadow: 0 4px 20px rgba(255, 68, 68, 0.35);
-    }
-    .btn-action.btn-frenar .btn-action-icon-circle {
-      background: #ff1744;
-      color: #fff;
-    }
-    .btn-action.btn-frenar .btn-action-title {
-      color: #ff8a80;
-    }
+    .btn-color-rojo .btn-action-icon-circle { background: #ff1744; color: #fff; box-shadow: 0 0 12px rgba(255, 23, 68, 0.5); }
+    .btn-color-rojo .btn-action-title { color: #ff8a80; }
 
-    /* Action 2: REDUCIR VELOCIDAD */
-    .btn-action.btn-reducir {
-      border-color: rgba(255, 198, 0, 0.35);
-      background: linear-gradient(180deg, #252216 0%, #1b1911 100%);
+    .btn-color-amarillo {
+      background: linear-gradient(180deg, #2b2513 0%, #17140a 100%);
+      border-color: rgba(255, 198, 0, 0.4);
     }
-    .btn-action.btn-reducir:hover {
-      border-color: var(--accent-yellow);
-      box-shadow: 0 4px 20px rgba(255, 198, 0, 0.35);
-    }
-    .btn-action.btn-reducir .btn-action-icon-circle {
-      background: #ffc107;
-      color: #121414;
-    }
-    .btn-action.btn-reducir .btn-action-title {
-      color: #ffd54f;
-    }
+    .btn-color-amarillo .btn-action-icon-circle { background: #ffc107; color: #121414; box-shadow: 0 0 12px rgba(255, 193, 7, 0.5); }
+    .btn-color-amarillo .btn-action-title { color: #ffd54f; }
 
-    /* Action 3: ESQUIVAR / MANIOBRAR */
-    .btn-action.btn-esquivar {
-      border-color: rgba(168, 85, 247, 0.35);
-      background: linear-gradient(180deg, #221727 0%, #17111a 100%);
+    .btn-color-verde {
+      background: linear-gradient(180deg, #12281a 0%, #0a170f 100%);
+      border-color: rgba(0, 230, 118, 0.4);
     }
-    .btn-action.btn-esquivar:hover {
-      border-color: var(--accent-purple);
-      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
-    }
-    .btn-action.btn-esquivar .btn-action-icon-circle {
-      background: #9333ea;
-      color: #fff;
-    }
-    .btn-action.btn-esquivar .btn-action-title {
-      color: #d8b4fe;
-    }
+    .btn-color-verde .btn-action-icon-circle { background: #00e676; color: #0e1112; box-shadow: 0 0 12px rgba(0, 230, 118, 0.5); }
+    .btn-color-verde .btn-action-title { color: #69f0ae; }
 
-    /* Action 4: CONTINUAR */
-    .btn-action.btn-continuar {
-      border-color: rgba(0, 230, 118, 0.35);
-      background: linear-gradient(180deg, #16241c 0%, #101914 100%);
+    .btn-color-azul {
+      background: linear-gradient(180deg, #131e2e 0%, #0a111b 100%);
+      border-color: rgba(41, 121, 255, 0.4);
     }
-    .btn-action.btn-continuar:hover {
-      border-color: var(--accent-green);
-      box-shadow: 0 4px 20px rgba(0, 230, 118, 0.35);
-    }
-    .btn-action.btn-continuar .btn-action-icon-circle {
-      background: #00e676;
-      color: #0e1112;
-    }
-    .btn-action.btn-continuar .btn-action-title {
-      color: #69f0ae;
-    }
+    .btn-color-azul .btn-action-icon-circle { background: #2979ff; color: #fff; box-shadow: 0 0 12px rgba(41, 121, 255, 0.5); }
+    .btn-color-azul .btn-action-title { color: #82b1ff; }
 
-    /* ── RESULTS SUMMARY CARD ── */
+    /* Variantes Nivel 2: 4 ACCIONES VIALES */
+    .btn-vial-frenar {
+      background: linear-gradient(180deg, #261616 0%, #180d0d 100%);
+      border-color: rgba(255, 68, 68, 0.4);
+    }
+    .btn-vial-frenar .btn-action-icon-circle { background: #ff1744; color: #fff; }
+    .btn-vial-frenar .btn-action-title { color: #ff8a80; }
+
+    .btn-vial-acelerador {
+      background: linear-gradient(180deg, #2a2012 0%, #1a130a 100%);
+      border-color: rgba(255, 160, 0, 0.4);
+    }
+    .btn-vial-acelerador .btn-action-icon-circle { background: #ffa000; color: #121414; }
+    .btn-vial-acelerador .btn-action-title { color: #ffb74d; }
+
+    .btn-vial-esquivar {
+      background: linear-gradient(180deg, #221629 0%, #150d1a 100%);
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+    .btn-vial-esquivar .btn-action-icon-circle { background: #9333ea; color: #fff; }
+    .btn-vial-esquivar .btn-action-title { color: #d8b4fe; }
+
+    .btn-vial-omitir {
+      background: linear-gradient(180deg, #132418 0%, #0b170f 100%);
+      border-color: rgba(0, 230, 118, 0.4);
+    }
+    .btn-vial-omitir .btn-action-icon-circle { background: #00e676; color: #0e1112; }
+    .btn-vial-omitir .btn-action-title { color: #69f0ae; }
+
+    /* ── RESULTS CARD ── */
     .results-card {
       display: none;
       background: linear-gradient(180deg, #1b2022 0%, #131718 100%);
@@ -600,49 +671,45 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
-      animation: pop-in 0.25s ease-out;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     }
 
     .results-hero-val {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 48px;
+      font-size: 54px;
       font-weight: 900;
-      color: var(--accent-cyan);
+      color: #ffffff;
       line-height: 1;
-      letter-spacing: 0.5px;
+      text-shadow: 0 0 20px rgba(141, 226, 214, 0.4);
     }
 
     .results-hero-label {
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 700;
+      color: var(--accent-cyan);
       text-transform: uppercase;
-      color: var(--text-muted);
       letter-spacing: 0.8px;
-      margin-top: 4px;
     }
 
     .results-stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      margin: 8px 0;
     }
 
     .stat-mini-box {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 12px 6px;
-      text-align: center;
+      border-radius: 12px;
+      padding: 10px 6px;
     }
 
     .stat-mini-val {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 18px;
-      color: #ffffff;
-      margin-bottom: 2px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.1;
     }
 
     .stat-mini-lbl {
@@ -650,120 +717,120 @@
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      margin-top: 2px;
     }
 
     .results-advice-box {
       background: rgba(255, 198, 0, 0.08);
-      border: 1px solid rgba(255, 198, 0, 0.25);
+      border: 1px solid rgba(255, 198, 0, 0.35);
       border-radius: 14px;
       padding: 12px 16px;
-      font-size: 12px;
-      line-height: 1.5;
-      color: #ffefa8;
-      text-align: left;
       display: flex;
-      gap: 10px;
       align-items: flex-start;
-      width: 100%;
+      gap: 10px;
+      text-align: left;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #fff;
     }
 
     .results-actions-row {
       display: flex;
       gap: 10px;
       width: 100%;
-      margin-top: 6px;
     }
 
     .btn-replay-primary {
       flex: 1;
-      padding: 14px;
       background: var(--accent-cyan);
       color: #0e1112;
       border: none;
-      border-radius: 14px;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 15px rgba(141, 226, 214, 0.35);
-      transition: transform 0.15s ease, background 0.15s ease;
-    }
-
-    .btn-replay-primary:hover {
-      transform: translateY(-2px);
-      background: #a3ece2;
-    }
-
-    .btn-back-hub {
-      padding: 14px 18px;
-      background: #202628;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 14px;
+      padding: 12px;
+      border-radius: 12px;
       font-family: 'Archivo Black', sans-serif;
       font-size: 13px;
       letter-spacing: 0.4px;
       text-transform: uppercase;
       cursor: pointer;
-      display: inline-flex;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease;
+    }
+
+    .btn-next-level {
+      flex: 1;
+      background: var(--accent-yellow);
+      color: #0e1112;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease;
+    }
+
+    .btn-back-hub {
+      flex: 1;
+      background: #242a2d;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 12px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      text-decoration: none;
-      transition: background 0.15s ease;
     }
 
-    .btn-back-hub:hover {
-      background: #2a3236;
-    }
-
-    /* ── DISTANCIA RECORRIDA A 40, 60 Y 100 KM/H ── */
+    /* ── DISTANCE MATRIX CARD ── */
     .distance-matrix-card {
-      background: rgba(22, 26, 27, 0.7);
+      background: rgba(29, 34, 36, 0.7);
       border: 1px solid var(--outline);
       border-radius: 16px;
-      padding: 10px 14px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
     }
 
     .distance-matrix-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
     }
 
     .distance-matrix-title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #ffffff;
+      color: #fff;
       display: flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .distance-matrix-title .material-symbols-outlined {
-      font-size: 16px;
-      color: var(--accent-cyan);
+      text-transform: uppercase;
     }
 
     .distance-time-tag {
-      font-size: 10px;
-      font-weight: 700;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
       color: var(--accent-cyan);
-      background: rgba(141, 226, 214, 0.12);
-      border: 1px solid rgba(141, 226, 214, 0.25);
-      padding: 1px 7px;
+      background: rgba(141, 226, 214, 0.15);
+      padding: 2px 8px;
       border-radius: 6px;
     }
 
@@ -774,113 +841,125 @@
     }
 
     .distance-col-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(0, 0, 0, 0.25);
       border-radius: 10px;
-      padding: 6px 8px;
+      padding: 8px;
       text-align: center;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 1px;
+      gap: 2px;
     }
 
     .dist-speed-lbl {
       font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin: 0 auto;
     }
 
-    .dist-speed-tag-40 { color: var(--accent-green); }
-    .dist-speed-tag-60 { color: var(--accent-yellow); }
-    .dist-speed-tag-100 { color: var(--accent-red); }
+    .dist-speed-tag-40 { background: rgba(0, 230, 118, 0.2); color: #00e676; }
+    .dist-speed-tag-60 { background: rgba(255, 198, 0, 0.2); color: #ffc600; }
+    .dist-speed-tag-100 { background: rgba(255, 68, 68, 0.2); color: #ff5252; }
 
     .dist-val {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 21px;
+      font-size: 22px;
       font-weight: 900;
-      line-height: 1.1;
     }
 
     .dist-sub {
       font-size: 9px;
       color: var(--text-muted);
+      font-weight: 700;
     }
 
-    /* Responsive */
-    @media (max-width: 480px) {
-      .main-wrap {
-        padding: 12px 14px 20px;
-        gap: 12px;
-      }
-      .stimulus-card {
-        min-height: 220px;
-        padding: 20px 14px;
-      }
-      .stimulus-title {
-        font-size: 19px;
-      }
-      .stimulus-desc {
-        font-size: 12px;
-      }
-      .btn-action {
-        padding: 14px 10px;
-      }
-      .btn-action-icon-circle {
-        width: 42px;
-        height: 42px;
-        font-size: 22px;
-      }
-      .btn-action-title {
-        font-size: 12px;
-      }
-      .btn-action-sub {
-        font-size: 10px;
-      }
+    /* Player Profile Pill */
+    .player-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #202628;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 3px 10px 3px 4px;
+      cursor: pointer;
+    }
+
+    .player-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--surface);
+    }
+
+    .player-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
 
-  <!-- ── CABECERA ── -->
+  <!-- HEADER -->
   <header class="app-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="index.html?screen=practice" class="btn-back" title="Volver a Zona de Práctica" id="link-back">
-          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        <a href="index.html?screen=practice" class="btn-back" title="Volver al Menú">
+          <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <div class="brand-logo-wrap">
-          <img src="assets/brand/logo_ba.png" alt="Buenos Aires Ciudad" class="brand-logo-img">
-          <span class="header-title-text">Tiempo de Reacción</span>
+          <span class="material-symbols-outlined text-[24px]" style="color:var(--accent-cyan)">timer</span>
+          <span class="header-title-text">TEST DE REACCIÓN</span>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
+
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="player-pill" id="reaccion-player-pill" title="Cambiar participante">
+          <img src="assets/brand/icon_auto.png" alt="Avatar" class="player-avatar" id="reaccion-player-avatar">
+          <span class="player-name" id="reaccion-player-name">Participante</span>
+        </div>
         <button type="button" class="btn-sound" id="btn-sound" title="Alternar Sonido">
-          <span class="material-symbols-outlined text-[20px]" id="sound-icon">volume_up</span>
+          <span class="material-symbols-outlined" id="sound-icon">volume_up</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ── CONTENEDOR PRINCIPAL ── -->
+  <!-- MAIN WRAPPER -->
   <main class="main-wrap">
 
+    <!-- SELECTOR DE NIVELES (3 NIVELES) -->
+    <div class="level-selector-wrap" id="level-selector-wrap">
+      <button type="button" class="level-tab-btn active" id="tab-lvl-1" data-level="1">
+        <span class="material-symbols-outlined text-[16px]">palette</span>
+        <span>1. Colores</span>
+      </button>
+      <button type="button" class="level-tab-btn" id="tab-lvl-2" data-level="2">
+        <span class="material-symbols-outlined text-[16px]">traffic</span>
+        <span>2. Decisiones</span>
+      </button>
+      <button type="button" class="level-tab-btn" id="tab-lvl-3" data-level="3">
+        <span class="material-symbols-outlined text-[16px]">smartphone</span>
+        <span>3. Distracción</span>
+      </button>
+    </div>
+
     <!-- BARRA DE ESTADO / RONDAS -->
-    <div class="status-bar" id="status-bar">
+    <div class="status-bar">
       <div class="round-info">
-        <span class="round-badge" id="round-badge">SEÑAL 1 / 8</span>
-        <span id="round-state-text">Listo para empezar</span>
+        <span class="round-badge" id="round-badge">ESTÍMULO 1 / 5</span>
+        <span id="round-state-text" style="color:var(--text-muted)">Tocá para iniciar</span>
       </div>
       <div class="dots-wrap" id="dots-wrap">
-        <div class="round-dot active" id="dot-0"></div>
-        <div class="round-dot" id="dot-1"></div>
-        <div class="round-dot" id="dot-2"></div>
-        <div class="round-dot" id="dot-3"></div>
-        <div class="round-dot" id="dot-4"></div>
-        <div class="round-dot" id="dot-5"></div>
-        <div class="round-dot" id="dot-6"></div>
-        <div class="round-dot" id="dot-7"></div>
+        <!-- Generados dinámicamente según nivel -->
       </div>
     </div>
 
@@ -890,25 +969,34 @@
         <div class="card-timer-fill" id="card-timer-fill"></div>
       </div>
 
+      <!-- Notificación falsa de WhatsApp / Distractor (Nivel 3) -->
+      <div class="distraction-popup" id="distraction-popup">
+        <div class="wa-icon">
+          <span class="material-symbols-outlined">chat</span>
+        </div>
+        <div class="wa-content">
+          <div class="wa-sender" id="wa-sender">WhatsApp • Mamá</div>
+          <div class="wa-text" id="wa-text">"¿A qué hora llegás? ¡Avisame cuando salgas!"</div>
+        </div>
+      </div>
+
       <div class="stimulus-category-badge" id="stimulus-cat-badge">
-        <span class="material-symbols-outlined text-[16px]">traffic</span>
-        <span>DESAFÍO VIAL</span>
+        <span class="material-symbols-outlined text-[16px]">touch_app</span>
+        <span id="cat-badge-text">NIVEL 1: REFLEJOS CROMÁTICOS</span>
       </div>
 
       <div class="stimulus-visual-wrap" id="stimulus-visual">
-        <div class="sign-pare">
-          <span>PARE</span>
-        </div>
+        <div class="color-orb" style="background:#ff1744;box-shadow:0 0 25px #ff1744;"></div>
       </div>
 
       <h2 class="stimulus-title" id="stimulus-title">TOCÁ PARA INICIAR</h2>
       <p class="stimulus-desc" id="stimulus-desc">
-        Aparecerán situaciones viales imprevistas. Elegí el botón correcto lo más rápido posible.
+        Aparecerá un color al azar. Tocá el botón del color correspondiente en el menor tiempo posible.
       </p>
 
-      <button type="button" id="btn-start-game-cta" style="margin-top:14px;background:var(--accent-cyan);color:#0e1112;font-family:'Archivo Black',sans-serif;font-size:14px;letter-spacing:0.5px;padding:10px 24px;border:none;border-radius:999px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 0 20px rgba(141,226,214,0.6);cursor:pointer;transition:transform 0.15s ease;">
+      <button type="button" id="btn-start-game-cta" style="margin-top:12px;background:var(--accent-cyan);color:#0e1112;font-family:'Archivo Black',sans-serif;font-size:14px;letter-spacing:0.5px;padding:10px 24px;border:none;border-radius:999px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 0 20px rgba(141,226,214,0.5);cursor:pointer;">
         <span class="material-symbols-outlined text-[20px]">play_arrow</span>
-        <span>INICIAR DESAFÍO</span>
+        <span>COMENZAR NIVEL</span>
       </button>
 
       <div class="live-timer-badge" id="live-timer-badge">
@@ -921,123 +1009,89 @@
       </div>
     </div>
 
-    <!-- 4 BOTONES DE ACCIÓN TÁCTILES -->
+    <!-- 4 BOTONES DE ACCIÓN (DINÁMICOS SEGÚN NIVEL) -->
     <div class="actions-grid" id="actions-grid">
-      <!-- BOTÓN 1: FRENAR -->
-      <button type="button" class="btn-action btn-frenar disabled" id="btn-action-frenar" data-action="frenar">
-        <span class="btn-key-hint">1</span>
-        <div class="btn-action-icon-circle">
-          <span class="material-symbols-outlined">front_hand</span>
-        </div>
-        <span class="btn-action-title">Frenar</span>
-        <span class="btn-action-sub">PARE • Rojo • Peatón</span>
-      </button>
-
-      <!-- BOTÓN 2: REDUCIR VELOCIDAD -->
-      <button type="button" class="btn-action btn-reducir disabled" id="btn-action-reducir" data-action="reducir">
-        <span class="btn-key-hint">2</span>
-        <div class="btn-action-icon-circle">
-          <span class="material-symbols-outlined">speed</span>
-        </div>
-        <span class="btn-action-title">Reducir Velocidad</span>
-        <span class="btn-action-sub">Escuela • Lomo • Lluvia</span>
-      </button>
-
-      <!-- BOTÓN 3: ESQUIVAR / MANIOBRAR -->
-      <button type="button" class="btn-action btn-esquivar disabled" id="btn-action-esquivar" data-action="esquivar">
-        <span class="btn-key-hint">3</span>
-        <div class="btn-action-icon-circle">
-          <span class="material-symbols-outlined">turn_sharp_right</span>
-        </div>
-        <span class="btn-action-title">Esquivar / Doblar</span>
-        <span class="btn-action-sub">Conos • Pozo • Desvío</span>
-      </button>
-
-      <!-- BOTÓN 4: CONTINUAR -->
-      <button type="button" class="btn-action btn-continuar disabled" id="btn-action-continuar" data-action="continuar">
-        <span class="btn-key-hint">4</span>
-        <div class="btn-action-icon-circle">
-          <span class="material-symbols-outlined">navigation</span>
-        </div>
-        <span class="btn-action-title">Continuar</span>
-        <span class="btn-action-sub">Vía libre • Informativa</span>
-      </button>
+      <!-- Se inyectan dinámicamente para Nivel 1 (Colores) o Nivel 2/3 (Acciones Viales) -->
     </div>
 
-    <!-- TARJETA DE RESULTADOS FINALES -->
+    <!-- TARJETA DE RESULTADOS -->
     <div class="results-card" id="results-card">
-      <div style="width:54px;height:54px;border-radius:50%;background:rgba(141,226,214,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-cyan);">
-        <span class="material-symbols-outlined text-[32px]">timer</span>
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(141,226,214,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-cyan);">
+        <span class="material-symbols-outlined text-[32px]">military_tech</span>
       </div>
 
       <div>
-        <div class="results-hero-val" id="res-avg-time">0.68 s</div>
-        <div class="results-hero-label">Tiempo Promedio de Reacción</div>
+        <div class="results-hero-val" id="res-avg-time">0.55 s</div>
+        <div class="results-hero-label" id="res-title-mode">Tiempo Promedio de Reacción</div>
       </div>
 
       <div class="results-stats-grid">
         <div class="stat-mini-box">
-          <div class="stat-mini-val" id="res-best-time" style="color:var(--accent-cyan);">0.52 s</div>
+          <div class="stat-mini-val" id="res-best-time" style="color:var(--accent-cyan);">0.42 s</div>
           <div class="stat-mini-lbl">Mejor Reacción</div>
         </div>
         <div class="stat-mini-box">
-          <div class="stat-mini-val" id="res-accuracy" style="color:var(--accent-green);">8 / 8</div>
+          <div class="stat-mini-val" id="res-accuracy" style="color:var(--accent-green);">5 / 5</div>
           <div class="stat-mini-lbl">Aciertos</div>
         </div>
         <div class="stat-mini-box">
-          <div class="stat-mini-val" id="res-blind-dist" style="color:var(--accent-yellow);">7.5 m</div>
+          <div class="stat-mini-val" id="res-blind-dist" style="color:var(--accent-yellow);">6.1 m</div>
           <div class="stat-mini-lbl">Distancia a 40 km/h</div>
         </div>
       </div>
 
       <div class="results-advice-box">
-        <span class="material-symbols-outlined text-[20px]" style="color:var(--accent-yellow);flex-shrink:0;">lightbulb</span>
+        <span class="material-symbols-outlined text-[22px]" style="color:var(--accent-yellow);flex-shrink:0;">lightbulb</span>
         <div id="res-advice-text">
-          A 40 km/h recorriste metros antes de tocar el freno. Respetar las prioridades y evitar distracciones marca la diferencia.
+          ¡Gran capacidad de respuesta! Mantener esta concentración en el tránsito urbano previene frenadas imprevistas y siniestros graves.
         </div>
       </div>
 
       <div id="sync-status-box" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;border-radius:12px;background:rgba(0,229,138,0.12);border:1px solid rgba(0,229,138,0.35);color:var(--accent-green);font-size:12px;font-weight:700;">
         <span class="material-symbols-outlined text-[18px]">check_circle</span>
-        <span id="sync-status-text">Guardando resultado de actividad...</span>
+        <span id="sync-status-text">Guardando sesión...</span>
       </div>
 
       <div class="results-actions-row">
         <button type="button" class="btn-replay-primary" id="btn-replay">
-          <span class="material-symbols-outlined text-[20px]">refresh</span>
-          <span>Jugar de Nuevo</span>
+          <span class="material-symbols-outlined text-[18px]">refresh</span>
+          <span>Reintentar</span>
+        </button>
+        <button type="button" class="btn-next-level" id="btn-next-level" style="display:none;">
+          <span>Siguiente Nivel</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </button>
         <a href="index.html?screen=practice" class="btn-back-hub">
-          <span>Volver a Juegos</span>
+          <span>Menú Juegos</span>
         </a>
       </div>
     </div>
 
-    <!-- MATRIZ DE DISTANCIA RECORRIDA A 40, 60 Y 100 KM/H -->
+    <!-- MATRIZ DE DISTANCIA RECORRIDA A CIEGAS -->
     <div class="distance-matrix-card" id="distance-matrix-card">
       <div class="distance-matrix-header">
         <div class="distance-matrix-title">
           <span class="material-symbols-outlined">straighten</span>
-          <span>Distancia recorrida durante la reacción</span>
+          <span>Metros recorridos durante tu reacción</span>
         </div>
-        <span class="distance-time-tag" id="distance-time-tag">Ref. 0.80 s</span>
+        <span class="distance-time-tag" id="distance-time-tag">Ref. 0.75 s</span>
       </div>
 
       <div class="distance-cols-grid">
         <div class="distance-col-box">
           <span class="dist-speed-lbl dist-speed-tag-40">40 km/h</span>
-          <span class="dist-val" id="dist-val-40" style="color:var(--accent-green)">8.9 m</span>
-          <span class="dist-sub">Calles</span>
+          <span class="dist-val" id="dist-val-40" style="color:var(--accent-green)">8.3 m</span>
+          <span class="dist-sub">Calles / Zonas Escolares</span>
         </div>
         <div class="distance-col-box">
           <span class="dist-speed-lbl dist-speed-tag-60">60 km/h</span>
-          <span class="dist-val" id="dist-val-60" style="color:var(--accent-yellow)">13.3 m</span>
-          <span class="dist-sub">Avenidas</span>
+          <span class="dist-val" id="dist-val-60" style="color:var(--accent-yellow)">12.5 m</span>
+          <span class="dist-sub">Avenidas Urbanas</span>
         </div>
         <div class="distance-col-box">
           <span class="dist-speed-lbl dist-speed-tag-100">100 km/h</span>
-          <span class="dist-val" id="dist-val-100" style="color:var(--accent-red)">22.2 m</span>
-          <span class="dist-sub">Autopistas</span>
+          <span class="dist-val" id="dist-val-100" style="color:var(--accent-red)">20.8 m</span>
+          <span class="dist-sub">Autopistas de Acceso</span>
         </div>
       </div>
     </div>
@@ -1046,6 +1100,7 @@
 
   <script>
     (function() {
+      // ── SINCRONIZACIÓN PARTICIPANTE ──
       function refreshPlayerUI() {
         const nameEl = document.getElementById('reaccion-player-name');
         const avatarEl = document.getElementById('reaccion-player-avatar');
@@ -1058,8 +1113,6 @@
 
       const playerPillEl = document.getElementById('reaccion-player-pill');
       if (playerPillEl) {
-        playerPillEl.style.cursor = 'pointer';
-        playerPillEl.title = 'Tocar para registrar o cambiar participante';
         playerPillEl.addEventListener('click', () => {
           if (window.VialCloudSync && typeof window.VialCloudSync.openRegistrationModal === 'function') {
             window.VialCloudSync.openRegistrationModal({ onSave: refreshPlayerUI });
@@ -1067,7 +1120,7 @@
         });
       }
 
-      // ── SONIDO VIA WEB AUDIO API ──
+      // ── SISTEMA DE AUDIO SINTETIZADO (Web Audio API) ──
       let audioEnabled = true;
       let audioCtx = null;
 
@@ -1094,7 +1147,7 @@
             const gain = ctx.createGain();
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.setValueAtTime(450, now);
             gain.gain.setValueAtTime(0.08, now);
             gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
             osc.start(now);
@@ -1108,9 +1161,23 @@
             osc.frequency.setValueAtTime(650, now);
             osc.frequency.exponentialRampToValueAtTime(950, now + 0.1);
             gain.gain.setValueAtTime(0.25, now);
-            gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
             osc.start(now);
-            osc.stop(now + 0.18);
+            osc.stop(now + 0.16);
+          } else if (type === 'distraction_wa') {
+            // Sonido de notificación de WhatsApp / celular
+            [880, 1174].forEach((f, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'sine';
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.frequency.setValueAtTime(f, now + idx * 0.07);
+              gain.gain.setValueAtTime(0.25, now + idx * 0.07);
+              gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.07 + 0.12);
+              osc.start(now + idx * 0.07);
+              osc.stop(now + idx * 0.07 + 0.12);
+            });
           } else if (type === 'correct') {
             [587.33, 880].forEach((f, idx) => {
               const osc = ctx.createOscillator();
@@ -1130,7 +1197,7 @@
             osc.connect(gain);
             gain.connect(ctx.destination);
             osc.frequency.setValueAtTime(220, now);
-            osc.frequency.setValueAtTime(150, now + 0.12);
+            osc.frequency.setValueAtTime(140, now + 0.12);
             gain.gain.setValueAtTime(0.25, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
             osc.start(now);
@@ -1151,7 +1218,6 @@
         } catch(e) {}
       }
 
-      // Sound Toggle
       const btnSound = document.getElementById('btn-sound');
       const soundIcon = document.getElementById('sound-icon');
       btnSound.addEventListener('click', () => {
@@ -1159,14 +1225,68 @@
         soundIcon.textContent = audioEnabled ? 'volume_up' : 'volume_off';
       });
 
-      // ── BASE DE DATOS DE ESCENARIOS Y ESTÍMULOS VIALES (16 situaciones equilibradas) ──
-      const STIMULI_DATABASE = [
-        // ACCIÓN: FRENAR (Reglamentaria / Detención total)
+      // ── BANCO DE DATOS DE ESTÍMULOS ──
+
+      // NIVEL 1: COLORES (Rojo, Amarillo, Verde, Azul)
+      const STIMULI_LVL1_COLORS = [
+        {
+          id: 'rojo',
+          action: 'rojo',
+          actionLabel: 'ROJO',
+          colorName: 'ROJO',
+          hex: '#ff1744',
+          categoryClass: 'cat-color-rojo',
+          categoryName: 'Señal Cromática',
+          title: 'COLOR ROJO',
+          desc: '¡Tocá rápidamente el botón ROJO!',
+          visualHtml: '<div class="color-orb" style="background:#ff1744;box-shadow:0 0 35px #ff1744;"></div>'
+        },
+        {
+          id: 'amarillo',
+          action: 'amarillo',
+          actionLabel: 'AMARILLO',
+          colorName: 'AMARILLO',
+          hex: '#ffc107',
+          categoryClass: 'cat-color-amarillo',
+          categoryName: 'Señal Cromática',
+          title: 'COLOR AMARILLO',
+          desc: '¡Tocá rápidamente el botón AMARILLO!',
+          visualHtml: '<div class="color-orb" style="background:#ffc107;box-shadow:0 0 35px #ffc107;"></div>'
+        },
+        {
+          id: 'verde',
+          action: 'verde',
+          actionLabel: 'VERDE',
+          colorName: 'VERDE',
+          hex: '#00e676',
+          categoryClass: 'cat-color-verde',
+          categoryName: 'Señal Cromática',
+          title: 'COLOR VERDE',
+          desc: '¡Tocá rápidamente el botón VERDE!',
+          visualHtml: '<div class="color-orb" style="background:#00e676;box-shadow:0 0 35px #00e676;"></div>'
+        },
+        {
+          id: 'azul',
+          action: 'azul',
+          actionLabel: 'AZUL',
+          colorName: 'AZUL',
+          hex: '#2979ff',
+          categoryClass: 'cat-color-azul',
+          categoryName: 'Señal Cromática',
+          title: 'COLOR AZUL',
+          desc: '¡Tocá rápidamente el botón AZUL!',
+          visualHtml: '<div class="color-orb" style="background:#2979ff;box-shadow:0 0 35px #2979ff;"></div>'
+        }
+      ];
+
+      // NIVEL 2: 4 ACCIONES VIALES (Frenar, Soltar el Acelerador, Esquivar, Omitir)
+      const STIMULI_LVL2_VIAL = [
+        // 1. FRENAR
         {
           id: 'pare',
           action: 'frenar',
           actionLabel: 'FRENAR',
-          category: 'cat-frenar',
+          categoryClass: 'cat-frenar',
           categoryName: 'Reglamentaria de Detención',
           title: 'SEÑAL DE PARE',
           desc: 'Detención total obligatoria antes de ingresar a la intersección.',
@@ -1176,164 +1296,211 @@
           id: 'semaforo_rojo',
           action: 'frenar',
           actionLabel: 'FRENAR',
-          category: 'cat-frenar',
+          categoryClass: 'cat-frenar',
           categoryName: 'Semáforo Vial',
           title: 'LUZ ROJA',
-          desc: 'Detención inmediata en la línea de frenado. Paso prohibido.',
-          visualHtml: '<div style="width:80px;height:96px;background:#202628;border-radius:18px;border:3px solid #333;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:6px 0;"><div style="width:24px;height:24px;border-radius:50%;background:#ff1744;box-shadow:0 0 15px #ff1744;"></div><div style="width:22px;height:22px;border-radius:50%;background:#443311;"></div><div style="width:22px;height:22px;border-radius:50%;background:#113322;"></div></div>'
+          desc: 'Detención inmediata en la línea de frenado reglamentaria.',
+          visualHtml: '<div style="width:70px;height:84px;background:#202628;border-radius:16px;border:3px solid #333;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:5px 0;"><div style="width:22px;height:22px;border-radius:50%;background:#ff1744;box-shadow:0 0 16px #ff1744;"></div><div style="width:20px;height:20px;border-radius:50%;background:#332900;"></div><div style="width:20px;height:20px;border-radius:50%;background:#0a2915;"></div></div>'
         },
         {
           id: 'peaton_cruzando',
           action: 'frenar',
           actionLabel: 'FRENAR',
-          category: 'cat-frenar',
+          categoryClass: 'cat-frenar',
           categoryName: 'Prioridad Peatonal',
           title: 'PEATÓN EN SENDA',
-          desc: 'Persona cruzando en la senda peatonal. Prioridad absoluta.',
-          visualHtml: '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined sign-icon-lg">directions_walk</span></div>'
-        },
-        {
-          id: 'barrera_tren',
-          action: 'frenar',
-          actionLabel: 'FRENAR',
-          category: 'cat-frenar',
-          categoryName: 'Paso a Nivel',
-          title: 'BARRERA FERROVIARIA BAJA',
-          desc: 'Tren aproximándose con señales fonoluminosas activas.',
-          visualHtml: '<div class="sign-pare" style="background:#c62828;"><span class="material-symbols-outlined sign-icon-lg">train</span></div>'
+          desc: 'Persona cruzando en la senda peatonal. Prioridad de paso absoluta.',
+          visualHtml: '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined text-[38px]">directions_walk</span></div>'
         },
 
-        // ACCIÓN: REDUCIR VELOCIDAD (Preventivas / Precaución)
-        {
-          id: 'zona_escolar',
-          action: 'reducir',
-          actionLabel: 'REDUCIR VELOCIDAD',
-          category: 'cat-reducir',
-          categoryName: 'Señal Preventiva',
-          title: 'ZONA ESCOLAR',
-          desc: 'Proximidad de establecimiento educativo. Máxima precautoria: 20 km/h.',
-          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined sign-icon-lg">school</span></div>'
-        },
+        // 2. SOLTAR EL ACELERADOR
         {
           id: 'lomo_burro',
-          action: 'reducir',
-          actionLabel: 'REDUCIR VELOCIDAD',
-          category: 'cat-reducir',
-          categoryName: 'Señal Preventiva',
-          title: 'LOMO DE BURRO / RESALTO',
-          desc: 'Reductor de velocidad sobre la calzada adelante. Disminuir la marcha.',
-          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined sign-icon-lg">waves</span></div>'
+          action: 'acelerador',
+          actionLabel: 'SOLTAR ACELERADOR',
+          categoryClass: 'cat-acelerador',
+          categoryName: 'Reductor Físico',
+          title: 'LOMO DE BURRO PRÓXIMO',
+          desc: 'Disminuir la velocidad levantando el pie del acelerador antes del resalto.',
+          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined text-[36px]">waves</span></div>'
+        },
+        {
+          id: 'zona_escolar',
+          action: 'acelerador',
+          actionLabel: 'SOLTAR ACELERADOR',
+          categoryClass: 'cat-acelerador',
+          categoryName: 'Entorno Escolar',
+          title: 'ZONA ESCOLAR (20 KM/H)',
+          desc: 'Alumnado en veredas. Desacelerar con anticipación a velocidad precautoria.',
+          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined text-[36px]">school</span></div>'
         },
         {
           id: 'curva_peligrosa',
-          action: 'reducir',
-          actionLabel: 'REDUCIR VELOCIDAD',
-          category: 'cat-reducir',
-          categoryName: 'Señal Preventiva',
-          title: 'CURVA PELIGROSA',
-          desc: 'Trazado con giro pronunciado. Adecuar velocidad para mantener la estabilidad.',
-          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined sign-icon-lg">turn_right</span></div>'
+          action: 'acelerador',
+          actionLabel: 'SOLTAR ACELERADOR',
+          categoryClass: 'cat-acelerador',
+          categoryName: 'Trazado Vial',
+          title: 'CURVA PRONUNCIADA',
+          desc: 'Soltar el acelerador antes de entrar en el radio de giro para no perder adherencia.',
+          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined text-[36px]">turn_right</span></div>'
         },
         {
           id: 'calzada_resbaladiza',
-          action: 'reducir',
-          actionLabel: 'REDUCIR VELOCIDAD',
-          category: 'cat-reducir',
-          categoryName: 'Calzada Húmeda',
-          title: 'CALZADA RESBALADIZA',
-          desc: 'Lluvia o asfalto resbaladizo. Reducir velocidad y duplicar distancia de seguridad.',
-          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined sign-icon-lg">water_drop</span></div>'
+          action: 'acelerador',
+          actionLabel: 'SOLTAR ACELERADOR',
+          categoryClass: 'cat-acelerador',
+          categoryName: 'Clima Adverso',
+          title: 'ASFALTO RESBALADIZO / LLUVIA',
+          desc: 'Menor adherencia. Moderar la marcha progresivamente sin frenadas bruscas.',
+          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined text-[36px]">water_drop</span></div>'
         },
 
-        // ACCIÓN: ESQUIVAR / MANIOBRAR / DOBLAR (Desvío u obstáculo en carril)
+        // 3. ESQUIVAR
         {
           id: 'conos_obra',
           action: 'esquivar',
-          actionLabel: 'ESQUIVAR / DOBLAR',
-          category: 'cat-esquivar',
-          categoryName: 'Obstáculo en Calzada',
-          title: 'CONOS DE OBRA EN CARRIL',
-          desc: 'Obras bloqueando tu carril. Cambiar de carril de forma segura.',
-          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined sign-icon-lg">traffic</span></div>'
+          actionLabel: 'ESQUIVAR',
+          categoryClass: 'cat-esquivar',
+          categoryName: 'Obstrucción de Carril',
+          title: 'CONOS DE OBRA ADELANTE',
+          desc: 'Carril clausurado. Maniobrar y abrirse al carril contiguo con baliza/giro.',
+          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined text-[36px]">traffic</span></div>'
         },
         {
           id: 'pozo_bache',
           action: 'esquivar',
-          actionLabel: 'ESQUIVAR / DOBLAR',
-          category: 'cat-esquivar',
+          actionLabel: 'ESQUIVAR',
+          categoryClass: 'cat-esquivar',
           categoryName: 'Falla en Calzada',
-          title: 'BACHE IMPREVISTO',
-          desc: 'Desperfecto en calzada en tu trayectoria. Maniobra de esquive controlada.',
-          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined sign-icon-lg">alt_route</span></div>'
+          title: 'BACHE PROFUNDO',
+          desc: 'Desperfecto en tu trayectoria. Esquive controlado por espejo retrovisor.',
+          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined text-[36px]">alt_route</span></div>'
         },
         {
-          id: 'giro_obligatorio',
+          id: 'puerta_abierta',
           action: 'esquivar',
-          actionLabel: 'ESQUIVAR / DOBLAR',
-          category: 'cat-esquivar',
-          categoryName: 'Giro Obligatorio',
-          title: 'FLECHA DE GIRO',
-          desc: 'Fin de carril o giro mandatorio hacia la derecha/izquierda.',
-          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined sign-icon-lg">turn_sharp_right</span></div>'
-        },
-        {
-          id: 'vehiculo_detenido',
-          action: 'esquivar',
-          actionLabel: 'ESQUIVAR / DOBLAR',
-          category: 'cat-esquivar',
-          categoryName: 'Obstáculo Imprevisto',
-          title: 'AUTO EN DOBLE FILA',
-          desc: 'Vehículo detenido con balizas. Sobrepaso con anticipación y luz de giro.',
-          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined sign-icon-lg">directions_car</span></div>'
+          actionLabel: 'ESQUIVAR',
+          categoryClass: 'cat-esquivar',
+          categoryName: 'Peligro Inminente',
+          title: 'PUERTA DE AUTO ABIERTA',
+          desc: 'Conductor estacionado abre puerta de golpe (dooring). Desviar trayectoria.',
+          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined text-[36px]">meeting_room</span></div>'
         },
 
-        // ACCIÓN: CONTINUAR / AVANZAR (Informativas / Vía habilitada)
+        // 4. OMITIR (NO REQUIERE MANIOBRA DE RIESGO)
         {
-          id: 'via_libre',
-          action: 'continuar',
-          actionLabel: 'CONTINUAR',
-          category: 'cat-continuar',
-          categoryName: 'Sentido Permitido',
-          title: 'VÍA LIBRE / SENTIDO ÚNICO',
-          desc: 'Sentido de circulación habilitado sin obstrucciones. Mantener la marcha.',
-          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined sign-icon-lg">arrow_upward</span></div>'
-        },
-        {
-          id: 'hospital',
-          action: 'continuar',
-          actionLabel: 'CONTINUAR',
-          category: 'cat-continuar',
+          id: 'cartel_hospital',
+          action: 'omitir',
+          actionLabel: 'OMITIR / SEGUIR',
+          categoryClass: 'cat-omitir',
           categoryName: 'Señal Informativa',
-          title: 'PUESTO DE SALUD / HOSPITAL',
-          desc: 'Información de servicios próximos en la traza urbana.',
-          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined sign-icon-lg">local_hospital</span></div>'
+          title: 'PUESTO SANITARIO / HOSPITAL',
+          desc: 'Información de servicios próximos en la traza. No requiere alterar la marcha.',
+          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined text-[36px]">local_hospital</span></div>'
         },
         {
-          id: 'estacionamiento_permitido',
-          action: 'continuar',
-          actionLabel: 'CONTINUAR',
-          category: 'cat-continuar',
+          id: 'cartel_parking',
+          action: 'omitir',
+          actionLabel: 'OMITIR / SEGUIR',
+          categoryClass: 'cat-omitir',
           categoryName: 'Señal Informativa',
           title: 'ESTACIONAMIENTO PERMITIDO',
-          desc: 'Zona con permiso para estacionar. Calzada principal despejada para avanzar.',
-          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined sign-icon-lg">local_parking</span></div>'
+          desc: 'Área habilitada para estacionar. La calzada principal continúa libre.',
+          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined text-[36px]">local_parking</span></div>'
         },
         {
           id: 'fin_obras',
-          action: 'continuar',
-          actionLabel: 'CONTINUAR',
-          category: 'cat-continuar',
-          categoryName: 'Vía Normalizada',
+          action: 'omitir',
+          actionLabel: 'OMITIR / SEGUIR',
+          categoryClass: 'cat-omitir',
+          categoryName: 'Señal Fin de Restricción',
           title: 'FIN DE ZONA DE OBRAS',
-          desc: 'Finaliza tramo con restricciones. Continuar a velocidad reglamentaria.',
-          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined sign-icon-lg">check</span></div>'
+          desc: 'Restricciones levantadas. Omitir maniobra y continuar a velocidad legal.',
+          visualHtml: '<div class="sign-informativa"><span class="material-symbols-outlined text-[36px]">check_circle</span></div>'
         }
       ];
 
-      // ── ESTADO DEL JUEGO ──
-      const TOTAL_ROUNDS = 8;
-      const TIMEOUT_SEC = 2.80; // 2.80 segundos límite para reaccionar
+      // NIVEL 3: DISTRACCIÓN COGNITIVA AL VOLANTE (Eventos con distractor de WhatsApp / Notificación)
+      const STIMULI_LVL3_DISTRACTION = [
+        {
+          id: 'pelota_nino',
+          action: 'frenar',
+          actionLabel: 'FRENAR URGENTE',
+          hasDistraction: true,
+          waSender: 'Instagram • Notificación',
+          waMessage: '🔥 @martin te etiquetó en un video nuevo',
+          categoryClass: 'cat-frenar',
+          categoryName: 'Peligro Crítico con Celular',
+          title: '¡PELOTA Y NIÑO CRUZANDO!',
+          desc: '¡Una pelota cruzó rodando y viene un niño detrás! ¡Freno a fondo!',
+          visualHtml: '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined text-[38px]">sports_soccer</span></div>'
+        },
+        {
+          id: 'frenada_colectivo',
+          action: 'frenar',
+          actionLabel: 'FRENAR URGENTE',
+          hasDistraction: true,
+          waSender: 'WhatsApp • Amigo',
+          waMessage: '¿Dónde estás? ¡Ya arrancó la previa!',
+          categoryClass: 'cat-frenar',
+          categoryName: 'Frenada Brusca Adelante',
+          title: 'COLECTIVO CLAVA LOS FRENOS',
+          desc: 'El transporte público que va adelante frena de golpe sin aviso previo.',
+          visualHtml: '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined text-[38px]">directions_bus</span></div>'
+        },
+        {
+          id: 'moto_encerrona',
+          action: 'acelerador',
+          actionLabel: 'SOLTAR ACELERADOR',
+          hasDistraction: false,
+          categoryClass: 'cat-acelerador',
+          categoryName: 'Tránsito Denso (Atento)',
+          title: 'MOTO CAMBIANDO DE CARRIL',
+          desc: 'Repartidor en moto se incorpora a tu carril con espacio justo.',
+          visualHtml: '<div class="sign-preventiva"><span class="material-symbols-outlined text-[36px]">two_wheeler</span></div>'
+        },
+        {
+          id: 'animal_suelto',
+          action: 'frenar',
+          actionLabel: 'FRENAR URGENTE',
+          hasDistraction: true,
+          waSender: 'TikTok • Tendencia',
+          waMessage: '🔔 Transmisión en vivo que te puede interesar...',
+          categoryClass: 'cat-frenar',
+          categoryName: 'Obstáculo Imprevisto',
+          title: 'PERRO SUELTO EN CALZADA',
+          desc: 'Mascota asustada cruzando la avenida en plena noche.',
+          visualHtml: '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined text-[38px]">pets</span></div>'
+        },
+        {
+          id: 'desvio_inesperado',
+          action: 'esquivar',
+          actionLabel: 'ESQUIVAR',
+          hasDistraction: false,
+          categoryClass: 'cat-esquivar',
+          categoryName: 'Imprevisto en Vía',
+          title: 'RAMA DE ÁRBOL CAÍDA',
+          desc: 'Temporal derribó una rama grande ocupando medio carril.',
+          visualHtml: '<div class="sign-maniobra"><span class="material-symbols-outlined text-[36px]">park</span></div>'
+        },
+        {
+          id: 'llamada_madre',
+          action: 'frenar',
+          actionLabel: 'FRENAR URGENTE',
+          hasDistraction: true,
+          waSender: 'Llamada Entrante • Mamá',
+          waMessage: '📲 Sonando en altavoz...',
+          categoryClass: 'cat-frenar',
+          categoryName: 'Llamada al Volante',
+          title: 'CAMIÓN DE BASURA DETENIDO',
+          desc: 'Vehículo recolector detenido a oscuras doblando la esquina.',
+          visualHtml: '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined text-[38px]">local_shipping</span></div>'
+        }
+      ];
 
+      // ── ESTADO DEL SISTEMA MULTINIVEL ──
+      let currentLevel = 1; // 1, 2, 3
+      let totalRoundsForLevel = 5;
       let currentRoundIdx = 0;
       let activeStimuliQueue = [];
       let currentStimulus = null;
@@ -1342,13 +1509,22 @@
       let liveTimerRaf = null;
       let waitTimer = null;
       let feedbackAdvanceTimer = null;
+      let timeoutSec = 2.70;
 
-      // Almacén de métricas
-      const gameHistory = []; // Array of { stimulus, playerAction, correct, timeSec }
+      // Historial de métricas de la partida actual
+      const gameHistory = []; // { stimulus, playerAction, correct, timeSec, hadDistraction }
 
-      // Elementos del DOM
+      // Referencias al DOM
+      const tabLvl1 = document.getElementById('tab-lvl-1');
+      const tabLvl2 = document.getElementById('tab-lvl-2');
+      const tabLvl3 = document.getElementById('tab-lvl-3');
+      const roundBadge = document.getElementById('round-badge');
+      const roundStateText = document.getElementById('round-state-text');
+      const dotsWrap = document.getElementById('dots-wrap');
+
       const stimulusCard = document.getElementById('stimulus-card');
       const stimulusCatBadge = document.getElementById('stimulus-cat-badge');
+      const catBadgeText = document.getElementById('cat-badge-text');
       const stimulusVisual = document.getElementById('stimulus-visual');
       const stimulusTitle = document.getElementById('stimulus-title');
       const stimulusDesc = document.getElementById('stimulus-desc');
@@ -1357,17 +1533,12 @@
       const feedbackIcon = document.getElementById('feedback-icon');
       const feedbackText = document.getElementById('feedback-text');
       const cardTimerFill = document.getElementById('card-timer-fill');
+      const btnStartGameCta = document.getElementById('btn-start-game-cta');
+      const distractionPopup = document.getElementById('distraction-popup');
+      const waSender = document.getElementById('wa-sender');
+      const waText = document.getElementById('wa-text');
 
-      const roundBadge = document.getElementById('round-badge');
-      const roundStateText = document.getElementById('round-state-text');
-      const dotsWrap = document.getElementById('dots-wrap');
-
-      const actionButtons = {
-        frenar: document.getElementById('btn-action-frenar'),
-        reducir: document.getElementById('btn-action-reducir'),
-        esquivar: document.getElementById('btn-action-esquivar'),
-        continuar: document.getElementById('btn-action-continuar')
-      };
+      const actionsGrid = document.getElementById('actions-grid');
 
       const resultsCard = document.getElementById('results-card');
       const resAvgTime = document.getElementById('res-avg-time');
@@ -1375,8 +1546,10 @@
       const resAccuracy = document.getElementById('res-accuracy');
       const resBlindDist = document.getElementById('res-blind-dist');
       const resAdviceText = document.getElementById('res-advice-text');
+      const resTitleMode = document.getElementById('res-title-mode');
       const btnReplay = document.getElementById('btn-replay');
-      const actionsGrid = document.getElementById('actions-grid');
+      const btnNextLevel = document.getElementById('btn-next-level');
+
       const distanceMatrixCard = document.getElementById('distance-matrix-card');
       const distVal40 = document.getElementById('dist-val-40');
       const distVal60 = document.getElementById('dist-val-60');
@@ -1384,7 +1557,7 @@
       const distanceTimeTag = document.getElementById('distance-time-tag');
 
       function updateDistanceMatrix(timeSec, labelPrefix) {
-        const t = Math.max(0.1, Number(timeSec) || 0.80);
+        const t = Math.max(0.1, Number(timeSec) || 0.75);
         const d40 = +(11.11 * t).toFixed(1);
         const d60 = +(16.67 * t).toFixed(1);
         const d100 = +(27.78 * t).toFixed(1);
@@ -1397,30 +1570,160 @@
         }
       }
 
-      // ── PREPARAR JUEGO ──
-      function initGame() {
+      // ── CONFIGURACIÓN DE BOTONES SEGÚN EL NIVEL ACTIVO ──
+      function renderActionButtonsForLevel(lvl) {
+        actionsGrid.innerHTML = '';
+
+        if (lvl === 1) {
+          // NIVEL 1: 4 COLORES (Rojo, Amarillo, Verde, Azul)
+          actionsGrid.innerHTML = `
+            <button type="button" class="btn-action btn-color-rojo disabled" data-action="rojo" id="btn-act-1">
+              <span class="btn-key-hint">1 / R</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">circle</span></div>
+              <span class="btn-action-title">Rojo</span>
+              <span class="btn-action-sub">Detención</span>
+            </button>
+            <button type="button" class="btn-action btn-color-amarillo disabled" data-action="amarillo" id="btn-act-2">
+              <span class="btn-key-hint">2 / A</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">circle</span></div>
+              <span class="btn-action-title">Amarillo</span>
+              <span class="btn-action-sub">Precaución</span>
+            </button>
+            <button type="button" class="btn-action btn-color-verde disabled" data-action="verde" id="btn-act-3">
+              <span class="btn-key-hint">3 / V</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">circle</span></div>
+              <span class="btn-action-title">Verde</span>
+              <span class="btn-action-sub">Avanzar</span>
+            </button>
+            <button type="button" class="btn-action btn-color-azul disabled" data-action="azul" id="btn-act-4">
+              <span class="btn-key-hint">4 / Z</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">circle</span></div>
+              <span class="btn-action-title">Azul</span>
+              <span class="btn-action-sub">Información</span>
+            </button>
+          `;
+        } else {
+          // NIVEL 2 y 3: 4 ACCIONES VIALES (Frenar, Soltar el Acelerador, Esquivar, Omitir)
+          actionsGrid.innerHTML = `
+            <button type="button" class="btn-action btn-vial-frenar disabled" data-action="frenar" id="btn-act-1">
+              <span class="btn-key-hint">1 / F</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">front_hand</span></div>
+              <span class="btn-action-title">Frenar</span>
+              <span class="btn-action-sub">PARE • Rojo • Peatón</span>
+            </button>
+            <button type="button" class="btn-action btn-vial-acelerador disabled" data-action="acelerador" id="btn-act-2">
+              <span class="btn-key-hint">2 / S</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">speed</span></div>
+              <span class="btn-action-title">Soltar Acelerador</span>
+              <span class="btn-action-sub">Lomo • Escuela • Curva</span>
+            </button>
+            <button type="button" class="btn-action btn-vial-esquivar disabled" data-action="esquivar" id="btn-act-3">
+              <span class="btn-key-hint">3 / E</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">alt_route</span></div>
+              <span class="btn-action-title">Esquivar</span>
+              <span class="btn-action-sub">Conos • Bache • Puerta</span>
+            </button>
+            <button type="button" class="btn-action btn-vial-omitir disabled" data-action="omitir" id="btn-act-4">
+              <span class="btn-key-hint">4 / O</span>
+              <div class="btn-action-icon-circle"><span class="material-symbols-outlined">check_circle</span></div>
+              <span class="btn-action-title">Omitir</span>
+              <span class="btn-action-sub">Informativa • Sin riesgo</span>
+            </button>
+          `;
+        }
+
+        // Reasignar listeners
+        const btns = actionsGrid.querySelectorAll('.btn-action');
+        btns.forEach(b => {
+          b.addEventListener('click', () => {
+            const act = b.getAttribute('data-action');
+            handlePlayerAction(act);
+          });
+        });
+      }
+
+      function setButtonsEnabled(enabled) {
+        const btns = actionsGrid.querySelectorAll('.btn-action');
+        btns.forEach(btn => {
+          if (enabled) {
+            btn.classList.remove('disabled');
+          } else {
+            btn.classList.add('disabled');
+          }
+        });
+      }
+
+      // ── CAMBIO DE PESTAÑAS / NIVELES ──
+      function setLevel(lvl) {
+        currentLevel = lvl;
+        [tabLvl1, tabLvl2, tabLvl3].forEach((tab, i) => {
+          if (i + 1 === lvl) tab.classList.add('active');
+          else tab.classList.remove('active');
+        });
+
+        clearTimeout(waitTimer);
+        clearTimeout(feedbackAdvanceTimer);
+        cancelAnimationFrame(liveTimerRaf);
+
+        renderActionButtonsForLevel(lvl);
+        initGameForCurrentLevel();
+      }
+
+      tabLvl1.addEventListener('click', () => setLevel(1));
+      tabLvl2.addEventListener('click', () => setLevel(2));
+      tabLvl3.addEventListener('click', () => setLevel(3));
+
+      // ── INICIALIZAR NIVEL ──
+      function initGameForCurrentLevel() {
         currentRoundIdx = 0;
         gameHistory.length = 0;
         resultsCard.style.display = 'none';
         actionsGrid.style.display = 'grid';
+        stimulusCard.style.display = 'flex';
+        distractionPopup.style.display = 'none';
         if (distanceMatrixCard) distanceMatrixCard.style.display = 'flex';
-        updateDistanceMatrix(0.80, 'Ref.');
-        setButtonsEnabled(false);
+        updateDistanceMatrix(0.75, 'Ref.');
 
-        // Seleccionar 8 estímulos de forma equilibrada (2 de cada acción) y mezclar
-        const frenarItems = STIMULI_DATABASE.filter(s => s.action === 'frenar').sort(() => 0.5 - Math.random()).slice(0, 2);
-        const reducirItems = STIMULI_DATABASE.filter(s => s.action === 'reducir').sort(() => 0.5 - Math.random()).slice(0, 2);
-        const esquivarItems = STIMULI_DATABASE.filter(s => s.action === 'esquivar').sort(() => 0.5 - Math.random()).slice(0, 2);
-        const continuarItems = STIMULI_DATABASE.filter(s => s.action === 'continuar').sort(() => 0.5 - Math.random()).slice(0, 2);
+        if (currentLevel === 1) {
+          totalRoundsForLevel = 5;
+          timeoutSec = 2.40;
+          // Mezcla de colores equilibrada
+          activeStimuliQueue = [
+            ...STIMULI_LVL1_COLORS,
+            STIMULI_LVL1_COLORS[Math.floor(Math.random() * STIMULI_LVL1_COLORS.length)]
+          ].sort(() => 0.5 - Math.random());
+        } else if (currentLevel === 2) {
+          totalRoundsForLevel = 6;
+          timeoutSec = 2.80;
+          // Seleccionar 6 variadas de las 4 categorías
+          const frenar = STIMULI_LVL2_VIAL.filter(s => s.action === 'frenar').sort(() => 0.5 - Math.random()).slice(0, 2);
+          const acelerar = STIMULI_LVL2_VIAL.filter(s => s.action === 'acelerador').sort(() => 0.5 - Math.random()).slice(0, 2);
+          const esquivar = STIMULI_LVL2_VIAL.filter(s => s.action === 'esquivar').sort(() => 0.5 - Math.random()).slice(0, 1);
+          const omitir = STIMULI_LVL2_VIAL.filter(s => s.action === 'omitir').sort(() => 0.5 - Math.random()).slice(0, 1);
+          activeStimuliQueue = [...frenar, ...acelerar, ...esquivar, ...omitir].sort(() => 0.5 - Math.random());
+        } else if (currentLevel === 3) {
+          totalRoundsForLevel = 6;
+          timeoutSec = 2.90;
+          activeStimuliQueue = [...STIMULI_LVL3_DISTRACTION].sort(() => 0.5 - Math.random());
+        }
 
-        activeStimuliQueue = [...frenarItems, ...reducirItems, ...esquivarItems, ...continuarItems].sort(() => 0.5 - Math.random());
-
-        updateDots();
+        renderDots();
         setIdleState();
       }
 
+      function renderDots() {
+        dotsWrap.innerHTML = '';
+        for (let i = 0; i < totalRoundsForLevel; i++) {
+          const dot = document.createElement('div');
+          dot.id = 'dot-' + i;
+          dot.className = 'round-dot';
+          dotsWrap.appendChild(dot);
+        }
+        updateDots();
+      }
+
       function updateDots() {
-        for (let i = 0; i < TOTAL_ROUNDS; i++) {
+        for (let i = 0; i < totalRoundsForLevel; i++) {
           const dot = document.getElementById('dot-' + i);
           if (!dot) continue;
           dot.className = 'round-dot';
@@ -1430,30 +1733,32 @@
             dot.classList.add('active');
           }
         }
-        roundBadge.textContent = `SEÑAL ${Math.min(currentRoundIdx + 1, TOTAL_ROUNDS)} / ${TOTAL_ROUNDS}`;
+        roundBadge.textContent = `ESTÍMULO ${Math.min(currentRoundIdx + 1, totalRoundsForLevel)} / ${totalRoundsForLevel}`;
       }
-
-      function setButtonsEnabled(enabled) {
-        Object.values(actionButtons).forEach(btn => {
-          if (enabled) {
-            btn.classList.remove('disabled');
-          } else {
-            btn.classList.add('disabled');
-          }
-        });
-      }
-
-      const btnStartGameCta = document.getElementById('btn-start-game-cta');
 
       // ── ESTADOS DE LA PANTALLA ──
       function setIdleState() {
         state = 'idle';
         stimulusCard.className = 'stimulus-card state-idle';
-        stimulusCatBadge.className = 'stimulus-category-badge';
-        stimulusCatBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">touch_app</span><span>INICIAR DESAFÍO</span>';
-        stimulusVisual.innerHTML = '<div class="sign-pare"><span>PARE</span></div>';
-        stimulusTitle.textContent = 'TOCÁ PARA EMPEZAR';
-        stimulusDesc.innerHTML = 'Aparecerán 8 situaciones viales. Presioná el botón correspondiente <strong>en el menor tiempo en segundos</strong>.';
+        distractionPopup.style.display = 'none';
+
+        if (currentLevel === 1) {
+          catBadgeText.textContent = 'NIVEL 1 • REFLEJOS CROMÁTICOS';
+          stimulusVisual.innerHTML = '<div class="color-orb" style="background:#ff1744;box-shadow:0 0 25px #ff1744;"></div>';
+          stimulusTitle.textContent = 'REACCIÓN A COLORES';
+          stimulusDesc.innerHTML = 'Aparecerá un color sorpresa. Presioná el botón correspondiente <strong>lo más rápido posible</strong>.';
+        } else if (currentLevel === 2) {
+          catBadgeText.textContent = 'NIVEL 2 • TOMA DE DECISIONES VIALES';
+          stimulusVisual.innerHTML = '<div class="sign-pare"><span>PARE</span></div>';
+          stimulusTitle.textContent = '4 DECISIONES EN CALLE';
+          stimulusDesc.innerHTML = 'FRENAR, SOLTAR EL ACELERADOR, ESQUIVAR U OMITIR según la situación vial imprevista.';
+        } else if (currentLevel === 3) {
+          catBadgeText.textContent = 'NIVEL 3 • DISTRACCIÓN AL VOLANTE';
+          stimulusVisual.innerHTML = '<div class="sign-pare" style="background:#b71c1c;"><span class="material-symbols-outlined text-[42px]">smartphone</span></div>';
+          stimulusTitle.textContent = 'PELIGRO + DISTRACTOR';
+          stimulusDesc.innerHTML = 'Pondremos a prueba tus reflejos simulando notificaciones y celular. <strong>¡Mantené los ojos en la calle!</strong>';
+        }
+
         if (btnStartGameCta) btnStartGameCta.style.display = 'inline-flex';
         liveTimerBadge.style.display = 'none';
         feedbackBanner.style.display = 'none';
@@ -1465,25 +1770,24 @@
       function startRoundWaiting() {
         state = 'waiting';
         updateDots();
-        roundStateText.textContent = '¡Atento a la calle!...';
+        roundStateText.textContent = '¡Atento al estímulo!...';
+        distractionPopup.style.display = 'none';
 
         stimulusCard.className = 'stimulus-card state-waiting';
-        stimulusCatBadge.className = 'stimulus-category-badge';
-        stimulusCatBadge.innerHTML = '<span class="material-symbols-outlined text-[16px]">visibility</span><span>OBSERVANDO TRÁNSITO</span>';
-        stimulusVisual.innerHTML = '<div style="width:72px;height:72px;border-radius:50%;background:rgba(255,160,0,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-amber);"><span class="material-symbols-outlined text-[36px] animate-pulse">explore</span></div>';
+        catBadgeText.textContent = currentLevel === 1 ? 'ESPERANDO COLOR' : 'OBSERVANDO CALZADA';
+        stimulusVisual.innerHTML = '<div style="width:72px;height:72px;border-radius:50%;background:rgba(255,160,0,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent-amber);"><span class="material-symbols-outlined text-[38px] animate-pulse">explore</span></div>';
         stimulusTitle.textContent = 'PREPARATE...';
-        stimulusDesc.textContent = 'Esperá la señal o situación vial. ¡No te adelantes!';
+        stimulusDesc.textContent = 'No toques ningún botón antes de ver el estímulo. ¡No te adelantes!';
         if (btnStartGameCta) btnStartGameCta.style.display = 'none';
         liveTimerBadge.style.display = 'none';
         feedbackBanner.style.display = 'none';
         cardTimerFill.style.transform = 'scaleX(0)';
 
-        // Botones activos para detectar si el usuario se adelanta
         setButtonsEnabled(true);
         playSound('tick');
 
-        // Retardo aleatorio entre 1.4s y 3.0s
-        const waitMs = 1400 + Math.random() * 1600;
+        // Retardo aleatorio no predecible (1.3s a 3.1s)
+        const waitMs = 1300 + Math.random() * 1800;
         clearTimeout(waitTimer);
         waitTimer = setTimeout(() => {
           if (state === 'waiting') {
@@ -1498,20 +1802,28 @@
         stimulusStartTime = performance.now();
 
         stimulusCard.className = 'stimulus-card state-active';
-        stimulusCatBadge.className = `stimulus-category-badge ${currentStimulus.category}`;
-        stimulusCatBadge.innerHTML = `<span class="material-symbols-outlined text-[16px]">traffic</span><span>${currentStimulus.categoryName}</span>`;
+        stimulusCatBadge.className = `stimulus-category-badge ${currentStimulus.categoryClass || ''}`;
+        catBadgeText.textContent = currentStimulus.categoryName || 'ESTÍMULO ACTIVO';
         stimulusVisual.innerHTML = currentStimulus.visualHtml;
         stimulusTitle.textContent = currentStimulus.title;
         stimulusDesc.textContent = currentStimulus.desc;
+
+        // Distractor en Nivel 3 (simulación de WhatsApp o celular)
+        if (currentLevel === 3 && currentStimulus.hasDistraction) {
+          waSender.textContent = currentStimulus.waSender;
+          waText.textContent = `"${currentStimulus.waMessage}"`;
+          distractionPopup.style.display = 'flex';
+          playSound('distraction_wa');
+        } else {
+          distractionPopup.style.display = 'none';
+          playSound('alert');
+        }
 
         liveTimerBadge.style.display = 'inline-block';
         liveTimerBadge.textContent = '0.00 s';
         feedbackBanner.style.display = 'none';
 
         roundStateText.textContent = '¡REACCIONÁ AHORA!';
-        playSound('alert');
-
-        // Animación del temporizador en vivo
         runLiveTimer();
       }
 
@@ -1521,12 +1833,10 @@
         const elapsedSec = (performance.now() - stimulusStartTime) / 1000;
         liveTimerBadge.textContent = elapsedSec.toFixed(2) + ' s';
 
-        // Porcentaje de barra
-        const progress = Math.min(1, elapsedSec / TIMEOUT_SEC);
+        const progress = Math.min(1, elapsedSec / timeoutSec);
         cardTimerFill.style.transform = `scaleX(${progress})`;
 
-        if (elapsedSec >= TIMEOUT_SEC) {
-          // Se acabó el tiempo
+        if (elapsedSec >= timeoutSec) {
           handlePlayerAction('timeout');
           return;
         }
@@ -1534,7 +1844,7 @@
         liveTimerRaf = requestAnimationFrame(runLiveTimer);
       }
 
-      // ── EVALUAR ACCIÓN DEL JUGADOR ──
+      // ── PROCESAR RESPUESTA DEL JUGADOR ──
       function handlePlayerAction(selectedAction) {
         if (state === 'idle') {
           startRoundWaiting();
@@ -1543,7 +1853,7 @@
         if (state === 'feedback' || state === 'finished') return;
 
         if (state === 'waiting') {
-          // Falsa largada / se adelantó
+          // Falsa largada
           clearTimeout(waitTimer);
           cancelAnimationFrame(liveTimerRaf);
           playSound('wrong');
@@ -1551,11 +1861,11 @@
           state = 'feedback';
           stimulusCard.className = 'stimulus-card state-early';
           stimulusTitle.textContent = '¡TE ADELANTASTE!';
-          stimulusDesc.textContent = 'Presionaste un comando antes de ver la señal vial. En el tránsito esto causa siniestros por maniobras imprevistas.';
+          stimulusDesc.textContent = 'Presionaste antes de que apareciera el estímulo. En el tránsito anticipar una maniobra sin mirar provoca siniestros.';
           feedbackBanner.className = 'feedback-banner wrong';
           feedbackBanner.style.display = 'inline-flex';
           feedbackIcon.textContent = 'warning';
-          feedbackText.textContent = 'Falsa salida. Reintentando la señal...';
+          feedbackText.textContent = 'Falsa salida. Reintentando la prueba...';
 
           setButtonsEnabled(false);
 
@@ -1563,7 +1873,7 @@
             if (state === 'feedback') {
               startRoundWaiting();
             }
-          }, 2000);
+          }, 1800);
           return;
         }
 
@@ -1572,20 +1882,20 @@
         cancelAnimationFrame(liveTimerRaf);
         state = 'feedback';
         setButtonsEnabled(false);
+        distractionPopup.style.display = 'none';
 
-        const reactionTimeSec = +(Math.min(TIMEOUT_SEC, (performance.now() - stimulusStartTime) / 1000)).toFixed(2);
+        const reactionTimeSec = +(Math.min(timeoutSec, (performance.now() - stimulusStartTime) / 1000)).toFixed(2);
         const isTimeout = selectedAction === 'timeout';
         const isCorrect = !isTimeout && (selectedAction === currentStimulus.action);
 
-        // Guardar resultado
         gameHistory.push({
           stimulus: currentStimulus,
           playerAction: selectedAction,
           correct: isCorrect,
-          timeSec: isTimeout ? TIMEOUT_SEC : reactionTimeSec
+          timeSec: isTimeout ? timeoutSec : reactionTimeSec,
+          hadDistraction: !!currentStimulus.hasDistraction
         });
 
-        // Actualizar vista del resultado
         if (isCorrect) {
           playSound('correct');
           stimulusCard.className = 'stimulus-card state-correct';
@@ -1599,29 +1909,26 @@
           feedbackBanner.className = 'feedback-banner wrong';
           feedbackBanner.style.display = 'inline-flex';
           feedbackIcon.textContent = 'timer_off';
-          feedbackText.textContent = `¡TIEMPO AGOTADO! La acción requerida era: ${currentStimulus.actionLabel}`;
+          feedbackText.textContent = `¡TIEMPO AGOTADO! La opción era: ${currentStimulus.actionLabel}`;
         } else {
           playSound('wrong');
           stimulusCard.className = 'stimulus-card state-wrong';
           feedbackBanner.className = 'feedback-banner wrong';
           feedbackBanner.style.display = 'inline-flex';
           feedbackIcon.textContent = 'cancel';
-          const chosenLabel = selectedAction.toUpperCase();
-          feedbackText.textContent = `Elegiste ${chosenLabel} (${reactionTimeSec.toFixed(2)} s). Lo correcto era: ${currentStimulus.actionLabel}`;
+          feedbackText.textContent = `Elegiste ${selectedAction.toUpperCase()} (${reactionTimeSec.toFixed(2)} s). Lo correcto era: ${currentStimulus.actionLabel}`;
         }
 
-        // Actualizar tarjeta de distancias con la reacción registrada
         if (!isTimeout) {
-          updateDistanceMatrix(reactionTimeSec, 'Tu reacción');
+          updateDistanceMatrix(reactionTimeSec, 'Tu respuesta');
         }
 
         updateDots();
 
-        // Avanzar a la siguiente señal o terminar
         clearTimeout(feedbackAdvanceTimer);
         feedbackAdvanceTimer = setTimeout(() => {
           currentRoundIdx++;
-          if (currentRoundIdx < TOTAL_ROUNDS) {
+          if (currentRoundIdx < totalRoundsForLevel) {
             startRoundWaiting();
           } else {
             showFinalResults();
@@ -1629,7 +1936,7 @@
         }, 1600);
       }
 
-      // ── PANTALLA DE RESULTADOS FINALES ──
+      // ── PANTALLA FINAL DE RESULTADOS ──
       function showFinalResults() {
         state = 'finished';
         playSound('finish');
@@ -1637,75 +1944,80 @@
         const correctItems = gameHistory.filter(h => h.correct);
         const correctCount = correctItems.length;
 
-        // Calcular promedio de tiempo en SEGUNDOS de las respuestas correctas (o de todas si 0 aciertos)
-        const timesToAverage = correctItems.length > 0 
+        const times = correctItems.length > 0
           ? correctItems.map(h => h.timeSec)
           : gameHistory.map(h => h.timeSec);
 
-        const avgSec = +(timesToAverage.reduce((a, b) => a + b, 0) / timesToAverage.length).toFixed(2);
-        const bestSec = +(Math.min(...timesToAverage)).toFixed(2);
-
-        // Distancia a ciegas a 40 km/h: V = 40 / 3.6 = 11.11 m/s * avgSec
+        const avgSec = +(times.reduce((a, b) => a + b, 0) / times.length).toFixed(2);
+        const bestSec = +(Math.min(...times)).toFixed(2);
         const blindMeters = +(11.11 * avgSec).toFixed(1);
 
-        // Actualizar tarjeta de distancias con el promedio final
-        updateDistanceMatrix(avgSec, 'Promedio');
+        updateDistanceMatrix(avgSec, 'Promedio Final');
 
-        // Renderizar valores en la tarjeta de resultados (SIEMPRE EN SEGUNDOS)
         resAvgTime.textContent = avgSec.toFixed(2) + ' s';
         resBestTime.textContent = bestSec.toFixed(2) + ' s';
-        resAccuracy.textContent = `${correctCount} / ${TOTAL_ROUNDS}`;
+        resAccuracy.textContent = `${correctCount} / ${totalRoundsForLevel}`;
         resBlindDist.textContent = `${blindMeters} m`;
 
-        // Consejo pedagógico según resultados
-        let adviceHtml = '';
-        if (avgSec < 0.65 && correctCount >= 7) {
-          adviceHtml = `<strong>🏆 Reflejos extraordinarios:</strong> Promediaste <strong>${avgSec.toFixed(2)} s</strong> con alta precisión. A 40 km/h tu vehículo solo avanzó <strong>${blindMeters} m</strong> antes de tu decisión. ¡Excelente concentración!`;
-        } else if (avgSec <= 0.95 && correctCount >= 5) {
-          adviceHtml = `<strong>👍 Buen tiempo de respuesta:</strong> Tu promedio de <strong>${avgSec.toFixed(2)} s</strong> se encuentra dentro del rango estándar humano (0.75 s a 1.00 s). En la Ciudad, mantener la distancia prudencial garantiza que esos <strong>${blindMeters} metros</strong> no sean un obstáculo.`;
+        if (currentLevel === 1) {
+          resTitleMode.textContent = 'Nivel 1: Reflejos Cromáticos';
+          if (avgSec <= 0.55 && correctCount >= 4) {
+            resAdviceText.innerHTML = `<strong>🏆 Reflejos asombrosos:</strong> Tu respuesta visual pura fue de <strong>${avgSec.toFixed(2)} s</strong>. Tenés una velocidad psicomotriz superior al promedio juvenil.`;
+          } else {
+            resAdviceText.innerHTML = `<strong>⏱️ Tiempo registrado: ${avgSec.toFixed(2)} s.</strong> A 40 km/h tu vehículo avanza <strong>${blindMeters} metros</strong> antes de procesar el color. En el Nivel 2 deberás sumar la toma de decisión vial.`;
+          }
+        } else if (currentLevel === 2) {
+          resTitleMode.textContent = 'Nivel 2: Decisiones Viales';
+          resAdviceText.innerHTML = `<strong>🚦 Criterio y Acción:</strong> Acertaste <strong>${correctCount}/${totalRoundsForLevel}</strong> situaciones. Soltar el acelerador ante lomos o escuelas y frenar ante peatones salva vidas todos los días.`;
         } else {
-          adviceHtml = `<strong>⚠️ Tiempo de reacción elevado o indecisión:</strong> Registraste <strong>${avgSec.toFixed(2)} s</strong> y <strong>${blindMeters} m</strong> recorridos a ciegas. Mirar el teléfono durante solo 2 segundos a 40 km/h equivale a avanzar más de 22 metros sin prestar atención a la calzada.`;
-        }
-        resAdviceText.innerHTML = adviceHtml;
+          resTitleMode.textContent = 'Nivel 3: Distracción Cognitiva';
+          const distracted = gameHistory.filter(h => h.hadDistraction);
+          const focused = gameHistory.filter(h => !h.hadDistraction);
+          const avgDistracted = distracted.length ? (distracted.reduce((a, b) => a + b.timeSec, 0) / distracted.length) : avgSec;
+          const avgFocused = focused.length ? (focused.reduce((a, b) => a + b.timeSec, 0) / focused.length) : avgSec;
 
-        // Ocultar arena y botones, mostrar resumen
+          const diffMeters = +((avgDistracted - avgFocused) * 11.11).toFixed(1);
+
+          resAdviceText.innerHTML = `<strong>📱 Efecto del Celular:</strong> Con distracción promediaste <strong>${avgDistracted.toFixed(2)} s</strong> vs <strong>${avgFocused.toFixed(2)} s</strong> atento. ¡Esos segundos equivalen a <strong>${Math.max(3, diffMeters)} metros extra</strong> a ciegas sin tocar el freno!`;
+        }
+
+        // Mostrar botón de "Siguiente Nivel" si no es el último
+        if (currentLevel < 3) {
+          btnNextLevel.style.display = 'inline-flex';
+          btnNextLevel.onclick = () => setLevel(currentLevel + 1);
+        } else {
+          btnNextLevel.style.display = 'none';
+        }
+
         stimulusCard.style.display = 'none';
         actionsGrid.style.display = 'none';
         resultsCard.style.display = 'flex';
-        roundBadge.textContent = 'DESAFÍO COMPLETADO';
-        roundStateText.textContent = `Puntaje: ${correctCount}/${TOTAL_ROUNDS}`;
+        roundBadge.textContent = 'NIVEL COMPLETADO';
+        roundStateText.textContent = `Aciertos: ${correctCount}/${totalRoundsForLevel}`;
 
-        // ── SINCRONIZACIÓN CON ADMINISTRACIÓN ──
-        const syncStatusBox = document.getElementById('sync-status-box');
+        // Guardado con VialCloudSync
         const syncStatusText = document.getElementById('sync-status-text');
-        const speedBonus = Math.max(0, Math.min(80, Math.round((2.2 - avgSec) * 40)));
-        const finalScore = Math.max(50, Math.round((correctCount * 100) + speedBonus));
+        const score = Math.max(50, Math.round((correctCount * 120) + Math.max(0, (2.2 - avgSec) * 50)));
 
         if (window.VialCloudSync) {
-          const gameDetails = gameHistory.map(h => ({
-            question: h.stimulus ? (h.stimulus.title || h.stimulus.actionLabel) : '',
-            selected: h.playerAction,
-            expected: h.stimulus ? h.stimulus.action : '',
-            isCorrect: h.correct,
-            timeSeconds: h.timeSec,
-            points: h.correct ? 100 : 0
-          }));
-
           window.VialCloudSync.syncGameSession({
             game: 'reaccion',
-            category: 'Tiempo de Reacción',
-            score: finalScore,
+            category: `Test de Reacción (Nivel ${currentLevel})`,
+            score: score,
             time: avgSec,
-            accuracy: `${correctCount}/${TOTAL_ROUNDS}`,
-            details: gameDetails
+            accuracy: `${correctCount}/${totalRoundsForLevel}`,
+            details: gameHistory.map(h => ({
+              question: h.stimulus ? (h.stimulus.title || h.stimulus.actionLabel) : '',
+              selected: h.playerAction,
+              expected: h.stimulus ? h.stimulus.action : '',
+              isCorrect: h.correct,
+              timeSeconds: h.timeSec,
+              points: h.correct ? 100 : 0
+            }))
           }).then(() => {
-            if (syncStatusText) {
-              syncStatusText.innerHTML = `✅ ¡Actividad registrada con éxito! (+${finalScore} XP)`;
-            }
+            if (syncStatusText) syncStatusText.innerHTML = `✅ ¡Nivel registrado con éxito! (+${score} XP)`;
           }).catch(() => {
-            if (syncStatusText) {
-              syncStatusText.textContent = 'Guardado localmente en el navegador';
-            }
+            if (syncStatusText) syncStatusText.textContent = 'Guardado localmente en tu navegador';
           });
         }
       }
@@ -1715,42 +2027,29 @@
         clearTimeout(feedbackAdvanceTimer);
         cancelAnimationFrame(liveTimerRaf);
         stimulusCard.style.display = 'flex';
-        initGame();
+        initGameForCurrentLevel();
         startRoundWaiting();
       }
 
-      // ── EVENT LISTENERS ──
-
-      // Clic en la tarjeta central cuando está idle
+      // ── LISTENERS PRINCIPALES ──
       stimulusCard.addEventListener('click', () => {
-        if (state === 'idle') {
-          startRoundWaiting();
-        }
+        if (state === 'idle') startRoundWaiting();
       });
 
       if (btnStartGameCta) {
         btnStartGameCta.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (state === 'idle') {
-            startRoundWaiting();
-          }
+          if (state === 'idle') startRoundWaiting();
         });
       }
 
-      // Botones de acción táctiles
-      actionButtons.frenar.addEventListener('click', () => handlePlayerAction('frenar'));
-      actionButtons.reducir.addEventListener('click', () => handlePlayerAction('reducir'));
-      actionButtons.esquivar.addEventListener('click', () => handlePlayerAction('esquivar'));
-      actionButtons.continuar.addEventListener('click', () => handlePlayerAction('continuar'));
-
-      // Botón reiniciar desafío
       btnReplay.addEventListener('click', resetGameToPlayAgain);
 
-      // Soporte para teclado (Desktop): 1, 2, 3, 4 o Flechas
+      // ── SOPORTE TECLADO (1, 2, 3, 4 o Letras) ──
       window.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-        // Atajo secreto Administrador: Ctrl + Alt + A
+        // Atajo admin: Ctrl + Alt + A
         if ((e.ctrlKey && e.altKey && (e.key.toLowerCase() === 'a' || e.code === 'KeyA')) ||
             (e.altKey && e.key.toLowerCase() === 'a')) {
           e.preventDefault();
@@ -1765,24 +2064,34 @@
         }
 
         if (state === 'waiting' || state === 'active') {
-          if (e.key === '1' || e.code === 'ArrowDown' || e.code === 'KeyF') {
-            e.preventDefault();
-            handlePlayerAction('frenar');
-          } else if (e.key === '2' || e.code === 'KeyS' || e.code === 'KeyR') {
-            e.preventDefault();
-            handlePlayerAction('reducir');
-          } else if (e.key === '3' || e.code === 'ArrowLeft' || e.code === 'ArrowRight' || e.code === 'KeyE') {
-            e.preventDefault();
-            handlePlayerAction('esquivar');
-          } else if (e.key === '4' || e.code === 'ArrowUp' || e.code === 'KeyC') {
-            e.preventDefault();
-            handlePlayerAction('continuar');
+          if (currentLevel === 1) {
+            // Nivel 1: Rojo, Amarillo, Verde, Azul
+            if (e.key === '1' || e.code === 'KeyR') {
+              e.preventDefault(); handlePlayerAction('rojo');
+            } else if (e.key === '2' || e.code === 'KeyA') {
+              e.preventDefault(); handlePlayerAction('amarillo');
+            } else if (e.key === '3' || e.code === 'KeyV') {
+              e.preventDefault(); handlePlayerAction('verde');
+            } else if (e.key === '4' || e.code === 'KeyZ') {
+              e.preventDefault(); handlePlayerAction('azul');
+            }
+          } else {
+            // Nivel 2 y 3: Frenar, Soltar Acelerador, Esquivar, Omitir
+            if (e.key === '1' || e.code === 'ArrowDown' || e.code === 'KeyF') {
+              e.preventDefault(); handlePlayerAction('frenar');
+            } else if (e.key === '2' || e.code === 'ArrowUp' || e.code === 'KeyS' || e.code === 'KeyA') {
+              e.preventDefault(); handlePlayerAction('acelerador');
+            } else if (e.key === '3' || e.code === 'ArrowLeft' || e.code === 'ArrowRight' || e.code === 'KeyE') {
+              e.preventDefault(); handlePlayerAction('esquivar');
+            } else if (e.key === '4' || e.code === 'KeyO' || e.code === 'KeyC') {
+              e.preventDefault(); handlePlayerAction('omitir');
+            }
           }
         }
       });
 
-      // Iniciar el juego en estado Idle
-      initGame();
+      // Inicializar en Nivel 1 por defecto
+      setLevel(1);
     })();
   </script>
 </body>
