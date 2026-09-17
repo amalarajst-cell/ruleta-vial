@@ -65,12 +65,12 @@
     // ── MÉTODOS DEL HOST ──
     async initRoom(gameType = 'reaccion') {
       this.state.phase = 'LOBBY';
-      this.state.players = {};
       this.state.responses = {};
       this.state.roundNumber = 0;
       this.state.lastEvent = { type: 'ROOM_CREATED', timestamp: Date.now() };
 
       this._broadcastLocal(this.state.lastEvent);
+      await this._fetchCloudRoom();
       await this._pushCloudRoom();
       return this.state;
     }
@@ -223,19 +223,24 @@
         const currentSha = fileData.sha;
         const currentContent = JSON.parse(utf8B64Decode(fileData.content));
 
+        // Conservar jugadores existentes en la nube si hay alguno
+        const existingPlayers = (currentContent.liveRoom && currentContent.liveRoom.players) ? currentContent.liveRoom.players : {};
+        const mergedPlayers = Object.assign({}, existingPlayers, this.state.players);
+        this.state.players = mergedPlayers;
+
         currentContent.liveRoom = {
           pin: this.pin,
           phase: this.state.phase,
           roundNumber: this.state.roundNumber,
           currentStimulus: this.state.currentStimulus,
           startTime: this.state.startTime,
-          players: this.state.players,
+          players: mergedPlayers,
           responses: this.state.responses,
           lastEvent: this.state.lastEvent,
           updatedAt: Date.now()
         };
 
-        await fetch(GH_API_URL, {
+        const putRes = await fetch(GH_API_URL, {
           method: 'PUT',
           headers: {
             'Authorization': `token ${GH_TOKEN}`,
@@ -248,7 +253,13 @@
             sha: currentSha
           })
         });
-      } catch(e) {}
+
+        if (putRes.ok && this.isHost) {
+          this.emit('player_list_updated', Object.values(mergedPlayers));
+        }
+      } catch(e) {
+        console.warn('[Live] Error pushCloudRoom:', e);
+      }
     }
 
     async _appendPlayerCloud(playerInfo) {
