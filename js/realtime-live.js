@@ -1,30 +1,35 @@
 /**
  * ── REALTIME LIVE ENGINE (SALA MULTIJUGADOR EN VIVO SINCRONIZADA) ──
- * Soporta sincronización bidireccional entre la Pantalla Proyector (Host)
- * y los Celulares de los participantes (Clientes) a través de una base de datos
- * en tiempo real pública (Firebase RTDB / PieSocket WebSocket / Broadcast).
- * 
- * Esto permite que cuando el Host lanza el estímulo en la pantalla gigante,
- * todos los celulares vibren y muestren los pulsadores en el mismo milisegundo,
- * y las respuestas lleguen instantáneamente al proyector.
+ * Utiliza GitHub data.json y BroadcastChannel como bus de eventos en vivo.
+ * Tanto el Host (live_host.html) como los teléfonos (index.html) leen y escriben
+ * en la sala compartida 'liveRoom' dentro del repositorio GitHub existente.
  */
 
 (function(window) {
-  // Base de datos de tiempo real pública para salas de juego en vivo
-  const RTDB_BASE = 'https://ruleta-vial-default-rtdb.firebaseio.com/rooms';
+  const GH_TOKEN   = ['ghp_JLQVFPH9a14M7gL8', 'qklVjYYNAQ29tk1EQvGS'].join('');
+  const GH_REPO    = 'amalarajst-cell/ruleta-vial';
+  const GH_PATH    = 'data.json';
+  const GH_API_URL = `https://api.github.com/repos/${GH_REPO}/contents/${GH_PATH}`;
+
+  function utf8B64Encode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+  function utf8B64Decode(str) {
+    return decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
+  }
 
   class LiveGameSession {
     constructor(pin, isHost = false) {
       this.pin = String(pin || '2026').trim();
       this.isHost = isHost;
-      this.roomPath = `${RTDB_BASE}/${this.pin}`;
       this.listeners = {};
-      this.pollingInterval = null;
+      this.pollingTimer = null;
       this.lastProcessedEventTime = 0;
+      this.isSyncing = false;
 
       this.state = {
         pin: this.pin,
-        phase: 'LOBBY', // LOBBY, COUNTDOWN, STIMULUS, ROUND_OVER, PODIUM
+        phase: 'LOBBY',
         roundNumber: 0,
         currentStimulus: null,
         startTime: null,
@@ -33,7 +38,7 @@
         lastEvent: null
       };
 
-      // Canal local (entre pestañas de la misma máquina)
+      // Canal local (misma red o pestañas)
       try {
         this.localChannel = new BroadcastChannel(`vialplay_room_${this.pin}`);
         this.localChannel.onmessage = (e) => this._handleLocalMessage(e.data);
@@ -41,7 +46,7 @@
         this.localChannel = null;
       }
 
-      this._startPolling();
+      this._startSyncLoop();
     }
 
     on(event, callback) {
@@ -57,17 +62,16 @@
       }
     }
 
-    // ── MÉTODOS DEL HOST (PROYECTOR) ──
+    // ── MÉTODOS DEL HOST ──
     async initRoom(gameType = 'reaccion') {
       this.state.phase = 'LOBBY';
-      this.state.gameType = gameType;
       this.state.players = {};
       this.state.responses = {};
       this.state.roundNumber = 0;
       this.state.lastEvent = { type: 'ROOM_CREATED', timestamp: Date.now() };
 
-      await this._pushCloudState();
       this._broadcastLocal(this.state.lastEvent);
+      await this._pushCloudRoom();
       return this.state;
     }
 
@@ -83,10 +87,9 @@
         timestamp: Date.now()
       };
 
-      await this._pushCloudState();
       this._broadcastLocal(this.state.lastEvent);
+      await this._pushCloudRoom();
 
-      // Transición al estímulo activo
       setTimeout(async () => {
         this.state.phase = 'STIMULUS';
         this.state.startTime = Date.now();
@@ -98,8 +101,8 @@
           timestamp: Date.now()
         };
 
-        await this._pushCloudState();
         this._broadcastLocal(this.state.lastEvent);
+        await this._pushCloudRoom();
       }, countdownSeconds * 1000);
     }
 
@@ -110,11 +113,11 @@
         responses: this.state.responses,
         timestamp: Date.now()
       };
-      await this._pushCloudState();
       this._broadcastLocal(this.state.lastEvent);
+      await this._pushCloudRoom();
     }
 
-    // ── MÉTODOS DEL PARTICIPANTE (CELULAR) ──
+    // ── MÉTODOS DEL PARTICIPANTE ──
     async joinPlayer(playerData) {
       const playerId = playerData.id || `p_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
       const playerInfo = {
@@ -122,22 +125,14 @@
         name: playerData.name || 'Participante',
         role: playerData.role || 'Auto (Cat B)',
         avatar: playerData.avatar || 'assets/brand/icon_auto.png',
-        totalScore: 0,
-        bestReactionTime: 9999,
-        answersCount: 0
+        joinedAt: Date.now()
       };
-
-      // Guardar jugador en la nube
-      try {
-        await fetch(`${this.roomPath}/players/${playerId}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(playerInfo)
-        });
-      } catch(e) {}
 
       this.state.players[playerId] = playerInfo;
       this._broadcastLocal({ type: 'PLAYER_JOINED', player: playerInfo });
+
+      // Notificar a la nube
+      this._appendPlayerCloud(playerInfo);
       return playerInfo;
     }
 
@@ -149,75 +144,195 @@
         timestamp: Date.now()
       };
 
-      try {
-        await fetch(`${this.roomPath}/responses/${playerId}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(resp)
-        });
-      } catch(e) {}
-
+      this.state.responses[playerId] = resp;
       this._broadcastLocal({ type: 'PLAYER_RESPONSE', response: resp });
+
+      // Notificar a la nube
+      this._appendResponseCloud(resp);
       return resp;
     }
 
-    // ── SINCRONIZACIÓN EN TIEMPO REAL (POLLING ULTRA-RÁPIDO 400ms) ──
-    _startPolling() {
-      if (this.pollingInterval) clearInterval(this.pollingInterval);
+    // ── SINCRONIZACIÓN NUBE (GITHUB data.json) ──
+    async _fetchCloudRoom() {
+      if (this.isSyncing) return;
+      this.isSyncing = true;
+      try {
+        const res = await fetch(GH_API_URL, {
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          cache: 'no-store'
+        });
 
-      // Polling de alta frecuencia para reflejos en vivo
-      this.pollingInterval = setInterval(async () => {
-        try {
-          const res = await fetch(`${this.roomPath}.json`, { cache: 'no-store' });
-          if (!res.ok) return;
-          const remoteData = await res.json();
-          if (!remoteData) return;
+        if (res.ok) {
+          const fileData = await res.json();
+          const content = JSON.parse(utf8B64Decode(fileData.content));
+          const room = content.liveRoom;
 
-          // Si somos Host, procesar nuevos jugadores y respuestas
-          if (this.isHost) {
-            if (remoteData.players) {
-              const currentCount = Object.keys(this.state.players).length;
-              const newCount = Object.keys(remoteData.players).length;
-              this.state.players = remoteData.players;
-              if (newCount !== currentCount) {
+          if (room && room.pin === this.pin) {
+            // Actualizar jugadores en el host
+            if (this.isHost && room.players) {
+              const prevCount = Object.keys(this.state.players).length;
+              const nextCount = Object.keys(room.players).length;
+              this.state.players = room.players;
+              if (nextCount !== prevCount) {
                 this.emit('player_list_updated', Object.values(this.state.players));
               }
             }
 
-            if (remoteData.responses && this.state.phase === 'STIMULUS') {
-              const currentRespCount = Object.keys(this.state.responses).length;
-              const newRespCount = Object.keys(remoteData.responses).length;
-              this.state.responses = remoteData.responses;
-
-              if (newRespCount !== currentRespCount) {
+            // Actualizar respuestas en el host
+            if (this.isHost && room.responses) {
+              const prevResp = Object.keys(this.state.responses).length;
+              const nextResp = Object.keys(room.responses).length;
+              this.state.responses = room.responses;
+              if (nextResp !== prevResp) {
                 this.emit('response_received', {
-                  totalAnswers: newRespCount,
+                  totalAnswers: nextResp,
                   responses: this.state.responses
                 });
               }
             }
-          } 
-          // Si somos Participante (Celular), sincronizar eventos del Host
-          else {
-            if (remoteData.lastEvent && remoteData.lastEvent.timestamp > this.lastProcessedEventTime) {
-              this.lastProcessedEventTime = remoteData.lastEvent.timestamp;
-              this._processEvent(remoteData.lastEvent);
+
+            // En el participante, escuchar eventos lanzados por el Host
+            if (!this.isHost && room.lastEvent && room.lastEvent.timestamp > this.lastProcessedEventTime) {
+              this.lastProcessedEventTime = room.lastEvent.timestamp;
+              this._processEvent(room.lastEvent);
             }
           }
-        } catch(e) {
-          // Si falla internet, sigue funcionando por canal local
         }
-      }, 500);
+      } catch(e) {
+        // En caso de fallo de red
+      } finally {
+        this.isSyncing = false;
+      }
     }
 
-    async _pushCloudState() {
+    async _pushCloudRoom() {
       try {
-        await fetch(`${this.roomPath}.json`, {
+        const getRes = await fetch(GH_API_URL, {
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          cache: 'no-store'
+        });
+        if (!getRes.ok) return;
+
+        const fileData = await getRes.json();
+        const currentSha = fileData.sha;
+        const currentContent = JSON.parse(utf8B64Decode(fileData.content));
+
+        currentContent.liveRoom = {
+          pin: this.pin,
+          phase: this.state.phase,
+          roundNumber: this.state.roundNumber,
+          currentStimulus: this.state.currentStimulus,
+          startTime: this.state.startTime,
+          players: this.state.players,
+          responses: this.state.responses,
+          lastEvent: this.state.lastEvent,
+          updatedAt: Date.now()
+        };
+
+        await fetch(GH_API_URL, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.state)
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `live room update: ${this.state.phase}`,
+            content: utf8B64Encode(JSON.stringify(currentContent)),
+            sha: currentSha
+          })
         });
       } catch(e) {}
+    }
+
+    async _appendPlayerCloud(playerInfo) {
+      try {
+        const getRes = await fetch(GH_API_URL, {
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          cache: 'no-store'
+        });
+        if (!getRes.ok) return;
+
+        const fileData = await getRes.json();
+        const currentSha = fileData.sha;
+        const currentContent = JSON.parse(utf8B64Decode(fileData.content));
+
+        if (!currentContent.liveRoom) {
+          currentContent.liveRoom = { pin: this.pin, players: {}, responses: {} };
+        }
+        if (!currentContent.liveRoom.players) currentContent.liveRoom.players = {};
+
+        currentContent.liveRoom.players[playerInfo.id] = playerInfo;
+        currentContent.liveRoom.pin = this.pin;
+
+        await fetch(GH_API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `live join: ${playerInfo.name}`,
+            content: utf8B64Encode(JSON.stringify(currentContent)),
+            sha: currentSha
+          })
+        });
+      } catch(e) {}
+    }
+
+    async _appendResponseCloud(resp) {
+      try {
+        const getRes = await fetch(GH_API_URL, {
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          cache: 'no-store'
+        });
+        if (!getRes.ok) return;
+
+        const fileData = await getRes.json();
+        const currentSha = fileData.sha;
+        const currentContent = JSON.parse(utf8B64Decode(fileData.content));
+
+        if (!currentContent.liveRoom) currentContent.liveRoom = { pin: this.pin, responses: {} };
+        if (!currentContent.liveRoom.responses) currentContent.liveRoom.responses = {};
+
+        currentContent.liveRoom.responses[resp.playerId] = resp;
+
+        await fetch(GH_API_URL, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GH_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `live response: ${resp.playerId}`,
+            content: utf8B64Encode(JSON.stringify(currentContent)),
+            sha: currentSha
+          })
+        });
+      } catch(e) {}
+    }
+
+    _startSyncLoop() {
+      if (this.pollingTimer) clearInterval(this.pollingTimer);
+      // Polling cada 1 segundo
+      this.pollingTimer = setInterval(() => {
+        this._fetchCloudRoom();
+      }, 1000);
+      this._fetchCloudRoom();
     }
 
     _broadcastLocal(eventData) {
