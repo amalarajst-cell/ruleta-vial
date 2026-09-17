@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
       renderLeaderboardUI();
     }
 
+    if (name === 'multiplayer') {
+      renderLiveReactionPodium();
+    }
+
     if (name === 'admin') {
       document.body.classList.add('admin-mode');
       startAdminLivePolling();
@@ -2536,6 +2540,119 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }, 1000);
     });
+  }
+
+  // ── PODIO EN VIVO: TIEMPO DE REACCIÓN (INTEGRADO DIRECTO EN GITHUB) ──
+  function renderLiveReactionPodium() {
+    const top3Container = document.getElementById('live-podium-top3');
+    const tableBody = document.getElementById('live-podium-table-body');
+    const btnRefresh = document.getElementById('btn-refresh-live-podium');
+
+    if (btnRefresh && !btnRefresh.dataset.bound) {
+      btnRefresh.dataset.bound = 'true';
+      btnRefresh.addEventListener('click', async () => {
+        btnRefresh.innerHTML = '<span class="material-symbols-outlined text-[16px] rotating">sync</span><span>Actualizando...</span>';
+        await fetchCloudState(true);
+        renderLiveReactionPodium();
+      });
+    }
+
+    // Filtrar participantes de Tiempo de Reacción
+    const reactionPlayers = leaderboard.filter(e => {
+      const g = getEntryGame(e);
+      return g === 'reaccion';
+    });
+
+    // Ordenar de menor a mayor tiempo de reacción
+    reactionPlayers.sort((a, b) => {
+      const tA = Number(a.time) > 0 ? Number(a.time) : 999;
+      const tB = Number(b.time) > 0 ? Number(b.time) : 999;
+      if (Math.abs(tA - tB) > 0.001) return tA - tB;
+      return (Number(b.score) || 0) - (Number(a.score) || 0);
+    });
+
+    // Renderizar Top 3 Podio Visual (orden F1: 2°, 1°, 3°)
+    if (top3Container) {
+      if (reactionPlayers.length === 0) {
+        top3Container.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:20px;background:rgba(255,255,255,0.03);border-radius:16px;color:var(--on-surface-variant);">
+            Aún no hay registros de Tiempo de Reacción. ¡Jugá el desafío para inaugurar el podio!
+          </div>
+        `;
+      } else {
+        const p1 = reactionPlayers[0];
+        const p2 = reactionPlayers[1];
+        const p3 = reactionPlayers[2];
+
+        top3Container.innerHTML = `
+          <!-- 2° LUGAR (Plata) -->
+          <div style="display:flex;flex-direction:column;align-items:center;background:#181b1e;border:1.5px solid #94a3b8;border-radius:18px;padding:14px 8px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.4);">
+            <div style="font-size:24px;margin-bottom:4px;">🥈</div>
+            <span style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;">2° Puesto</span>
+            <span style="font-family:var(--font-display);font-size:14px;color:#fff;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;">
+              ${p2 ? p2.name : '—'}
+            </span>
+            <span style="font-family:var(--font-display);font-size:18px;color:#8DE2D6;font-weight:900;">
+              ${p2 ? Number(p2.time).toFixed(2) + ' s' : '—'}
+            </span>
+          </div>
+
+          <!-- 1° LUGAR (Oro - Destacado al centro) -->
+          <div style="display:flex;flex-direction:column;align-items:center;background:rgba(255,198,0,0.12);border:2.5px solid #FFC600;border-radius:20px;padding:18px 8px;text-align:center;transform:translateY(-8px);box-shadow:0 12px 30px rgba(255,198,0,0.25);">
+            <div style="font-size:32px;margin-bottom:2px;">🥇</div>
+            <span style="font-size:11px;font-weight:900;color:#FFC600;text-transform:uppercase;letter-spacing:0.5px;">Récord de Velocidad</span>
+            <span style="font-family:var(--font-display);font-size:16px;color:#fff;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;">
+              ${p1 ? p1.name : '—'}
+            </span>
+            <span style="font-family:var(--font-display);font-size:22px;color:#FFC600;font-weight:900;">
+              ${p1 ? Number(p1.time).toFixed(2) + ' s' : '—'}
+            </span>
+          </div>
+
+          <!-- 3° LUGAR (Bronce) -->
+          <div style="display:flex;flex-direction:column;align-items:center;background:#181b1e;border:1.5px solid #cd7f32;border-radius:18px;padding:14px 8px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.4);">
+            <div style="font-size:24px;margin-bottom:4px;">🥉</div>
+            <span style="font-size:11px;font-weight:800;color:#cd7f32;text-transform:uppercase;">3° Puesto</span>
+            <span style="font-family:var(--font-display);font-size:14px;color:#fff;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;">
+              ${p3 ? p3.name : '—'}
+            </span>
+            <span style="font-family:var(--font-display);font-size:18px;color:#8DE2D6;font-weight:900;">
+              ${p3 ? Number(p3.time).toFixed(2) + ' s' : '—'}
+            </span>
+          </div>
+        `;
+      }
+    }
+
+    // Renderizar Tabla Completa
+    if (tableBody) {
+      if (reactionPlayers.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--on-surface-variant);">No hay registros de tiempo de reacción aún.</td></tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = reactionPlayers.map((p, idx) => {
+        const medal = idx === 0 ? '🥇 1°' : (idx === 1 ? '🥈 2°' : (idx === 2 ? '🥉 3°' : `${idx + 1}°`));
+        const rowHighlight = idx === 0 ? 'background:rgba(255,198,0,0.06);' : '';
+        const timeSec = Number(p.time) > 0 ? Number(p.time).toFixed(2) + ' s' : '—';
+        const userIcon = p.avatar || getRoleIcon(p.role);
+        return `
+          <tr style="${rowHighlight}">
+            <td style="text-align:center;font-weight:900;color:${idx === 0 ? '#FFC600' : 'var(--on-surface)'};">${medal}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <img src="${userIcon}" style="width:20px;height:20px;object-fit:contain;filter:brightness(0) invert(1);" onerror="this.src='assets/brand/icon_auto.png'">
+                <span style="font-weight:700;color:#fff;">${p.name}</span>
+              </div>
+            </td>
+            <td><span style="font-size:11px;color:var(--tertiary);">${p.role || 'Auto B'}</span></td>
+            <td style="text-align:right;font-family:var(--font-display);font-size:14px;color:#8DE2D6;font-weight:900;">${timeSec}</td>
+            <td style="text-align:center;font-size:12px;color:var(--success);">${p.accuracy || '8/8'}</td>
+            <td style="text-align:right;font-family:var(--font-display);font-size:14px;color:#FFC600;font-weight:900;">${p.score} XP</td>
+          </tr>
+        `;
+      }).join('');
+    }
   }
 
   // ── BOTTOM NAVIGATION HANDLERS ────────────────────────────

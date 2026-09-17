@@ -652,99 +652,73 @@
 
 
   <!-- ================================================
-       SCREEN: MULTIJUGADOR EN VIVO (PIN DE SALA)
+       SCREEN: TORNEO EN VIVO (DESAFÍO DE REACCIÓN GITHUB)
   ================================================ -->
   <main class="screen" id="screen-multiplayer">
-    <div style="width:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:22px;padding:12px 4px;">
+    <div style="width:100%;max-width:800px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;padding:12px 4px;">
       
-      <!-- Icono y Título Hero -->
+      <!-- Encabezado Hero En Vivo -->
       <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;">
-        <div class="multiplayer-hero-badge">
-          <span class="material-symbols-outlined text-[38px]" style="color:var(--secondary-container)">podium</span>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,138,0.15);color:var(--success);border:1px solid rgba(0,229,138,0.3);padding:4px 14px;border-radius:9999px;font-size:12px;font-weight:800;letter-spacing:1px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 10px var(--success);"></span> TORNEO EN VIVO EN TIEMPO REAL
         </div>
-        <h2 style="font-family:var(--font-display);font-size:24px;color:#ffffff;margin:0;letter-spacing:0.5px;text-transform:uppercase;">
-          Torneo En Vivo
+        <h2 style="font-family:var(--font-display);font-size:26px;color:#ffffff;margin:4px 0 0;letter-spacing:0.5px;text-transform:uppercase;">
+          ⚡ Podio Tiempo de Reacción
         </h2>
-        <p style="font-size:14px;color:var(--on-surface-variant);max-width:340px;line-height:1.5;margin:0;">
-          Ingresá el <strong style="color:var(--secondary-container);">PIN de 4 a 6 dígitos</strong> proyectado en la pantalla del aula o evento para unirte a la partida grupal.
+        <p style="font-size:14px;color:var(--on-surface-variant);max-width:520px;line-height:1.5;margin:0;">
+          Los participantes juegan desde su celular y el ranking se actualiza en vivo en esta pantalla.
         </p>
       </div>
 
-      <!-- Display de Casillas de PIN -->
-      <div class="pin-display-container">
-        <div class="pin-slot" id="pin-slot-0"></div>
-        <div class="pin-slot" id="pin-slot-1"></div>
-        <div class="pin-slot" id="pin-slot-2"></div>
-        <div class="pin-slot" id="pin-slot-3"></div>
-        <div class="pin-slot" id="pin-slot-4"></div>
-        <div class="pin-slot" id="pin-slot-5"></div>
+      <!-- Botón de Acción para Jugadores Móviles -->
+      <div style="width:100%;max-width:440px;display:flex;flex-direction:column;gap:10px;">
+        <a href="reaccion.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:12px;background:#00E676;color:#000000;font-family:var(--font-display);font-size:18px;font-weight:900;padding:16px 24px;border-radius:18px;box-shadow:0 8px 0 #00A352,0 16px 30px rgba(0,230,118,0.35);text-transform:uppercase;transition:transform 0.1s;">
+          <span class="material-symbols-outlined text-[26px]">play_circle</span>
+          <span>¡Jugar Desafío de Reacción!</span>
+        </a>
+        <span style="font-size:12px;color:var(--on-surface-variant);text-align:center;">
+          ¿Estás en el proyector? Dejá esta pantalla abierta para transmitir el podio en vivo.
+        </span>
       </div>
 
-      <!-- Estado / Feedback de Conexión -->
-      <div id="mp-status-msg" class="mp-status-feedback">
-        <span class="material-symbols-outlined text-[18px]">info</span>
-        <span>Esperando ingreso de PIN...</span>
+      <!-- Top 3 Podio Visual Deportivo -->
+      <div id="live-podium-top3" style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;width:100%;margin-top:10px;">
+        <!-- Inyectado por JS: 2°, 1°, 3° -->
       </div>
 
-      <!-- Teclado Numérico Virtual Táctil -->
-      <div class="mp-keypad">
-        <button type="button" class="mp-key" data-digit="1">1</button>
-        <button type="button" class="mp-key" data-digit="2">2</button>
-        <button type="button" class="mp-key" data-digit="3">3</button>
-        <button type="button" class="mp-key" data-digit="4">4</button>
-        <button type="button" class="mp-key" data-digit="5">5</button>
-        <button type="button" class="mp-key" data-digit="6">6</button>
-        <button type="button" class="mp-key" data-digit="7">7</button>
-        <button type="button" class="mp-key" data-digit="8">8</button>
-        <button type="button" class="mp-key" data-digit="9">9</button>
-        <button type="button" class="mp-key mp-key-clear" id="mp-btn-clear">
-          <span class="material-symbols-outlined text-[20px]">backspace</span>
-        </button>
-        <button type="button" class="mp-key" data-digit="0">0</button>
-        <button type="button" class="mp-key mp-key-join" id="mp-btn-join">
-          <span class="material-symbols-outlined text-[22px]">play_arrow</span>
-        </button>
-      </div>
-
-
-
-      <!-- VISTA DINÁMICA DEL PARTICIPANTE CUANDO ESTÁ EN SALA -->
-      <div id="mp-active-gamepad" style="display:none;width:100%;flex-direction:column;gap:18px;align-items:center;">
-        <div style="background:#16181b;border:1.5px solid rgba(255,198,0,0.4);border-radius:20px;padding:16px 20px;width:100%;text-align:center;">
-          <span style="font-size:11px;font-weight:800;color:var(--tertiary);text-transform:uppercase;letter-spacing:1px;">Estás en la Sala</span>
-          <div style="font-family:var(--font-display);font-size:24px;color:#ffffff;margin-top:2px;" id="mp-active-room-pin">PIN: 2026</div>
-          <div style="font-size:13px;color:var(--on-surface-variant);margin-top:6px;" id="mp-gamepad-instruction">
-            ¡Mirá la pantalla gigante! Esperando el próximo estímulo...
+      <!-- Tabla Completa de Participantes en Vivo -->
+      <div style="width:100%;background:#16181b;border:1.5px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <div style="background:#1e2226;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="material-symbols-outlined text-[20px]" style="color:#FFC600;">leaderboard</span>
+            <span style="font-family:var(--font-display);font-size:14px;color:#ffffff;text-transform:uppercase;">Participantes del Evento</span>
           </div>
-        </div>
-
-        <!-- BOTONERA DE REACCIÓN EN VIVO -->
-        <div id="mp-reaction-buttons" style="display:none;grid-template-columns:repeat(2, 1fr);gap:12px;width:100%;">
-          <button type="button" class="mp-action-btn" data-action="frenar" style="height:110px;border-radius:18px;background:#FF4444;color:#fff;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #b30000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-            <span class="material-symbols-outlined text-[32px]">hand_bones</span>
-            <span>FRENAR</span>
-          </button>
-          <button type="button" class="mp-action-btn" data-action="reducir" style="height:110px;border-radius:18px;background:#38BDF8;color:#000;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #0284c7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-            <span class="material-symbols-outlined text-[32px]">speed</span>
-            <span>REDUCIR</span>
-          </button>
-          <button type="button" class="mp-action-btn" data-action="esquivar" style="height:110px;border-radius:18px;background:#FF9100;color:#000;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #c45500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-            <span class="material-symbols-outlined text-[32px]">swap_horiz</span>
-            <span>ESQUIVAR</span>
-          </button>
-          <button type="button" class="mp-action-btn" data-action="continuar" style="height:110px;border-radius:18px;background:#00E676;color:#000;border:none;font-family:var(--font-display);font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 0 #00a352;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-            <span class="material-symbols-outlined text-[32px]">check_circle</span>
-            <span>CONTINUAR</span>
+          <button id="btn-refresh-live-podium" type="button" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#8DE2D6;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+            <span class="material-symbols-outlined text-[16px]">refresh</span>
+            <span>Actualizar</span>
           </button>
         </div>
 
-        <!-- FEEDBACK TRAS RESPONDER -->
-        <div id="mp-response-feedback" style="display:none;background:rgba(0,230,118,0.1);border:1.5px solid #00E676;border-radius:16px;padding:16px;width:100%;text-align:center;">
-          <span class="material-symbols-outlined text-[32px]" style="color:#00E676;">verified</span>
-          <div style="font-family:var(--font-display);font-size:18px;color:#ffffff;margin-top:4px;" id="mp-feedback-time">
-            ¡Reacción registrada!
-          </div>
-          <span style="font-size:12px;color:var(--on-surface-variant);">Tu tiempo fue enviado a la pantalla gigante</span>
+        <div style="max-height:480px;overflow-y:auto;">
+          <table class="ranking-table" style="margin:0;width:100%;">
+            <thead>
+              <tr>
+                <th style="width:60px;text-align:center;">Pos</th>
+                <th>Participante</th>
+                <th>Rol</th>
+                <th style="text-align:right;">Tiempo Prom.</th>
+                <th style="text-align:center;">Aciertos</th>
+                <th style="text-align:right;">Puntaje XP</th>
+              </tr>
+            </thead>
+            <tbody id="live-podium-table-body">
+              <tr>
+                <td colspan="6" style="text-align:center;padding:24px;color:var(--on-surface-variant);">
+                  Cargando participantes en vivo...
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
