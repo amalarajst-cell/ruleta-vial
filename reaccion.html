@@ -909,6 +909,35 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    /* ── SHUFFLE ANIMATION (Nivel 3) ── */
+    @keyframes shuffle-pop {
+      0%   { transform: scale(0.82) rotate(-3deg); opacity: 0.5; }
+      55%  { transform: scale(1.06) rotate(1.5deg); opacity: 1; }
+      100% { transform: scale(1)    rotate(0deg);  opacity: 1; }
+    }
+    .btn-action.shuffled {
+      animation: shuffle-pop 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    /* Indicador de mezcla en el grid */
+    .shuffle-hint {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-amber);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .actions-grid { position: relative; }
+    .actions-grid.show-hint .shuffle-hint { opacity: 1; }
   </style>
 </head>
 <body>
@@ -1647,6 +1676,35 @@
         });
       }
 
+      // ── MEZCLA ALEATORIA DE BOTONES (Nivel 3: Distracción) ──
+      function shuffleActionButtons() {
+        const btns = Array.from(actionsGrid.querySelectorAll('.btn-action'));
+        // Fisher-Yates sobre nodos del DOM
+        for (let i = btns.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          actionsGrid.appendChild(btns[j]);
+          [btns[i], btns[j]] = [btns[j], btns[i]];
+        }
+        // Animación de cada botón
+        actionsGrid.querySelectorAll('.btn-action').forEach((btn, idx) => {
+          btn.style.animationDelay = (idx * 40) + 'ms';
+          btn.classList.remove('shuffled');
+          void btn.offsetWidth; // reflow para reiniciar animación
+          btn.classList.add('shuffled');
+          setTimeout(() => { btn.classList.remove('shuffled'); btn.style.animationDelay = ''; }, 500);
+        });
+        // Mostrar hint breve
+        let hint = actionsGrid.querySelector('.shuffle-hint');
+        if (!hint) {
+          hint = document.createElement('div');
+          hint.className = 'shuffle-hint';
+          hint.textContent = '⚡ BOTONES MEZCLADOS';
+          actionsGrid.appendChild(hint);
+        }
+        actionsGrid.classList.add('show-hint');
+        setTimeout(() => actionsGrid.classList.remove('show-hint'), 900);
+      }
+
       function setButtonsEnabled(enabled) {
         const btns = actionsGrid.querySelectorAll('.btn-action');
         btns.forEach(btn => {
@@ -1708,7 +1766,7 @@
           activeStimuliQueue = [...frenar, ...acelerar, ...esquivar, ...omitir].sort(() => 0.5 - Math.random());
         } else if (currentLevel === 3) {
           totalRoundsForLevel = 6;
-          timeoutSec = 2.90;
+          timeoutSec = 2.40; // Más corto que Nivel 2 (2.80s) para simular pérdida de reflejos por distracción
           activeStimuliQueue = [...STIMULI_LVL3_DISTRACTION].sort(() => 0.5 - Math.random());
         }
 
@@ -1805,6 +1863,11 @@
         state = 'active';
         currentStimulus = activeStimuliQueue[currentRoundIdx];
         stimulusStartTime = performance.now();
+
+        // Nivel 3: mezclar botones en el momento del estímulo
+        if (currentLevel === 3) {
+          shuffleActionButtons();
+        }
 
         stimulusCard.className = 'stimulus-card state-active';
         stimulusCatBadge.className = `stimulus-category-badge ${currentStimulus.categoryClass || ''}`;
