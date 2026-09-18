@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cat.includes('simulador')) return 'simulador';
     if (cat.includes('peligros') || cat.includes('detector')) return 'peligros';
     if (cat.includes('crucigrama') || cat.includes('crossword')) return 'crucigrama';
+    if (cat.includes('prioridad') || cat.includes('quien_pasa') || cat.includes('paso')) return 'prioridad';
     return 'ruleta';
   }
 
@@ -1526,6 +1527,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (g === 'crucigrama') {
         return (e.accuracy && (e.accuracy.includes('5/5') || e.accuracy.includes('6/6') || e.accuracy.includes('100%'))) || (Number(e.score) || 0) >= 300;
       }
+      if (g === 'prioridad') {
+        return (e.accuracy && (e.accuracy.includes('10/10') || e.accuracy.includes('100%'))) || (Number(e.score) || 0) >= 800;
+      }
       return (Number(e.score) || 0) >= 500;
     }).length;
 
@@ -1598,6 +1602,8 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(255,68,68,0.15);border:1px solid rgba(255,68,68,0.35);color:#FF4444;font-size:11px;font-weight:800;">⚠️ Peligros</span>`;
           } else if (g === 'crucigrama') {
             gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);color:#818CF8;font-size:11px;font-weight:800;">🧩 Crucigrama</span>`;
+          } else if (g === 'prioridad') {
+            gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.35);color:#FBBF24;font-size:11px;font-weight:800;">🛑 Prioridad</span>`;
           } else {
             gameBadge = `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:rgba(255,198,0,0.15);border:1px solid rgba(255,198,0,0.3);color:var(--secondary-container);font-size:11px;font-weight:800;">🎡 Ruleta</span>`;
           }

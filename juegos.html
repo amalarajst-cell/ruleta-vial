@@ -325,6 +325,25 @@
       border: 1px solid rgba(99, 102, 241, 0.25);
       background: rgba(99, 102, 241, 0.06);
     }
+    .btn-prioridad {
+      border-color: #F59E0B;
+      box-shadow: 0 10px 0 #B45309, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-prioridad:hover {
+      border-color: #FDE68A;
+      box-shadow: 0 14px 0 #B45309, 0 24px 44px rgba(245, 158, 11, 0.35);
+    }
+    .btn-prioridad:active {
+      box-shadow: 0 4px 0 #B45309, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-prioridad span {
+      color: #FBBF24;
+    }
+    .subtitle-prioridad {
+      color: #FDE68A;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      background: rgba(245, 158, 11, 0.06);
+    }
   </style>
 </head>
 <body>
@@ -443,6 +462,17 @@
         <span>Prueba técnica del Motor 3D de Nueva Generación</span>
       </div>
     </div>
+
+    <!-- 9. JUEGO: ¿QUIÉN PASA PRIMERO? -->
+    <div class="game-card-wrapper">
+      <button class="btn-ruleta btn-prioridad" id="btn-prioridad" onclick="playGame('prioridad.html')">
+        <img src="assets/prioridad_icono.jpg" alt="Quién Pasa Primero">
+        <span>¿QUIÉN PASA PRIMERO?</span>
+      </button>
+      <div class="btn-hub-subtitle subtitle-prioridad" id="sub-prioridad">
+        <span>Ley 2148 CABA • Ambulancias, vías férreas y jerarquías</span>
+      </div>
+    </div>
   </main>
 
   <script src="js/cloud-sync.js?v=23"></script>
@@ -470,9 +500,9 @@
         return cleanId && eId === cleanId;
       });
 
-      const playedGames = new Set(userEntries.map(e => e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : 'ruleta'))));
+      const playedGames = new Set(userEntries.map(e => e.game || (e.category === 'Tiempo de Reacción' ? 'reaccion' : (e.category === 'Límites de Alcoholemia' ? 'alcoholemia' : (e.category === 'Prioridad de Paso' ? 'prioridad' : 'ruleta')))));
       const count = playedGames.size;
-      const totalGames = 7;
+      const totalGames = 8;
 
       const progressEl = document.getElementById('progress-fill');
       if (progressEl) progressEl.style.width = `${Math.round((count / totalGames) * 100)}%`;
@@ -505,6 +535,10 @@
       if (playedGames.has('crucigrama')) {
         const sub = document.getElementById('sub-crucigrama');
         if (sub) sub.innerHTML = '<span>✅ Crucigrama resuelto • ¡Probá otro vehículo!</span>';
+      }
+      if (playedGames.has('prioridad')) {
+        const sub = document.getElementById('sub-prioridad');
+        if (sub) sub.innerHTML = '<span>✅ Prioridades aprendidas • ¡Desafío completado!</span>';
       }
     }
 

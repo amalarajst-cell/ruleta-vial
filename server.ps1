@@ -21,6 +21,9 @@ while ($listener.IsListening) {
             elseif ($fullPath.EndsWith(".css")) { $response.ContentType = "text/css" }
             elseif ($fullPath.EndsWith(".glb")) { $response.ContentType = "model/gltf-binary" }
             elseif ($fullPath.EndsWith(".json")) { $response.ContentType = "application/json" }
+            elseif ($fullPath.EndsWith(".jpg") -or $fullPath.EndsWith(".jpeg")) { $response.ContentType = "image/jpeg" }
+            elseif ($fullPath.EndsWith(".png")) { $response.ContentType = "image/png" }
+            elseif ($fullPath.EndsWith(".svg")) { $response.ContentType = "image/svg+xml" }
             
             $response.AddHeader("Access-Control-Allow-Origin", "*")
             $response.AddHeader("Cache-Control", "no-cache, no-store, must-revalidate")

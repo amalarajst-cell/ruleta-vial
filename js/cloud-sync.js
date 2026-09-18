@@ -101,6 +101,7 @@
     if (cat.includes('simulador')) return 'simulador';
     if (cat.includes('peligros') || cat.includes('detector')) return 'peligros';
     if (cat.includes('crucigrama') || cat.includes('crossword')) return 'crucigrama';
+    if (cat.includes('prioridad') || cat.includes('quien_pasa') || cat.includes('paso')) return 'prioridad';
     return 'ruleta';
   }
 
@@ -517,6 +518,16 @@
         borderColor: '#6366F1',
         link: 'crucigrama.html',
         desc: 'Crucigrama temático: Moto, Auto y Colectivo'
+      },
+      prioridad: {
+        id: 'prioridad',
+        name: '¿QUIÉN PASA PRIMERO?',
+        icon: 'assets/prioridad_icono.jpg',
+        tag: '🛑 Prioridad',
+        color: '#F59E0B',
+        borderColor: '#D97706',
+        link: 'prioridad.html',
+        desc: 'Jerarquía vial, regla de la derecha, emergencias y trenes (Ley 2148 CABA)'
       }
     };
 
