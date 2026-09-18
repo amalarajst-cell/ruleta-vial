@@ -1,37 +1,48 @@
 {
-  "name": "Ruleta Vial",
+  "name": "Ruleta Vial — Seguridad Vial CABA",
   "short_name": "Ruleta Vial",
-  "description": "Desafío gamificado de seguridad vial de la Ciudad de Buenos Aires",
-  "start_url": "https://amalarajst-cell.github.io/ruleta-vial/",
-  "scope": "https://amalarajst-cell.github.io/ruleta-vial/",
+  "description": "Desafío gamificado de educación vial de la Ciudad de Buenos Aires. Ruleta, Test de Reacción, Alcoholemia, Crucigrama y más.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#121414",
   "theme_color": "#121414",
+  "lang": "es",
+  "categories": ["education", "games"],
   "icons": [
     {
-      "src": "https://amalarajst-cell.github.io/ruleta-vial/assets/icon-192.png",
+      "src": "assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://amalarajst-cell.github.io/ruleta-vial/assets/icon-192.png",
+      "src": "assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "https://amalarajst-cell.github.io/ruleta-vial/assets/icon-512.png",
+      "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://amalarajst-cell.github.io/ruleta-vial/assets/icon-512.png",
+      "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla principal de Ruleta Vial"
     }
   ]
 }
