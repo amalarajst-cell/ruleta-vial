@@ -234,7 +234,7 @@
       line-height: 1.45;
     }
 
-    /* ── CONTENEDOR DE LA IMAGEN / LÁMINA VIAL (16:9 MÓVIL) ── */
+    /* ── CONTENEDOR DE LA IMAGEN REAL (16:9 MÓVIL) ── */
     .image-stage-wrap {
       position: relative;
       width: 100%;
@@ -245,19 +245,23 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
     }
 
-    .scenario-svg-box {
+    .scenario-main-img {
       width: 100%;
-      height: auto;
+      height: 270px;
+      max-height: 45vh;
+      object-fit: cover;
       display: block;
-      aspect-ratio: 16 / 9.5;
+      background: #111517;
+      border-radius: 16px;
+      transition: transform 0.25s ease;
     }
 
-    /* Insignia flotante sobre la imagen */
+    /* Insignia sobre la imagen */
     .stage-instruction-pill {
       position: absolute;
       top: 10px;
       left: 10px;
-      background: rgba(13, 16, 18, 0.9);
+      background: rgba(13, 16, 18, 0.88);
       border: 1px solid rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(8px);
       padding: 4px 10px;
@@ -341,13 +345,13 @@
     }
 
     .actor-letter-badge {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #F59E0B;
       color: #000;
       font-family: var(--font-title);
-      font-size: 15px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -364,7 +368,7 @@
 
     .actor-name {
       font-family: var(--font-title);
-      font-size: 12.5px;
+      font-size: 13px;
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
@@ -372,9 +376,9 @@
     }
 
     .actor-dir {
-      font-size: 10.5px;
+      font-size: 11px;
       color: var(--text-muted);
-      line-height: 1.2;
+      line-height: 1.25;
       margin-top: 2px;
     }
 
@@ -710,15 +714,13 @@
         </p>
       </div>
 
-      <!-- LÁMINA / IMAGEN DEL ESCENARIO (SVG VECTORIAL DE ALTO CONTRASTE) -->
+      <!-- LÁMINA / FOTOGRAFÍA OFICIAL DEL ESCENARIO -->
       <div class="image-stage-wrap" id="stage-wrapper">
         <div class="stage-instruction-pill">
-          <span class="material-symbols-outlined" style="font-size:15px;">touch_app</span>
-          <span>Tocá los vehículos en orden de paso (1° ➔ 2°)</span>
+          <span class="material-symbols-outlined" style="font-size:15px;">visibility</span>
+          <span>Situación de Tránsito Oficial (Ley 2148 CABA)</span>
         </div>
-        <div id="scenario-svg-container" class="scenario-svg-box">
-          <!-- Inyectado dinámicamente -->
-        </div>
+        <img id="scenario-main-img" src="" alt="Situación de Tránsito" class="scenario-main-img">
       </div>
 
       <!-- Barra de selección de actores -->
@@ -889,7 +891,7 @@
         if (soundEnabled) playSoundSelect();
       });
 
-      // ── BANCO DE 10 ESCENARIOS CON IMÁGENES VECTORIALES NÍTIDAS (LEY 2148 CABA) ──
+      // ── BANCO DE 10 ESCENARIOS CON IMÁGENES REALISTAS Y FOTOGRÁFICAS (LEY 2148 CABA) ──
       const SCENARIOS = [
         // 1. Cruce Simple Sin Señalizar
         {
@@ -899,54 +901,15 @@
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
           title: 'Cruce Simple Sin Señalización',
-          prompt: 'Intersección en cruz entre dos calles de igual jerarquía sin semáforos ni carteles. ¿Qué vehículo pasa primero?',
+          prompt: 'En esta intersección urbana sin semáforos ni carteles reglamentarios, ¿cuál de los dos vehículos tiene prioridad para cruzar?',
+          imageSrc: 'assets/scenarios/scenario_1_cruce.jpg',
           actors: [
-            { id: 'auto_b', letter: 'B', name: 'Auto Blanco (B)', type: 'car', color: '#FFFFFF', desc: 'Circula por la DERECHA del Auto A' },
-            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', color: '#38BDF8', desc: 'Avanza hacia el frente' }
+            { id: 'auto_b', letter: 'B', name: 'Auto Blanco (B)', type: 'car', desc: 'Circula por la DERECHA del Auto A' },
+            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', desc: 'Avanza hacia el frente' }
           ],
           correctOrder: ['auto_b', 'auto_a'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "Todo conductor debe ceder siempre el paso en las encrucijadas al que cruza desde su derecha."',
-          explanation: 'El Auto Blanco (B) viene por la derecha del Auto Azul (A). Al no existir semáforos ni señales reglamentarias, rige la prioridad absoluta de la derecha.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <!-- Fondo vereda / calzada -->
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <!-- Líneas amarillas discontinuas -->
-                <line x1="0" y1="150" x2="190" y2="150" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <line x1="330" y1="150" x2="520" y2="150" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <line x1="260" y1="0" x2="260" y2="80" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <line x1="260" y1="220" x2="260" y2="300" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <!-- Sendas Peatonales -->
-                <g fill="rgba(255,255,255,0.7)">
-                  <rect x="200" y="68" width="120" height="16" />
-                  <rect x="200" y="216" width="120" height="16" />
-                  <rect x="178" y="90" width="16" height="120" />
-                  <rect x="326" y="90" width="16" height="120" />
-                </g>
-                <!-- VEHÍCULO A (Azul - Sube desde abajo) -->
-                <g transform="translate(285, 250)">
-                  <rect x="-18" y="-30" width="36" height="60" rx="8" fill="#38BDF8" stroke="#000" stroke-width="2.5"/>
-                  <rect x="-13" y="-12" width="26" height="24" rx="4" fill="#0f172a"/>
-                  <path d="M 0,-34 L 0,-60 M -8,-52 L 0,-60 L 8,-52" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- VEHÍCULO B (Blanco - Viene desde la derecha) -->
-                <g transform="translate(430, 125)">
-                  <rect x="-30" y="-18" width="60" height="36" rx="8" fill="#FFFFFF" stroke="#000" stroke-width="2.5"/>
-                  <rect x="-12" y="-13" width="24" height="26" rx="4" fill="#0f172a"/>
-                  <path d="M -34,0 L -60,0 M -52,-8 L -60,0 L -52,8" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-                <!-- Indicador de orientación -->
-                <text x="260" y="155" font-family="Archivo" font-size="11" font-weight="800" fill="rgba(255,255,255,0.25)" text-anchor="middle">CRUCE SIN SEMÁFORO</text>
-              </svg>
-            `;
-          }
+          explanation: 'El Auto Blanco (B) viene por la derecha del Auto Azul (A). Al tratarse de una encrucijada sin semáforos ni señales que alteren la norma, la prioridad de la derecha es absoluta.'
         },
 
         // 2. Cruce con Señal CEDA EL PASO
@@ -957,47 +920,15 @@
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 inc. a) Ley 2148',
           title: 'Cruce con Señal "Ceda el Paso"',
-          prompt: 'El Auto Rojo (B) viene por la derecha pero enfrenta una señal R2 (Ceda el Paso). El Auto Azul (A) circula sin señal.',
+          prompt: 'Observá la esquina: el Auto Rojo (B) tiene una señal reglamentaria R2 de Ceda el Paso. ¿Cuál es el orden prioritario de avance?',
+          imageSrc: 'assets/scenarios/scenario_ceda.jpg',
           actors: [
-            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', color: '#38BDF8', desc: 'Circula por calle transversal sin señal' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Rojo (B)', type: 'car', color: '#FF4444', desc: 'Enfrenta cartel CEDA EL PASO' }
+            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', desc: 'Circula por vía transversal sin señal' },
+            { id: 'auto_b', letter: 'B', name: 'Auto Rojo (B)', type: 'car', desc: 'Enfrenta señal de CEDA EL PASO' }
           ],
           correctOrder: ['auto_a', 'auto_b'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. a): "La prioridad de la derecha se pierde ante la señalización específica en contrario."',
-          explanation: 'La señal vertical de Ceda el Paso obliga al conductor a subordinar su marcha, perdiendo la prioridad legal de la derecha frente al Auto Azul.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <line x1="0" y1="150" x2="520" y2="150" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <line x1="260" y1="0" x2="260" y2="300" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <!-- Señal CEDA EL PASO gigante y visible en la esquina -->
-                <g transform="translate(350, 60)">
-                  <polygon points="0,-24 24,18 -24,18" fill="#FFFFFF" stroke="#FF4444" stroke-width="6"/>
-                  <text x="0" y="2" font-family="'Archivo Black'" font-size="8" fill="#000" text-anchor="middle">CEDA</text>
-                  <text x="0" y="11" font-family="'Archivo Black'" font-size="8" fill="#000" text-anchor="middle">PASO</text>
-                </g>
-                <!-- VEHÍCULO A (Azul - Sigue recto) -->
-                <g transform="translate(285, 250)">
-                  <rect x="-18" y="-30" width="36" height="60" rx="8" fill="#38BDF8" stroke="#000" stroke-width="2.5"/>
-                  <rect x="-13" y="-12" width="26" height="24" rx="4" fill="#0f172a"/>
-                  <path d="M 0,-34 L 0,-60 M -8,-52 L 0,-60 L 8,-52" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- VEHÍCULO B (Rojo - Con CEDA EL PASO) -->
-                <g transform="translate(440, 125)">
-                  <rect x="-30" y="-18" width="60" height="36" rx="8" fill="#FF4444" stroke="#000" stroke-width="2.5"/>
-                  <rect x="-12" y="-13" width="24" height="26" rx="4" fill="#0f172a"/>
-                  <path d="M -34,0 L -55,0 M -48,-7 L -55,0 L -48,7" stroke="#FF4444" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-              </svg>
-            `;
-          }
+          explanation: 'La señal vertical de CEDA EL PASO obliga al Auto Rojo (B) a subordinar su paso, perdiendo la prioridad que habitualmente le concedería la derecha.'
         },
 
         // 3. Giro a la Izquierda
@@ -1008,39 +939,15 @@
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 inc. f) Ley 2148',
           title: 'Giro Hacia la Izquierda',
-          prompt: 'Dos vehículos circulan en sentidos opuestos. El Auto Verde (B) gira a su izquierda cortando la calzada. El Auto Azul (A) sigue recto.',
+          prompt: 'Dos vehículos circulan de frente. El Auto Verde (B) gira a la izquierda cortando la corriente contraria, mientras el Auto Azul (A) sigue recto.',
+          imageSrc: 'assets/scenarios/scenario_giro.jpg',
           actors: [
-            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', color: '#38BDF8', desc: 'Sigue en línea recta' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Verde (B)', type: 'car', color: '#00E676', desc: 'Dobla a su izquierda' }
+            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', desc: 'Continúa en línea recta' },
+            { id: 'auto_b', letter: 'B', name: 'Auto Verde (B)', type: 'car', desc: 'Gira a su izquierda' }
           ],
           correctOrder: ['auto_a', 'auto_b'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. f): "Pierde la prioridad de paso quien pretenda girar para ingresar a otra vía."',
-          explanation: 'Todo vehículo que cambie de dirección pierde toda preferencia frente a quien continúa circulando en línea recta en su sentido.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <line x1="260" y1="0" x2="260" y2="300" stroke="#F59E0B" stroke-width="3" stroke-dasharray="12,12"/>
-                <!-- VEHÍCULO A (Azul - Sube recto) -->
-                <g transform="translate(285, 240)">
-                  <rect x="-18" y="-30" width="36" height="60" rx="8" fill="#38BDF8" stroke="#000" stroke-width="2.5"/>
-                  <path d="M 0,-34 L 0,-80 M -8,-72 L 0,-80 L 8,-72" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- VEHÍCULO B (Verde - Baja y gira a su izquierda) -->
-                <g transform="translate(235, 60)">
-                  <rect x="-18" y="-30" width="36" height="60" rx="8" fill="#00E676" stroke="#000" stroke-width="2.5"/>
-                  <!-- Flecha de giro curva hacia la derecha de la imagen -->
-                  <path d="M 0,34 Q 0,90 90,90 M 82,82 L 90,90 L 82,98" fill="none" stroke="#00E676" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-              </svg>
-            `;
-          }
+          explanation: 'Todo vehículo que cambie de dirección pierde toda preferencia frente a quien continúa circulando en línea recta en su sentido.'
         },
 
         // 4. Ambulancia SAME en Emergencia
@@ -1051,43 +958,15 @@
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 inc. c) Ley 2148',
           title: 'Ambulancia del SAME en Código Rojo',
-          prompt: 'Una Ambulancia del SAME (A) viene por la izquierda con balizas y sirena activadas. El Auto Particular (B) viene por la derecha.',
+          prompt: 'Una unidad de auxilio médico del SAME se aproxima con sirenas y balizas destellantes encendidas. ¿Cómo debe proceder el tránsito?',
+          imageSrc: 'img/auto/031-H.png',
           actors: [
-            { id: 'ambulancia_a', letter: 'A', name: 'Ambulancia SAME (A)', type: 'ambulance', color: '#FFFFFF', desc: 'Sirena y balizas activadas' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Particular (B)', type: 'car', color: '#FBBF24', desc: 'Circula por la derecha' }
+            { id: 'ambulancia_same', letter: 'SAME', name: 'Ambulancia SAME', type: 'ambulance', desc: 'Servicio de urgencia con sirena y balizas' },
+            { id: 'vehiculo_particular', letter: 'AUTO', name: 'Vehículo Particular', type: 'car', desc: 'Circula en proximidad' }
           ],
-          correctOrder: ['ambulancia_a', 'auto_b'],
+          correctOrder: ['ambulancia_same', 'vehiculo_particular'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. c): "La prioridad de la derecha se pierde ante los vehículos de servicio público de urgencia en cumplimiento de sus funciones."',
-          explanation: 'Los vehículos de emergencia en acto de servicio (SAME, Bomberos, Policía) tienen prioridad irrestricta. Los demás vehículos deben ceder el paso.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <!-- AMBULANCIA A (Viene desde la izquierda con destellos) -->
-                <g transform="translate(85, 125)">
-                  <rect x="-35" y="-18" width="70" height="36" rx="6" fill="#FFFFFF" stroke="#000" stroke-width="2.5"/>
-                  <rect x="-5" y="-12" width="10" height="24" fill="#FF0000"/>
-                  <rect x="-12" y="-5" width="24" height="10" fill="#FF0000"/>
-                  <!-- Balizas luminosas -->
-                  <circle cx="15" cy="0" r="5" fill="#38BDF8"/>
-                  <circle cx="-15" cy="0" r="5" fill="#FF0000"/>
-                  <path d="M 38,0 L 75,0 M 67,-7 L 75,0 L 67,7" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- AUTO PARTICULAR B (Viene por la derecha desde abajo) -->
-                <g transform="translate(285, 240)">
-                  <rect x="-18" y="-30" width="36" height="60" rx="8" fill="#FBBF24" stroke="#000" stroke-width="2.5"/>
-                  <path d="M 0,-34 L 0,-65 M -8,-57 L 0,-65 L 8,-57" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-                <text x="85" y="80" font-family="Archivo" font-size="11" font-weight="900" fill="#38BDF8" text-anchor="middle">🚨 SAME EN CÓDIGO ROJO</text>
-              </svg>
-            `;
-          }
+          explanation: 'Los vehículos de emergencia en acto de servicio (SAME, Bomberos, Policía) tienen prioridad irrestricta. Los demás conductores deben despejar el carril y detenerse si fuera necesario.'
         },
 
         // 5. Paso a Nivel Ferroviario
@@ -1097,47 +976,16 @@
           tierName: 'Nivel Intermedio • Vía Férrea',
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 inc. b) Ley 2148',
-          title: 'Paso a Nivel con Ferrocarril',
-          prompt: 'Un Tren de Pasajeros (A) avanza por las vías. Un Colectivo Urbano (B) se aproxima al paso a nivel con señalización activa.',
+          title: 'Paso a Nivel Ferroviario',
+          prompt: 'Observá la imagen oficial en el paso a nivel: ¿Quién tiene prioridad absoluta de paso en una vía férrea?',
+          imageSrc: 'img/auto/034-H.png',
           actors: [
-            { id: 'tren_a', letter: 'A', name: 'Tren de Pasajeros (A)', type: 'train', color: '#38BDF8', desc: 'Circula por las vías férreas' },
-            { id: 'colectivo_b', letter: 'B', name: 'Colectivo D1 (B)', type: 'bus', color: '#0284C7', desc: 'Llega al cruce con barrera' }
+            { id: 'tren', letter: 'TREN', name: 'Tren de Pasajeros', type: 'train', desc: 'Circula sobre las vías férreas' },
+            { id: 'vehiculo_calzada', letter: 'VIAL', name: 'Colectivo / Autos', type: 'bus', desc: 'Circulan por la calzada vehicular' }
           ],
-          correctOrder: ['tren_a', 'colectivo_b'],
+          correctOrder: ['tren', 'vehiculo_calzada'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. b): "La prioridad de la derecha se pierde frente a los vehículos ferroviarios."',
-          explanation: 'El tren tiene prioridad absoluta sobre cualquier vehículo o peatón en pasos a nivel debido a su masa, velocidad y distancia de frenado.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <!-- Calle de asfalto -->
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <!-- Vías de tren -->
-                <rect x="0" y="80" width="520" height="40" fill="#334155"/>
-                <line x1="0" y1="88" x2="520" y2="88" stroke="#94a3b8" stroke-width="4"/>
-                <line x1="0" y1="112" x2="520" y2="112" stroke="#94a3b8" stroke-width="4"/>
-                <!-- TREN A (Sobre las vías avanzando hacia la derecha) -->
-                <g transform="translate(100, 100)">
-                  <rect x="-60" y="-16" width="120" height="32" rx="6" fill="#38BDF8" stroke="#000" stroke-width="2.5"/>
-                  <text x="-15" y="4" font-family="'Archivo Black'" font-size="10" fill="#000">TREN ROCA</text>
-                  <path d="M 64,0 L 95,0 M 87,-7 L 95,0 L 87,7" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- COLECTIVO B (Detenido en la barrera) -->
-                <g transform="translate(260, 230)">
-                  <rect x="-22" y="-35" width="44" height="70" rx="8" fill="#0284C7" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="-18" font-family="Archivo" font-size="8" font-weight="900" fill="#FFC600" text-anchor="middle">LÍNEA D1</text>
-                  <circle cx="0" cy="10" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="15" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-                <!-- Barrera y Cruz de San Andrés -->
-                <g transform="translate(335, 140)">
-                  <text x="0" y="0" font-family="'Archivo Black'" font-size="11" fill="#FF4444">PASO A NIVEL</text>
-                </g>
-              </svg>
-            `;
-          }
+          explanation: 'El tren tiene prioridad absoluta sobre cualquier vehículo o peatón en pasos a nivel debido a su masa, inercia y distancia de frenado.'
         },
 
         // 6. Rotonda Urbana
@@ -1148,91 +996,75 @@
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 inc. e) Ley 2148',
           title: 'Cruce en Rotonda',
-          prompt: 'El Auto Gris (A) ya circula dentro de la calzada circular de la rotonda. El Taxi (B) pretende ingresar desde la calle de acceso.',
+          prompt: 'El Auto Gris (A) ya circula dentro de la calzada circular de la rotonda. El Taxi (B) pretende incorporarse desde la calle de acceso. ¿Quién pasa primero?',
+          imageSrc: 'assets/scenarios/scenario_rotonda.jpg',
           actors: [
-            { id: 'auto_a', letter: 'A', name: 'Auto Gris (A)', type: 'car', color: '#94A3B8', desc: 'Circula DENTRO de la rotonda' },
-            { id: 'taxi_b', letter: 'B', name: 'Taxi BA (B)', type: 'car', color: '#FFD700', desc: 'Llega por acceso para ingresar' }
+            { id: 'auto_a', letter: 'A', name: 'Auto Gris (A)', type: 'car', desc: 'Circula DENTRO de la rotonda' },
+            { id: 'taxi_b', letter: 'B', name: 'Taxi BA (B)', type: 'car', desc: 'Espera en acceso para ingresar' }
           ],
           correctOrder: ['auto_a', 'taxi_b'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. e): "En las rotondas tiene prioridad de paso quien circula por la calzada circular frente al que intenta ingresar."',
-          explanation: 'En las rotondas se invierte la regla clásica: quien ya circula dentro del anillo tiene prioridad absoluta sobre quien va a entrar.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <!-- Calzada circular -->
-                <circle cx="260" cy="150" r="110" fill="#202528"/>
-                <!-- Isla central verde -->
-                <circle cx="260" cy="150" r="55" fill="#166534" stroke="#F59E0B" stroke-width="4"/>
-                <text x="260" y="154" font-family="'Archivo Black'" font-size="12" fill="#FBBF24" text-anchor="middle">ROTONDA</text>
-                <!-- Calle de acceso sur -->
-                <rect x="220" y="190" width="80" height="110" fill="#202528"/>
-                <!-- AUTO A (Dentro del anillo girando) -->
-                <g transform="translate(195, 100)">
-                  <rect x="-24" y="-14" width="48" height="28" rx="6" fill="#94A3B8" stroke="#000" stroke-width="2"/>
-                  <path d="M 26,0 Q 50,20 60,60 M 54,54 L 60,60 L 66,54" fill="none" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- TAXI B (Esperando para entrar) -->
-                <g transform="translate(260, 255)">
-                  <rect x="-16" y="-26" width="32" height="52" rx="6" fill="#FFD700" stroke="#000" stroke-width="2"/>
-                  <path d="M 0,-30 L 0,-50 M -6,-44 L 0,-50 L 6,-44" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-              </svg>
-            `;
-          }
+          explanation: 'En las rotondas se invierte la regla clásica: quien ya circula dentro del anillo tiene prioridad absoluta sobre quien va a entrar para evitar el bloqueo del distribuidor.'
         },
 
-        // 7. Salida de Garaje Privado
+        // 7. Arteria Principal vs Calle Secundaria
+        {
+          id: 'avenida_vs_calle',
+          tier: 2,
+          tierName: 'Nivel Intermedio • Jerarquía de Arterias',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Avenida vs Calle Secundaria',
+          prompt: 'El vehículo A circula por la Avenida De Los Incas. El vehículo B circula por la calle transversal Donado sin semáforo. ¿Quién tiene prioridad?',
+          imageSrc: 'img/auto/058-H.png',
+          actors: [
+            { id: 'auto_a', letter: 'A', name: 'Vehículo A (Av. De Los Incas)', type: 'car', desc: 'Circula por la Avenida' },
+            { id: 'auto_b', letter: 'B', name: 'Vehículo B (Calle Donado)', type: 'car', desc: 'Llega por calle secundaria transversal' }
+          ],
+          correctOrder: ['auto_a', 'auto_b'],
+          lawCitation: 'Ley 2148 CABA: En cruces no semaforizados, los vehículos que circulan por arterias de mayor jerarquía (Avenidas) tienen prioridad de paso sobre quienes acceden desde calles secundarias.',
+          explanation: 'El vehículo A tiene prioridad por circular por una avenida principal de mayor jerarquía y caudal respecto de la calle secundaria.'
+        },
+
+        // 8. Cruce Urbano con Camión y Auto
+        {
+          id: 'cruce_camion_auto',
+          tier: 3,
+          tierName: 'Nivel Avanzado • Regla de la Derecha',
+          tierClass: 'tier-3',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Cruce en Esquina Sin Semáforo',
+          prompt: 'Observá la posición de los vehículos en esta bocacalle de Buenos Aires. ¿Cuál tiene prioridad de paso?',
+          imageSrc: 'img/auto/055-H.png',
+          actors: [
+            { id: 'camion_a', letter: 'A', name: 'Camión (A)', type: 'truck', desc: 'Circula por la DERECHA del auto B' },
+            { id: 'auto_b', letter: 'B', name: 'Auto Particular (B)', type: 'car', desc: 'Circula por la izquierda' }
+          ],
+          correctOrder: ['camion_a', 'auto_b'],
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "Todo conductor debe ceder siempre el paso en las encrucijadas al que cruza desde su derecha."',
+          explanation: 'El Camión A circula desde la derecha del Auto B. Por lo tanto, el Auto B debe esperar y permitir el paso del vehículo A.'
+        },
+
+        // 9. Salida de Cochera / Garaje Privado
         {
           id: 'salida_garaje',
-          tier: 2,
-          tierName: 'Nivel Intermedio • Egresos Privados',
-          tierClass: 'tier-2',
+          tier: 3,
+          tierName: 'Nivel Avanzado • Egresos Privados',
+          tierClass: 'tier-3',
           lawTag: 'Art. 6.1.1 inc. g) Ley 2148',
-          title: 'Salida de Cochera a la Vía Pública',
-          prompt: 'Un Auto (B) sale de un garaje privado cruzando la vereda. Por la acera camina un Peatón (A). ¿Quién pasa primero?',
+          title: 'Salida de Cochera Cruzando la Vereda',
+          prompt: 'El automóvil sale de un garaje particular cruzando la vereda donde transita una peatona. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/016-H.png',
           actors: [
-            { id: 'peaton_a', letter: 'A', name: 'Peatón en Acera (A)', type: 'pedestrian', color: '#F472B6', desc: 'Camina por la vereda' },
-            { id: 'auto_b', letter: 'B', name: 'Auto en Garaje (B)', type: 'car', color: '#C084FC', desc: 'Sale de cochera privada' }
+            { id: 'peaton', letter: 'PEATÓN', name: 'Peatona en Acera', type: 'pedestrian', desc: 'Camina por la vereda' },
+            { id: 'auto_cochera', letter: 'AUTO', name: 'Auto en Garaje', type: 'car', desc: 'Egresa de propiedad privada' }
           ],
-          correctOrder: ['peaton_a', 'auto_b'],
+          correctOrder: ['peaton', 'auto_cochera'],
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. g): "Debe ceder el paso todo vehículo que ingrese a la vía pública desde un inmueble o propiedad privada."',
-          explanation: 'Quien egresa de un garaje carece de toda prioridad: debe ceder el paso obligatoriamente a los peatones en la vereda y a los vehículos en la calzada.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <!-- Calzada -->
-                <rect x="0" y="160" width="520" height="140" fill="#202528"/>
-                <!-- Vereda -->
-                <rect x="0" y="70" width="520" height="90" fill="#334155"/>
-                <!-- Garaje / Entrada -->
-                <rect x="180" y="0" width="100" height="70" fill="#0f172a" stroke="#F59E0B" stroke-width="3"/>
-                <text x="230" y="40" font-family="'Archivo Black'" font-size="12" fill="#F59E0B" text-anchor="middle">COCHERA</text>
-                <!-- PEATÓN A (Caminando por la vereda) -->
-                <g transform="translate(100, 115)">
-                  <circle cx="0" cy="0" r="14" fill="#F472B6" stroke="#000" stroke-width="2"/>
-                  <path d="M 18,0 L 45,0 M 38,-6 L 45,0 L 38,6" stroke="#F472B6" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- AUTO B (Saliendo del garaje) -->
-                <g transform="translate(230, 45)">
-                  <rect x="-18" y="-24" width="36" height="48" rx="6" fill="#C084FC" stroke="#000" stroke-width="2"/>
-                  <path d="M 0,28 L 0,60 M -6,52 L 0,60 L 6,52" stroke="#C084FC" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-              </svg>
-            `;
-          }
+          explanation: 'Quien sale de un inmueble o garaje carece de toda prioridad: debe ceder el paso indefectiblemente a los peatones en la vereda y a los vehículos en la calzada.'
         },
 
-        // 8. Agente de Tránsito vs Semáforo en Verde
+        // 10. Agente de Tránsito vs Semáforo en Verde
         {
           id: 'agente_vs_semaforo',
           tier: 3,
@@ -1240,145 +1072,15 @@
           tierClass: 'tier-3',
           lawTag: 'Art. 2.1.3 Ley 2148 CABA',
           title: 'Agente de Tránsito vs Semáforo en Verde',
-          prompt: 'El semáforo está en VERDE para el Auto (B), pero el Agente de Tránsito (A) hace señal de ALTO con la palma levantada. ¿Qué se debe hacer?',
+          prompt: 'El semáforo vial está en VERDE, pero el Agente de Tránsito con chaleco reflectivo hace señal de ALTO con el brazo levantado. ¿Qué orden prevalece?',
+          imageSrc: 'assets/scenarios/scenario_agente.jpg',
           actors: [
-            { id: 'agente_a', letter: 'A', name: 'Orden del Agente (A)', type: 'agent', color: '#FBBF24', desc: 'Palma en alto exigiendo detención' },
-            { id: 'auto_b', letter: 'B', name: 'Auto con Luz Verde (B)', type: 'car', color: '#38BDF8', desc: 'Pretende avanzar por el semáforo' }
+            { id: 'agente_a', letter: 'AGENTE', name: 'Orden del Agente', type: 'agent', desc: 'Palma en alto exigiendo detención inmediata' },
+            { id: 'auto_b', letter: 'AUTO', name: 'Auto con Semáforo Verde', type: 'car', desc: 'Pretende cruzar por la luz verde' }
           ],
           correctOrder: ['agente_a', 'auto_b'],
           lawCitation: 'Ley 2148 CABA - Art. 2.1.3: "1° Indicaciones de la Autoridad de Tránsito; 2° Señalización circunstancial; 3° Semáforos; 4° Señales verticales."',
-          explanation: 'La orden del Agente de Tránsito prevalece sobre todas las demás señales, incluyendo la luz verde del semáforo.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <!-- Semáforo en VERDE en la esquina -->
-                <g transform="translate(170, 50)">
-                  <rect x="-12" y="-25" width="24" height="50" rx="4" fill="#0f172a" stroke="#475569" stroke-width="2"/>
-                  <circle cx="0" cy="-15" r="5" fill="#450a0a"/>
-                  <circle cx="0" cy="0" r="5" fill="#713f12"/>
-                  <circle cx="0" cy="15" r="7" fill="#00E676"/>
-                </g>
-                <text x="170" y="90" font-family="Archivo" font-size="10" font-weight="900" fill="#00E676" text-anchor="middle">VERDE</text>
-                <!-- AGENTE DE TRÁNSITO EN EL MEDIO -->
-                <g transform="translate(260, 150)">
-                  <circle cx="0" cy="0" r="18" fill="#EAB308" stroke="#000" stroke-width="2.5"/>
-                  <circle cx="0" cy="-4" r="9" fill="#000000"/>
-                  <!-- Brazo con guante blanco ordenando ALTO -->
-                  <rect x="-4" y="-32" width="8" height="20" fill="#FFFFFF" stroke="#000"/>
-                  <text x="0" y="-36" font-family="'Archivo Black'" font-size="11" fill="#FF0000" text-anchor="middle">¡ALTO!</text>
-                  <circle cx="28" cy="0" r="15" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="28" y="5" font-family="'Archivo Black'" font-size="15" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- AUTO B -->
-                <g transform="translate(285, 250)">
-                  <rect x="-18" y="-28" width="36" height="56" rx="6" fill="#38BDF8" stroke="#000" stroke-width="2"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-              </svg>
-            `;
-          }
-        },
-
-        // 9. Semáforo Amarillo Intermitente y Peatón
-        {
-          id: 'semaforo_intermitente_peaton',
-          tier: 3,
-          tierName: 'Nivel Avanzado • Intermitente y Peatones',
-          tierClass: 'tier-3',
-          lawTag: 'Art. 2.1.25 & 6.1.1 Ley 2148',
-          title: 'Semáforo Amarillo Intermitente',
-          prompt: 'El semáforo titila en amarillo precautorio. Un Peatón (A) cruza por la senda peatonal y un Auto Rojo (B) pretende girar.',
-          actors: [
-            { id: 'peaton_a', letter: 'A', name: 'Peatón en Senda (A)', type: 'pedestrian', color: '#F472B6', desc: 'Cruza por la senda peatonal' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Rojo (B)', type: 'car', color: '#FF4444', desc: 'Gira con semáforo intermitente' }
-          ],
-          correctOrder: ['peaton_a', 'auto_b'],
-          lawCitation: 'Ley 2148 CABA - Art. 2.1.25: "El peatón goza de prioridad absoluta en la senda peatonal."',
-          explanation: 'La luz amarilla intermitente advierte precaución, y el peatón en la senda tiene prioridad absoluta sobre cualquier vehículo.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <!-- Senda peatonal -->
-                <g fill="rgba(255,255,255,0.75)">
-                  <rect x="200" y="216" width="120" height="18" />
-                </g>
-                <!-- Semáforo en amarillo destellante -->
-                <g transform="translate(170, 50)">
-                  <rect x="-12" y="-25" width="24" height="50" rx="4" fill="#0f172a" stroke="#475569" stroke-width="2"/>
-                  <circle cx="0" cy="0" r="7" fill="#F59E0B"/>
-                </g>
-                <text x="170" y="90" font-family="Archivo" font-size="10" font-weight="900" fill="#F59E0B" text-anchor="middle">INTERMITENTE</text>
-                <!-- PEATÓN A (Cruzando por la senda) -->
-                <g transform="translate(240, 225)">
-                  <circle cx="0" cy="0" r="14" fill="#F472B6" stroke="#000" stroke-width="2"/>
-                  <path d="M 16,0 L 40,0 M 34,-5 L 40,0 L 34,5" stroke="#F472B6" stroke-width="4" stroke-linecap="round"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- AUTO B (Doblando hacia la derecha) -->
-                <g transform="translate(285, 275)">
-                  <rect x="-16" y="-24" width="32" height="48" rx="6" fill="#FF4444" stroke="#000" stroke-width="2"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-              </svg>
-            `;
-          }
-        },
-
-        // 10. Cruce Cuádruple con Emergencia y Regla de la Derecha
-        {
-          id: 'cruce_maestro_4vias',
-          tier: 3,
-          tierName: 'Nivel Avanzado • Desafío Integral',
-          tierClass: 'tier-3',
-          lawTag: 'Ley 2148 CABA Integral',
-          title: 'Cruce Múltiple con Emergencia',
-          prompt: 'Llegan al cruce: 1) Ambulancia SAME (A); 2) Moto Naranja (B) a la derecha del Auto Azul; 3) Auto Azul (C). ¿Cuál es la secuencia de paso?',
-          actors: [
-            { id: 'act_a', letter: 'A', name: 'Ambulancia SAME (A)', type: 'ambulance', color: '#FFFFFF', desc: 'Emergencia con sirena activa' },
-            { id: 'act_b', letter: 'B', name: 'Moto Naranja (B)', type: 'moto', color: '#FB923C', desc: 'Circula por la derecha del Auto Azul' },
-            { id: 'act_c', letter: 'C', name: 'Auto Azul (C)', type: 'car', color: '#38BDF8', desc: 'Cede ante la derecha de la moto' }
-          ],
-          correctOrder: ['act_a', 'act_b', 'act_c'],
-          lawCitation: 'Ley 2148 CABA: 1° Vehículo de emergencia en cumplimiento de sus funciones; 2° Regla general de la derecha entre los particulares.',
-          explanation: 'Pasa 1° la Ambulancia (A) por urgencia. Luego, entre los rodados particulares, la Moto (B) pasa antes que el Auto Azul (C) por encontrarse a su derecha.',
-          svgDrawer: function() {
-            return `
-              <svg viewBox="0 0 520 300" class="scenario-svg-box" xmlns="http://www.w3.org/2000/svg">
-                <rect width="520" height="300" fill="#14181a"/>
-                <rect x="0" y="90" width="520" height="120" fill="#202528"/>
-                <rect x="200" y="0" width="120" height="300" fill="#202528"/>
-                <!-- AMBULANCIA A (Baja desde el norte) -->
-                <g transform="translate(235, 50)">
-                  <rect x="-18" y="-30" width="36" height="60" rx="6" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
-                  <rect x="-4" y="-10" width="8" height="20" fill="#FF0000"/>
-                  <rect x="-10" y="-4" width="20" height="8" fill="#FF0000"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">A</text>
-                </g>
-                <!-- MOTO B (Viene desde el este por la derecha) -->
-                <g transform="translate(420, 125)">
-                  <rect x="-24" y="-10" width="48" height="20" rx="6" fill="#FB923C" stroke="#000" stroke-width="2"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">B</text>
-                </g>
-                <!-- AUTO C (Sube desde el sur) -->
-                <g transform="translate(285, 250)">
-                  <rect x="-18" y="-28" width="36" height="56" rx="6" fill="#38BDF8" stroke="#000" stroke-width="2"/>
-                  <circle cx="0" cy="0" r="16" fill="#F59E0B" stroke="#000" stroke-width="2.5"/>
-                  <text x="0" y="5" font-family="'Archivo Black'" font-size="16" fill="#000" text-anchor="middle">C</text>
-                </g>
-              </svg>
-            `;
-          }
+          explanation: 'Las órdenes del Agente de Tránsito prevalecen SIEMPRE sobre los semáforos luminosos y cualquier otra señal o norma vial.'
         }
       ];
 
@@ -1391,7 +1093,7 @@
       let currentOrder = [];
 
       // Elementos DOM
-      const svgContainer = document.getElementById('scenario-svg-container');
+      const mainImg = document.getElementById('scenario-main-img');
       const levelIndicator = document.getElementById('level-indicator');
       const progressBarFill = document.getElementById('progress-bar-fill');
       const scoreDisplay = document.getElementById('score-display');
@@ -1441,8 +1143,8 @@
         scenarioTitleText.textContent = sc.title;
         scenarioPromptText.textContent = sc.prompt;
 
-        // Inyectar imagen SVG nítida
-        svgContainer.innerHTML = sc.svgDrawer();
+        // Cargar imagen fotográfica / realista
+        mainImg.src = sc.imageSrc;
 
         feedbackSheet.style.display = 'none';
         btnVerifyOrder.disabled = true;
@@ -1524,7 +1226,7 @@
         } else {
           playSoundError();
           feedbackIcon.textContent = '❌';
-          feedbackTitle.textContent = 'INFRACCIÓN O COLISIÓN';
+          feedbackTitle.textContent = 'INFRACCIÓN O DECISIÓN ERRÓNEA';
           feedbackTitle.style.color = '#FF4444';
         }
 
@@ -1565,7 +1267,7 @@
 
         let adviceText = '';
         if (correctAnswersCount >= 9) {
-          adviceText = `<strong>🏆 Dominio de Élite:</strong> Conocés a la perfección la Ley 2148 de CABA. Manejás con total claridad la regla de la derecha, el paso preferencial de trenes y ambulancias, y la jerarquía suprema de los Agentes de Tránsito.`;
+          adviceText = `<strong>🏆 Dominio de Élite:</strong> Conocés a la perfección la Ley 2148 de CABA. Manejás con total solvencia la regla de la derecha, el paso preferencial de trenes y ambulancias, y la jerarquía suprema de los Agentes de Tránsito.`;
         } else if (correctAnswersCount >= 6) {
           adviceText = `<strong>👍 Muy Buen Nivel Normativo:</strong> Resolviste correctamente <strong>${correctAnswersCount} de ${totalRounds}</strong> situaciones en <strong>${avgTime}s</strong>. Recordá siempre: el tren nunca frena por inercia, y el que dobla o sale de un garaje pierde toda prioridad.`;
         } else {
@@ -1603,7 +1305,7 @@
         loadScenario(0);
       });
 
-      // Iniciar en el primer caso
+      // Iniciar
       loadScenario(0);
     })();
   </script>
