@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Crucigrama Vial â€” Seguridad y Convivencia Vial BA</title>
+  <title>Crucigrama Vial — Seguridad y Convivencia Vial BA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
     /* Ocultar la barra completa si solo hay 1 nivel (basico solo) */
     .level-selector-bar:has(.level-btn.unlocked:nth-child(1):last-of-type){display:none;}
 
-    /* CATEGORÃAS */
+    /* CATEGORÍAS */
     .category-pills-bar{max-width:540px;margin:4px auto 2px;width:100%;padding:0 10px;display:flex;gap:6px;}
     .cat-pill{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:#191e20;border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 4px;color:var(--text-muted);font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s ease;}
     .cat-pill:hover{background:#232a2d;border-color:rgba(255,255,255,.2);}
@@ -274,7 +274,7 @@
         <button class="key-btn" data-key="V" type="button">V</button>
         <button class="key-btn" data-key="B" type="button">B</button>
         <button class="key-btn" data-key="M" type="button">M</button>
-        <button class="key-btn" data-key="Ã‘" type="button">Ã‘</button>
+        <button class="key-btn" data-key="Ñ" type="button">Ñ</button>
         <button class="key-btn key-wide key-delete" id="key-del-btn" type="button">
           <span class="material-symbols-outlined" style="font-size:17px;">backspace</span>
         </button>
@@ -285,9 +285,9 @@
   <!-- MODAL VICTORIA -->
   <div class="modal-overlay" id="modal-victory">
     <div class="modal-card">
-      <div class="modal-trophy" id="modal-trophy">ðŸ†</div>
-      <h2 class="modal-title">Â¡Crucigrama Resuelto!</h2>
-      <div class="modal-level-badge basico" id="modal-level-badge">â­ BASICO</div>
+      <div class="modal-trophy" id="modal-trophy">🏆</div>
+      <h2 class="modal-title">¡Crucigrama Resuelto!</h2>
+      <div class="modal-level-badge basico" id="modal-level-badge">⭐ BÁSICO</div>
       <p style="font-size:12px;color:var(--text-muted);" id="modal-victory-desc">Excelente dominio de las normas viales.</p>
       <div class="modal-stats-grid">
         <div class="stat-box"><span class="stat-label">Tiempo</span><span class="stat-value" id="res-time">01:45</span></div>
@@ -314,10 +314,10 @@
   </div>
 
   <script>
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// PUZZLES DATA â€” 3 niveles x 3 categorias x 3 puzzles = 27
+// ============================================================
+// PUZZLES DATA — 3 niveles x 3 categorías x 3 puzzles = 27
 // Fuente: MANUAL MOTO 2023 + MANUAL_Vehiculo_4Ruedas_2023 SA
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ============================================================
 const PUZZLES_DATA = {
   basico: {
     moto: [
@@ -352,7 +352,7 @@ const PUZZLES_DATA = {
         {id:'w5',num:5,dir:'H',r:6,c:0,word:'BOCINA',  clue:'Senal acustica de emergencia; su uso indebido en zona urbana esta prohibido.'}
       ]},
       { id:'b_a2', name:'Auto Basico 2 - Senalizacion Vial', category:'Auto (Clase B)', level:'basico', rows:8, cols:8, words:[
-        {id:'w1',num:1,dir:'H',r:0,c:0,word:'SEÃ‘AL',   clue:'Indicacion vertical u horizontal que regula, advierte o informa sobre el transito.'},
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'SEÑAL',   clue:'Indicación vertical u horizontal que regula, advierte o informa sobre el tránsito.'},
         {id:'w2',num:2,dir:'V',r:0,c:2,word:'SEMAFORO',clue:'Dispositivo luminico de 3 fases que regula el derecho de paso en intersecciones.'},
         {id:'w3',num:3,dir:'H',r:3,c:3,word:'LINEA',   clue:'Marca horizontal (continua o discontinua) que separa carriles y sentidos.'},
         {id:'w4',num:4,dir:'V',r:0,c:5,word:'PARADA',  clue:'Lugar senalizado donde se detiene el transporte publico para pasajeros.'},
@@ -383,7 +383,7 @@ const PUZZLES_DATA = {
       ]},
       { id:'b_c3', name:'Colectivo Basico 3 - Puntos Ciegos', category:'Colectivo (Clase D1)', level:'basico', rows:8, cols:8, words:[
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'CIEGO',   clue:'Punto ____: zona sin cobertura visual directa ni por espejo en grandes unidades.'},
-        {id:'w2',num:2,dir:'V',r:0,c:1,word:'GIRO',    clue:'Maniobra de cambio de direccion que exige seÃ±alizar con suficiente anticipacion.'},
+        {id:'w2',num:2,dir:'V',r:0,c:1,word:'GIRO',    clue:'Maniobra de cambio de dirección que exige señalizar con suficiente anticipación.'},
         {id:'w3',num:3,dir:'H',r:2,c:2,word:'BOCINA',  clue:'Senal acustica usable solo en situaciones de peligro, nunca para urgir el paso.'},
         {id:'w4',num:4,dir:'V',r:0,c:5,word:'CINTURON',clue:'Obligatorio para el conductor del colectivo en todo momento segun normativa.'},
         {id:'w5',num:5,dir:'H',r:5,c:0,word:'LUCES',   clue:'Iluminacion obligatoria en lluvia, niebla o tuneles.'}
@@ -398,18 +398,18 @@ const PUZZLES_DATA = {
         {id:'w3',num:3,dir:'H',r:3,c:0,word:'RODAJE',   clue:'Periodo de neumaticos nuevos donde debe evitarse el frenado brusco.'},
         {id:'w4',num:4,dir:'V',r:0,c:7,word:'DERRAPE',  clue:'Perdida de traccion lateral por exceso de velocidad en curva o superficie resbaladiza.'},
         {id:'w5',num:5,dir:'H',r:5,c:3,word:'FRENO',    clue:'En moto: delantero 70% y trasero 30%, aplicados de forma progresiva.'},
-        {id:'w6',num:6,dir:'V',r:0,c:2,word:'VELOCIDAD',clue:'Limite urbano en moto es 60 km/h salvo seÃ±al; aumenta distancia de frenado.'}
+        {id:'w6',num:6,dir:'V',r:0,c:2,word:'VELOCIDAD',clue:'Límite urbano en moto es 60 km/h salvo señal; aumenta distancia de frenado.'}
       ]},
       { id:'i_m2', name:'Moto Intermedio 2 - Codigo y Licencias', category:'Moto (Clase A)', level:'intermedio', rows:9, cols:9, words:[
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'LICENCIA', clue:'Habilitacion para conducir; categoria A para motovehiculos, emitida por autoridad.'},
         {id:'w2',num:2,dir:'V',r:0,c:5,word:'SANCION',  clue:'Penalidad economica o restrictiva ante una infraccion de transito.'},
-        {id:'w3',num:3,dir:'H',r:4,c:0,word:'PRIORIDAD',clue:'La derecha tiene preferencia en cruces sin seÃ±al segun el Codigo Vial.'},
+        {id:'w3',num:3,dir:'H',r:4,c:0,word:'PRIORIDAD',clue:'La derecha tiene preferencia en cruces sin señal según el Código Vial.'},
         {id:'w4',num:4,dir:'V',r:0,c:2,word:'SEGURO',   clue:'Poliza de responsabilidad civil obligatoria para circular en via publica.'},
         {id:'w5',num:5,dir:'H',r:7,c:0,word:'MULTA',    clue:'Sancion pecuniaria aplicada al infractor de las normas de transito.'},
         {id:'w6',num:6,dir:'V',r:4,c:8,word:'PLACA',    clue:'Identificacion alfanumerica visible en el vehiculo; obligatoria y legible.'}
       ]},
       { id:'i_m3', name:'Moto Intermedio 3 - Visibilidad', category:'Moto (Clase A)', level:'intermedio', rows:9, cols:9, words:[
-        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CAMBIO',   clue:'Maniobra de carril que exige espejos, angulo ciego y seÃ±al de giro.'},
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CAMBIO',   clue:'Maniobra de carril que exige espejos, ángulo ciego y señal de giro.'},
         {id:'w2',num:2,dir:'V',r:0,c:4,word:'CARRIL',   clue:'Franja longitudinal en que se divide la calzada para ordenar la circulacion.'},
         {id:'w3',num:3,dir:'H',r:4,c:0,word:'ADELANTAR',clue:'Maniobra de sobrepaso que requiere via libre y distancia suficiente para retorno.'},
         {id:'w4',num:4,dir:'V',r:0,c:7,word:'NIEBLA',   clue:'Condicion que reduce visibilidad; encender luces bajas y reducir velocidad.'},
@@ -430,7 +430,7 @@ const PUZZLES_DATA = {
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'ALCOHOL',  clue:'A partir de 0,5 g/L en sangre inhibe reflejos; limite 0 para motos y jovenes.'},
         {id:'w2',num:2,dir:'V',r:0,c:3,word:'REFLEJO',  clue:'Capacidad de respuesta involuntaria; se deteriora con alcohol, drogas o sueno.'},
         {id:'w3',num:3,dir:'H',r:4,c:0,word:'FATIGA',   clue:'Estado de cansancio extremo que reduce alertas y tiempo de reaccion.'},
-        {id:'w4',num:4,dir:'V',r:0,c:6,word:'DROGAS',   clue:'PsicotrÃ³picos que alteran percepcion; su deteccion en controles es sancion grave.'},
+        {id:'w4',num:4,dir:'V',r:0,c:6,word:'DROGAS',   clue:'Psicotrópicos que alteran percepción; su detección en controles es sanción grave.'},
         {id:'w5',num:5,dir:'H',r:7,c:0,word:'SUENO',    clue:'Somnolencia responsable del 30% de accidentes en rutas; la pausa es obligatoria.'},
         {id:'w6',num:6,dir:'V',r:4,c:7,word:'VISTA',    clue:'Sentido primario de la conduccion; el alcohol reduce el campo visual 30%.'}
       ]},
@@ -453,9 +453,9 @@ const PUZZLES_DATA = {
         {id:'w6',num:6,dir:'H',r:7,c:0,word:'APTO',     clue:'Condicion acreditada tras superar el examen psicofisico; habilita para conducir.'}
       ]},
       { id:'i_c2', name:'Colectivo Intermedio 2 - Intersecciones', category:'Colectivo (Clase D1)', level:'intermedio', rows:9, cols:9, words:[
-        {id:'w1',num:1,dir:'H',r:0,c:0,word:'GIRO',     clue:'Maniobra en vehiculos grandes que requiere seÃ±al anticipada y radio amplio.'},
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'GIRO',     clue:'Maniobra en vehículos grandes que requiere señal anticipada y radio amplio.'},
         {id:'w2',num:2,dir:'V',r:0,c:2,word:'ROTONDA',  clue:'Interseccion circular; prioridad del vehiculo que ya circula dentro.'},
-        {id:'w3',num:3,dir:'H',r:3,c:0,word:'SEÃ‘AL',    clue:'Indicacion previa que el conductor emite antes de cualquier maniobra.'},
+        {id:'w3',num:3,dir:'H',r:3,c:0,word:'SEÑAL',    clue:'Indicación previa que el conductor emite antes de cualquier maniobra.'},
         {id:'w4',num:4,dir:'V',r:0,c:5,word:'CRUCE',    clue:'Interseccion de vias; exige velocidad reducida y atencion especial.'},
         {id:'w5',num:5,dir:'H',r:6,c:0,word:'PEATONES', clue:'Usuarios mas vulnerables; siempre tienen prioridad en la senda peatonal.'},
         {id:'w6',num:6,dir:'V',r:3,c:7,word:'AVANCE',   clue:'Movimiento hacia adelante de la unidad; en parada debe ser lento y progresivo.'}
@@ -464,7 +464,7 @@ const PUZZLES_DATA = {
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'EVACUACION',clue:'Desalojo ordenado de la unidad ante una emergencia o accidente.'},
         {id:'w2',num:2,dir:'V',r:0,c:5,word:'EXTINTOR', clue:'Equipo obligatorio; el conductor debe conocer su ubicacion y forma de uso.'},
         {id:'w3',num:3,dir:'H',r:4,c:0,word:'BOTIQUIN', clue:'Caja de primeros auxilios de porte obligatorio en toda unidad de transporte.'},
-        {id:'w4',num:4,dir:'V',r:0,c:7,word:'SALIDA',   clue:'Puerta de emergencia posterior; seÃ±alizada, desbloqueada y libre de obstaculos.'},
+        {id:'w4',num:4,dir:'V',r:0,c:7,word:'SALIDA',   clue:'Puerta de emergencia posterior; señalizada, desbloqueada y libre de obstáculos.'},
         {id:'w5',num:5,dir:'H',r:7,c:0,word:'RADIO',    clue:'Sistema de comunicaciones para reportar incidentes a la central de operaciones.'},
         {id:'w6',num:6,dir:'V',r:4,c:3,word:'AVISO',    clue:'Notificacion inmediata a central y emergencias ante cualquier incidente.'}
       ]}
@@ -479,7 +479,7 @@ const PUZZLES_DATA = {
         {id:'w4',num:4,dir:'V',r:0,c:8,word:'CASCO',     clue:'Reductor del riesgo de muerte en 40%; debe ser certificado ECE 22.06 o DOT.'},
         {id:'w5',num:5,dir:'H',r:6,c:0,word:'AIRBAG',    clue:'Chaleco inflable para motociclistas; activacion en 100 ms ante impacto frontal.'},
         {id:'w6',num:6,dir:'V',r:3,c:6,word:'FUERZA',    clue:'Masa por aceleracion; a 60 km/h el impacto equivale a caer de un tercer piso.'},
-        {id:'w7',num:7,dir:'H',r:8,c:0,word:'SINIESTRO', clue:'Evento vial con victimas o daÃ±os; su analisis revela causas y permite prevencion.'}
+        {id:'w7',num:7,dir:'H',r:8,c:0,word:'SINIESTRO', clue:'Evento vial con víctimas o daños; su análisis revela causas y permite prevención.'}
       ]},
       { id:'e_m2', name:'Moto Experto 2 - Normativa Tecnica', category:'Moto (Clase A)', level:'experto', rows:10, cols:10, words:[
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'HOMOLOGADO',clue:'Equipo certificado bajo norma ECE o IRAM; garantia de proteccion verificada.'},
@@ -487,7 +487,7 @@ const PUZZLES_DATA = {
         {id:'w3',num:3,dir:'H',r:4,c:0,word:'REGLAMENTO',clue:'Norma que especifica detalles tecnicos de circulacion complementando la ley.'},
         {id:'w4',num:4,dir:'V',r:0,c:3,word:'RESOLUCION',clue:'Acto administrativo que establece requisitos tecnicos para vehiculos y accesorios.'},
         {id:'w5',num:5,dir:'H',r:7,c:0,word:'ANTILOCK',  clue:'Sistema ABS que impide bloqueo de ruedas y mantiene estabilidad al frenar.'},
-        {id:'w6',num:6,dir:'V',r:4,c:5,word:'SEGURO',    clue:'RC Obligatoria: poliza que cubre daÃ±os a terceros; ausencia implica infraccion grave.'}
+        {id:'w6',num:6,dir:'V',r:4,c:5,word:'SEGURO',    clue:'RC Obligatoria: póliza que cubre daños a terceros; ausencia implica infracción grave.'}
       ]},
       { id:'e_m3', name:'Moto Experto 3 - Factores de Riesgo', category:'Moto (Clase A)', level:'experto', rows:10, cols:10, words:[
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'TEMERARIO', clue:'Conductor que asume riesgos extremos injustificados poniendo en peligro a terceros.'},
@@ -509,7 +509,7 @@ const PUZZLES_DATA = {
         {id:'w7',num:7,dir:'H',r:8,c:3,word:'PANTALLA',  clue:'Distraccion critica al volante; mirar celular a 90 km/h es 75 metros a ciegas.'}
       ]},
       { id:'e_a2', name:'Auto Experto 2 - Responsabilidad Civil y Penal', category:'Auto (Clase B)', level:'experto', rows:10, cols:10, words:[
-        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CULPOSO',   clue:'Tipo de homicidio por conduccion negligente; pena de 3 a 6 aÃ±os en Argentina.'},
+        {id:'w1',num:1,dir:'H',r:0,c:0,word:'CULPOSO',   clue:'Tipo de homicidio por conducción negligente; pena de 3 a 6 años en Argentina.'},
         {id:'w2',num:2,dir:'V',r:0,c:4,word:'NEGLIGENCIA',clue:'Omision de la diligencia debida que genera riesgo y responsabilidad legal.'},
         {id:'w3',num:3,dir:'H',r:4,c:0,word:'IMPUTADO',  clue:'Persona a quien se le atribuye responsabilidad penal en un siniestro con victimas.'},
         {id:'w4',num:4,dir:'V',r:0,c:7,word:'PERITOS',   clue:'Especialistas en accidentologia que reconstruyen un siniestro para la Justicia.'},
@@ -541,14 +541,14 @@ const PUZZLES_DATA = {
         {id:'w3',num:3,dir:'H',r:4,c:0,word:'RECORRIDO', clue:'Trayecto habilitado que el colectivo debe cumplir sin desviaciones.'},
         {id:'w4',num:4,dir:'V',r:0,c:8,word:'VELOCIDAD', clue:'En zona urbana: 40 km/h en avenidas y 30 km/h en calles para colectivos.'},
         {id:'w5',num:5,dir:'H',r:7,c:0,word:'PROTOCOLO', clue:'Pasos a seguir ante siniestro: asegurar zona, dar aviso y prestar auxilio.'},
-        {id:'w6',num:6,dir:'V',r:4,c:4,word:'LESION',    clue:'DaÃ±o fisico sufrido por pasajero; puede generar responsabilidad civil y penal.'}
+        {id:'w6',num:6,dir:'V',r:4,c:4,word:'LESION',    clue:'Daño físico sufrido por pasajero; puede generar responsabilidad civil y penal.'}
       ]},
       { id:'e_c3', name:'Colectivo Experto 3 - Sustentabilidad', category:'Colectivo (Clase D1)', level:'experto', rows:10, cols:10, words:[
         {id:'w1',num:1,dir:'H',r:0,c:0,word:'METANO',    clue:'Principal componente del GNC; mas limpio que diesel con menor emision de CO2.'},
         {id:'w2',num:2,dir:'V',r:0,c:4,word:'VERDE',     clue:'Certificacion de unidad de baja emision; Argentina impulsa flotas electricas y GNC.'},
         {id:'w3',num:3,dir:'H',r:3,c:0,word:'ELECTRICO', clue:'Propulsion que elimina emisiones directas y reduce el ruido en zonas urbanas.'},
         {id:'w4',num:4,dir:'V',r:0,c:7,word:'EMISION',   clue:'Liberacion de gases contaminantes; flota de colectivos representa 15% del total urbano.'},
-        {id:'w5',num:5,dir:'H',r:6,c:0,word:'BATERIA',   clue:'Almacenamiento de energia electrica en colectivos; vida util 8 a 10 aÃ±os.'},
+        {id:'w5',num:5,dir:'H',r:6,c:0,word:'BATERIA',   clue:'Almacenamiento de energía eléctrica en colectivos; vida útil 8 a 10 años.'},
         {id:'w6',num:6,dir:'V',r:3,c:5,word:'RECARGA',   clue:'Reabastecimiento de energia en unidades electricas; lento (5h) o rapido (45 min).'}
       ]}
     ]
@@ -557,10 +557,13 @@ const PUZZLES_DATA = {
 
 // CONFIGURACION POR NIVEL
 const LEVEL_CONFIG = {
-  basico:     {label:'BASICO',    hintsMax:3, xpBase:300, xpTimeRef:120, badgeClass:'basico',     trophy:'ðŸŽ–ï¸',  desc:'Buen comienzo â€” dominas los conceptos fundamentales de la seguridad vial.'},
-  intermedio: {label:'INTERMEDIO',hintsMax:2, xpBase:500, xpTimeRef:180, badgeClass:'intermedio', trophy:'ðŸ…',  desc:'Muy bien! Aplicas normas complejas con soltura y precision.'},
-  experto:    {label:'EXPERTO',   hintsMax:1, xpBase:800, xpTimeRef:300, badgeClass:'experto',    trophy:'ðŸ†',  desc:'Maximo nivel! Tu conocimiento tecnico-normativo es excepcional.'}
+  basico:     {label:'BÁSICO',    hintsMax:3, xpBase:300, xpTimeRef:120, badgeClass:'basico',     trophy:'🎗️',  desc:'Buen comienzo — dominás los conceptos fundamentales de la seguridad vial.'},
+  intermedio: {label:'INTERMEDIO',hintsMax:2, xpBase:500, xpTimeRef:180, badgeClass:'intermedio', trophy:'🏅',  desc:'¡Muy bien! Aplicás normas complejas con soltura y precisión.'},
+  experto:    {label:'EXPERTO',   hintsMax:1, xpBase:800, xpTimeRef:300, badgeClass:'experto',    trophy:'🏆',  desc:'¡Máximo nivel! Tu conocimiento técnico-normativo es excepcional.'}
 };
+
+// AUDIO
+const sound = window.sound || window.audioSystem || (typeof SoundSystem !== 'undefined' ? new SoundSystem() : { playTick:()=>{}, playCorrect:()=>{}, playFanfare:()=>{}, toggleSound:()=>true });
 
 // ESTADO
 let currentLevel    = 'basico';
@@ -934,7 +937,7 @@ window.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();advanceCursor(1);}
   else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();advanceCursor(-1);}
   else if(e.key==='Tab'){e.preventDefault();navClue(1);}
-  else if(/^[a-zA-ZÃ±Ã‘]$/.test(e.key)){e.preventDefault();inputChar(e.key);}
+  else if(/^[a-zA-ZñÑ]$/.test(e.key)){e.preventDefault();inputChar(e.key);}
 });
 document.querySelectorAll('.level-btn').forEach(b=>b.addEventListener('click',()=>{
   if(!b.classList.contains('unlocked'))return;

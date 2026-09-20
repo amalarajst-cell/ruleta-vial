@@ -10,20 +10,26 @@ while ($listener.IsListening) {
         $request = $context.Request
         $response = $context.Response
 
-        $path = $request.Url.LocalPath.TrimStart('/')
-        if ([string]::IsNullOrEmpty($path)) { $path = "index.html" }
+        $rawPath = $request.Url.LocalPath.TrimStart('/')
+        if ([string]::IsNullOrEmpty($rawPath)) { $rawPath = "index.html" }
+        $path = [System.Uri]::UnescapeDataString($rawPath)
         $fullPath = Join-Path $root $path
 
         if (Test-Path $fullPath -PathType Leaf) {
             $bytes = [System.IO.File]::ReadAllBytes($fullPath)
             if ($fullPath.EndsWith(".html")) { $response.ContentType = "text/html; charset=utf-8" }
-            elseif ($fullPath.EndsWith(".js")) { $response.ContentType = "application/javascript" }
-            elseif ($fullPath.EndsWith(".css")) { $response.ContentType = "text/css" }
-            elseif ($fullPath.EndsWith(".glb")) { $response.ContentType = "model/gltf-binary" }
-            elseif ($fullPath.EndsWith(".json")) { $response.ContentType = "application/json" }
+            elseif ($fullPath.EndsWith(".js")) { $response.ContentType = "application/javascript; charset=utf-8" }
+            elseif ($fullPath.EndsWith(".css")) { $response.ContentType = "text/css; charset=utf-8" }
+            elseif ($fullPath.EndsWith(".json") -or $fullPath.EndsWith(".webmanifest")) { $response.ContentType = "application/json; charset=utf-8" }
             elseif ($fullPath.EndsWith(".jpg") -or $fullPath.EndsWith(".jpeg")) { $response.ContentType = "image/jpeg" }
             elseif ($fullPath.EndsWith(".png")) { $response.ContentType = "image/png" }
+            elseif ($fullPath.EndsWith(".webp")) { $response.ContentType = "image/webp" }
             elseif ($fullPath.EndsWith(".svg")) { $response.ContentType = "image/svg+xml" }
+            elseif ($fullPath.EndsWith(".ico")) { $response.ContentType = "image/x-icon" }
+            elseif ($fullPath.EndsWith(".mp3")) { $response.ContentType = "audio/mpeg" }
+            elseif ($fullPath.EndsWith(".wav")) { $response.ContentType = "audio/wav" }
+            elseif ($fullPath.EndsWith(".csv")) { $response.ContentType = "text/csv; charset=utf-8" }
+            elseif ($fullPath.EndsWith(".glb")) { $response.ContentType = "model/gltf-binary" }
             
             $response.AddHeader("Access-Control-Allow-Origin", "*")
             $response.AddHeader("Cache-Control", "no-cache, no-store, must-revalidate")

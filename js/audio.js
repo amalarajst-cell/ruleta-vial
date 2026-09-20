@@ -193,3 +193,5 @@ class SoundSystem {
 }
 
 const audioSystem = new SoundSystem();
+window.audioSystem = audioSystem;
+window.sound = audioSystem;
