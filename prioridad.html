@@ -726,10 +726,10 @@
       <!-- Barra de selección de actores -->
       <div class="actors-selection-bar">
         <div class="selection-label-row">
-          <span>Orden de prioridad elegido:</span>
-          <button type="button" class="btn-clear-selection" id="btn-clear-order">
+          <span>¿Quién tiene prioridad para cruzar / avanzar? Toca una opción:</span>
+          <button type="button" class="btn-clear-selection" id="btn-clear-order" style="display:none;">
             <span class="material-symbols-outlined" style="font-size:14px;">restart_alt</span>
-            <span>Reiniciar Orden</span>
+            <span>Reiniciar</span>
           </button>
         </div>
         <div class="actors-grid" id="actors-buttons-grid">
@@ -741,7 +741,7 @@
       <div class="controls-row">
         <button type="button" class="btn-verify" id="btn-verify-order" disabled>
           <span class="material-symbols-outlined">traffic</span>
-          <span>¡CONFIRMAR Y VERIFICAR PASO!</span>
+          <span>¡CONFIRMAR DECISIÓN!</span>
         </button>
       </div>
 
@@ -891,196 +891,206 @@
         if (soundEnabled) playSoundSelect();
       });
 
-      // ── BANCO DE 10 ESCENARIOS CON IMÁGENES REALISTAS Y FOTOGRÁFICAS (LEY 2148 CABA) ──
+      // ── BANCO DE 10 ESCENARIOS OFICIALES CABA (LEY 2148 / MANUAL DEL CONDUCTOR) ──
       const SCENARIOS = [
-        // 1. Cruce Simple Sin Señalizar
+        // 1. Cruce Simple Sin Semáforo (Gráfico 55 Oficial)
         {
           id: 'cruce_simple',
           tier: 1,
           tierName: 'Nivel Básico • Regla de la Derecha',
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
-          title: 'Cruce Simple Sin Señalización',
-          prompt: 'En esta intersección urbana sin semáforos ni carteles reglamentarios, ¿cuál de los dos vehículos tiene prioridad para cruzar?',
-          imageSrc: 'assets/scenarios/scenario_1_cruce.jpg',
+          title: 'Cruce de Dos Calles Sin Semáforo',
+          prompt: 'En esta esquina sin semáforo de dos calles comunes: el Camión (A) llega por la derecha y el Auto (B) por la izquierda. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/055-H.png',
           actors: [
-            { id: 'auto_b', letter: 'B', name: 'Auto Blanco (B)', type: 'car', desc: 'Circula por la DERECHA del Auto A' },
-            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', desc: 'Avanza hacia el frente' }
+            { id: 'A', letter: 'A', name: 'Camión (A)', desc: 'Llega por la derecha' },
+            { id: 'B', letter: 'B', name: 'Auto Particular (B)', desc: 'Llega por la izquierda' }
           ],
-          correctOrder: ['auto_b', 'auto_a'],
+          correctActorId: 'A',
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "Todo conductor debe ceder siempre el paso en las encrucijadas al que cruza desde su derecha."',
-          explanation: 'El Auto Blanco (B) viene por la derecha del Auto Azul (A). Al tratarse de una encrucijada sin semáforos ni señales que alteren la norma, la prioridad de la derecha es absoluta.'
+          explanation: 'Tiene prioridad el Camión (A) por presentarse desde la derecha. En la legislación vial argentina y de la Ciudad de Buenos Aires, el mayor porte o tamaño del camión no otorga ninguna preferencia: la regla de la derecha rige de manera obligatoria.',
+          officialOrderText: '1° Pasa el Camión A (por la derecha) ➔ 2° Cruza el Auto Particular B'
         },
 
-        // 2. Cruce con Señal CEDA EL PASO
+        // 2. Avenida De Los Incas vs. Calle Donado (Gráfico 58 Oficial)
         {
-          id: 'ceda_el_paso',
+          id: 'avenida_vs_calle_incas',
           tier: 1,
-          tierName: 'Nivel Básico • Señalización R2',
+          tierName: 'Nivel Básico • Jerarquía de Arterias',
           tierClass: 'tier-1',
-          lawTag: 'Art. 6.1.1 inc. a) Ley 2148',
-          title: 'Cruce con Señal "Ceda el Paso"',
-          prompt: 'Observá la esquina: el Auto Rojo (B) tiene una señal reglamentaria R2 de Ceda el Paso. ¿Cuál es el orden prioritario de avance?',
-          imageSrc: 'assets/scenarios/scenario_ceda.jpg',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Avenida De Los Incas vs. Calle Donado',
+          prompt: 'El Vehículo A circula por la Avenida De Los Incas. El Vehículo B llega por la calle secundaria Donado desde la derecha de A. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/058-H.png',
           actors: [
-            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', desc: 'Circula por vía transversal sin señal' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Rojo (B)', type: 'car', desc: 'Enfrenta señal de CEDA EL PASO' }
+            { id: 'A', letter: 'A', name: 'Vehículo A (Av. De Los Incas)', desc: 'Circula por la Avenida' },
+            { id: 'B', letter: 'B', name: 'Vehículo B (Calle Donado)', desc: 'Llega por calle secundaria' }
           ],
-          correctOrder: ['auto_a', 'auto_b'],
-          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. a): "La prioridad de la derecha se pierde ante la señalización específica en contrario."',
-          explanation: 'La señal vertical de CEDA EL PASO obliga al Auto Rojo (B) a subordinar su paso, perdiendo la prioridad que habitualmente le concedería la derecha.'
+          correctActorId: 'A',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "En encrucijadas sin semáforos, el orden de prioridad según el tipo de arteria es: 1° Avenida - 2° Calle - 3° Pasaje."',
+          explanation: 'El Vehículo A tiene prioridad por circular por una Avenida. En la Ciudad de Buenos Aires, la jerarquía de las arterias prevalece sobre la derecha: quien transita por una avenida tiene preferencia de paso sobre quien accede desde una calle secundaria.',
+          officialOrderText: '1° Pasa el Vehículo A (por Avenida) ➔ 2° Cede el paso el Vehículo B (calle secundaria)'
         },
 
-        // 3. Giro a la Izquierda
+        // 3. Calle Burela vs. Av. Crisólogo Larralde (Gráfico 63 Oficial)
         {
-          id: 'giro_izquierda',
+          id: 'avenida_vs_calle_larralde',
           tier: 1,
-          tierName: 'Nivel Básico • Pérdida por Giro',
+          tierName: 'Nivel Básico • Jerarquía de Arterias',
           tierClass: 'tier-1',
-          lawTag: 'Art. 6.1.1 inc. f) Ley 2148',
-          title: 'Giro Hacia la Izquierda',
-          prompt: 'Dos vehículos circulan de frente. El Auto Verde (B) gira a la izquierda cortando la corriente contraria, mientras el Auto Azul (A) sigue recto.',
-          imageSrc: 'assets/scenarios/scenario_giro.jpg',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Calle Burela vs. Av. Crisólogo Larralde',
+          prompt: 'El Auto Rojo A se aproxima por la calle Burela desde la derecha del Colectivo B, que circula por la Av. Crisólogo Larralde. ¿A quién le corresponde la prioridad de paso?',
+          imageSrc: 'img/auto/063-H.png',
           actors: [
-            { id: 'auto_a', letter: 'A', name: 'Auto Azul (A)', type: 'car', desc: 'Continúa en línea recta' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Verde (B)', type: 'car', desc: 'Gira a su izquierda' }
+            { id: 'B', letter: 'B', name: 'Colectivo B (Av. Larralde)', desc: 'Circula por Avenida' },
+            { id: 'A', letter: 'A', name: 'Auto Rojo A (Calle Burela)', desc: 'Llega por calle desde la derecha' }
           ],
-          correctOrder: ['auto_a', 'auto_b'],
-          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. f): "Pierde la prioridad de paso quien pretenda girar para ingresar a otra vía."',
-          explanation: 'Todo vehículo que cambie de dirección pierde toda preferencia frente a quien continúa circulando en línea recta en su sentido.'
+          correctActorId: 'B',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "La prioridad de la derecha se pierde ante los vehículos que circulan por una arteria de mayor jerarquía."',
+          explanation: 'La prioridad le corresponde al Colectivo B por circular por una Avenida. Aunque el Auto Rojo A se presente desde la derecha, al ingresar desde una calle común debe ceder el paso indefectiblemente.',
+          officialOrderText: '1° Pasa el Colectivo B (Avenida) ➔ 2° Avanza el Auto Rojo A (Calle)'
         },
 
-        // 4. Ambulancia SAME en Emergencia
+        // 4. Desembocadura de Paso a Nivel Ferroviario (Gráfico 34 Oficial)
         {
-          id: 'ambulancia_emergencia',
-          tier: 2,
-          tierName: 'Nivel Intermedio • Emergencias',
-          tierClass: 'tier-2',
-          lawTag: 'Art. 6.1.1 inc. c) Ley 2148',
-          title: 'Ambulancia del SAME en Código Rojo',
-          prompt: 'Una unidad de auxilio médico del SAME se aproxima con sirenas y balizas destellantes encendidas. ¿Cómo debe proceder el tránsito?',
-          imageSrc: 'img/auto/031-H.png',
-          actors: [
-            { id: 'ambulancia_same', letter: 'SAME', name: 'Ambulancia SAME', type: 'ambulance', desc: 'Servicio de urgencia con sirena y balizas' },
-            { id: 'vehiculo_particular', letter: 'AUTO', name: 'Vehículo Particular', type: 'car', desc: 'Circula en proximidad' }
-          ],
-          correctOrder: ['ambulancia_same', 'vehiculo_particular'],
-          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. c): "La prioridad de la derecha se pierde ante los vehículos de servicio público de urgencia en cumplimiento de sus funciones."',
-          explanation: 'Los vehículos de emergencia en acto de servicio (SAME, Bomberos, Policía) tienen prioridad irrestricta. Los demás conductores deben despejar el carril y detenerse si fuera necesario.'
-        },
-
-        // 5. Paso a Nivel Ferroviario
-        {
-          id: 'tren_paso_nivel',
+          id: 'paso_a_nivel_salida',
           tier: 2,
           tierName: 'Nivel Intermedio • Vía Férrea',
           tierClass: 'tier-2',
-          lawTag: 'Art. 6.1.1 inc. b) Ley 2148',
-          title: 'Paso a Nivel Ferroviario',
-          prompt: 'Observá la imagen oficial en el paso a nivel: ¿Quién tiene prioridad absoluta de paso en una vía férrea?',
+          lawTag: 'Art. 6.1.1 inc. b) Ley 2148 CABA',
+          title: 'Desembocadura de Paso a Nivel',
+          prompt: 'El Vehículo A está saliendo de cruzar las vías del ferrocarril. Desde su derecha, por la calle transversal, se aproximan los vehículos B. ¿Quién tiene prioridad de paso?',
           imageSrc: 'img/auto/034-H.png',
           actors: [
-            { id: 'tren', letter: 'TREN', name: 'Tren de Pasajeros', type: 'train', desc: 'Circula sobre las vías férreas' },
-            { id: 'vehiculo_calzada', letter: 'VIAL', name: 'Colectivo / Autos', type: 'bus', desc: 'Circulan por la calzada vehicular' }
+            { id: 'A', letter: 'A', name: 'Vehículo A (Sale de las Vías)', desc: 'Desemboca del paso a nivel' },
+            { id: 'B', letter: 'B', name: 'Vehículos B (Calle Transversal)', desc: 'Llegan por la derecha' }
           ],
-          correctOrder: ['tren', 'vehiculo_calzada'],
-          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. b): "La prioridad de la derecha se pierde frente a los vehículos ferroviarios."',
-          explanation: 'El tren tiene prioridad absoluta sobre cualquier vehículo o peatón en pasos a nivel debido a su masa, inercia y distancia de frenado.'
+          correctActorId: 'A',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. b): "La prioridad de la derecha se pierde frente a los que desembocan desde un paso a nivel ferroviario."',
+          explanation: 'El Vehículo A tiene prioridad absoluta de paso porque está saliendo de las vías del tren. Esta excepción legal es crucial para la seguridad vial: ningún vehículo debe verse forzado a detenerse sobre los rieles para ceder el paso.',
+          officialOrderText: '1° Pasa el Vehículo A (desaloja las vías) ➔ 2° Esperan los vehículos B'
         },
 
-        // 6. Rotonda Urbana
+        // 5. Cruce Urbano Previo a Vía Férrea (Gráfico 35 Oficial)
         {
-          id: 'rotonda_urbana',
+          id: 'cruce_previo_vias',
           tier: 2,
-          tierName: 'Nivel Intermedio • Rotondas',
-          tierClass: 'tier-2',
-          lawTag: 'Art. 6.1.1 inc. e) Ley 2148',
-          title: 'Cruce en Rotonda',
-          prompt: 'El Auto Gris (A) ya circula dentro de la calzada circular de la rotonda. El Taxi (B) pretende incorporarse desde la calle de acceso. ¿Quién pasa primero?',
-          imageSrc: 'assets/scenarios/scenario_rotonda.jpg',
-          actors: [
-            { id: 'auto_a', letter: 'A', name: 'Auto Gris (A)', type: 'car', desc: 'Circula DENTRO de la rotonda' },
-            { id: 'taxi_b', letter: 'B', name: 'Taxi BA (B)', type: 'car', desc: 'Espera en acceso para ingresar' }
-          ],
-          correctOrder: ['auto_a', 'taxi_b'],
-          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. e): "En las rotondas tiene prioridad de paso quien circula por la calzada circular frente al que intenta ingresar."',
-          explanation: 'En las rotondas se invierte la regla clásica: quien ya circula dentro del anillo tiene prioridad absoluta sobre quien va a entrar para evitar el bloqueo del distribuidor.'
-        },
-
-        // 7. Arteria Principal vs Calle Secundaria
-        {
-          id: 'avenida_vs_calle',
-          tier: 2,
-          tierName: 'Nivel Intermedio • Jerarquía de Arterias',
+          tierName: 'Nivel Intermedio • Cruce Previo a Vías',
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
-          title: 'Avenida vs Calle Secundaria',
-          prompt: 'El vehículo A circula por la Avenida De Los Incas. El vehículo B circula por la calle transversal Donado sin semáforo. ¿Quién tiene prioridad?',
-          imageSrc: 'img/auto/058-H.png',
+          title: 'Cruce Previo a Vía Férrea',
+          prompt: 'En esta esquina sin semáforo previa al cruce de vías, el Utilitario Blanco B se presenta desde la derecha del Auto Gris A. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/035-H.png',
           actors: [
-            { id: 'auto_a', letter: 'A', name: 'Vehículo A (Av. De Los Incas)', type: 'car', desc: 'Circula por la Avenida' },
-            { id: 'auto_b', letter: 'B', name: 'Vehículo B (Calle Donado)', type: 'car', desc: 'Llega por calle secundaria transversal' }
+            { id: 'B', letter: 'B', name: 'Utilitario Blanco (B)', desc: 'Llega por la derecha' },
+            { id: 'A', letter: 'A', name: 'Auto Gris (A)', desc: 'Circula por la izquierda' }
           ],
-          correctOrder: ['auto_a', 'auto_b'],
-          lawCitation: 'Ley 2148 CABA: En cruces no semaforizados, los vehículos que circulan por arterias de mayor jerarquía (Avenidas) tienen prioridad de paso sobre quienes acceden desde calles secundarias.',
-          explanation: 'El vehículo A tiene prioridad por circular por una avenida principal de mayor jerarquía y caudal respecto de la calle secundaria.'
-        },
-
-        // 8. Cruce Urbano con Camión y Auto
-        {
-          id: 'cruce_camion_auto',
-          tier: 3,
-          tierName: 'Nivel Avanzado • Regla de la Derecha',
-          tierClass: 'tier-3',
-          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
-          title: 'Cruce en Esquina Sin Semáforo',
-          prompt: 'Observá la posición de los vehículos en esta bocacalle de Buenos Aires. ¿Cuál tiene prioridad de paso?',
-          imageSrc: 'img/auto/055-H.png',
-          actors: [
-            { id: 'camion_a', letter: 'A', name: 'Camión (A)', type: 'truck', desc: 'Circula por la DERECHA del auto B' },
-            { id: 'auto_b', letter: 'B', name: 'Auto Particular (B)', type: 'car', desc: 'Circula por la izquierda' }
-          ],
-          correctOrder: ['camion_a', 'auto_b'],
+          correctActorId: 'B',
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "Todo conductor debe ceder siempre el paso en las encrucijadas al que cruza desde su derecha."',
-          explanation: 'El Camión A circula desde la derecha del Auto B. Por lo tanto, el Auto B debe esperar y permitir el paso del vehículo A.'
+          explanation: 'Tiene prioridad el Utilitario Blanco (B) por presentarse desde la derecha. Al no estar ninguno de los vehículos sobre las vías del ferrocarril, rige con plenitud la regla general de la derecha.',
+          officialOrderText: '1° Pasa el Utilitario Blanco B (por la derecha) ➔ 2° Cruza el Auto Gris A'
         },
 
-        // 9. Salida de Cochera / Garaje Privado
+        // 6. Giro a la Derecha vs. Ciclista en Ciclovía (Gráfico 21 Oficial)
         {
-          id: 'salida_garaje',
+          id: 'giro_vs_ciclista',
+          tier: 2,
+          tierName: 'Nivel Intermedio • Pérdida por Giro',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.1.1 inc. f) Ley 2148 CABA',
+          title: 'Giro Cruzando Ciclovía',
+          prompt: 'El automóvil taxi pretende girar a su derecha para tomar la calle transversal, cortando la trayectoria de la ciclista que avanza en línea recta. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/021-H.png',
+          actors: [
+            { id: 'BICI', letter: 'BICI', name: 'Ciclista en Ciclovía', desc: 'Avanza en línea recta' },
+            { id: 'TAXI', letter: 'TAXI', name: 'Taxi / Automóvil', desc: 'Pretende girar a la derecha' }
+          ],
+          correctActorId: 'BICI',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. f): "Pierde la prioridad de paso quien pretenda girar para ingresar a otra vía."',
+          explanation: 'La prioridad es de la bicicleta. Todo conductor que realiza una maniobra de giro pierde automáticamente la preferencia de paso frente a quien continúa circulando en línea recta en su sentido.',
+          officialOrderText: '1° Avanza la Ciclista (continúa en línea recta) ➔ 2° Gira el Automóvil / Taxi'
+        },
+
+        // 7. Prioridad Peatonal en Esquina (Gráfico 17 Oficial)
+        {
+          id: 'prioridad_peatonal_esquina',
+          tier: 2,
+          tierName: 'Nivel Intermedio • Prioridad Peatonal',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.2 Ley 2148 CABA',
+          title: 'Prioridad Peatonal en Bocacalle',
+          prompt: 'Una persona cruza a pie por la senda peatonal en esta intersección de la Ciudad de Buenos Aires. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/017-H.png',
+          actors: [
+            { id: 'PEATON', letter: 'PEATÓN', name: 'Peatón en Senda Peatonal', desc: 'Cruza a pie la calzada' },
+            { id: 'TAXI', letter: 'TAXI', name: 'Taxi / Automóvil', desc: 'Circula por la calzada' }
+          ],
+          correctActorId: 'PEATON',
+          lawCitation: 'Ley 2148 CABA - Art. 6.2: "Los peatones tienen prioridad absoluta de paso sobre los vehículos al cruzar por la senda peatonal o por las esquinas."',
+          explanation: 'El peatón goza de prioridad absoluta de cruce en las esquinas y sendas peatonales delimitadas o imaginarias. El conductor debe reducir la velocidad y detener su marcha si es necesario.',
+          officialOrderText: '1° Cruza el Peatón por la senda ➔ 2° Avanza el Taxi / Automóvil'
+        },
+
+        // 8. Pendiente Estrecha Urbana (Gráfico 67 Oficial)
+        {
+          id: 'pendiente_estrecha',
+          tier: 3,
+          tierName: 'Nivel Avanzado • Pendientes Estrechas',
+          tierClass: 'tier-3',
+          lawTag: 'Art. 6.1.1 inc. h) Ley 2148 CABA',
+          title: 'Paso en Pendiente Estrecha',
+          prompt: 'En este tramo estrecho con pendiente pronunciada donde no caben dos vehículos simultáneamente: el Auto A desciende (baja) y la Camioneta B asciende (sube). ¿Quién tiene prioridad?',
+          imageSrc: 'img/auto/067-H.png',
+          actors: [
+            { id: 'B', letter: 'B', name: 'Vehículo B (Asciende / Sube)', desc: 'En marcha ascendente' },
+            { id: 'A', letter: 'A', name: 'Vehículo A (Desciende / Baja)', desc: 'En marcha descendente' }
+          ],
+          correctActorId: 'B',
+          lawCitation: 'Ley 2148 CABA / Manual del Conductor CABA: "En pendientes estrechas tiene prioridad de paso el vehículo que circula en sentido ascendente."',
+          explanation: 'Tiene prioridad de paso el Vehículo B (el que asciende). Detenerse y reiniciar la marcha en pendiente ascendente presenta mayor dificultad operativa, desgaste y riesgo de siniestro por deslizamiento hacia atrás.',
+          officialOrderText: '1° Pasa el Vehículo B (que sube) ➔ 2° Cede el paso el Vehículo A (que baja)'
+        },
+
+        // 9. Salida de Cochera Privada (Gráfico 16 Oficial)
+        {
+          id: 'salida_cochera',
           tier: 3,
           tierName: 'Nivel Avanzado • Egresos Privados',
           tierClass: 'tier-3',
-          lawTag: 'Art. 6.1.1 inc. g) Ley 2148',
-          title: 'Salida de Cochera Cruzando la Vereda',
-          prompt: 'El automóvil sale de un garaje particular cruzando la vereda donde transita una peatona. ¿Quién tiene prioridad de paso?',
+          lawTag: 'Art. 6.1.1 inc. g) Ley 2148 CABA',
+          title: 'Egreso de Cochera Cruzando la Vereda',
+          prompt: 'El automóvil egresa de un garaje privado atravesando la acera por donde camina una peatona. ¿Quién tiene prioridad de paso?',
           imageSrc: 'img/auto/016-H.png',
           actors: [
-            { id: 'peaton', letter: 'PEATÓN', name: 'Peatona en Acera', type: 'pedestrian', desc: 'Camina por la vereda' },
-            { id: 'auto_cochera', letter: 'AUTO', name: 'Auto en Garaje', type: 'car', desc: 'Egresa de propiedad privada' }
+            { id: 'PEATON', letter: 'PEATÓN', name: 'Peatona en Acera', desc: 'Camina por la vereda' },
+            { id: 'AUTO', letter: 'AUTO', name: 'Auto en Cochera', desc: 'Egresa de propiedad privada' }
           ],
-          correctOrder: ['peaton', 'auto_cochera'],
+          correctActorId: 'PEATON',
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. g): "Debe ceder el paso todo vehículo que ingrese a la vía pública desde un inmueble o propiedad privada."',
-          explanation: 'Quien sale de un inmueble o garaje carece de toda prioridad: debe ceder el paso indefectiblemente a los peatones en la vereda y a los vehículos en la calzada.'
+          explanation: 'Quien sale de un garaje o propiedad privada carece totalmente de prioridad: debe frenar antes de la vereda, ceder el paso a peatones en la acera y a cualquier vehículo en la calzada.',
+          officialOrderText: '1° Pasa la Peatona por la vereda ➔ 2° Egresa el Automóvil con precaución'
         },
 
-        // 10. Agente de Tránsito vs Semáforo en Verde
+        // 10. Rotonda Urbana
         {
-          id: 'agente_vs_semaforo',
+          id: 'rotonda_urbana',
           tier: 3,
-          tierName: 'Nivel Avanzado • Jerarquía Suprema',
+          tierName: 'Nivel Avanzado • Rotondas',
           tierClass: 'tier-3',
-          lawTag: 'Art. 2.1.3 Ley 2148 CABA',
-          title: 'Agente de Tránsito vs Semáforo en Verde',
-          prompt: 'El semáforo vial está en VERDE, pero el Agente de Tránsito con chaleco reflectivo hace señal de ALTO con el brazo levantado. ¿Qué orden prevalece?',
-          imageSrc: 'assets/scenarios/scenario_agente.jpg',
+          lawTag: 'Art. 6.1.1 inc. e) Ley 2148 CABA',
+          title: 'Cruce en Rotonda Urbana',
+          prompt: 'El Auto Plateado A ya circula dentro del anillo giratorio de la rotonda. El Taxi B pretende ingresar desde la calle de acceso. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'assets/scenarios/scenario_rotonda.jpg',
           actors: [
-            { id: 'agente_a', letter: 'AGENTE', name: 'Orden del Agente', type: 'agent', desc: 'Palma en alto exigiendo detención inmediata' },
-            { id: 'auto_b', letter: 'AUTO', name: 'Auto con Semáforo Verde', type: 'car', desc: 'Pretende cruzar por la luz verde' }
+            { id: 'A', letter: 'A', name: 'Auto Plateado A', desc: 'Circula DENTRO de la rotonda' },
+            { id: 'B', letter: 'B', name: 'Taxi BA (B)', desc: 'Espera en el acceso' }
           ],
-          correctOrder: ['agente_a', 'auto_b'],
-          lawCitation: 'Ley 2148 CABA - Art. 2.1.3: "1° Indicaciones de la Autoridad de Tránsito; 2° Señalización circunstancial; 3° Semáforos; 4° Señales verticales."',
-          explanation: 'Las órdenes del Agente de Tránsito prevalecen SIEMPRE sobre los semáforos luminosos y cualquier otra señal o norma vial.'
+          correctActorId: 'A',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. e): "En las rotondas tiene prioridad de paso quien circula por la calzada circular frente al que intenta ingresar."',
+          explanation: 'En las rotondas se invierte la regla clásica: quien ya circula dentro del anillo tiene prioridad absoluta sobre quien va a entrar para evitar el bloqueo del distribuidor.',
+          officialOrderText: '1° Pasa el Auto Plateado A (dentro de la rotonda) ➔ 2° Ingresa el Taxi B'
         }
       ];
 
@@ -1090,7 +1100,7 @@
       let correctAnswersCount = 0;
       let roundStartTime = 0;
       let roundTimes = [];
-      let currentOrder = [];
+      let selectedActorId = null;
 
       // Elementos DOM
       const mainImg = document.getElementById('scenario-main-img');
@@ -1128,7 +1138,7 @@
       // ── CARGA DEL ESCENARIO ──
       function loadScenario(idx) {
         currentIdx = idx;
-        currentOrder = [];
+        selectedActorId = null;
         roundStartTime = Date.now();
 
         const sc = SCENARIOS[idx];
@@ -1143,7 +1153,7 @@
         scenarioTitleText.textContent = sc.title;
         scenarioPromptText.textContent = sc.prompt;
 
-        // Cargar imagen fotográfica / realista
+        // Cargar imagen fotográfica / oficial
         mainImg.src = sc.imageSrc;
 
         feedbackSheet.style.display = 'none';
@@ -1157,8 +1167,7 @@
         actorsButtonsGrid.innerHTML = '';
 
         sc.actors.forEach((actor) => {
-          const isSelected = currentOrder.includes(actor.id);
-          const orderNumber = isSelected ? currentOrder.indexOf(actor.id) + 1 : '';
+          const isSelected = (selectedActorId === actor.id);
 
           const btn = document.createElement('button');
           btn.type = 'button';
@@ -1171,43 +1180,38 @@
               <span class="actor-name">${actor.name}</span>
               <span class="actor-dir">${actor.desc}</span>
             </div>
-            ${isSelected ? `<div class="actor-order-flag">${orderNumber}° PASO</div>` : ''}
+            ${isSelected ? `<div class="actor-order-flag">PASA 1°</div>` : ''}
           `;
 
           btn.addEventListener('click', () => handleActorClick(actor.id));
           actorsButtonsGrid.appendChild(btn);
         });
 
-        btnVerifyOrder.disabled = currentOrder.length !== sc.actors.length;
+        btnVerifyOrder.disabled = !selectedActorId;
       }
 
       function handleActorClick(actorId) {
         playSoundSelect();
-        const existsIdx = currentOrder.indexOf(actorId);
-        if (existsIdx !== -1) {
-          currentOrder.splice(existsIdx, 1);
-        } else {
-          currentOrder.push(actorId);
-        }
+        selectedActorId = actorId;
         renderActorsGrid();
       }
 
-      btnClearOrder.addEventListener('click', () => {
+      btnClearOrder?.addEventListener('click', () => {
         playSoundSelect();
-        currentOrder = [];
+        selectedActorId = null;
         renderActorsGrid();
       });
 
       // ── VERIFICAR RESPUESTA ──
       btnVerifyOrder.addEventListener('click', () => {
         const sc = SCENARIOS[currentIdx];
-        if (currentOrder.length !== sc.actors.length) return;
+        if (!selectedActorId) return;
 
         btnVerifyOrder.disabled = true;
         const timeTaken = (Date.now() - roundStartTime) / 1000;
         roundTimes.push(timeTaken);
 
-        const isCorrect = sc.correctOrder.every((id, idx) => id === currentOrder[idx]);
+        const isCorrect = (selectedActorId === sc.correctActorId);
 
         feedbackSheet.className = `feedback-sheet ${isCorrect ? 'correct' : 'wrong'}`;
         feedbackSheet.style.display = 'flex';
@@ -1221,24 +1225,18 @@
           scoreDisplay.textContent = `${scoreXP} XP`;
 
           feedbackIcon.textContent = '✅';
-          feedbackTitle.textContent = `¡ORDEN CORRECTO! (+${earnedXP} XP)`;
+          feedbackTitle.textContent = `¡PRIORIDAD CORRECTA! (+${earnedXP} XP)`;
           feedbackTitle.style.color = '#00E676';
         } else {
           playSoundError();
           feedbackIcon.textContent = '❌';
-          feedbackTitle.textContent = 'INFRACCIÓN O DECISIÓN ERRÓNEA';
+          feedbackTitle.textContent = 'INFRACCIÓN O ERROR NORMATIVO';
           feedbackTitle.style.color = '#FF4444';
         }
 
         feedbackLaw.textContent = sc.lawCitation;
         feedbackDesc.textContent = sc.explanation;
-
-        // Mostrar secuencia oficial
-        const sequenceHtml = sc.correctOrder.map((id, i) => {
-          const act = sc.actors.find(a => a.id === id);
-          return `<span>${i + 1}° ${act ? act.name : id}</span>`;
-        }).join(' ➔ ');
-        feedbackSequenceBox.innerHTML = `<strong>Secuencia Oficial:</strong> ${sequenceHtml}`;
+        feedbackSequenceBox.innerHTML = `<strong>Resolución Oficial:</strong> ${sc.officialOrderText}`;
 
         feedbackSheet.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
@@ -1267,11 +1265,11 @@
 
         let adviceText = '';
         if (correctAnswersCount >= 9) {
-          adviceText = `<strong>🏆 Dominio de Élite:</strong> Conocés a la perfección la Ley 2148 de CABA. Manejás con total solvencia la regla de la derecha, el paso preferencial de trenes y ambulancias, y la jerarquía suprema de los Agentes de Tránsito.`;
+          adviceText = `<strong>🏆 Dominio de Élite:</strong> Conocés a la perfección la Ley 2148 de CABA y las normas de prioridad de paso. Manejás con total solvencia la regla de la derecha, la jerarquía de arterias (Avenidas sobre Calles), la excepción de vías férreas y la prioridad de rotondas y peatones.`;
         } else if (correctAnswersCount >= 6) {
-          adviceText = `<strong>👍 Muy Buen Nivel Normativo:</strong> Resolviste correctamente <strong>${correctAnswersCount} de ${totalRounds}</strong> situaciones en <strong>${avgTime}s</strong>. Recordá siempre: el tren nunca frena por inercia, y el que dobla o sale de un garaje pierde toda prioridad.`;
+          adviceText = `<strong>👍 Muy Buen Nivel Normativo:</strong> Resolviste correctamente <strong>${correctAnswersCount} de ${totalRounds}</strong> situaciones en <strong>${avgTime}s</strong>. Recordá siempre: en CABA las Avenidas tienen prioridad sobre las calles, quien desaloja un paso a nivel pasa primero y quien dobla pierde toda preferencia.`;
         } else {
-          adviceText = `<strong>⚠️ Repaso Recomendado:</strong> Obtuviste <strong>${correctAnswersCount} de ${totalRounds}</strong>. Recordá repasar la Ley 2148: en rotondas manda quien ya está adentro, y la orden de un Agente prevalece incluso sobre la luz verde del semáforo.`;
+          adviceText = `<strong>⚠️ Repaso Recomendado:</strong> Obtuviste <strong>${correctAnswersCount} de ${totalRounds}</strong>. Recordá repasar la Ley 2148: en rotondas manda quien ya está adentro, los peatones tienen prioridad absoluta y el porte del vehículo nunca otorga prioridad.`;
         }
         resAdvice.innerHTML = adviceText;
 
@@ -1284,7 +1282,7 @@
             accuracy: `${correctAnswersCount}/${totalRounds}`,
             details: SCENARIOS.map((sc, i) => ({
               question: sc.title,
-              expected: sc.correctOrder.join(' > '),
+              expected: sc.correctActorId,
               isCorrect: i < correctAnswersCount,
               points: 100
             }))
