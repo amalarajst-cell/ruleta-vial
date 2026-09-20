@@ -130,6 +130,46 @@
       gap: 8px;
     }
 
+    /* ── SELECTOR DE NIVEL / MODO ── */
+    .level-selector-bar {
+      max-width: 640px;
+      width: 100%;
+      margin: 8px auto 0;
+      padding: 0 16px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .level-tab {
+      flex: 1;
+      background: #181d20;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 6px 8px;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .level-tab:hover {
+      background: #232b2f;
+      color: #fff;
+    }
+
+    .level-tab.active {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      box-shadow: 0 0 12px var(--accent-gold-glow);
+    }
+
     /* ── BARRA DE PROGRESO ── */
     .status-bar {
       max-width: 640px;
@@ -610,6 +650,32 @@
       margin-top: 4px;
     }
 
+    .btn-continue-level {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #00E676 0%, #059669 100%);
+      border: none;
+      color: #000000;
+      font-family: var(--font-title);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 0 #047857, 0 8px 20px rgba(0, 230, 118, 0.35);
+      transition: all 0.12s ease;
+      margin-bottom: 4px;
+    }
+
+    .btn-continue-level:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #047857;
+    }
+
     .btn-replay {
       flex: 1;
       height: 46px;
@@ -675,6 +741,22 @@
       </div>
     </div>
   </header>
+
+  <!-- ── SELECTOR DE NIVEL / MODO ── -->
+  <div class="level-selector-bar">
+    <button type="button" class="level-tab active" id="tab-lvl-1" data-mode="lvl1">
+      <span class="material-symbols-outlined" style="font-size:14px;">traffic</span>
+      <span>Nivel 1 (10)</span>
+    </button>
+    <button type="button" class="level-tab" id="tab-lvl-2" data-mode="lvl2">
+      <span class="material-symbols-outlined" style="font-size:14px;">warning</span>
+      <span>Nivel 2 (8)</span>
+    </button>
+    <button type="button" class="level-tab" id="tab-lvl-all" data-mode="campaign">
+      <span class="material-symbols-outlined" style="font-size:14px;">military_tech</span>
+      <span>Campaña (18)</span>
+    </button>
+  </div>
 
   <!-- ── BARRA DE PROGRESO ── -->
   <div class="status-bar">
@@ -799,15 +881,21 @@
         Sincronizando con el Panel de Administración...
       </div>
 
-      <div class="results-actions">
-        <button type="button" class="btn-replay" id="btn-res-replay">
-          <span class="material-symbols-outlined">replay</span>
-          <span>Jugar Otra Vez</span>
+      <div class="results-actions" style="flex-direction:column;gap:8px;">
+        <button type="button" class="btn-continue-level" id="btn-res-continue" style="display:none;">
+          <span class="material-symbols-outlined">rocket_launch</span>
+          <span id="btn-res-continue-text">¡Continuar al Nivel 2: Maniobras Críticas!</span>
         </button>
-        <a href="juegos.html" class="btn-hub-return">
-          <span class="material-symbols-outlined">dashboard</span>
-          <span>Menú de Juegos</span>
-        </a>
+        <div style="display:flex;gap:10px;width:100%;">
+          <button type="button" class="btn-replay" id="btn-res-replay">
+            <span class="material-symbols-outlined">replay</span>
+            <span>Jugar Otra Vez</span>
+          </button>
+          <a href="juegos.html" class="btn-hub-return">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Menú de Juegos</span>
+          </a>
+        </div>
       </div>
     </div>
 
@@ -891,13 +979,15 @@
         if (soundEnabled) playSoundSelect();
       });
 
-      // ── BANCO DE 10 ESCENARIOS OFICIALES CABA (LEY 2148 / MANUAL DEL CONDUCTOR) ──
-      const SCENARIOS = [
+      // ── BANCO COMPLETO DE 18 ESCENARIOS OFICIALES CABA (LEY 2148 / MANUAL DEL CONDUCTOR) ──
+      const SCENARIOS_ALL = [
+        // ─── NIVEL 1: ENCRUCIJADAS, GIROS Y PEATONES (10 CASOS) ───
         // 1. Cruce Simple Sin Semáforo (Gráfico 55 Oficial)
         {
           id: 'cruce_simple',
+          level: 1,
           tier: 1,
-          tierName: 'Nivel Básico • Regla de la Derecha',
+          tierName: 'Nivel 1 • Regla de la Derecha',
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
           title: 'Cruce de Dos Calles Sin Semáforo',
@@ -916,8 +1006,9 @@
         // 2. Avenida De Los Incas vs. Calle Donado (Gráfico 58 Oficial)
         {
           id: 'avenida_vs_calle_incas',
+          level: 1,
           tier: 1,
-          tierName: 'Nivel Básico • Jerarquía de Arterias',
+          tierName: 'Nivel 1 • Jerarquía de Arterias',
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
           title: 'Avenida De Los Incas vs. Calle Donado',
@@ -936,8 +1027,9 @@
         // 3. Calle Burela vs. Av. Crisólogo Larralde (Gráfico 63 Oficial)
         {
           id: 'avenida_vs_calle_larralde',
+          level: 1,
           tier: 1,
-          tierName: 'Nivel Básico • Jerarquía de Arterias',
+          tierName: 'Nivel 1 • Jerarquía de Arterias',
           tierClass: 'tier-1',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
           title: 'Calle Burela vs. Av. Crisólogo Larralde',
@@ -956,8 +1048,9 @@
         // 4. Desembocadura de Paso a Nivel Ferroviario (Gráfico 34 Oficial)
         {
           id: 'paso_a_nivel_salida',
+          level: 1,
           tier: 2,
-          tierName: 'Nivel Intermedio • Vía Férrea',
+          tierName: 'Nivel 1 • Vía Férrea',
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 inc. b) Ley 2148 CABA',
           title: 'Desembocadura de Paso a Nivel',
@@ -976,8 +1069,9 @@
         // 5. Cruce Urbano Previo a Vía Férrea (Gráfico 35 Oficial)
         {
           id: 'cruce_previo_vias',
+          level: 1,
           tier: 2,
-          tierName: 'Nivel Intermedio • Cruce Previo a Vías',
+          tierName: 'Nivel 1 • Cruce Previo a Vías',
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 Ley 2148 CABA',
           title: 'Cruce Previo a Vía Férrea',
@@ -996,8 +1090,9 @@
         // 6. Giro a la Derecha vs. Ciclista en Ciclovía (Gráfico 21 Oficial)
         {
           id: 'giro_vs_ciclista',
+          level: 1,
           tier: 2,
-          tierName: 'Nivel Intermedio • Pérdida por Giro',
+          tierName: 'Nivel 1 • Pérdida por Giro',
           tierClass: 'tier-2',
           lawTag: 'Art. 6.1.1 inc. f) Ley 2148 CABA',
           title: 'Giro Cruzando Ciclovía',
@@ -1016,8 +1111,9 @@
         // 7. Prioridad Peatonal en Esquina (Gráfico 17 Oficial)
         {
           id: 'prioridad_peatonal_esquina',
+          level: 1,
           tier: 2,
-          tierName: 'Nivel Intermedio • Prioridad Peatonal',
+          tierName: 'Nivel 1 • Prioridad Peatonal',
           tierClass: 'tier-2',
           lawTag: 'Art. 6.2 Ley 2148 CABA',
           title: 'Prioridad Peatonal en Bocacalle',
@@ -1036,8 +1132,9 @@
         // 8. Pendiente Estrecha Urbana (Gráfico 67 Oficial)
         {
           id: 'pendiente_estrecha',
+          level: 1,
           tier: 3,
-          tierName: 'Nivel Avanzado • Pendientes Estrechas',
+          tierName: 'Nivel 1 • Pendientes Estrechas',
           tierClass: 'tier-3',
           lawTag: 'Art. 6.1.1 inc. h) Ley 2148 CABA',
           title: 'Paso en Pendiente Estrecha',
@@ -1056,8 +1153,9 @@
         // 9. Salida de Cochera Privada (Gráfico 16 Oficial)
         {
           id: 'salida_cochera',
+          level: 1,
           tier: 3,
-          tierName: 'Nivel Avanzado • Egresos Privados',
+          tierName: 'Nivel 1 • Egresos Privados',
           tierClass: 'tier-3',
           lawTag: 'Art. 6.1.1 inc. g) Ley 2148 CABA',
           title: 'Egreso de Cochera Cruzando la Vereda',
@@ -1076,8 +1174,9 @@
         // 10. Rotonda Urbana
         {
           id: 'rotonda_urbana',
+          level: 1,
           tier: 3,
-          tierName: 'Nivel Avanzado • Rotondas',
+          tierName: 'Nivel 1 • Rotondas',
           tierClass: 'tier-3',
           lawTag: 'Art. 6.1.1 inc. e) Ley 2148 CABA',
           title: 'Cruce en Rotonda Urbana',
@@ -1091,10 +1190,182 @@
           lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. e): "En las rotondas tiene prioridad de paso quien circula por la calzada circular frente al que intenta ingresar."',
           explanation: 'En las rotondas se invierte la regla clásica: quien ya circula dentro del anillo tiene prioridad absoluta sobre quien va a entrar para evitar el bloqueo del distribuidor.',
           officialOrderText: '1° Pasa el Auto Plateado A (dentro de la rotonda) ➔ 2° Ingresa el Taxi B'
+        },
+
+        // ─── NIVEL 2: MANIOBRAS CRÍTICAS, CARRILES Y OBSTRUCCIONES (8 CASOS) ───
+        // 11 (Nivel 2 - Caso 1). Obstrucción de Carril por Obras (Gráfico 49 Oficial)
+        {
+          id: 'obstruccion_obras',
+          level: 2,
+          tier: 2,
+          tierName: 'Nivel 2 • Obstrucción de Calzada',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Obstrucción de Vía por Obras',
+          prompt: 'El automóvil marcado en rojo encuentra su carril obstruido por una obra en la calzada. De frente, por el carril libre, se aproxima un camión. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'img/auto/049-H.png',
+          actors: [
+            { id: 'CAMION', letter: 'CAMIÓN', name: 'Camión de Frente', desc: 'Circula por el carril despejado' },
+            { id: 'AUTO', letter: 'AUTO', name: 'Auto con Obstrucción', desc: 'Tiene el carril bloqueado por la obra' }
+          ],
+          correctActorId: 'CAMION',
+          lawCitation: 'Ley 2148 CABA / Manual del Conductor: "El conductor que encuentre su carril de circulación obstruido debe ceder el paso a los vehículos que circulen en sentido contrario por el carril libre."',
+          explanation: 'Tiene prioridad el Camión. El conductor que tiene un obstáculo o reducción en su mano de circulación está obligado a frenar y esperar a que el carril contrario quede despejado antes de realizar cualquier desvío hacia la izquierda.',
+          officialOrderText: '1° Pasa el Camión (carril libre) ➔ 2° Desvía el Automóvil (carril obstruido)'
+        },
+
+        // 12 (Nivel 2 - Caso 2). Cambio de Carril en Vía Rápida (Gráfico 42 Oficial)
+        {
+          id: 'cambio_carril',
+          level: 2,
+          tier: 2,
+          tierName: 'Nivel 2 • Maniobra de Carril',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Cambio de Carril en Autopista / Avenida',
+          prompt: 'El Auto Blanco (A) señaliza con su luz de giro para cambiarse al carril derecho, por donde ya transita el Auto Azul (B). ¿Cuál de los dos vehículos tiene prioridad?',
+          imageSrc: 'img/auto/042-H.png',
+          actors: [
+            { id: 'B', letter: 'B', name: 'Auto Azul (B)', desc: 'Ya circula por el carril deseado' },
+            { id: 'A', letter: 'A', name: 'Auto Blanco (A)', desc: 'Pretende cambiar de carril' }
+          ],
+          correctActorId: 'B',
+          lawCitation: 'Ley 2148 CABA / Manual del Conductor: "Todo vehículo que ya circula por el carril que se pretende ocupar tiene prioridad absoluta sobre quien realiza la maniobra de cambio de carril."',
+          explanation: 'La prioridad es del Auto Azul (B). Señalizar la maniobra con la luz de giro no otorga ningún derecho de paso; el vehículo que desea cambiarse debe esperar a que el carril esté completamente libre sin perturbar la marcha ajena.',
+          officialOrderText: '1° Mantiene su paso el Auto Azul B ➔ 2° Cambia de carril el Auto Blanco A'
+        },
+
+        // 13 (Nivel 2 - Caso 3). Sobrepaso en Fila Encolumnada (Gráfico 48 Oficial)
+        {
+          id: 'sobrepaso_columna',
+          level: 2,
+          tier: 2,
+          tierName: 'Nivel 2 • Adelantamiento',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Sobrepaso a Vehículo Lento en Fila',
+          prompt: 'Varios vehículos (A, B, C) circulan encolumnados detrás de un camión lento. ¿Quién tiene prioridad reglamentaria para iniciar la maniobra de sobrepaso?',
+          imageSrc: 'img/auto/048-H.png',
+          actors: [
+            { id: 'C', letter: 'C', name: 'Vehículo C (Primero en Fila)', desc: 'Circula más próximo al camión' },
+            { id: 'B', letter: 'B', name: 'Vehículo B (Intermedio)', desc: 'Circula en segundo lugar' },
+            { id: 'A', letter: 'A', name: 'Vehículo A (Último en Fila)', desc: 'Circula en último lugar' }
+          ],
+          correctActorId: 'C',
+          lawCitation: 'Ley 2148 CABA / Manual del Conductor: "Cuando varios vehículos circulan encolumnados, tiene prioridad para realizar el sobrepaso el que circula más próximo al vehículo a sobrepasar (Vehículo C)."' ,
+          explanation: 'El Vehículo C tiene la prioridad reglamentaria para adelantar primero. Está prohibido que los vehículos que vienen más atrás (A o B) se abran para sobrepasar a toda la fila al mismo tiempo, ya que bloquean al primero y causan graves siniestros frontales.',
+          officialOrderText: '1° Sobrepasa el Vehículo C (primero de la fila) ➔ 2° Vehículo B ➔ 3° Vehículo A'
+        },
+
+        // 14 (Nivel 2 - Caso 4). Incorporación al Tránsito en Circulación Fluida (Gráfico 65 Oficial)
+        {
+          id: 'incorporacion_fluida',
+          level: 2,
+          tier: 2,
+          tierName: 'Nivel 2 • Incorporación a la Vía',
+          tierClass: 'tier-2',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Incorporación con Tránsito en Movimiento',
+          prompt: 'El automóvil plateado marcado en rojo busca salir del estacionamiento e incorporarse a la arteria donde los vehículos circulan a velocidad regular. ¿Tiene prioridad de paso?',
+          imageSrc: 'img/auto/065-H.png',
+          actors: [
+            { id: 'TRANSITO', letter: 'VÍA', name: 'Tránsito en Circulación', desc: 'Circulan normalmente por la calzada' },
+            { id: 'AUTO', letter: 'AUTO', name: 'Auto que se Incorpora', desc: 'Pretende ingresar desde el cordón' }
+          ],
+          correctActorId: 'TRANSITO',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "Los vehículos que se incorporan a la circulación desde el estacionamiento o detención carecen de prioridad sobre los que ya circulan por la vía."',
+          explanation: 'No tiene prioridad el auto que se incorpora. Quien arranca desde el estacionamiento o cordón debe permanecer detenido, colocar la luz de giro reglamentaria y aguardar hasta que se genere una brecha segura en el flujo vehicular.',
+          officialOrderText: '1° Pasa el Tránsito que ya circula ➔ 2° Se incorpora el Automóvil'
+        },
+
+        // 15 (Nivel 2 - Caso 5). Incorporación con Tránsito Detenido por Congestión (Gráfico 66 Oficial)
+        {
+          id: 'incorporacion_detenido',
+          level: 2,
+          tier: 3,
+          tierName: 'Nivel 2 • Tránsito Detenido',
+          tierClass: 'tier-3',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Incorporación con Tránsito Congestionado',
+          prompt: 'El automóvil marcado en rojo busca incorporarse a la arteria, pero la fila de vehículos sobre la calzada está completamente DETENIDA por embotellamiento. ¿Deben cederle el paso?',
+          imageSrc: 'img/auto/066-H.png',
+          actors: [
+            { id: 'AUTO', letter: 'AUTO', name: 'Auto que se Incorpora', desc: 'Pretende ingresar a la arteria' },
+            { id: 'FILA', letter: 'FILA', name: 'Fila de Tránsito Detenido', desc: 'Vehículos frenados por congestión' }
+          ],
+          correctActorId: 'AUTO',
+          lawCitation: 'Ley 2148 CABA / Pregunta Oficial 121: "Si el tránsito en la arteria se encuentra totalmente detenido, los conductores deben cederle el paso al vehículo que busca incorporarse."',
+          explanation: 'Tiene prioridad el Auto que se incorpora. La normativa de la Ciudad de Buenos Aires estipula que en situaciones de detención total por embotellamiento, el tránsito detenido debe ceder el paso intercalado ("uno y uno") para no bloquear permanentemente los egresos e incorporaciones.',
+          officialOrderText: '1° Avanza e ingresa el Auto que se incorpora ➔ 2° Avanza la Fila de Tránsito Detenido'
+        },
+
+        // 16 (Nivel 2 - Caso 6). Cruce con Señal Reglamentaria R2 "CEDA EL PASO"
+        {
+          id: 'ceda_el_paso_r2',
+          level: 2,
+          tier: 3,
+          tierName: 'Nivel 2 • Señalización R2',
+          tierClass: 'tier-3',
+          lawTag: 'Art. 6.1.1 inc. a) Ley 2148 CABA',
+          title: 'Cruce con Señal "Ceda el Paso"',
+          prompt: 'El Auto Rojo (B) llega por la derecha pero enfrenta una señal reglamentaria triangular R2 de CEDA EL PASO. El Auto Azul (A) circula por la transversal sin señal. ¿Quién tiene prioridad?',
+          imageSrc: 'assets/scenarios/scenario_ceda.jpg',
+          actors: [
+            { id: 'A', letter: 'A', name: 'Auto Azul (A)', desc: 'Circula por calzada transversal sin señal' },
+            { id: 'B', letter: 'B', name: 'Auto Rojo (B)', desc: 'Enfrenta señal R2 de CEDA EL PASO' }
+          ],
+          correctActorId: 'A',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. a): "La prioridad de la derecha se pierde ante la señalización específica en contrario."',
+          explanation: 'Tiene prioridad el Auto Azul (A). La señal vertical R2 obliga al conductor del Auto Rojo a subordinar su marcha y ceder el paso, anulando la preferencia que habitualmente le otorgaría venir por la derecha.',
+          officialOrderText: '1° Pasa el Auto Azul A (sin señal) ➔ 2° Pasa el Auto Rojo B (debe ceder el paso)'
+        },
+
+        // 17 (Nivel 2 - Caso 7). Jerarquía de Arterias: Calle Común vs. Pasaje Urbano
+        {
+          id: 'calle_vs_pasaje',
+          level: 2,
+          tier: 3,
+          tierName: 'Nivel 2 • Jerarquía de Arterias',
+          tierClass: 'tier-3',
+          lawTag: 'Art. 6.1.1 Ley 2148 CABA',
+          title: 'Calle Común vs. Pasaje Urbano',
+          prompt: 'En una intersección porteña sin semáforos: el Auto A circula por una calle común. El Auto B accede desde un Pasaje urbano por la derecha de A. ¿Quién tiene prioridad de paso?',
+          imageSrc: 'assets/scenarios/scenario_1_cruce.jpg',
+          actors: [
+            { id: 'A', letter: 'A', name: 'Vehículo A (Calle Común)', desc: 'Circula por arteria de mayor jerarquía' },
+            { id: 'B', letter: 'B', name: 'Vehículo B (Pasaje Urbano)', desc: 'Accede desde un pasaje por la derecha' }
+          ],
+          correctActorId: 'A',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1: "En encrucijadas sin semáforos, el orden de prioridad según el tipo de arteria es: 1° Avenida - 2° Calle - 3° Pasaje."',
+          explanation: 'Tiene prioridad el Vehículo A por circular por una Calle frente a un Pasaje. En la jerarquía de la Ciudad de Buenos Aires, el pasaje es la arteria de menor escala y subordinación respecto de calles y avenidas.',
+          officialOrderText: '1° Pasa el Vehículo A (Calle común) ➔ 2° Cede el paso el Vehículo B (Pasaje)'
+        },
+
+        // 18 (Nivel 2 - Caso 8). Vehículo de Emergencia SAME en Código Rojo (Gráfico 31 Oficial)
+        {
+          id: 'ambulancia_same',
+          level: 2,
+          tier: 3,
+          tierName: 'Nivel 2 • Servicios de Urgencia',
+          tierClass: 'tier-3',
+          lawTag: 'Art. 6.1.1 inc. c) Ley 2148 CABA',
+          title: 'Ambulancia SAME en Acto de Servicio',
+          prompt: 'Una ambulancia del SAME avanza con sirenas y balizas destellantes encendidas en respuesta a una urgencia médica. ¿Cómo deben proceder los vehículos que circulan en su proximidad?',
+          imageSrc: 'img/auto/031-H.png',
+          actors: [
+            { id: 'SAME', letter: 'SAME', name: 'Ambulancia del SAME', desc: 'Servicio de urgencia con sirena y balizas' },
+            { id: 'AUTOS', letter: 'AUTOS', name: 'Vehículos Particulares', desc: 'Circulan en proximidad' }
+          ],
+          correctActorId: 'SAME',
+          lawCitation: 'Ley 2148 CABA - Art. 6.1.1 inc. c): "La prioridad de la derecha se pierde ante los vehículos de servicio público de urgencia en cumplimiento de sus funciones."',
+          explanation: 'La ambulancia tiene prioridad irrestricta de paso. Los conductores particulares deben despejar de inmediato el carril (apartándose hacia los laterales) y detenerse por completo si fuera necesario para no entorpecer el auxilio vital.',
+          officialOrderText: '1° Avanza con prioridad la Ambulancia del SAME ➔ 2° Los particulares despejan y ceden paso'
         }
       ];
 
-      // ── ESTADO DEL JUEGO ──
+      // ── ESTADO DEL JUEGO Y MODOS ──
+      let currentMode = 'lvl1'; // 'lvl1', 'lvl2', 'campaign'
+      let activeScenarios = SCENARIOS_ALL.filter(s => s.level === 1);
       let currentIdx = 0;
       let scoreXP = 0;
       let correctAnswersCount = 0;
@@ -1128,12 +1399,53 @@
 
       const gameplayContainer = document.getElementById('gameplay-container');
       const resultsView = document.getElementById('results-view');
+      const resTrophy = document.getElementById('res-trophy');
+      const resTitle = document.getElementById('res-title');
+      const resSubtitle = document.getElementById('res-subtitle');
       const resScoreXp = document.getElementById('res-score-xp');
       const resAccuracyCount = document.getElementById('res-accuracy-count');
       const resAvgTime = document.getElementById('res-avg-time');
       const resAdvice = document.getElementById('res-advice');
       const resSyncStatus = document.getElementById('res-sync-status');
+      const btnResContinue = document.getElementById('btn-res-continue');
+      const btnResContinueText = document.getElementById('btn-res-continue-text');
       const btnResReplay = document.getElementById('btn-res-replay');
+
+      const tabLvl1 = document.getElementById('tab-lvl-1');
+      const tabLvl2 = document.getElementById('tab-lvl-2');
+      const tabLvlAll = document.getElementById('tab-lvl-all');
+
+      // ── SELECTOR DE MODOS / NIVELES ──
+      function setGameMode(mode, keepXp = false) {
+        currentMode = mode;
+        if (mode === 'lvl1') {
+          activeScenarios = SCENARIOS_ALL.filter(s => s.level === 1);
+        } else if (mode === 'lvl2') {
+          activeScenarios = SCENARIOS_ALL.filter(s => s.level === 2);
+        } else {
+          activeScenarios = SCENARIOS_ALL;
+        }
+
+        // Actualizar tabs visuales
+        [tabLvl1, tabLvl2, tabLvlAll].forEach(tab => tab?.classList.remove('active'));
+        if (mode === 'lvl1') tabLvl1?.classList.add('active');
+        else if (mode === 'lvl2') tabLvl2?.classList.add('active');
+        else tabLvlAll?.classList.add('active');
+
+        if (!keepXp) {
+          scoreXP = 0;
+        }
+        correctAnswersCount = 0;
+        roundTimes = [];
+
+        resultsView.style.display = 'none';
+        gameplayContainer.style.display = 'flex';
+        loadScenario(0);
+      }
+
+      tabLvl1?.addEventListener('click', () => { playSoundSelect(); setGameMode('lvl1'); });
+      tabLvl2?.addEventListener('click', () => { playSoundSelect(); setGameMode('lvl2'); });
+      tabLvlAll?.addEventListener('click', () => { playSoundSelect(); setGameMode('campaign'); });
 
       // ── CARGA DEL ESCENARIO ──
       function loadScenario(idx) {
@@ -1141,10 +1453,11 @@
         selectedActorId = null;
         roundStartTime = Date.now();
 
-        const sc = SCENARIOS[idx];
+        const sc = activeScenarios[idx];
+        const modePrefix = currentMode === 'lvl1' ? 'Nivel 1' : (currentMode === 'lvl2' ? 'Nivel 2' : 'Campaña');
 
-        levelIndicator.textContent = `Caso ${idx + 1} / ${SCENARIOS.length}`;
-        progressBarFill.style.width = `${Math.round(((idx + 1) / SCENARIOS.length) * 100)}%`;
+        levelIndicator.textContent = `${modePrefix} • Caso ${idx + 1} / ${activeScenarios.length}`;
+        progressBarFill.style.width = `${Math.round(((idx + 1) / activeScenarios.length) * 100)}%`;
         scoreDisplay.textContent = `${scoreXP} XP`;
 
         scenarioTierBadge.className = `tier-badge ${sc.tierClass}`;
@@ -1163,7 +1476,7 @@
       }
 
       function renderActorsGrid() {
-        const sc = SCENARIOS[currentIdx];
+        const sc = activeScenarios[currentIdx];
         actorsButtonsGrid.innerHTML = '';
 
         sc.actors.forEach((actor) => {
@@ -1204,7 +1517,7 @@
 
       // ── VERIFICAR RESPUESTA ──
       btnVerifyOrder.addEventListener('click', () => {
-        const sc = SCENARIOS[currentIdx];
+        const sc = activeScenarios[currentIdx];
         if (!selectedActorId) return;
 
         btnVerifyOrder.disabled = true;
@@ -1242,7 +1555,7 @@
       });
 
       btnNextScenario.addEventListener('click', () => {
-        if (currentIdx + 1 < SCENARIOS.length) {
+        if (currentIdx + 1 < activeScenarios.length) {
           loadScenario(currentIdx + 1);
         } else {
           finishGame();
@@ -1254,7 +1567,7 @@
         gameplayContainer.style.display = 'none';
         resultsView.style.display = 'flex';
 
-        const totalRounds = SCENARIOS.length;
+        const totalRounds = activeScenarios.length;
         const avgTime = roundTimes.length > 0 
           ? (roundTimes.reduce((a, b) => a + b, 0) / roundTimes.length).toFixed(2) 
           : '0.00';
@@ -1264,23 +1577,62 @@
         resAvgTime.textContent = `${avgTime}s`;
 
         let adviceText = '';
-        if (correctAnswersCount >= 9) {
-          adviceText = `<strong>🏆 Dominio de Élite:</strong> Conocés a la perfección la Ley 2148 de CABA y las normas de prioridad de paso. Manejás con total solvencia la regla de la derecha, la jerarquía de arterias (Avenidas sobre Calles), la excepción de vías férreas y la prioridad de rotondas y peatones.`;
-        } else if (correctAnswersCount >= 6) {
-          adviceText = `<strong>👍 Muy Buen Nivel Normativo:</strong> Resolviste correctamente <strong>${correctAnswersCount} de ${totalRounds}</strong> situaciones en <strong>${avgTime}s</strong>. Recordá siempre: en CABA las Avenidas tienen prioridad sobre las calles, quien desaloja un paso a nivel pasa primero y quien dobla pierde toda preferencia.`;
+        let categoryTitle = 'Prioridad de Paso - Nivel 1';
+
+        if (currentMode === 'lvl1') {
+          categoryTitle = 'Prioridad de Paso - Nivel 1';
+          resTrophy.textContent = correctAnswersCount >= 8 ? '🎖️' : '📘';
+          resTitle.textContent = correctAnswersCount >= 8 ? '¡Nivel 1 Completado con Éxito!' : 'Nivel 1 Finalizado';
+          resSubtitle.textContent = 'Superaste el módulo de Encrucijadas, Jerarquía de Arterias, Vías Férreas y Peatones.';
+          
+          btnResContinue.style.display = 'inline-flex';
+          btnResContinueText.textContent = '🚀 Continuar al Nivel 2: Maniobras Críticas (8 Casos)';
+
+          if (correctAnswersCount >= 9) {
+            adviceText = `<strong>Excelente Desempeño:</strong> Resolviste <strong>${correctAnswersCount} de ${totalRounds}</strong> situaciones en <strong>${avgTime}s</strong>. Dominás la regla de la derecha, la jerarquía de avenidas sobre calles y la prioridad absoluta de peatones y rotondas.`;
+          } else {
+            adviceText = `<strong>Buen Avance:</strong> Obtuviste <strong>${correctAnswersCount} de ${totalRounds}</strong> aciertos. Recordá que en CABA las Avenidas tienen prioridad sobre las calles y el tren o quien sale de las vías nunca debe ser obstruido.`;
+          }
+        } else if (currentMode === 'lvl2') {
+          categoryTitle = 'Prioridad de Paso - Nivel 2';
+          resTrophy.textContent = correctAnswersCount >= 7 ? '⭐' : '📙';
+          resTitle.textContent = correctAnswersCount >= 7 ? '¡Nivel 2 Superado!' : 'Nivel 2 Finalizado';
+          resSubtitle.textContent = 'Completaste el módulo avanzado de Obstrucciones, Carriles, Sobrepasos y Tránsito Congestionado.';
+          
+          btnResContinue.style.display = 'inline-flex';
+          btnResContinueText.textContent = '🏆 Jugar la Campaña Completa (18 Casos)';
+
+          if (correctAnswersCount >= 7) {
+            adviceText = `<strong>Nivel Experto Alcanzado:</strong> Acertaste <strong>${correctAnswersCount} de ${totalRounds}</strong> casos complejos en <strong>${avgTime}s</strong>. Manejás con total solvencia las maniobras de cambio de carril, obstrucciones de obra y el paso intercalado en tránsito detenido.`;
+          } else {
+            adviceText = `<strong>Práctica Recomendada:</strong> Lograste <strong>${correctAnswersCount} de ${totalRounds}</strong>. Recordá repasar: quien tiene el obstáculo en su carril debe ceder el paso, y quien ya transita por un carril tiene prioridad sobre quien intenta cambiarse.`;
+          }
         } else {
-          adviceText = `<strong>⚠️ Repaso Recomendado:</strong> Obtuviste <strong>${correctAnswersCount} de ${totalRounds}</strong>. Recordá repasar la Ley 2148: en rotondas manda quien ya está adentro, los peatones tienen prioridad absoluta y el porte del vehículo nunca otorga prioridad.`;
+          // Campaña Completa
+          categoryTitle = 'Prioridad de Paso - Campaña Completa';
+          resTrophy.textContent = '🏆';
+          resTitle.textContent = correctAnswersCount >= 16 ? '¡Gran Maestro en Prioridad Vial CABA!' : '¡Campaña Completa Finalizada!';
+          resSubtitle.textContent = 'Completaste los 18 escenarios oficiales de la Ciudad Autónoma de Buenos Aires (Ley 2148).';
+          
+          btnResContinue.style.display = 'none';
+
+          if (correctAnswersCount >= 16) {
+            adviceText = `<strong>🏆 Dominio Total de Élite:</strong> Resolviste <strong>${correctAnswersCount} de ${totalRounds}</strong> escenarios viales con un promedio de <strong>${avgTime}s</strong>. Poseés un conocimiento exhaustivo de la Ley 2148 de CABA y el Manual del Conductor oficial.`;
+          } else {
+            adviceText = `<strong>👍 Campaña Superada:</strong> Obtuviste <strong>${correctAnswersCount} de ${totalRounds}</strong> aciertos. Conocés los principios centrales de seguridad vial urbana, prevención de siniestros y convivencia en el tránsito porteño.`;
+          }
         }
+
         resAdvice.innerHTML = adviceText;
 
         if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
           window.VialCloudSync.syncGameSession({
             game: 'prioridad',
-            category: 'Prioridad de Paso',
+            category: categoryTitle,
             score: scoreXP,
             time: Number(avgTime),
             accuracy: `${correctAnswersCount}/${totalRounds}`,
-            details: SCENARIOS.map((sc, i) => ({
+            details: activeScenarios.map((sc, i) => ({
               question: sc.title,
               expected: sc.correctActorId,
               isCorrect: i < correctAnswersCount,
@@ -1294,17 +1646,21 @@
         }
       }
 
-      btnResReplay.addEventListener('click', () => {
-        scoreXP = 0;
-        correctAnswersCount = 0;
-        roundTimes = [];
-        resultsView.style.display = 'none';
-        gameplayContainer.style.display = 'flex';
-        loadScenario(0);
+      btnResContinue?.addEventListener('click', () => {
+        playSoundSelect();
+        if (currentMode === 'lvl1') {
+          setGameMode('lvl2', true); // continúa a Nivel 2 acumulando el puntaje
+        } else {
+          setGameMode('campaign', false); // inicia Campaña completa
+        }
       });
 
-      // Iniciar
-      loadScenario(0);
+      btnResReplay.addEventListener('click', () => {
+        setGameMode(currentMode, false);
+      });
+
+      // Iniciar en Nivel 1 por defecto
+      setGameMode('lvl1', false);
     })();
   </script>
 </body>
