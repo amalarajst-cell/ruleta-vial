@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0e1112">
+  <meta name="theme-color" content="#0b0e0f">
   <title>Vial Words - VialPlay | Seguridad Vial BA</title>
 
   <!-- Google Fonts & Material Symbols -->
@@ -19,7 +19,7 @@
       --bg: #0b0e0f;
       --surface: #141819;
       --surface-card: #1c2224;
-      --outline: rgba(141, 226, 214, 0.18);
+      --outline: rgba(141, 226, 214, 0.22);
       --accent-cyan: #8DE2D6;
       --accent-yellow: #FFC600;
       --accent-orange: #FF7A00;
@@ -50,145 +50,137 @@
       overscroll-behavior: none;
     }
 
+    /* FULLSCREEN GAME VIEWPORT (NO SOLID HEADER BLOCKING THE VIEW) */
     .app-viewport {
       width: 100vw;
       height: 100dvh;
       display: flex;
       flex-direction: column;
-      background-color: #0b0e0f;
-      position: relative;
-    }
-
-    .app-header {
-      width: 100%;
-      background: rgba(16, 20, 22, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--outline);
-      padding: 10px 16px;
-      position: relative;
-      z-index: 50;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
-    }
-
-    .header-inner {
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-icon:active {
-      transform: scale(0.92);
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .header-titles {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header-main-title {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 16px;
-      letter-spacing: 0.5px;
-      color: #ffffff;
-      text-transform: uppercase;
-      line-height: 1.1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .level-tag {
-      font-size: 11px;
-      background: rgba(6, 182, 212, 0.2);
-      color: #22d3ee;
-      border: 1px solid rgba(6, 182, 212, 0.4);
-      padding: 1px 6px;
-      border-radius: 6px;
-      font-family: var(--font-main);
-      font-weight: 700;
-    }
-
-    .header-sub {
-      font-size: 11px;
-      color: var(--accent-cyan);
-      font-weight: 600;
-      letter-spacing: 0.3px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .coin-pill {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 5px 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      color: #fde047;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .game-container {
-      flex: 1;
-      position: relative;
-      display: flex;
-      flex-direction: column;
       background-size: cover;
       background-position: center bottom;
       background-repeat: no-repeat;
+      position: relative;
       overflow: hidden;
-      max-width: 600px;
-      width: 100%;
-      margin: 0 auto;
       transition: background-image 0.8s ease;
     }
 
-    .game-container::before {
+    /* Atmospheric Vignette */
+    .app-viewport::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(11, 14, 15, 0.75) 0%,
-        rgba(11, 14, 15, 0.35) 45%,
-        rgba(11, 14, 15, 0.65) 80%,
-        rgba(11, 14, 15, 0.92) 100%
+        rgba(11, 14, 15, 0.65) 0%,
+        rgba(11, 14, 15, 0.2) 40%,
+        rgba(11, 14, 15, 0.55) 75%,
+        rgba(11, 14, 15, 0.9) 100%
       );
       pointer-events: none;
       z-index: 1;
     }
 
+    /* FLOATING MINIMAL TOP OVERLAY (DOES NOT TAKE UP ANY VERTICAL SCREEN SPACE) */
+    .floating-top-bar {
+      position: absolute;
+      top: max(14px, env(safe-area-inset-top));
+      left: 0;
+      right: 0;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .top-action-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    /* Floating Frosted Glass Buttons */
+    .btn-frosted {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(14, 18, 20, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      transition: transform 0.15s ease, background 0.15s ease;
+      pointer-events: auto;
+    }
+
+    .btn-frosted:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Level Pill (Centered Float) */
+    .level-pill-float {
+      background: rgba(14, 18, 20, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(141, 226, 214, 0.35);
+      border-radius: 20px;
+      padding: 5px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      pointer-events: auto;
+    }
+
+    .level-pill-number {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .level-pill-category {
+      font-size: 9px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Coin Badge Pill */
+    .coin-pill-float {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(14, 18, 20, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #fde047;
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      pointer-events: auto;
+    }
+
+    /* CROSSWORD BOARD AREA (EXPANDED TO OCCUPY MAXIMUM SPACE) */
     .board-container {
       position: relative;
       z-index: 10;
@@ -196,13 +188,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 8px 16px;
+      padding: 68px 16px 8px 16px; /* Top padding accommodates floating pills */
       min-height: 0;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     .crossword-grid {
       display: grid;
-      gap: 6px;
+      gap: 7px;
       padding: 10px;
       max-width: 100%;
       max-height: 100%;
@@ -211,15 +206,15 @@
     }
 
     .grid-tile {
-      width: var(--tile-size, 46px);
-      height: var(--tile-size, 46px);
+      width: var(--tile-size, 48px);
+      height: var(--tile-size, 48px);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: calc(var(--tile-size, 46px) * 0.58);
+      font-size: calc(var(--tile-size, 48px) * 0.58);
       font-weight: 800;
       font-family: var(--font-bubble);
-      border-radius: 10px;
+      border-radius: 12px;
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
       position: relative;
     }
@@ -229,9 +224,9 @@
     }
 
     .grid-tile.unsolved {
-      background: rgba(255, 255, 255, 0.92);
-      border: 2px solid rgba(255, 255, 255, 0.7);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.94);
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 -3px 0 rgba(0, 0, 0, 0.15);
       color: transparent;
     }
 
@@ -239,7 +234,7 @@
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: 2px solid #38bdf8;
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.5), inset 0 2px 2px rgba(255, 255, 255, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.55), inset 0 2px 2px rgba(255, 255, 255, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
       animation: tilePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -264,23 +259,24 @@
       100% { transform: scale(1); filter: brightness(1); }
     }
 
+    /* WORD PREVIEW PILL */
     .preview-container {
       position: relative;
       z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 44px;
-      margin-bottom: 4px;
+      min-height: 42px;
+      margin-bottom: 6px;
     }
 
     .word-preview-pill {
-      min-width: 140px;
-      height: 40px;
+      min-width: 130px;
+      height: 38px;
       padding: 0 20px;
-      background: rgba(14, 18, 20, 0.9);
+      background: rgba(14, 18, 20, 0.88);
       backdrop-filter: blur(12px);
-      border: 2px solid rgba(141, 226, 214, 0.4);
+      border: 2px solid rgba(141, 226, 214, 0.45);
       border-radius: 20px;
       display: flex;
       align-items: center;
@@ -288,7 +284,7 @@
       gap: 4px;
       color: #ffffff;
       font-family: var(--font-bubble);
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -306,19 +302,19 @@
     .word-preview-pill.shake {
       animation: shakePill 0.4s ease;
       border-color: #ef4444;
-      background: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.35);
     }
 
     .word-preview-pill.already-found {
       animation: pulseAmber 0.4s ease;
       border-color: #f59e0b;
-      background: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.35);
     }
 
     .word-preview-pill.bonus {
       animation: pulseBonus 0.5s ease;
       border-color: #10b981;
-      background: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.35);
     }
 
     @keyframes shakePill {
@@ -337,23 +333,30 @@
       50% { transform: scale(1.15) translateY(-5px); }
     }
 
+    /* WHEEL SECTION WITH PROPER BUTTON SEPARATION (NO OVERLAPPING) */
     .wheel-section {
       position: relative;
       z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: max(20px, env(safe-area-inset-bottom));
+      gap: 18px; /* Clean guaranteed space between wheel and buttons */
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 0 16px max(24px, env(safe-area-inset-bottom)) 16px;
     }
 
+    /* Relative tool buttons (never collide with wheel) */
     .side-tool-btn {
-      position: absolute;
-      width: 52px;
-      height: 52px;
+      position: relative;
+      width: 50px;
+      height: 50px;
+      flex-shrink: 0;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.95);
-      border: 3px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -368,14 +371,6 @@
       transform: scale(0.9);
     }
 
-    .side-tool-btn.shuffle-btn {
-      left: 24px;
-    }
-
-    .side-tool-btn.hint-btn {
-      right: 24px;
-    }
-
     .tool-cost {
       position: absolute;
       bottom: -8px;
@@ -386,15 +381,17 @@
       padding: 1px 6px;
       border-radius: 10px;
       border: 1px solid #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
     }
 
+    /* Wheel Container (216px diameter fits smoothly on any phone screen alongside 50px buttons) */
     .wheel-container {
       position: relative;
-      width: 250px;
-      height: 250px;
+      width: 216px;
+      height: 216px;
+      flex-shrink: 0;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.88) 100%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0%, rgba(241, 245, 249, 0.9) 100%);
       box-shadow:
         0 15px 35px rgba(0, 0, 0, 0.5),
         0 0 0 6px rgba(255, 255, 255, 0.35),
@@ -415,7 +412,7 @@
     .wheel-path {
       fill: none;
       stroke: #0284c7;
-      stroke-width: 12px;
+      stroke-width: 11px;
       stroke-linecap: round;
       stroke-linejoin: round;
       filter: drop-shadow(0 0 8px rgba(2, 132, 199, 0.7));
@@ -424,15 +421,16 @@
     .wheel-path-current {
       fill: none;
       stroke: rgba(2, 132, 199, 0.6);
-      stroke-width: 10px;
+      stroke-width: 9px;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
+    /* Letter Chips (52px size, radial distance 70px) */
     .letter-chip {
       position: absolute;
-      width: 58px;
-      height: 58px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       background: #ffffff;
       border: 3px solid #e2e8f0;
@@ -440,7 +438,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.7rem;
+      font-size: 1.55rem;
       font-weight: 800;
       font-family: var(--font-bubble);
       color: #0369a1;
@@ -455,14 +453,15 @@
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border-color: #7dd3fc;
-      transform: translate(-50%, -50%) scale(1.18);
+      transform: translate(-50%, -50%) scale(1.16);
       box-shadow: 0 0 20px rgba(2, 132, 199, 0.8), 0 6px 14px rgba(0, 0, 0, 0.25);
     }
 
+    /* VICTORY MODAL */
     .modal-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(11, 14, 15, 0.9);
+      background: rgba(11, 14, 15, 0.92);
       backdrop-filter: blur(10px);
       z-index: 150;
       display: flex;
@@ -605,6 +604,7 @@
       transform: scale(0.97);
     }
 
+    /* GUIDE SHEET */
     .guide-modal {
       position: absolute;
       inset: 0;
@@ -686,118 +686,120 @@
 </head>
 <body>
 
-  <div class="app-viewport">
-    <header class="app-header">
-      <div class="header-inner">
-        <div class="header-left">
-          <a href="juegos.html" class="btn-icon" title="Volver a Zona de Juegos" aria-label="Volver">
-            <span class="material-symbols-outlined">arrow_back</span>
-          </a>
-          <div class="header-titles">
-            <div class="header-main-title">
-              <span>VIAL WORDS</span>
-              <span class="level-tag" id="header-level-tag">NIVEL 1</span>
-            </div>
-            <span class="header-sub" id="header-level-category">Peatones y Convivencia</span>
-          </div>
+  <div class="app-viewport" id="game-screen">
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- FLOATING TOP BAR (TRANSPARENT, ZERO LOSS OF SCREEN SPACE) -->
+    <header class="floating-top-bar">
+      <!-- Left: Back to Games Button -->
+      <a href="juegos.html" class="btn-frosted" title="Volver a Juegos" aria-label="Volver">
+        <span class="material-symbols-outlined" style="font-size:22px;">arrow_back</span>
+      </a>
+
+      <!-- Center: Clean Floating Level Badge -->
+      <div class="level-pill-float">
+        <span class="level-pill-number" id="header-level-tag">NIVEL 1</span>
+        <span class="level-pill-category" id="header-level-category">Peatones</span>
+      </div>
+
+      <!-- Right: Action Pills -->
+      <div class="top-action-group">
+        <div class="coin-pill-float" title="Monedas ganadas">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#fde047;">monetization_on</span>
+          <span id="coin-count">200</span>
         </div>
 
-        <div class="header-right">
-          <div id="vialplay-header-user-badge"></div>
-          
-          <div class="coin-pill" title="Monedas ganadas">
-            <span class="material-symbols-outlined" style="font-size:18px;color:#fde047;">monetization_on</span>
-            <span id="coin-count">200</span>
-          </div>
+        <button class="btn-frosted" id="guide-btn" title="Manual de Consejos Viales" aria-label="Consejos">
+          <span class="material-symbols-outlined" style="font-size:20px;">menu_book</span>
+        </button>
 
-          <button class="btn-icon" id="guide-btn" title="Manual de Consejos Viales" aria-label="Consejos">
-            <span class="material-symbols-outlined" style="font-size:20px;">menu_book</span>
-          </button>
-
-          <button class="btn-icon" id="sound-btn" title="Activar/Silenciar sonido" aria-label="Sonido">
-            <span class="material-symbols-outlined" style="font-size:20px;" id="sound-icon">volume_up</span>
-          </button>
-        </div>
+        <button class="btn-frosted" id="sound-btn" title="Activar/Silenciar sonido" aria-label="Sonido">
+          <span class="material-symbols-outlined" style="font-size:20px;" id="sound-icon">volume_up</span>
+        </button>
       </div>
     </header>
 
-    <main class="game-container" id="game-screen">
-      <canvas id="confetti-canvas"></canvas>
+    <!-- Crossword Board Area (Full Height & Centered) -->
+    <main class="board-container">
+      <div class="crossword-grid" id="crossword-grid"></div>
+    </main>
 
-      <section class="board-container">
-        <div class="crossword-grid" id="crossword-grid"></div>
-      </section>
+    <!-- Word Preview Pill -->
+    <div class="preview-container">
+      <div class="word-preview-pill" id="preview-pill">
+        <span id="word-preview"></span>
+      </div>
+    </div>
 
-      <div class="preview-container">
-        <div class="word-preview-pill" id="preview-pill">
-          <span id="word-preview"></span>
-        </div>
+    <!-- Wheel Controls & Letter Disc (Separated With Flexbox - Never Overlaps) -->
+    <section class="wheel-section">
+      <!-- Shuffle Button (Mezclar) -->
+      <button class="side-tool-btn shuffle-btn" id="shuffle-btn" title="Mezclar letras" aria-label="Mezclar">
+        <span class="material-symbols-outlined" style="font-size:24px;color:#0284c7;">shuffle</span>
+      </button>
+
+      <!-- Letter Wheel Container -->
+      <div class="wheel-container" id="wheel-container">
+        <svg class="wheel-svg" id="wheel-svg">
+          <path class="wheel-path" id="wheel-path" d=""></path>
+          <path class="wheel-path-current" id="wheel-path-current" d=""></path>
+        </svg>
       </div>
 
-      <section class="wheel-section">
-        <button class="side-tool-btn shuffle-btn" id="shuffle-btn" title="Mezclar letras" aria-label="Mezclar">
-          <span class="material-symbols-outlined" style="font-size:24px;color:#0284c7;">shuffle</span>
-        </button>
+      <!-- Hint Button (Bombilla / Pista) -->
+      <button class="side-tool-btn hint-btn" id="hint-btn" title="Pedir Pista (50 monedas)" aria-label="Pista">
+        <span class="material-symbols-outlined" style="font-size:24px;color:#f59e0b;">lightbulb</span>
+        <span class="tool-cost">50 🪙</span>
+      </button>
+    </section>
 
-        <div class="wheel-container" id="wheel-container">
-          <svg class="wheel-svg" id="wheel-svg">
-            <path class="wheel-path" id="wheel-path" d=""></path>
-            <path class="wheel-path-current" id="wheel-path-current" d=""></path>
-          </svg>
+    <!-- Victory Modal with Road Safety Educational Pill -->
+    <div class="modal-overlay" id="victory-modal">
+      <div class="modal-card">
+        <div class="victory-banner">¡Excelente Conducción!</div>
+        <h2 class="victory-title" id="victory-level-title">¡Nivel Completado!</h2>
+
+        <div class="star-rating">
+          <span>⭐</span>
+          <span>⭐</span>
+          <span>⭐</span>
         </div>
 
-        <button class="side-tool-btn hint-btn" id="hint-btn" title="Pedir Pista (50 monedas)" aria-label="Pista">
-          <span class="material-symbols-outlined" style="font-size:24px;color:#f59e0b;">lightbulb</span>
-          <span class="tool-cost">50 🪙</span>
-        </button>
-      </section>
-
-      <div class="modal-overlay" id="victory-modal">
-        <div class="modal-card">
-          <div class="victory-banner">¡Excelente Conducción!</div>
-          <h2 class="victory-title" id="victory-level-title">¡Nivel Completado!</h2>
-
-          <div class="star-rating">
-            <span>⭐</span>
-            <span>⭐</span>
-            <span>⭐</span>
-          </div>
-
-          <div class="safety-pill-box">
-            <div class="pill-header">
-              <span class="pill-icon" id="pill-icon">🚶‍♂️</span>
-              <div>
-                <span class="pill-badge" id="pill-badge">CONSEJO VIAL</span>
-                <div class="pill-title" id="pill-title">Prioridad Peatonal</div>
-              </div>
+        <div class="safety-pill-box">
+          <div class="pill-header">
+            <span class="pill-icon" id="pill-icon">🚶‍♂️</span>
+            <div>
+              <span class="pill-badge" id="pill-badge">CONSEJO VIAL</span>
+              <div class="pill-title" id="pill-title">Prioridad Peatonal</div>
             </div>
-            <p class="pill-text" id="pill-text"></p>
-            <p class="pill-detail" id="pill-detail"></p>
           </div>
+          <p class="pill-text" id="pill-text"></p>
+          <p class="pill-detail" id="pill-detail"></p>
+        </div>
 
-          <div class="reward-badge">
-            <span>Premio:</span> <strong>+100 🪙 Monedas</strong>
-          </div>
+        <div class="reward-badge">
+          <span>Premio:</span> <strong>+100 🪙 Monedas</strong>
+        </div>
 
-          <button class="modal-btn" id="next-level-btn">
-            Siguiente Nivel ➔
+        <button class="modal-btn" id="next-level-btn">
+          Siguiente Nivel ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- Road Safety Unlocked Tips Drawer / Guide -->
+    <div class="guide-modal" id="guide-modal">
+      <div class="guide-sheet">
+        <div class="guide-header">
+          <h3>📘 Manual Vial Desbloqueado</h3>
+          <button class="btn-frosted" id="close-guide-btn" style="width:34px;height:34px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
           </button>
         </div>
+        <div class="guide-list" id="guide-list"></div>
       </div>
+    </div>
 
-      <div class="guide-modal" id="guide-modal">
-        <div class="guide-sheet">
-          <div class="guide-header">
-            <h3>📘 Manual Vial Desbloqueado</h3>
-            <button class="btn-icon" id="close-guide-btn" style="width:34px;height:34px;">
-              <span class="material-symbols-outlined" style="font-size:18px;">close</span>
-            </button>
-          </div>
-          <div class="guide-list" id="guide-list"></div>
-        </div>
-      </div>
-
-    </main>
   </div>
 
   <script src="js/cloud-sync.js?v=23"></script>
@@ -1161,7 +1163,7 @@
 
         this.dom.gameScreen.style.backgroundImage = `url('${level.bg}')`;
         this.dom.levelTag.textContent = `NIVEL ${level.id}`;
-        this.dom.levelCategory.textContent = `${level.category} • ${level.title}`;
+        this.dom.levelCategory.textContent = `${level.title}`;
         this.dom.coinCount.textContent = this.coins;
 
         this.solvedWords.clear();
@@ -1200,12 +1202,12 @@
         const cols = maxC - minC + 1;
 
         const boardContainer = document.querySelector('.board-container');
-        const availW = Math.min((boardContainer.clientWidth || 360) - 24, 420);
-        const availH = Math.min((boardContainer.clientHeight || 280) - 24, 320);
+        const availW = Math.min((boardContainer.clientWidth || 360) - 24, 440);
+        const availH = Math.min((boardContainer.clientHeight || 340) - 24, 400);
 
-        const maxTileW = Math.floor((availW - (cols - 1) * 6) / cols);
-        const maxTileH = Math.floor((availH - (rows - 1) * 6) / rows);
-        const tileSize = Math.min(Math.max(Math.min(maxTileW, maxTileH), 36), 54);
+        const maxTileW = Math.floor((availW - (cols - 1) * 7) / cols);
+        const maxTileH = Math.floor((availH - (rows - 1) * 7) / rows);
+        const tileSize = Math.min(Math.max(Math.min(maxTileW, maxTileH), 38), 58);
 
         gridEl.style.setProperty('--tile-size', `${tileSize}px`);
         gridEl.style.gridTemplateColumns = `repeat(${cols}, ${tileSize}px)`;
@@ -1258,9 +1260,10 @@
         container.querySelectorAll('.letter-chip').forEach(el => el.remove());
 
         const count = this.currentLetters.length;
-        const radius = 80;
-        const centerX = 125;
-        const centerY = 125;
+        // Wheel diameter is 216px, center is 108px, radius 70px
+        const radius = 70;
+        const centerX = 108;
+        const centerY = 108;
 
         this.chipCoords = [];
 
@@ -1341,7 +1344,7 @@
         const rect = this.dom.wheelContainer.getBoundingClientRect();
         const px = clientX - rect.left;
         const py = clientY - rect.top;
-        const hitRadius = 34;
+        const hitRadius = 32;
         for (let i = 0; i < this.chipCoords.length; i++) {
           const c = this.chipCoords[i];
           const dist = Math.hypot(c.x - px, c.y - py);
