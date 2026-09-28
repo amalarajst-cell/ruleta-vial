@@ -325,6 +325,25 @@
       border: 1px solid rgba(245, 158, 11, 0.25);
       background: rgba(245, 158, 11, 0.06);
     }
+    .btn-vialwords {
+      border-color: #06B6D4;
+      box-shadow: 0 10px 0 #0891B2, 0 18px 36px rgba(0, 0, 0, 0.6);
+    }
+    .btn-vialwords:hover {
+      border-color: #67E8F9;
+      box-shadow: 0 14px 0 #0891B2, 0 24px 44px rgba(6, 182, 212, 0.35);
+    }
+    .btn-vialwords:active {
+      box-shadow: 0 4px 0 #0891B2, 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+    .btn-vialwords span {
+      color: #22D3EE;
+    }
+    .subtitle-vialwords {
+      color: #67E8F9;
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      background: rgba(6, 182, 212, 0.06);
+    }
   </style>
 </head>
 <body>
@@ -441,6 +460,17 @@
       </button>
       <div class="btn-hub-subtitle subtitle-prioridad" id="sub-prioridad">
         <span>Ley 2148 CABA • Ambulancias, vías férreas y jerarquías</span>
+      </div>
+    </div>
+
+    <!-- 9. JUEGO: VIAL WORDS -->
+    <div class="game-card-wrapper">
+      <button class="btn-ruleta btn-vialwords" id="btn-vialwords" onclick="playGame('words.html')">
+        <img src="assets/vialwords_icono.jpg" alt="Vial Words">
+        <span>VIAL WORDS</span>
+      </button>
+      <div class="btn-hub-subtitle subtitle-vialwords" id="sub-vialwords">
+        <span>Words of Wonders Vial &bull; Rueda de letras y crucigramas tem&aacute;ticos</span>
       </div>
     </div>
   </main>
