@@ -23,6 +23,8 @@
       --accent-cyan: #8DE2D6;
       --accent-yellow: #FFC600;
       --accent-orange: #FF7A00;
+      --accent-green: #00E676;
+      --accent-red: #FF3B30;
       --accent-blue: #38BDF8;
       --text: #f0f4f5;
       --text-muted: #8c979a;
@@ -50,7 +52,7 @@
       overscroll-behavior: none;
     }
 
-    /* FULLSCREEN GAME VIEWPORT (NO SOLID HEADER BLOCKING THE VIEW) */
+    /* FULLSCREEN GAME VIEWPORT */
     .app-viewport {
       width: 100vw;
       height: 100dvh;
@@ -64,26 +66,37 @@
       transition: background-image 0.8s ease;
     }
 
-    /* Atmospheric Vignette */
+    /* Vignette & Ambient Darkness */
     .app-viewport::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(11, 14, 15, 0.65) 0%,
-        rgba(11, 14, 15, 0.2) 40%,
-        rgba(11, 14, 15, 0.55) 75%,
-        rgba(11, 14, 15, 0.9) 100%
+        rgba(11, 14, 15, 0.68) 0%,
+        rgba(11, 14, 15, 0.18) 35%,
+        rgba(11, 14, 15, 0.52) 72%,
+        rgba(11, 14, 15, 0.94) 100%
       );
       pointer-events: none;
       z-index: 1;
     }
 
-    /* FLOATING MINIMAL TOP OVERLAY (DOES NOT TAKE UP ANY VERTICAL SCREEN SPACE) */
+    /* ANIMATED TRAFFIC LAYER (Subtle animated vehicles & cyclists) */
+    .traffic-canvas-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.85;
+    }
+
+    /* FLOATING TOP BAR */
     .floating-top-bar {
       position: absolute;
-      top: max(14px, env(safe-area-inset-top));
+      top: max(12px, env(safe-area-inset-top));
       left: 0;
       right: 0;
       padding: 0 16px;
@@ -107,8 +120,8 @@
       height: 40px;
       border-radius: 50%;
       background: rgba(14, 18, 20, 0.65);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.22);
       color: #ffffff;
       display: flex;
@@ -117,7 +130,7 @@
       text-decoration: none;
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-      transition: transform 0.15s ease, background 0.15s ease;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.2s ease;
       pointer-events: auto;
     }
 
@@ -126,19 +139,76 @@
       background: rgba(255, 255, 255, 0.25);
     }
 
-    /* Level Pill (Centered Float) */
-    .level-pill-float {
-      background: rgba(14, 18, 20, 0.7);
+    /* INTERACTIVE TRAFFIC LIGHT (SEMÁFORO DE RACHA / ESTADO) */
+    .traffic-light-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(141, 226, 214, 0.35);
+      padding: 4px 8px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      pointer-events: auto;
+      cursor: default;
+    }
+
+    .light-lens {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #334155;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .light-lens.red.active {
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444, 0 0 16px rgba(239, 68, 68, 0.8);
+      animation: pulseRed 1s infinite alternate;
+    }
+
+    .light-lens.yellow.active {
+      background: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b, 0 0 16px rgba(245, 158, 11, 0.8);
+      animation: pulseYellow 0.6s infinite alternate;
+    }
+
+    .light-lens.green.active {
+      background: #10b981;
+      box-shadow: 0 0 12px #10b981, 0 0 20px rgba(16, 185, 129, 0.9);
+      animation: flashGreen 0.4s ease;
+    }
+
+    @keyframes pulseRed {
+      from { transform: scale(0.95); opacity: 0.85; }
+      to { transform: scale(1.15); opacity: 1; filter: brightness(1.2); }
+    }
+    @keyframes pulseYellow {
+      from { transform: scale(1); filter: brightness(1); }
+      to { transform: scale(1.2); filter: brightness(1.3); }
+    }
+    @keyframes flashGreen {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.35); filter: brightness(1.5); }
+      100% { transform: scale(1.1); filter: brightness(1.2); }
+    }
+
+    /* Level Pill (Centered Float) */
+    .level-pill-float {
+      background: rgba(14, 18, 20, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(141, 226, 214, 0.4);
       border-radius: 20px;
       padding: 5px 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
       pointer-events: auto;
     }
 
@@ -167,12 +237,12 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      background: rgba(14, 18, 20, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(14, 18, 20, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       padding: 6px 12px;
       border-radius: 20px;
-      border: 1px solid rgba(251, 191, 36, 0.4);
+      border: 1px solid rgba(251, 191, 36, 0.45);
       color: #fde047;
       font-weight: 800;
       font-size: 13px;
@@ -180,7 +250,7 @@
       pointer-events: auto;
     }
 
-    /* CROSSWORD BOARD AREA (EXPANDED TO OCCUPY MAXIMUM SPACE) */
+    /* CROSSWORD BOARD AREA */
     .board-container {
       position: relative;
       z-index: 10;
@@ -188,7 +258,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 68px 16px 8px 16px; /* Top padding accommodates floating pills */
+      padding: 68px 16px 8px 16px;
       min-height: 0;
       width: 100%;
       max-width: 500px;
@@ -215,7 +285,7 @@
       font-weight: 800;
       font-family: var(--font-bubble);
       border-radius: 12px;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
       position: relative;
     }
 
@@ -234,9 +304,24 @@
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border: 2px solid #38bdf8;
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.55), inset 0 2px 2px rgba(255, 255, 255, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.45), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
       animation: tilePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Glowing light shimmer swipe on newly revealed word */
+    .grid-tile.solved::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.7) 50%, transparent 80%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .grid-tile.solved.newly-solved::after {
+      animation: shineSwipe 0.6s ease forwards;
     }
 
     .grid-tile.revealed-hint {
@@ -248,18 +333,24 @@
     }
 
     @keyframes tilePop {
-      0% { transform: scale(0.4) rotate(-6deg); opacity: 0.5; }
-      60% { transform: scale(1.15) rotate(2deg); }
+      0% { transform: scale(0.3) rotate(-8deg); opacity: 0.3; }
+      60% { transform: scale(1.18) rotate(3deg); }
       100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes shineSwipe {
+      0% { transform: translateX(-100%); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateX(100%); opacity: 0; }
     }
 
     @keyframes hintSparkle {
       0% { transform: scale(0.6); filter: brightness(2); }
-      50% { transform: scale(1.18); filter: brightness(1.5); }
+      50% { transform: scale(1.2); filter: brightness(1.5); }
       100% { transform: scale(1); filter: brightness(1); }
     }
 
-    /* WORD PREVIEW PILL */
+    /* WORD PREVIEW PILL (Glowing & Responsive) */
     .preview-container {
       position: relative;
       z-index: 10;
@@ -274,9 +365,10 @@
       min-width: 130px;
       height: 38px;
       padding: 0 20px;
-      background: rgba(14, 18, 20, 0.88);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(141, 226, 214, 0.45);
+      background: rgba(14, 18, 20, 0.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid rgba(141, 226, 214, 0.5);
       border-radius: 20px;
       display: flex;
       align-items: center;
@@ -287,7 +379,7 @@
       font-size: 1.25rem;
       letter-spacing: 3px;
       text-transform: uppercase;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(141, 226, 214, 0.3);
       opacity: 0;
       transform: translateY(10px) scale(0.9);
       transition: opacity 0.15s ease, transform 0.15s ease;
@@ -303,18 +395,21 @@
       animation: shakePill 0.4s ease;
       border-color: #ef4444;
       background: rgba(239, 68, 68, 0.35);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
     }
 
     .word-preview-pill.already-found {
       animation: pulseAmber 0.4s ease;
       border-color: #f59e0b;
       background: rgba(245, 158, 11, 0.35);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
     }
 
     .word-preview-pill.bonus {
       animation: pulseBonus 0.5s ease;
       border-color: #10b981;
       background: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
     }
 
     @keyframes shakePill {
@@ -333,21 +428,20 @@
       50% { transform: scale(1.15) translateY(-5px); }
     }
 
-    /* WHEEL SECTION WITH PROPER BUTTON SEPARATION (NO OVERLAPPING) */
+    /* WHEEL SECTION (FLEXBOX WITH PROPER BUTTON SEPARATION) */
     .wheel-section {
       position: relative;
       z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 18px; /* Clean guaranteed space between wheel and buttons */
+      gap: 18px;
       width: 100%;
       max-width: 440px;
       margin: 0 auto;
       padding: 0 16px max(24px, env(safe-area-inset-bottom)) 16px;
     }
 
-    /* Relative tool buttons (never collide with wheel) */
     .side-tool-btn {
       position: relative;
       width: 50px;
@@ -364,11 +458,15 @@
       color: #0f172a;
       cursor: pointer;
       z-index: 12;
-      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
     }
 
     .side-tool-btn:active {
       transform: scale(0.9);
+    }
+
+    .side-tool-btn:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.6);
     }
 
     .tool-cost {
@@ -384,7 +482,7 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.25);
     }
 
-    /* Wheel Container (216px diameter fits smoothly on any phone screen alongside 50px buttons) */
+    /* Wheel Container (216px diameter, glow ring) */
     .wheel-container {
       position: relative;
       width: 216px;
@@ -394,10 +492,21 @@
       background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0%, rgba(241, 245, 249, 0.9) 100%);
       box-shadow:
         0 15px 35px rgba(0, 0, 0, 0.5),
-        0 0 0 6px rgba(255, 255, 255, 0.35),
-        inset 0 4px 8px rgba(255, 255, 255, 0.8),
+        0 0 0 6px rgba(255, 255, 255, 0.4),
+        0 0 24px rgba(34, 211, 238, 0.25),
+        inset 0 4px 8px rgba(255, 255, 255, 0.85),
         inset 0 -6px 12px rgba(148, 163, 184, 0.4);
       touch-action: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .wheel-container.dragging {
+      box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.5),
+        0 0 0 6px rgba(34, 211, 238, 0.6),
+        0 0 35px rgba(34, 211, 238, 0.5),
+        inset 0 4px 8px rgba(255, 255, 255, 0.85),
+        inset 0 -6px 12px rgba(148, 163, 184, 0.4);
     }
 
     .wheel-svg {
@@ -412,21 +521,21 @@
     .wheel-path {
       fill: none;
       stroke: #0284c7;
-      stroke-width: 11px;
+      stroke-width: 12px;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(2, 132, 199, 0.7));
+      filter: drop-shadow(0 0 8px rgba(2, 132, 199, 0.85)) drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
     }
 
     .wheel-path-current {
       fill: none;
-      stroke: rgba(2, 132, 199, 0.6);
-      stroke-width: 9px;
+      stroke: rgba(2, 132, 199, 0.7);
+      stroke-width: 10px;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    /* Letter Chips (52px size, radial distance 70px) */
+    /* Letter Chips with Ripple & Glow */
     .letter-chip {
       position: absolute;
       width: 52px;
@@ -453,8 +562,8 @@
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff;
       border-color: #7dd3fc;
-      transform: translate(-50%, -50%) scale(1.16);
-      box-shadow: 0 0 20px rgba(2, 132, 199, 0.8), 0 6px 14px rgba(0, 0, 0, 0.25);
+      transform: translate(-50%, -50%) scale(1.18);
+      box-shadow: 0 0 22px rgba(2, 132, 199, 0.9), 0 6px 14px rgba(0, 0, 0, 0.25);
     }
 
     /* VICTORY MODAL */
@@ -462,7 +571,8 @@
       position: absolute;
       inset: 0;
       background: rgba(11, 14, 15, 0.92);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 150;
       display: flex;
       align-items: center;
@@ -486,7 +596,7 @@
       border-radius: 28px;
       padding: 26px 22px;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(141, 226, 214, 0.2);
       transform: scale(0.85) translateY(20px);
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
@@ -516,8 +626,22 @@
       display: flex;
       justify-content: center;
       gap: 8px;
-      font-size: 2rem;
+      font-size: 2.2rem;
       margin-bottom: 16px;
+    }
+
+    .star-rating span {
+      animation: starBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .star-rating span:nth-child(1) { animation-delay: 0.15s; }
+    .star-rating span:nth-child(2) { animation-delay: 0.3s; }
+    .star-rating span:nth-child(3) { animation-delay: 0.45s; }
+
+    @keyframes starBounce {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      70% { transform: scale(1.3) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
     }
 
     .safety-pill-box {
@@ -687,14 +811,27 @@
 <body>
 
   <div class="app-viewport" id="game-screen">
+    <!-- Animated Traffic Layer (CSS/Canvas moving city vehicles & bicycles) -->
+    <canvas id="traffic-canvas" class="traffic-canvas-layer"></canvas>
+
+    <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- FLOATING TOP BAR (TRANSPARENT, ZERO LOSS OF SCREEN SPACE) -->
+    <!-- FLOATING TOP BAR -->
     <header class="floating-top-bar">
-      <!-- Left: Back to Games Button -->
-      <a href="juegos.html" class="btn-frosted" title="Volver a Juegos" aria-label="Volver">
-        <span class="material-symbols-outlined" style="font-size:22px;">arrow_back</span>
-      </a>
+      <!-- Left: Back Button & Traffic Light Indicator -->
+      <div class="top-action-group">
+        <a href="juegos.html" class="btn-frosted" title="Volver a Juegos" aria-label="Volver">
+          <span class="material-symbols-outlined" style="font-size:22px;">arrow_back</span>
+        </a>
+
+        <!-- Interactive Traffic Light (Semáforo de Racha) -->
+        <div class="traffic-light-badge" id="traffic-light" title="Semáforo de Racha">
+          <div class="light-lens red" id="light-red"></div>
+          <div class="light-lens yellow" id="light-yellow"></div>
+          <div class="light-lens green active" id="light-green"></div>
+        </div>
+      </div>
 
       <!-- Center: Clean Floating Level Badge -->
       <div class="level-pill-float">
@@ -805,6 +942,141 @@
   <script src="js/cloud-sync.js?v=23"></script>
 
   <script>
+    // --- ANIMATED CITY TRAFFIC ENGINE (SILKY-SMOOTH PARALLAX CARS & CYCLISTS) ---
+    class TrafficSimulator {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.vehicles = [];
+        this.resize();
+        this.initVehicles();
+        window.addEventListener('resize', () => this.resize());
+        this.animate();
+      }
+
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      initVehicles() {
+        this.vehicles = [
+          // Yellow Taxi cruising forward
+          { type: 'car', color: '#facc15', roofColor: '#0f172a', x: this.canvas.width * 0.48, y: this.canvas.height * 0.52, speed: 0.7, scale: 0.85, dir: 1 },
+          // Blue City Car cruising forward
+          { type: 'car', color: '#38bdf8', roofColor: '#0369a1', x: this.canvas.width * 0.65, y: this.canvas.height * 0.56, speed: 0.9, scale: 0.95, dir: 1 },
+          // Cyclist on the bike lane
+          { type: 'bike', color: '#10b981', x: this.canvas.width * 0.28, y: this.canvas.height * 0.46, speed: 0.55, scale: 0.75, dir: 1 },
+          // Bus in distance
+          { type: 'bus', color: '#ec4899', x: this.canvas.width * 0.58, y: this.canvas.height * 0.44, speed: 0.45, scale: 0.65, dir: 1 }
+        ];
+      }
+
+      animate() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.vehicles.forEach(v => {
+          v.y += v.speed * (0.8 + v.scale * 0.4);
+          v.scale += 0.0004 * v.speed;
+
+          // Perspective expansion: as car moves down, it shifts slightly outward
+          const horizonY = this.canvas.height * 0.42;
+          const progress = Math.max(0, (v.y - horizonY) / (this.canvas.height - horizonY));
+          
+          // Loop vehicle back to horizon when it reaches bottom
+          if (v.y > this.canvas.height + 40) {
+            v.y = horizonY + Math.random() * 20;
+            v.scale = 0.55 + Math.random() * 0.15;
+            if (v.type === 'bike') {
+              v.x = this.canvas.width * (0.26 + Math.random() * 0.05);
+            } else {
+              v.x = this.canvas.width * (0.46 + Math.random() * 0.22);
+            }
+          }
+
+          // Draw Vehicle
+          this.drawVehicle(v);
+        });
+
+        requestAnimationFrame(() => this.animate());
+      }
+
+      drawVehicle(v) {
+        const ctx = this.ctx;
+        ctx.save();
+        ctx.translate(v.x, v.y);
+        ctx.scale(v.scale, v.scale);
+
+        if (v.type === 'car') {
+          // Shadow
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+          ctx.beginPath();
+          ctx.ellipse(0, 18, 22, 6, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Body
+          ctx.fillStyle = v.color;
+          ctx.beginPath();
+          ctx.roundRect(-18, -12, 36, 26, 6);
+          ctx.fill();
+
+          // Roof / Windshield
+          ctx.fillStyle = v.roofColor;
+          ctx.beginPath();
+          ctx.roundRect(-14, -6, 28, 14, 4);
+          ctx.fill();
+
+          // Headlights
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.arc(-13, 14, 3, 0, Math.PI * 2);
+          ctx.arc(13, 14, 3, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (v.type === 'bike') {
+          // Bicycle rider shadow
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+          ctx.beginPath();
+          ctx.ellipse(0, 12, 10, 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Helmet / Rider
+          ctx.fillStyle = '#f43f5e';
+          ctx.beginPath();
+          ctx.arc(0, -6, 5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Bike Frame
+          ctx.strokeStyle = v.color;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, -1);
+          ctx.lineTo(0, 10);
+          ctx.stroke();
+        } else if (v.type === 'bus') {
+          // Bus shadow
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+          ctx.beginPath();
+          ctx.ellipse(0, 24, 26, 7, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Bus body
+          ctx.fillStyle = '#3b82f6';
+          ctx.beginPath();
+          ctx.roundRect(-22, -18, 44, 40, 6);
+          ctx.fill();
+
+          // Bus Front Window
+          ctx.fillStyle = '#bae6fd';
+          ctx.beginPath();
+          ctx.roundRect(-18, 4, 36, 12, 3);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    // --- LEVELS DATA ---
     const GAME_LEVELS = [
       {
         id: 1,
@@ -915,6 +1187,7 @@
       }
     ];
 
+    // --- AUDIO SYNTHESIZER ---
     class GameAudio {
       constructor() {
         this.ctx = null;
@@ -982,6 +1255,7 @@
       }
     }
 
+    // --- CONFETTI & SPARKS ---
     class ConfettiManager {
       constructor(canvas) {
         this.canvas = canvas;
@@ -1047,9 +1321,12 @@
       }
     }
 
+    // --- MAIN GAME APPLICATION ---
     class VialWordsGame {
       constructor() {
         this.audio = new GameAudio();
+        this.traffic = new TrafficSimulator(document.getElementById('traffic-canvas'));
+
         this.currentLevelIndex = parseInt(localStorage.getItem('vialwords_level') || '0', 10);
         this.coins = parseInt(localStorage.getItem('vialwords_coins') || '200', 10);
         this.unlockedTips = JSON.parse(localStorage.getItem('vialwords_tips') || '[]');
@@ -1078,6 +1355,9 @@
           soundBtn: document.getElementById('sound-btn'),
           soundIcon: document.getElementById('sound-icon'),
           guideBtn: document.getElementById('guide-btn'),
+          lightRed: document.getElementById('light-red'),
+          lightYellow: document.getElementById('light-yellow'),
+          lightGreen: document.getElementById('light-green'),
           crosswordGrid: document.getElementById('crossword-grid'),
           wordPreview: document.getElementById('word-preview'),
           previewPill: document.getElementById('preview-pill'),
@@ -1100,6 +1380,16 @@
           guideList: document.getElementById('guide-list'),
           confettiCanvas: document.getElementById('confetti-canvas')
         };
+      }
+
+      setTrafficLight(color) {
+        this.dom.lightRed.classList.remove('active');
+        this.dom.lightYellow.classList.remove('active');
+        this.dom.lightGreen.classList.remove('active');
+
+        if (color === 'red') this.dom.lightRed.classList.add('active');
+        else if (color === 'yellow') this.dom.lightYellow.classList.add('active');
+        else if (color === 'green') this.dom.lightGreen.classList.add('active');
       }
 
       initEvents() {
@@ -1165,6 +1455,8 @@
         this.dom.levelTag.textContent = `NIVEL ${level.id}`;
         this.dom.levelCategory.textContent = `${level.title}`;
         this.dom.coinCount.textContent = this.coins;
+
+        this.setTrafficLight('green');
 
         this.solvedWords.clear();
         this.foundBonusWords.clear();
@@ -1260,7 +1552,6 @@
         container.querySelectorAll('.letter-chip').forEach(el => el.remove());
 
         const count = this.currentLetters.length;
-        // Wheel diameter is 216px, center is 108px, radius 70px
         const radius = 70;
         const centerX = 108;
         const centerY = 108;
@@ -1309,7 +1600,11 @@
       onPointerDown(e) {
         this.audio.init();
         this.isDragging = true;
+        this.dom.wheelContainer.classList.add('dragging');
         this.dom.wheelContainer.setPointerCapture(e.pointerId);
+
+        this.setTrafficLight('yellow');
+
         const hit = this.getChipAtPointer(e.clientX, e.clientY);
         if (hit !== null) this.addSelection(hit);
       }
@@ -1333,9 +1628,13 @@
       onPointerUp(e) {
         if (!this.isDragging) return;
         this.isDragging = false;
+        this.dom.wheelContainer.classList.remove('dragging');
+
         if (this.selection.length > 0) {
           const word = this.selection.map(i => this.currentLetters[i]).join('');
           this.validateWord(word);
+        } else {
+          this.setTrafficLight('green');
         }
         this.clearSelection();
       }
@@ -1421,10 +1720,16 @@
 
         if (targetWord) {
           if (this.solvedWords.has(word)) {
+            this.setTrafficLight('yellow');
             this.audio.playAlreadyFound();
             this.dom.previewPill.className = 'word-preview-pill active already-found';
-            setTimeout(() => this.updatePreview(''), 500);
+            setTimeout(() => {
+              this.updatePreview('');
+              this.setTrafficLight('green');
+            }, 500);
           } else {
+            // SUCCESS!
+            this.setTrafficLight('green');
             this.solvedWords.add(word);
             this.audio.playWordSuccess();
             this.revealWordOnBoard(word);
@@ -1436,10 +1741,15 @@
           }
         } else if (level.bonusWords && level.bonusWords.includes(word)) {
           if (this.foundBonusWords.has(word)) {
+            this.setTrafficLight('yellow');
             this.audio.playAlreadyFound();
             this.dom.previewPill.className = 'word-preview-pill active already-found';
-            setTimeout(() => this.updatePreview(''), 500);
+            setTimeout(() => {
+              this.updatePreview('');
+              this.setTrafficLight('green');
+            }, 500);
           } else {
+            this.setTrafficLight('green');
             this.foundBonusWords.add(word);
             this.coins += 25;
             this.saveProgress();
@@ -1449,9 +1759,14 @@
             setTimeout(() => this.updatePreview(''), 700);
           }
         } else {
+          // RED LIGHT (Mistake)
+          this.setTrafficLight('red');
           this.audio.playInvalid();
           this.dom.previewPill.className = 'word-preview-pill active shake';
-          setTimeout(() => this.updatePreview(''), 450);
+          setTimeout(() => {
+            this.updatePreview('');
+            this.setTrafficLight('green');
+          }, 500);
         }
       }
 
@@ -1460,8 +1775,12 @@
           if (cell.words.includes(word)) {
             cell.solved = true;
             cell.element.classList.remove('unsolved');
-            cell.element.classList.add('solved');
+            cell.element.classList.add('solved', 'newly-solved');
             cell.element.textContent = cell.letter;
+
+            setTimeout(() => {
+              cell.element.classList.remove('newly-solved');
+            }, 700);
           }
         }
       }
@@ -1501,8 +1820,9 @@
       }
 
       triggerLevelVictory() {
+        this.setTrafficLight('green');
         this.audio.playVictory();
-        this.confetti.burst(80);
+        this.confetti.burst(85);
 
         this.coins += 100;
         this.saveProgress();
