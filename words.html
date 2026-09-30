@@ -82,17 +82,6 @@
       z-index: 1;
     }
 
-    /* ANIMATED TRAFFIC LAYER (Subtle animated vehicles & cyclists) */
-    .traffic-canvas-layer {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0.85;
-    }
-
     /* FLOATING TOP BAR */
     .floating-top-bar {
       position: absolute;
@@ -811,8 +800,6 @@
 <body>
 
   <div class="app-viewport" id="game-screen">
-    <!-- Animated Traffic Layer (CSS/Canvas moving city vehicles & bicycles) -->
-    <canvas id="traffic-canvas" class="traffic-canvas-layer"></canvas>
 
     <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
@@ -942,139 +929,6 @@
   <script src="js/cloud-sync.js?v=23"></script>
 
   <script>
-    // --- ANIMATED CITY TRAFFIC ENGINE (SILKY-SMOOTH PARALLAX CARS & CYCLISTS) ---
-    class TrafficSimulator {
-      constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.vehicles = [];
-        this.resize();
-        this.initVehicles();
-        window.addEventListener('resize', () => this.resize());
-        this.animate();
-      }
-
-      resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-      }
-
-      initVehicles() {
-        this.vehicles = [
-          // Yellow Taxi cruising forward
-          { type: 'car', color: '#facc15', roofColor: '#0f172a', x: this.canvas.width * 0.48, y: this.canvas.height * 0.52, speed: 0.7, scale: 0.85, dir: 1 },
-          // Blue City Car cruising forward
-          { type: 'car', color: '#38bdf8', roofColor: '#0369a1', x: this.canvas.width * 0.65, y: this.canvas.height * 0.56, speed: 0.9, scale: 0.95, dir: 1 },
-          // Cyclist on the bike lane
-          { type: 'bike', color: '#10b981', x: this.canvas.width * 0.28, y: this.canvas.height * 0.46, speed: 0.55, scale: 0.75, dir: 1 },
-          // Bus in distance
-          { type: 'bus', color: '#ec4899', x: this.canvas.width * 0.58, y: this.canvas.height * 0.44, speed: 0.45, scale: 0.65, dir: 1 }
-        ];
-      }
-
-      animate() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.vehicles.forEach(v => {
-          v.y += v.speed * (0.8 + v.scale * 0.4);
-          v.scale += 0.0004 * v.speed;
-
-          // Perspective expansion: as car moves down, it shifts slightly outward
-          const horizonY = this.canvas.height * 0.42;
-          const progress = Math.max(0, (v.y - horizonY) / (this.canvas.height - horizonY));
-          
-          // Loop vehicle back to horizon when it reaches bottom
-          if (v.y > this.canvas.height + 40) {
-            v.y = horizonY + Math.random() * 20;
-            v.scale = 0.55 + Math.random() * 0.15;
-            if (v.type === 'bike') {
-              v.x = this.canvas.width * (0.26 + Math.random() * 0.05);
-            } else {
-              v.x = this.canvas.width * (0.46 + Math.random() * 0.22);
-            }
-          }
-
-          // Draw Vehicle
-          this.drawVehicle(v);
-        });
-
-        requestAnimationFrame(() => this.animate());
-      }
-
-      drawVehicle(v) {
-        const ctx = this.ctx;
-        ctx.save();
-        ctx.translate(v.x, v.y);
-        ctx.scale(v.scale, v.scale);
-
-        if (v.type === 'car') {
-          // Shadow
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
-          ctx.beginPath();
-          ctx.ellipse(0, 18, 22, 6, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Body
-          ctx.fillStyle = v.color;
-          ctx.beginPath();
-          ctx.roundRect(-18, -12, 36, 26, 6);
-          ctx.fill();
-
-          // Roof / Windshield
-          ctx.fillStyle = v.roofColor;
-          ctx.beginPath();
-          ctx.roundRect(-14, -6, 28, 14, 4);
-          ctx.fill();
-
-          // Headlights
-          ctx.fillStyle = '#fef08a';
-          ctx.beginPath();
-          ctx.arc(-13, 14, 3, 0, Math.PI * 2);
-          ctx.arc(13, 14, 3, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (v.type === 'bike') {
-          // Bicycle rider shadow
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
-          ctx.beginPath();
-          ctx.ellipse(0, 12, 10, 4, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Helmet / Rider
-          ctx.fillStyle = '#f43f5e';
-          ctx.beginPath();
-          ctx.arc(0, -6, 5, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Bike Frame
-          ctx.strokeStyle = v.color;
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(0, -1);
-          ctx.lineTo(0, 10);
-          ctx.stroke();
-        } else if (v.type === 'bus') {
-          // Bus shadow
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-          ctx.beginPath();
-          ctx.ellipse(0, 24, 26, 7, 0, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Bus body
-          ctx.fillStyle = '#3b82f6';
-          ctx.beginPath();
-          ctx.roundRect(-22, -18, 44, 40, 6);
-          ctx.fill();
-
-          // Bus Front Window
-          ctx.fillStyle = '#bae6fd';
-          ctx.beginPath();
-          ctx.roundRect(-18, 4, 36, 12, 3);
-          ctx.fill();
-        }
-
-        ctx.restore();
-      }
-    }
 
     // --- LEVELS DATA ---
     const GAME_LEVELS = [
@@ -1325,7 +1179,6 @@
     class VialWordsGame {
       constructor() {
         this.audio = new GameAudio();
-        this.traffic = new TrafficSimulator(document.getElementById('traffic-canvas'));
 
         this.currentLevelIndex = parseInt(localStorage.getItem('vialwords_level') || '0', 10);
         this.coins = parseInt(localStorage.getItem('vialwords_coins') || '200', 10);
