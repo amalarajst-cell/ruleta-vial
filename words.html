@@ -185,7 +185,7 @@
       100% { transform: scale(1.1); filter: brightness(1.2); }
     }
 
-    /* Level Pill (Centered Float) */
+    /* Level Pill (Centered Float Interactive) */
     .level-pill-float {
       background: rgba(14, 18, 20, 0.72);
       backdrop-filter: blur(14px);
@@ -199,6 +199,21 @@
       justify-content: center;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
       pointer-events: auto;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: inherit;
+      outline: none;
+    }
+
+    .level-pill-float:hover {
+      background: rgba(20, 32, 36, 0.9);
+      border-color: rgba(141, 226, 214, 0.85);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(141, 226, 214, 0.25);
+    }
+
+    .level-pill-float:active {
+      transform: scale(0.95);
     }
 
     .level-pill-number {
@@ -787,6 +802,110 @@
       filter: grayscale(1);
     }
 
+    /* LEVEL SELECTOR MODAL & GRID */
+    .stage-filter-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .stage-filter-bar::-webkit-scrollbar { display: none; }
+    .stage-chip {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .stage-chip.active {
+      background: rgba(141, 226, 214, 0.2);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(141, 226, 214, 0.2);
+    }
+    .levels-scroll-container {
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 4px;
+      max-height: 60vh;
+    }
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .level-card {
+      background: #1a2022;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      text-align: left;
+    }
+    .level-card:hover {
+      background: #222b2e;
+      border-color: rgba(141, 226, 214, 0.5);
+      transform: translateY(-2px);
+    }
+    .level-card.current {
+      border: 1.5px solid var(--accent-cyan);
+      background: rgba(141, 226, 214, 0.12);
+      box-shadow: 0 0 14px rgba(141, 226, 214, 0.25);
+    }
+    .level-card.solved {
+      border-color: rgba(0, 230, 118, 0.4);
+    }
+    .level-card-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .level-card-num {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+    }
+    .level-card.current .level-card-num {
+      color: var(--accent-cyan);
+    }
+    .level-card-icon {
+      font-size: 1.15rem;
+    }
+    .level-card-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .level-card-cat {
+      font-size: 0.65rem;
+      color: #8c979a;
+      text-transform: uppercase;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
     #confetti-canvas {
       position: absolute;
       inset: 0;
@@ -820,11 +939,14 @@
         </div>
       </div>
 
-      <!-- Center: Clean Floating Level Badge -->
-      <div class="level-pill-float">
-        <span class="level-pill-number" id="header-level-tag">NIVEL 1</span>
+      <!-- Center: Clean Floating Level Badge (Interactive Level Selector) -->
+      <button class="level-pill-float" id="level-pill-btn" title="Seleccionar Nivel (1 a 50)" aria-label="Elegir Nivel">
+        <div style="display:flex; align-items:center; gap:3px;">
+          <span class="level-pill-number" id="header-level-tag">NIVEL 1</span>
+          <span class="material-symbols-outlined" style="font-size:15px; color:var(--accent-cyan); line-height:1;">expand_more</span>
+        </div>
         <span class="level-pill-category" id="header-level-category">Peatones</span>
-      </div>
+      </button>
 
       <!-- Right: Action Pills -->
       <div class="top-action-group">
@@ -924,230 +1046,44 @@
       </div>
     </div>
 
+    <!-- Level Selector Drawer / Modal (50 Levels) -->
+    <div class="guide-modal" id="levels-modal">
+      <div class="guide-sheet" style="max-height:85vh;">
+        <div class="guide-header">
+          <div>
+            <h3 style="display:flex; align-items:center; gap:8px;">
+              <span>🗺️ Selector de Niveles</span>
+              <span style="font-size:0.75rem; background:rgba(141,226,214,0.18); color:var(--accent-cyan); padding:2px 8px; border-radius:10px; font-weight:800;">50 NIVELES</span>
+            </h3>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">Elegí cualquier nivel para practicar o repasar</p>
+          </div>
+          <button class="btn-frosted" id="close-levels-btn" style="width:34px;height:34px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+          </button>
+        </div>
+
+        <!-- Stage Filter Pills -->
+        <div class="stage-filter-bar" id="stage-filter-bar">
+          <button class="stage-chip active" data-stage="all">Todos (50)</button>
+          <button class="stage-chip" data-stage="1">Etapa 1 (1-10)</button>
+          <button class="stage-chip" data-stage="2">Etapa 2 (11-20)</button>
+          <button class="stage-chip" data-stage="3">Etapa 3 (21-35)</button>
+          <button class="stage-chip" data-stage="4">Etapa 4 (36-50)</button>
+        </div>
+
+        <!-- Grid of 50 Levels -->
+        <div class="levels-scroll-container">
+          <div class="levels-grid" id="levels-grid"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script src="js/cloud-sync.js?v=23"></script>
+  <script src="js/vialwords_levels.js?v=50"></script>
 
   <script>
-
-    // --- LEVELS DATA ---
-    const GAME_LEVELS = [
-      {
-        id: 1,
-        title: "Cruce Seguro",
-        category: "Peatones y Convivencia",
-        bg: "assets/bg_city.jpg",
-        letters: ["P", "A", "S", "O"],
-        words: [
-          { word: "PASO", row: 1, col: 0, dir: "H" },
-          { word: "SAPO", row: 1, col: 2, dir: "V" },
-          { word: "SOPA", row: 3, col: 0, dir: "H" }
-        ],
-        bonusWords: ["POSA", "ASO", "PAO", "SOA"],
-        tipIcon: "🚶‍♂️",
-        tipTitle: "Prioridad Peatonal",
-        tip: "En esquinas y sendas peatonales, el peatón siempre tiene prioridad absoluta de paso.",
-        tipDetail: "Al aproximarte a una esquina o cruce, reducí la marcha y detenete si una persona va a cruzar."
-      },
-      {
-        id: 2,
-        title: "Protección Vital",
-        category: "Motos y Bicicletas",
-        bg: "assets/bg_city.jpg",
-        letters: ["C", "A", "S", "C", "O"],
-        words: [
-          { word: "CASCO", row: 1, col: 0, dir: "H" },
-          { word: "SACO",  row: 1, col: 2, dir: "V" },
-          { word: "COSA",  row: 3, col: 2, dir: "H" },
-          { word: "CASO",  row: 1, col: 0, dir: "V" }
-        ],
-        bonusWords: ["ASCO", "CAOS", "COCA", "OCA", "ASO"],
-        tipIcon: "⛑️",
-        tipTitle: "Casco Homologado y Abrochado",
-        tip: "El casco reduce un 70% el riesgo de lesiones cerebrales graves en motos y bicis.",
-        tipDetail: "Un casco sin abrochar sale despedido ante el primer impacto. Elegí siempre cascos certificados y de tu talle."
-      },
-      {
-        id: 3,
-        title: "Detención y Distancia",
-        category: "Frenado Seguro",
-        bg: "assets/bg_route.jpg",
-        letters: ["P", "A", "R", "E", "S"],
-        words: [
-          { word: "PARES", row: 2, col: 0, dir: "H" },
-          { word: "PARE",  row: 2, col: 0, dir: "V" },
-          { word: "SER",   row: 2, col: 4, dir: "V" },
-          { word: "ERA",   row: 5, col: 0, dir: "H" }
-        ],
-        bonusWords: ["PERA", "PESA", "RAPE", "RES", "SEA", "PAR"],
-        tipIcon: "🛑",
-        tipTitle: "Señal de PARE",
-        tip: "El cartel de PARE exige detener el vehículo por completo, no solo aminorar la marcha.",
-        tipDetail: "Es una señal reglamentaria absoluta: frená a cero, observá ambos sentidos y sólo avanzá cuando esté 100% despejado."
-      },
-      {
-        id: 4,
-        title: "Atención al Camino",
-        category: "Visión y Concentración",
-        bg: "assets/bg_route.jpg",
-        letters: ["M", "I", "R", "A", "R"],
-        words: [
-          { word: "MIRAR", row: 1, col: 0, dir: "H" },
-          { word: "MIRA",  row: 1, col: 0, dir: "V" },
-          { word: "RIMA",  row: 3, col: 0, dir: "H" },
-          { word: "RIMAR", row: 1, col: 2, dir: "V" }
-        ],
-        bonusWords: ["MAR", "IRA", "MIA", "RIA"],
-        tipIcon: "👀",
-        tipTitle: "Cero Distracciones al Volante",
-        tip: "Mirar el celular 3 segundos a 40 km/h equivale a manejar más de 33 metros a ciegas.",
-        tipDetail: "La vista debe estar siempre en el camino y los espejos. Ni llamadas en manos libres ni mensajes mientras manejás."
-      },
-      {
-        id: 5,
-        title: "Luz y Visibilidad",
-        category: "Señalización Óptica",
-        bg: "assets/bg_city.jpg",
-        letters: ["V", "I", "A", "L", "E", "S"],
-        words: [
-          { word: "VIALES", row: 1, col: 0, dir: "H" },
-          { word: "VIAL",   row: 1, col: 0, dir: "V" },
-          { word: "ISLA",   row: 2, col: 0, dir: "H" },
-          { word: "LAVE",   row: 1, col: 3, dir: "V" }
-        ],
-        bonusWords: ["VALE", "VELA", "VIA", "VES", "LES", "ASI", "IVA", "AVE"],
-        tipIcon: "💡",
-        tipTitle: "Luces Bajas Siempre Encendidas",
-        tip: "Las luces bajas permiten que los demás vehículos te vean a más de 1.000 metros de distancia.",
-        tipDetail: "En rutas y autopistas es obligatorio circular con luces bajas las 24 horas. En ciudad, te hacen visible ante cualquier reflejo."
-      },
-      {
-        id: 6,
-        title: "Conducción Segura",
-        category: "Límites y Prudencia",
-        bg: "assets/bg_route.jpg",
-        letters: ["M", "A", "N", "E", "J", "O"],
-        words: [
-          { word: "MANEJO", row: 1, col: 0, dir: "H" },
-          { word: "AJENO",  row: 1, col: 1, dir: "V" },
-          { word: "JAMON",  row: 2, col: 1, dir: "H" },
-          { word: "MANO",   row: 1, col: 0, dir: "V" }
-        ],
-        bonusWords: ["MONJE", "MOJE", "AJO", "ANO", "EJE", "NOA", "AMO"],
-        tipIcon: "🚗",
-        tipTitle: "Distancia de Seguridad",
-        tip: "Mantené siempre al menos 2 segundos de distancia con el auto de adelante; con lluvia, aumentala a 4 segundos.",
-        tipDetail: "La regla de los 2 segundos te da el tiempo de reacción necesario ante una frenada intempestiva y previene choques por alcance."
-      },
-      {
-        id: 7,
-        title: "Fricción y Frenado",
-        category: "Física y Cinemática",
-        bg: "assets/bg_route.jpg",
-        letters: ["F", "R", "E", "N", "O", "S"],
-        words: [
-          { word: "FRENOS", row: 1, col: 0, dir: "H" },
-          { word: "FRENO",  row: 1, col: 0, dir: "V" },
-          { word: "ROSE",   row: 2, col: 0, dir: "H" },
-          { word: "SON",    row: 1, col: 5, dir: "V" }
-        ],
-        bonusWords: ["SER", "NOS", "ERO", "REO", "RES", "ORE", "REOS", "SENO"],
-        tipIcon: "🌧️",
-        tipTitle: "Distancia de Detención",
-        tip: "La distancia de frenado crece con el cuadrado de la velocidad: duplicar la velocidad cuadruplica la distancia para frenar.",
-        tipDetail: "A 40 km/h frenás en ~18 metros; a 80 km/h necesitás más de 55 metros. La energía cinética no se reduce linealmente."
-      },
-      {
-        id: 8,
-        title: "Convivencia Ciclista",
-        category: "Movilidad Sustentable",
-        bg: "assets/bg_city.jpg",
-        letters: ["C", "I", "C", "L", "O", "S"],
-        words: [
-          { word: "CICLOS", row: 1, col: 0, dir: "H" },
-          { word: "COL",    row: 1, col: 0, dir: "V" },
-          { word: "CLIC",   row: 1, col: 2, dir: "V" },
-          { word: "SOL",    row: 1, col: 5, dir: "V" }
-        ],
-        bonusWords: ["CICLO", "LOS", "SIC", "OLI"],
-        tipIcon: "🚲",
-        tipTitle: "Metro y Medio de Separación",
-        tip: "Al sobrepasar a un ciclista, es obligatorio dejar al menos 1,5 metros de distancia lateral.",
-        tipDetail: "La turbulencia de aire de un vehículo o un bache imprevisto pueden desestabilizar la bicicleta si no dejás margen lateral seguro."
-      },
-      {
-        id: 9,
-        title: "Ceda y Rotondas",
-        category: "Normativa y Prioridades",
-        bg: "assets/bg_city.jpg",
-        letters: ["C", "E", "D", "A", "R"],
-        words: [
-          { word: "CEDAR", row: 1, col: 0, dir: "H" },
-          { word: "CEDA",  row: 1, col: 0, dir: "V" },
-          { word: "DAR",   row: 3, col: 0, dir: "H" },
-          { word: "RED",   row: 1, col: 4, dir: "V" }
-        ],
-        bonusWords: ["CREA", "ARCE", "ERA", "CAE", "DARE", "RAE"],
-        tipIcon: "🔄",
-        tipTitle: "Prioridad en Rotonda",
-        tip: "En una rotonda, la prioridad absoluta de paso la tiene siempre el que ya está circulando por ella.",
-        tipDetail: "Quien intenta entrar debe frenar y ceder el paso a los vehículos que giran, facilitando la fluidez del nudo vial."
-      },
-      {
-        id: 10,
-        title: "Presión y Contacto",
-        category: "Seguridad Activa",
-        bg: "assets/bg_route.jpg",
-        letters: ["A", "I", "R", "E", "S"],
-        words: [
-          { word: "AIRES", row: 1, col: 0, dir: "H" },
-          { word: "AIRE",  row: 1, col: 0, dir: "V" },
-          { word: "ERA",   row: 4, col: 0, dir: "H" },
-          { word: "SER",   row: 1, col: 4, dir: "V" }
-        ],
-        bonusWords: ["RIES", "RES", "RIA", "ASI", "SEA", "IRSE", "IRA"],
-        tipIcon: "🛞",
-        tipTitle: "Presión de Neumáticos",
-        tip: "Revisá la presión en frío cada 15 días: circular con baja presión incrementa hasta 4 metros la frenada.",
-        tipDetail: "El neumático es el único punto de contacto con el suelo; una presión deficiente recalienta la banda de rodamiento y causa desprendimientos."
-      },
-      {
-        id: 11,
-        title: "Alerta y Reflejos",
-        category: "Factores de Riesgo",
-        bg: "assets/bg_city.jpg",
-        letters: ["A", "L", "E", "R", "T", "A"],
-        words: [
-          { word: "ALERTA", row: 1, col: 0, dir: "H" },
-          { word: "ARTE",   row: 1, col: 0, dir: "V" },
-          { word: "ERA",    row: 4, col: 0, dir: "H" },
-          { word: "TELA",   row: 1, col: 4, dir: "V" }
-        ],
-        bonusWords: ["REAL", "RATA", "TARA", "ALA", "TAL", "LAR", "ATE", "REA"],
-        tipIcon: "⚠️",
-        tipTitle: "Tiempo de Reacción",
-        tip: "El cerebro humano tarda entre 1 y 1,5 segundos en percibir un peligro y pisar el pedal de freno.",
-        tipDetail: "A 60 km/h, ese segundo y medio significa recorrer 25 metros antes de que los frenos empiecen a actuar. El cansancio duplica ese tiempo."
-      },
-      {
-        id: 12,
-        title: "Rodamiento Seguro",
-        category: "Mantenimiento Preventivo",
-        bg: "assets/bg_route.jpg",
-        letters: ["R", "U", "E", "D", "A", "S"],
-        words: [
-          { word: "RUEDAS", row: 1, col: 0, dir: "H" },
-          { word: "RUEDA",  row: 1, col: 0, dir: "V" },
-          { word: "DAR",    row: 4, col: 0, dir: "H" },
-          { word: "SUR",    row: 1, col: 5, dir: "V" }
-        ],
-        bonusWords: ["RUDA", "DURA", "RUSA", "SUDA", "ERA", "RED", "SER", "SED", "USE", "USA", "RUA", "DURE"],
-        tipIcon: "🔧",
-        tipTitle: "Profundidad del Dibujo",
-        tip: "El dibujo de las cubiertas debe tener al menos 1,6 mm de profundidad para evacuar agua eficientemente.",
-        tipDetail: "Los canales del neumático expulsan litros de agua por segundo. Con cubiertas desgastadas o lisas, el riesgo de aquaplaning es inminente."
-      }
-    ];
 
     // --- AUDIO SYNTHESIZER ---
     class GameAudio {
@@ -1339,7 +1275,12 @@
           guideModal: document.getElementById('guide-modal'),
           closeGuideBtn: document.getElementById('close-guide-btn'),
           guideList: document.getElementById('guide-list'),
-          confettiCanvas: document.getElementById('confetti-canvas')
+          confettiCanvas: document.getElementById('confetti-canvas'),
+          levelPillBtn: document.getElementById('level-pill-btn'),
+          levelsModal: document.getElementById('levels-modal'),
+          closeLevelsBtn: document.getElementById('close-levels-btn'),
+          levelsGrid: document.getElementById('levels-grid'),
+          stageFilterBar: document.getElementById('stage-filter-bar')
         };
       }
 
@@ -1377,6 +1318,31 @@
         this.dom.closeGuideBtn.addEventListener('click', () => {
           this.dom.guideModal.classList.remove('active');
         });
+
+        if (this.dom.levelPillBtn) {
+          this.dom.levelPillBtn.addEventListener('click', () => {
+            this.renderLevelsGrid(this.activeStageFilter || 'all');
+            this.dom.levelsModal.classList.add('active');
+          });
+        }
+
+        if (this.dom.closeLevelsBtn) {
+          this.dom.closeLevelsBtn.addEventListener('click', () => {
+            this.dom.levelsModal.classList.remove('active');
+          });
+        }
+
+        if (this.dom.stageFilterBar) {
+          this.dom.stageFilterBar.addEventListener('click', (e) => {
+            const chip = e.target.closest('.stage-chip');
+            if (!chip) return;
+            this.dom.stageFilterBar.querySelectorAll('.stage-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            const stage = chip.dataset.stage;
+            this.activeStageFilter = stage;
+            this.renderLevelsGrid(stage);
+          });
+        }
 
         const wheel = this.dom.wheelContainer;
         wheel.addEventListener('pointerdown', (e) => this.onPointerDown(e));
@@ -1789,7 +1755,16 @@
         this.saveProgress();
 
         const level = this.currentLevel;
-        this.dom.victoryLevelTitle.textContent = `¡${level.title} Completado!`;
+        const isGameComplete = level.id >= GAME_LEVELS.length;
+
+        if (isGameComplete) {
+          this.dom.victoryLevelTitle.textContent = `¡Maestro Vial Supremo!`;
+          this.dom.nextLevelBtn.textContent = 'Elegir Nivel o Repetir ➔';
+        } else {
+          this.dom.victoryLevelTitle.textContent = `¡${level.title} Completado!`;
+          this.dom.nextLevelBtn.textContent = 'Siguiente Nivel ➔';
+        }
+
         this.dom.pillIcon.textContent = level.tipIcon;
         this.dom.pillBadge.textContent = level.category;
         this.dom.pillTitle.textContent = level.tipTitle;
@@ -1810,6 +1785,42 @@
         } catch(e) {}
 
         this.dom.victoryModal.classList.add('active');
+      }
+
+      renderLevelsGrid(stage = 'all') {
+        const grid = this.dom.levelsGrid;
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        GAME_LEVELS.forEach((lvl, idx) => {
+          if (stage === '1' && (lvl.id < 1 || lvl.id > 10)) return;
+          if (stage === '2' && (lvl.id < 11 || lvl.id > 20)) return;
+          if (stage === '3' && (lvl.id < 21 || lvl.id > 35)) return;
+          if (stage === '4' && (lvl.id < 36 || lvl.id > 50)) return;
+
+          const isCurrent = idx === this.currentLevelIndex;
+          const isSolved = this.unlockedTips.some(t => t.id === lvl.id) || lvl.id <= this.currentLevelIndex;
+
+          const card = document.createElement('div');
+          card.className = `level-card ${isCurrent ? 'current' : ''} ${isSolved ? 'solved' : ''}`;
+          card.innerHTML = `
+            <div class="level-card-header">
+              <span class="level-card-num">NIVEL ${lvl.id}</span>
+              <span class="level-card-icon">${lvl.tipIcon || '🚗'}</span>
+            </div>
+            <div class="level-card-title">${lvl.title}</div>
+            <div class="level-card-cat">${lvl.category}</div>
+          `;
+
+          card.addEventListener('click', () => {
+            this.dom.levelsModal.classList.remove('active');
+            this.currentLevelIndex = idx;
+            this.saveProgress();
+            this.loadLevel(this.currentLevelIndex);
+          });
+
+          grid.appendChild(card);
+        });
       }
 
       renderGuideList() {
