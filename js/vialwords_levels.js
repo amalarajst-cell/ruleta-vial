@@ -207,27 +207,27 @@ const GAME_LEVELS = [
         "words":  [
                       {
                           "word":  "VIALES",
-                          "row":  1,
+                          "row":  0,
                           "col":  0,
                           "dir":  "H"
                       },
                       {
                           "word":  "VIAL",
-                          "row":  1,
+                          "row":  0,
                           "col":  0,
                           "dir":  "V"
                       },
                       {
                           "word":  "ISLA",
-                          "row":  2,
-                          "col":  0,
-                          "dir":  "H"
+                          "row":  -2,
+                          "col":  3,
+                          "dir":  "V"
                       },
                       {
                           "word":  "LAVE",
-                          "row":  1,
-                          "col":  3,
-                          "dir":  "V"
+                          "row":  3,
+                          "col":  0,
+                          "dir":  "H"
                       }
                   ],
         "bonusWords":  [
@@ -261,27 +261,27 @@ const GAME_LEVELS = [
         "words":  [
                       {
                           "word":  "MANEJO",
-                          "row":  1,
+                          "row":  0,
                           "col":  0,
                           "dir":  "H"
                       },
                       {
                           "word":  "AJENO",
-                          "row":  1,
+                          "row":  0,
                           "col":  1,
                           "dir":  "V"
                       },
                       {
                           "word":  "JAMON",
-                          "row":  2,
-                          "col":  1,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  4,
+                          "dir":  "V"
                       },
                       {
                           "word":  "MANO",
-                          "row":  1,
-                          "col":  0,
-                          "dir":  "V"
+                          "row":  3,
+                          "col":  -1,
+                          "dir":  "H"
                       }
                   ],
         "bonusWords":  [
@@ -314,31 +314,31 @@ const GAME_LEVELS = [
         "words":  [
                       {
                           "word":  "FRENOS",
-                          "row":  1,
+                          "row":  0,
                           "col":  0,
                           "dir":  "H"
                       },
                       {
                           "word":  "FRENO",
-                          "row":  1,
+                          "row":  0,
                           "col":  0,
                           "dir":  "V"
                       },
                       {
-                          "word":  "ROSE",
-                          "row":  2,
-                          "col":  0,
-                          "dir":  "H"
+                          "word":  "SER",
+                          "row":  -1,
+                          "col":  2,
+                          "dir":  "V"
                       },
                       {
                           "word":  "SON",
-                          "row":  1,
-                          "col":  5,
-                          "dir":  "V"
+                          "row":  3,
+                          "col":  -2,
+                          "dir":  "H"
                       }
                   ],
         "bonusWords":  [
-                           "SER",
+                           "ROSE",
                            "NOS",
                            "ERO",
                            "REO",
@@ -644,9 +644,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "SANE",
-                          "row":  3,
-                          "col":  -1,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
                       },
                       {
                           "word":  "ASEN",
@@ -656,8 +656,8 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "DES",
-                          "row":  2,
-                          "col":  3,
+                          "row":  3,
+                          "col":  -1,
                           "dir":  "H"
                       }
                   ],
@@ -801,9 +801,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "FREN",
-                          "row":  2,
-                          "col":  -1,
-                          "dir":  "V"
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "H"
                       },
                       {
                           "word":  "ROE",
@@ -849,9 +849,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "DAN",
-                          "row":  2,
-                          "col":  0,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  2,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -941,8 +941,8 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "RAD",
-                          "row":  3,
-                          "col":  -1,
+                          "row":  0,
+                          "col":  0,
                           "dir":  "H"
                       },
                       {
@@ -953,8 +953,8 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "ROD",
-                          "row":  3,
-                          "col":  -1,
+                          "row":  0,
+                          "col":  0,
                           "dir":  "V"
                       }
                   ],
@@ -1109,9 +1109,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "VER",
-                          "row":  4,
-                          "col":  -1,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -1153,12 +1153,18 @@ const GAME_LEVELS = [
                       {
                           "word":  "ROD",
                           "row":  -1,
-                          "col":  4,
+                          "col":  1,
+                          "dir":  "V"
+                      },
+                      {
+                          "word":  "CON",
+                          "row":  -1,
+                          "col":  1,
                           "dir":  "V"
                       }
                   ],
         "bonusWords":  [
-                           "CON"
+
                        ],
         "tipIcon":  "🅿️",
         "tipTitle":  "Distancia al Cordón",
@@ -1205,9 +1211,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "LIRA",
-                          "row":  -4,
-                          "col":  2,
-                          "dir":  "H"
+                          "row":  -5,
+                          "col":  4,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -1263,8 +1269,8 @@ const GAME_LEVELS = [
                       {
                           "word":  "DOS",
                           "row":  -2,
-                          "col":  -2,
-                          "dir":  "H"
+                          "col":  2,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -1315,9 +1321,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "GIRO",
-                          "row":  2,
-                          "col":  2,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  4,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -1460,8 +1466,8 @@ const GAME_LEVELS = [
                       {
                           "word":  "LEA",
                           "row":  -2,
-                          "col":  1,
-                          "dir":  "H"
+                          "col":  5,
+                          "dir":  "V"
                       },
                       {
                           "word":  "ALE",
@@ -1713,14 +1719,14 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "OLA",
-                          "row":  -1,
-                          "col":  6,
+                          "row":  -2,
+                          "col":  0,
                           "dir":  "V"
                       },
                       {
                           "word":  "CAL",
-                          "row":  0,
-                          "col":  2,
+                          "row":  -2,
+                          "col":  6,
                           "dir":  "V"
                       }
                   ],
@@ -1801,20 +1807,20 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "LADO",
-                          "row":  3,
-                          "col":  -1,
-                          "dir":  "H"
-                      },
-                      {
-                          "word":  "OLA",
-                          "row":  -2,
-                          "col":  3,
+                          "row":  0,
+                          "col":  0,
                           "dir":  "V"
                       },
                       {
+                          "word":  "OLA",
+                          "row":  3,
+                          "col":  0,
+                          "dir":  "H"
+                      },
+                      {
                           "word":  "AMO",
-                          "row":  -2,
-                          "col":  1,
+                          "row":  0,
+                          "col":  3,
                           "dir":  "V"
                       }
                   ],
@@ -1860,9 +1866,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "DAN",
-                          "row":  2,
-                          "col":  0,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  2,
+                          "dir":  "V"
                       },
                       {
                           "word":  "ACA",
@@ -2021,9 +2027,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "SER",
-                          "row":  2,
-                          "col":  -2,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
                       },
                       {
                           "word":  "REO",
@@ -2136,21 +2142,21 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "CANTER",
-                          "row":  3,
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
+                      },
+                      {
+                          "word":  "CANTO",
+                          "row":  2,
                           "col":  -2,
                           "dir":  "H"
                       },
                       {
-                          "word":  "CANTO",
-                          "row":  5,
-                          "col":  -3,
-                          "dir":  "H"
-                      },
-                      {
                           "word":  "CORTE",
-                          "row":  -1,
-                          "col":  6,
-                          "dir":  "V"
+                          "row":  5,
+                          "col":  -2,
+                          "dir":  "H"
                       }
                   ],
         "bonusWords":  [
@@ -2209,20 +2215,20 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "RODA",
-                          "row":  -1,
-                          "col":  3,
+                          "row":  0,
+                          "col":  0,
                           "dir":  "V"
                       },
                       {
                           "word":  "ROD",
-                          "row":  -2,
-                          "col":  5,
+                          "row":  0,
+                          "col":  0,
                           "dir":  "V"
                       },
                       {
                           "word":  "RAD",
-                          "row":  2,
-                          "col":  2,
+                          "row":  3,
+                          "col":  -1,
                           "dir":  "H"
                       }
                   ],
@@ -2276,12 +2282,12 @@ const GAME_LEVELS = [
                       {
                           "word":  "ALZA",
                           "row":  0,
-                          "col":  6,
+                          "col":  1,
                           "dir":  "V"
                       },
                       {
                           "word":  "CAL",
-                          "row":  5,
+                          "row":  0,
                           "col":  0,
                           "dir":  "H"
                       }
@@ -2336,9 +2342,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "ALTO",
-                          "row":  3,
-                          "col":  0,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  3,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -2398,9 +2404,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "BAR",
-                          "row":  4,
-                          "col":  -1,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -2452,9 +2458,9 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "FREO",
-                          "row":  4,
-                          "col":  -3,
-                          "dir":  "H"
+                          "row":  0,
+                          "col":  2,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -2590,8 +2596,8 @@ const GAME_LEVELS = [
                       },
                       {
                           "word":  "FRENO",
-                          "row":  4,
-                          "col":  -3,
+                          "row":  2,
+                          "col":  -1,
                           "dir":  "H"
                       }
                   ],
@@ -2673,13 +2679,13 @@ const GAME_LEVELS = [
                       {
                           "word":  "UNO",
                           "row":  -2,
-                          "col":  2,
-                          "dir":  "H"
+                          "col":  6,
+                          "dir":  "V"
                       },
                       {
                           "word":  "RON",
-                          "row":  -2,
-                          "col":  6,
+                          "row":  0,
+                          "col":  5,
                           "dir":  "H"
                       }
                   ],

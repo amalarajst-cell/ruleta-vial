@@ -77,10 +77,10 @@
     "bg": "assets/bg_city.jpg",
     "letters": ["V", "I", "A", "L", "E", "S"],
     "words": [
-      { "word": "VIALES", "row": 1, "col": 0, "dir": "H" },
-      { "word": "VIAL",   "row": 1, "col": 0, "dir": "V" },
-      { "word": "ISLA",   "row": 2, "col": 0, "dir": "H" },
-      { "word": "LAVE",   "row": 1, "col": 3, "dir": "V" }
+      { "word": "VIALES", "row": 0, "col": 0, "dir": "H" },
+      { "word": "VIAL",   "row": 0, "col": 0, "dir": "V" },
+      { "word": "ISLA",   "row": -2, "col": 3, "dir": "V" },
+      { "word": "LAVE",   "row": 3, "col": 0, "dir": "H" }
     ],
     "bonusWords": ["VALE", "VELA", "VIA", "VES", "LES", "ASI", "IVA", "AVE"],
     "tipIcon": "💡",
@@ -95,10 +95,10 @@
     "bg": "assets/bg_route.jpg",
     "letters": ["M", "A", "N", "E", "J", "O"],
     "words": [
-      { "word": "MANEJO", "row": 1, "col": 0, "dir": "H" },
-      { "word": "AJENO",  "row": 1, "col": 1, "dir": "V" },
-      { "word": "JAMON",  "row": 2, "col": 1, "dir": "H" },
-      { "word": "MANO",   "row": 1, "col": 0, "dir": "V" }
+      { "word": "MANEJO", "row": 0, "col": 0, "dir": "H" },
+      { "word": "AJENO",  "row": 0, "col": 1, "dir": "V" },
+      { "word": "JAMON",  "row": 0, "col": 4, "dir": "V" },
+      { "word": "MANO",   "row": 3, "col": -1, "dir": "H" }
     ],
     "bonusWords": ["MONJE", "MOJE", "AJO", "ANO", "EJE", "NOA", "AMO"],
     "tipIcon": "🚗",
@@ -113,12 +113,12 @@
     "bg": "assets/bg_route.jpg",
     "letters": ["F", "R", "E", "N", "O", "S"],
     "words": [
-      { "word": "FRENOS", "row": 1, "col": 0, "dir": "H" },
-      { "word": "FRENO",  "row": 1, "col": 0, "dir": "V" },
-      { "word": "ROSE",   "row": 2, "col": 0, "dir": "H" },
-      { "word": "SON",    "row": 1, "col": 5, "dir": "V" }
+      { "word": "FRENOS", "row": 0, "col": 0, "dir": "H" },
+      { "word": "FRENO",  "row": 0, "col": 0, "dir": "V" },
+      { "word": "SER",    "row": -1, "col": 2, "dir": "V" },
+      { "word": "SON",    "row": 3, "col": -2, "dir": "H" }
     ],
-    "bonusWords": ["SER", "NOS", "ERO", "REO", "RES", "ORE", "REOS", "SENO"],
+    "bonusWords": ["ROSE", "NOS", "ERO", "REO", "RES", "ORE", "REOS", "SENO"],
     "tipIcon": "🌧️",
     "tipTitle": "Distancia de Detención",
     "tip": "La distancia de frenado crece con el cuadrado de la velocidad: duplicar la velocidad cuadruplica la distancia para frenar.",
