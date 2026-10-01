@@ -254,6 +254,63 @@
       pointer-events: auto;
     }
 
+    /* Free Hints Badge Pill in Header */
+    .hint-pill-float {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(14, 18, 20, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #38bdf8;
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      pointer-events: auto;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+    .hint-pill-float.has-hints {
+      border-color: #10b981;
+      color: #34d399;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+    }
+    .hint-pill-float:active {
+      transform: scale(0.95);
+    }
+
+    /* Floating counter badge directly over the lightbulb button */
+    .hint-badge-counter {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 5px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 900;
+      font-family: var(--font-bubble);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.6);
+      animation: badgePulse 2s infinite ease-in-out;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); box-shadow: 0 0 14px rgba(16, 185, 129, 0.9); }
+    }
+
     /* CROSSWORD BOARD AREA */
     .board-container {
       position: relative;
@@ -1497,6 +1554,13 @@
           <span id="coin-count">200</span>
         </div>
 
+        <!-- Pistas Gratis Badge Pill in Header -->
+        <div class="hint-pill-float" id="hint-pill-header" title="Pistas Gratis disponibles">
+          <span style="font-size:18px;">💡</span>
+          <span id="free-hints-count">0</span>
+          <span style="font-size:0.68rem;opacity:0.85;font-weight:700;">PISTAS</span>
+        </div>
+
         <button class="btn-frosted" id="guide-btn" title="Manual de Consejos Viales" aria-label="Consejos">
           <span class="material-symbols-outlined" style="font-size:20px;">menu_book</span>
         </button>
@@ -1539,10 +1603,11 @@
         </svg>
       </div>
 
-      <!-- Hint Button (Bombilla / Pista) -->
-      <button class="side-tool-btn hint-btn" id="hint-btn" title="Pedir Pista (50 monedas)" aria-label="Pista">
+      <!-- Hint Button (Bombilla / Pista) con Insignia de Pistas Gratis -->
+      <button class="side-tool-btn hint-btn" id="hint-btn" title="Pedir Pista" aria-label="Pista">
         <span class="material-symbols-outlined" style="font-size:24px;color:#f59e0b;">lightbulb</span>
-        <span class="tool-cost">50 🪙</span>
+        <span class="hint-badge-counter" id="hint-badge-counter" style="display:none;">0</span>
+        <span class="tool-cost" id="hint-tool-cost">50 🪙</span>
       </button>
     </section>
 
@@ -1592,12 +1657,19 @@
 
       <!-- Main Stage Container -->
       <div class="wow-stage-card">
-        <!-- Top Status Bar (Points Pill and Close Button - No Gems) -->
+        <!-- Top Status Bar (Points Pill, Hints Pill and Close Button) -->
         <div class="wow-top-bar">
-          <div class="wow-status-pill wow-pill-points">
-            <span style="font-size:1.15rem;">🪙</span>
-            <span class="wow-pill-val" id="wow-points-count">0</span>
-            <span style="font-size:0.75rem;opacity:0.8;margin-left:2px;font-weight:800;">PUNTOS</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="wow-status-pill wow-pill-points" title="Puntos acumulados">
+              <span style="font-size:1.15rem;">🪙</span>
+              <span class="wow-pill-val" id="wow-points-count">0</span>
+              <span style="font-size:0.75rem;opacity:0.8;margin-left:2px;font-weight:800;">PUNTOS</span>
+            </div>
+            <div class="wow-status-pill wow-pill-hints" style="border-color:rgba(56,189,248,0.45); color:#38bdf8;" title="Pistas Gratis acumuladas">
+              <span style="font-size:1.1rem;">💡</span>
+              <span class="wow-pill-val" id="wow-hints-count">0</span>
+              <span style="font-size:0.75rem;opacity:0.8;margin-left:2px;font-weight:800;">PISTAS</span>
+            </div>
           </div>
           <button class="wow-close-btn" id="close-benefits-wheel-btn" aria-label="Cerrar">
             <span class="material-symbols-outlined" style="font-size:20px;">close</span>
@@ -2283,6 +2355,11 @@
           spinBenefitsBtn: document.getElementById('btn-spin-benefits-wheel'),
           benefitsCanvas: document.getElementById('benefits-wheel-canvas'),
           wowPointsCount: document.getElementById('wow-points-count'),
+          wowHintsCount: document.getElementById('wow-hints-count'),
+          freeHintsCount: document.getElementById('free-hints-count'),
+          hintPillHeader: document.getElementById('hint-pill-header'),
+          hintBadgeCounter: document.getElementById('hint-badge-counter'),
+          hintToolCost: document.getElementById('hint-tool-cost'),
           triviaOverlay: document.getElementById('wow-trivia-overlay'),
           triviaBadge: document.getElementById('wow-trivia-badge'),
           triviaStake: document.getElementById('wow-trivia-stake'),
@@ -2317,6 +2394,7 @@
 
         this.dom.shuffleBtn.addEventListener('click', () => this.shuffleLetters());
         this.dom.hintBtn.addEventListener('click', () => this.useHint());
+        this.dom.hintPillHeader?.addEventListener('click', () => this.useHint());
 
         this.dom.nextLevelBtn.addEventListener('click', () => {
           this.dom.victoryModal.classList.remove('active');
@@ -2416,6 +2494,9 @@
         if (this.dom.wowPointsCount) {
           this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
         }
+        if (this.dom.wowHintsCount) {
+          this.dom.wowHintsCount.textContent = this.freeHints;
+        }
         this.audio.init();
 
         setTimeout(() => {
@@ -2450,6 +2531,9 @@
 
         if (this.dom.wowPointsCount) {
           this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
+        }
+        if (this.dom.wowHintsCount) {
+          this.dom.wowHintsCount.textContent = this.freeHints;
         }
 
         if (this.dom.benefitWonIcon) this.dom.benefitWonIcon.textContent = benefit.isJackpot ? '🎡' : (benefit.isBolt ? '⚡' : '🪙');
@@ -2615,16 +2699,55 @@
       }
 
       updateHintButtonUI() {
-        if (!this.dom.hintBtn) return;
-        const costEl = this.dom.hintBtn.querySelector('.tool-cost');
-        if (this.freeHints > 0) {
-          if (costEl) costEl.textContent = `${this.freeHints} 💡 Gratis`;
-          this.dom.hintBtn.style.borderColor = '#00e58a';
-          this.dom.hintBtn.style.boxShadow = '0 0 12px rgba(0,229,138,0.4)';
-        } else {
-          if (costEl) costEl.textContent = '50 🪙';
-          this.dom.hintBtn.style.borderColor = '';
-          this.dom.hintBtn.style.boxShadow = '';
+        // Actualizar píldora de pistas en el header superior
+        if (this.dom.freeHintsCount) {
+          this.dom.freeHintsCount.textContent = this.freeHints;
+        }
+        if (this.dom.hintPillHeader) {
+          if (this.freeHints > 0) {
+            this.dom.hintPillHeader.classList.add('has-hints');
+            this.dom.hintPillHeader.title = `Tenés ${this.freeHints} Pistas Gratis disponibles (Hacé clic para usar)`;
+          } else {
+            this.dom.hintPillHeader.classList.remove('has-hints');
+            this.dom.hintPillHeader.title = 'Pistas Gratis (Girá la Ruleta o usá 50 monedas)';
+          }
+        }
+
+        // Actualizar contador dentro de la Ruleta de Beneficios
+        if (this.dom.wowHintsCount) {
+          this.dom.wowHintsCount.textContent = this.freeHints;
+        }
+
+        // Actualizar insignia flotante sobre el botón de pistas
+        if (this.dom.hintBadgeCounter) {
+          if (this.freeHints > 0) {
+            this.dom.hintBadgeCounter.textContent = this.freeHints;
+            this.dom.hintBadgeCounter.style.display = 'flex';
+          } else {
+            this.dom.hintBadgeCounter.style.display = 'none';
+          }
+        }
+
+        // Actualizar etiqueta de costo y aspecto del botón
+        const costEl = this.dom.hintToolCost || (this.dom.hintBtn ? this.dom.hintBtn.querySelector('.tool-cost') : null);
+        if (this.dom.hintBtn) {
+          if (this.freeHints > 0) {
+            if (costEl) {
+              costEl.textContent = 'GRATIS';
+              costEl.style.background = '#10b981';
+            }
+            this.dom.hintBtn.style.borderColor = '#10b981';
+            this.dom.hintBtn.style.boxShadow = '0 0 16px rgba(16,185,129,0.55)';
+            this.dom.hintBtn.title = `Usar Pista Gratis (${this.freeHints} disponibles)`;
+          } else {
+            if (costEl) {
+              costEl.textContent = '50 🪙';
+              costEl.style.background = '#f59e0b';
+            }
+            this.dom.hintBtn.style.borderColor = '';
+            this.dom.hintBtn.style.boxShadow = '';
+            this.dom.hintBtn.title = 'Pedir Pista (50 monedas)';
+          }
         }
       }
 
