@@ -1026,6 +1026,7 @@
         <div class="reward-badge">
           <span>Premio:</span> <strong>+100 🪙 Monedas</strong>
         </div>
+        <div id="bonus-words-summary" style="margin-top: -6px; margin-bottom: 12px; font-size: 0.84rem; color: #ffca28; font-weight: 600; display: none; text-align: center;"></div>
 
         <button class="modal-btn" id="next-level-btn">
           Siguiente Nivel ➔
@@ -1082,6 +1083,7 @@
 
   <script src="js/cloud-sync.js?v=23"></script>
   <script src="js/vialwords_levels.js?v=50"></script>
+  <script src="js/vialwords_dictionary.js?v=1"></script>
 
   <script>
 
@@ -1641,6 +1643,18 @@
         this.dom.previewPill.className = text ? 'word-preview-pill active' : 'word-preview-pill';
       }
 
+      isDictionaryWord(word) {
+        if (!word || word.length < 3) return false;
+        const upper = word.toUpperCase().trim();
+        if (this.currentLevel && this.currentLevel.bonusWords && this.currentLevel.bonusWords.includes(upper)) {
+          return true;
+        }
+        if (typeof SPANISH_DICTIONARY !== 'undefined' && SPANISH_DICTIONARY && SPANISH_DICTIONARY.has(upper)) {
+          return true;
+        }
+        return false;
+      }
+
       validateWord(word) {
         const level = this.currentLevel;
         const targetWord = level.words.find(w => w.word === word);
@@ -1650,10 +1664,11 @@
             this.setTrafficLight('yellow');
             this.audio.playAlreadyFound();
             this.dom.previewPill.className = 'word-preview-pill active already-found';
+            this.updatePreview(`${word} (Ya resuelta)`);
             setTimeout(() => {
               this.updatePreview('');
               this.setTrafficLight('green');
-            }, 500);
+            }, 550);
           } else {
             // SUCCESS!
             this.setTrafficLight('green');
@@ -1666,24 +1681,30 @@
               setTimeout(() => this.triggerLevelVictory(), 700);
             }
           }
-        } else if (level.bonusWords && level.bonusWords.includes(word)) {
+        } else if (this.isDictionaryWord(word)) {
           if (this.foundBonusWords.has(word)) {
             this.setTrafficLight('yellow');
             this.audio.playAlreadyFound();
             this.dom.previewPill.className = 'word-preview-pill active already-found';
+            this.updatePreview(`${word} (Ya anotada)`);
             setTimeout(() => {
               this.updatePreview('');
               this.setTrafficLight('green');
-            }, 500);
+            }, 600);
           } else {
             this.setTrafficLight('green');
             this.foundBonusWords.add(word);
-            this.coins += 25;
+            // Dynamic bonus coins: 3 letters = 25 🪙, 4 letters = 35 🪙, 5+ letters = 50 🪙
+            const bonusReward = word.length <= 3 ? 25 : (word.length === 4 ? 35 : 50);
+            this.coins += bonusReward;
             this.saveProgress();
             this.audio.playBonusWord();
             this.dom.previewPill.className = 'word-preview-pill active bonus';
-            this.updatePreview(`+25 🪙`);
-            setTimeout(() => this.updatePreview(''), 700);
+            this.updatePreview(`+${bonusReward} 🪙 ¡Palabra de Diccionario!`);
+            if (this.confetti && typeof this.confetti.burst === 'function') {
+              this.confetti.burst(20);
+            }
+            setTimeout(() => this.updatePreview(''), 850);
           }
         } else {
           // RED LIGHT (Mistake)
@@ -1771,15 +1792,26 @@
         this.dom.pillText.textContent = level.tip;
         this.dom.pillDetail.textContent = level.tipDetail;
 
+        const bonusSummaryEl = document.getElementById('bonus-words-summary');
+        if (bonusSummaryEl) {
+          if (this.foundBonusWords && this.foundBonusWords.size > 0) {
+            bonusSummaryEl.style.display = 'block';
+            bonusSummaryEl.innerHTML = `✨ <strong>+${this.foundBonusWords.size}</strong> palabra${this.foundBonusWords.size > 1 ? 's' : ''} extra del diccionario: <em>${Array.from(this.foundBonusWords).join(', ')}</em>`;
+          } else {
+            bonusSummaryEl.style.display = 'none';
+          }
+        }
+
         try {
           if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
+            const bonusExtra = this.foundBonusWords && this.foundBonusWords.size > 0 ? ` | Bonus: ${Array.from(this.foundBonusWords).join(', ')}` : '';
             window.VialCloudSync.syncGameSession({
               game: 'vialwords',
               category: `Vial Words - Nivel ${level.id} (${level.title})`,
-              score: 100,
+              score: 100 + (this.foundBonusWords ? this.foundBonusWords.size * 25 : 0),
               time: 30,
               accuracy: `${this.solvedWords.size}/${level.words.length}`,
-              details: `Palabras: ${Array.from(this.solvedWords).join(', ')}`
+              details: `Palabras: ${Array.from(this.solvedWords).join(', ')}${bonusExtra}`
             });
           }
         } catch(e) {}
