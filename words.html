@@ -974,12 +974,12 @@
       transform: scale(1) translateY(0);
     }
 
-    /* Top Bar with Gem Pill, W Pill, and Close Button */
+    /* Top Bar with Points Pill and Close Button (No Gems) */
     .wow-top-bar {
       width: 100%;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       gap: 10px;
       position: relative;
       margin-bottom: 12px;
@@ -987,57 +987,17 @@
     .wow-status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1.5px solid rgba(255, 255, 255, 0.32);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
       border-radius: 999px;
-      padding: 3px 12px 3px 6px;
+      padding: 5px 14px;
       color: #ffffff;
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-    }
-    .wow-gem-icon {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      filter: drop-shadow(0 1px 3px rgba(34, 197, 94, 0.6));
-    }
-    .wow-notif-dot {
-      position: absolute;
-      top: -3px;
-      left: -4px;
-      width: 14px;
-      height: 14px;
-      background: #ef4444;
-      color: #ffffff;
-      border-radius: 50%;
-      font-size: 10px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1.5px solid #000000;
-      line-height: 1;
-    }
-    .wow-w-badge {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #38bdf8 0%, #0284c7 100%);
-      border: 1.5px solid #ffffff;
-      color: #ffffff;
-      font-family: 'Archivo Black', sans-serif;
-      font-weight: 900;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.75);
     }
     .wow-close-btn {
       margin-left: auto;
@@ -1335,6 +1295,134 @@
       max-width: 280px;
     }
 
+    /* Trivia Vial Overlay inside the WoW Wheel Modal */
+    .wow-trivia-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(4, 5, 8, 0.97);
+      backdrop-filter: blur(14px);
+      border-radius: 28px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 16px 20px;
+      z-index: 50;
+      animation: wowPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      overflow-y: auto;
+    }
+    .wow-trivia-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .wow-trivia-badge {
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      color: #1e1100;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+      margin-bottom: 6px;
+    }
+    .wow-trivia-stake {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #ffffff;
+      margin: 2px 0 0;
+    }
+    .wow-trivia-cat-pill {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .wow-trivia-question-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px 14px;
+      margin-bottom: 12px;
+    }
+    .wow-trivia-question {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.94rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #f8fafc;
+      margin: 0;
+      text-align: left;
+    }
+    .wow-trivia-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .wow-trivia-opt-btn {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 10px 14px;
+      color: #e2e8f0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.25;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .wow-trivia-opt-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: #38bdf8;
+      transform: translateX(3px);
+    }
+    .wow-trivia-opt-btn.correct {
+      background: rgba(16, 185, 129, 0.28) !important;
+      border-color: #10b981 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+    }
+    .wow-trivia-opt-btn.wrong {
+      background: rgba(239, 68, 68, 0.28) !important;
+      border-color: #ef4444 !important;
+      color: #fca5a5 !important;
+    }
+    .wow-trivia-opt-btn:disabled {
+      cursor: default;
+    }
+    .wow-trivia-feedback {
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      display: none;
+      animation: wowPopIn 0.25s ease both;
+    }
+    .wow-trivia-feedback.correct {
+      border: 1.5px solid #10b981;
+      color: #d1fae5;
+    }
+    .wow-trivia-feedback.wrong {
+      border: 1.5px solid #ef4444;
+      color: #fee2e2;
+    }
+
     /* Top Bar WoW Lucky Wheel Icon Button */
     .btn-wow-wheel {
       position: relative;
@@ -1504,18 +1592,12 @@
 
       <!-- Main Stage Container -->
       <div class="wow-stage-card">
-        <!-- Top Status Bar (Gems, Coins/W, Close Button) -->
+        <!-- Top Status Bar (Points Pill and Close Button - No Gems) -->
         <div class="wow-top-bar">
-          <div class="wow-status-pill wow-pill-gems">
-            <span class="wow-gem-icon">
-              <span class="wow-notif-dot">!</span>
-              💎
-            </span>
-            <span class="wow-pill-val" id="wow-gem-count">52 240</span>
-          </div>
-          <div class="wow-status-pill wow-pill-coins">
-            <span class="wow-w-badge">W</span>
-            <span class="wow-pill-val" id="wow-coin-count">266</span>
+          <div class="wow-status-pill wow-pill-points">
+            <span style="font-size:1.15rem;">🪙</span>
+            <span class="wow-pill-val" id="wow-points-count">0</span>
+            <span style="font-size:0.75rem;opacity:0.8;margin-left:2px;font-weight:800;">PUNTOS</span>
           </div>
           <button class="wow-close-btn" id="close-benefits-wheel-btn" aria-label="Cerrar">
             <span class="material-symbols-outlined" style="font-size:20px;">close</span>
@@ -1569,12 +1651,36 @@
           </button>
         </div>
 
-        <!-- Celebration Winner Popup (Appears on Win) -->
+        <!-- Trivia Vial Question Overlay (Active when landing on points) -->
+        <div id="wow-trivia-overlay" class="wow-trivia-overlay" style="display:none;">
+          <div class="wow-trivia-header">
+            <div class="wow-trivia-badge" id="wow-trivia-badge">
+              <span>🎯</span>
+              <span>DESAFÍO TRIVIA VIAL</span>
+            </div>
+            <div class="wow-trivia-stake" id="wow-trivia-stake">¡Respondé bien para ganar +25 Puntos!</div>
+            <div class="wow-trivia-cat-pill" id="wow-trivia-category">🚗 Normas de Tránsito</div>
+          </div>
+
+          <div class="wow-trivia-question-box">
+            <p class="wow-trivia-question" id="wow-trivia-question"></p>
+          </div>
+
+          <div class="wow-trivia-options" id="wow-trivia-options"></div>
+
+          <div class="wow-trivia-feedback" id="wow-trivia-feedback"></div>
+
+          <button class="wow-btn-girar" id="btn-trivia-continue" type="button" style="display:none;margin-top:auto;padding:12px 20px;font-size:1.15rem;">
+            <span>¡CONTINUAR!</span>
+          </button>
+        </div>
+
+        <!-- Celebration Winner Popup (For Rayo / Jackpot / Direct Bonus) -->
         <div id="benefit-award-box" class="wow-winner-overlay" style="display:none;">
-          <div class="wow-winner-badge">¡HAS GANADO!</div>
-          <div id="benefit-won-icon" class="wow-winner-icon">💎</div>
-          <h3 id="benefit-won-title" class="wow-winner-title">+100 Gemas</h3>
-          <p id="benefit-won-desc" class="wow-winner-desc">¡Gemas sumadas a tu progreso en Vial Words!</p>
+          <div class="wow-winner-badge" id="benefit-winner-badge">¡PREMIO VIAL!</div>
+          <div id="benefit-won-icon" class="wow-winner-icon">⚡</div>
+          <h3 id="benefit-won-title" class="wow-winner-title">+1 Pista Relámpago</h3>
+          <p id="benefit-won-desc" class="wow-winner-desc">¡Pista gratis para resolver el crucigrama!</p>
           <button class="wow-btn-girar" id="btn-claim-benefit" type="button" style="padding:12px 32px;font-size:1.15rem;max-width:240px;">
             <span>RECLAMAR</span>
           </button>
@@ -1630,6 +1736,7 @@
   </div>
 
   <script src="js/cloud-sync.js?v=23"></script>
+  <script src="js/questions.js"></script>
   <script src="js/vialwords_levels.js?v=50"></script>
   <script src="js/vialwords_dictionary.js?v=1"></script>
 
@@ -1790,6 +1897,7 @@
     }
 
     // --- RULETA DE BENEFICIOS VIAL WORDS (Words of Wonders Exact In-Game Style) ---
+    // --- RULETA DE BENEFICIOS VIAL WORDS (Words of Wonders Exact In-Game Style - Sin Gemas) ---
     class VialWordsBenefitsWheel {
       constructor(canvasId, onSpinEnd, audio) {
         this.canvas = document.getElementById(canvasId);
@@ -1799,16 +1907,16 @@
         this.pointerDiscEl = document.getElementById('wow-pointer-disc');
         this.outerRingEl = document.getElementById('wow-outer-ring');
 
-        // 8 EXACT Words of Wonders Slices From Screenshot (Clockwise from top-right)
+        // 8 Slices (Clean Points, Lightning, Jackpot - No Gems!)
         this.benefits = [
-          { id: 'gems_5',     name: '+5 Gemas',       amount: '5',       icon: '💎', isGem: true,  color: '#1fb57a', darkColor: '#128c5f', type: 'coins', value: 5,   desc: '¡5 Gemas agregadas a tu alcancía vial!' },
-          { id: 'gems_20',    name: '+20 Gemas',      amount: '20',      icon: '💎', isGem: true,  color: '#5263be', darkColor: '#3a4a9c', type: 'coins', value: 20,  desc: '¡20 Gemas ganadas para tus pistas!' },
-          { id: 'lightning',  name: '⚡ Rayo Relámpago',amount: '⚡',       icon: '⚡',  isBolt: true, color: '#38bdf8', darkColor: '#0284c7', type: 'hint',  value: 1,   desc: '¡Rayo Relámpago: 1 pista gratis instantánea en el crucigrama!' },
-          { id: 'gems_10',    name: '+10 Gemas',      amount: '10',      icon: '💎', isGem: true,  color: '#7e22ce', darkColor: '#581c87', type: 'coins', value: 10,  desc: '¡10 Gemas para desbloquear palabras!' },
-          { id: 'gems_25',    name: '+25 Gemas',      amount: '25',      icon: '💎', isGem: true,  color: '#dc2626', darkColor: '#991b1b', type: 'coins', value: 25,  desc: '¡25 Gemas brillantes sumadas a tu progreso!' },
-          { id: 'super_spin', name: '👑 ¡SUPER RULETA!',amount: 'JACKPOT', icon: '🎡', isJackpot: true, color: '#f59e0b', darkColor: '#b45309', type: 'coins', value: 150, desc: '¡PREMIO MAYOR! 150 Gemas + 2 Pistas Gratis' },
-          { id: 'gems_15',    name: '+15 Gemas',      amount: '15',      icon: '💎', isGem: true,  color: '#d946ef', darkColor: '#a21caf', type: 'coins', value: 15,  desc: '¡15 Gemas de bonificación!' },
-          { id: 'gems_100',   name: '+100 Gemas',     amount: '100',     icon: '💎', isGem: true,  color: '#ea580c', darkColor: '#c2410c', type: 'coins', value: 100, desc: '¡Gran Premio de 100 Gemas de oro!' }
+          { id: 'pts_5',      name: '+5 Puntos',       amount: '5',       isPoints: true,  color: '#1fb57a', darkColor: '#128c5f', type: 'points', value: 5,   desc: '¡5 Puntos ganados con tu conocimiento vial!' },
+          { id: 'pts_20',     name: '+20 Puntos',      amount: '20',      isPoints: true,  color: '#5263be', darkColor: '#3a4a9c', type: 'points', value: 20,  desc: '¡20 Puntos ganados con tu conocimiento vial!' },
+          { id: 'lightning',  name: '⚡ Rayo Relámpago',amount: '⚡',       isBolt: true,    color: '#38bdf8', darkColor: '#0284c7', type: 'hint',   value: 1,   desc: '¡Rayo Relámpago: 1 pista gratis instantánea en el crucigrama!' },
+          { id: 'pts_10',     name: '+10 Puntos',      amount: '10',      isPoints: true,  color: '#7e22ce', darkColor: '#581c87', type: 'points', value: 10,  desc: '¡10 Puntos ganados con tu conocimiento vial!' },
+          { id: 'pts_25',     name: '+25 Puntos',      amount: '25',      isPoints: true,  color: '#dc2626', darkColor: '#991b1b', type: 'points', value: 25,  desc: '¡25 Puntos ganados con tu conocimiento vial!' },
+          { id: 'super_spin', name: '👑 ¡SUPER RULETA!',amount: 'JACKPOT', isJackpot: true, color: '#f59e0b', darkColor: '#b45309', type: 'jackpot',value: 150, desc: '¡PREMIO MAYOR! 150 Puntos + 2 Pistas Gratis' },
+          { id: 'pts_15',     name: '+15 Puntos',      amount: '15',      isPoints: true,  color: '#d946ef', darkColor: '#a21caf', type: 'points', value: 15,  desc: '¡15 Puntos ganados con tu conocimiento vial!' },
+          { id: 'pts_100',    name: '+100 Puntos',     amount: '100',     isPoints: true,  color: '#ea580c', darkColor: '#c2410c', type: 'points', value: 100, desc: '¡Gran Premio de 100 Puntos!' }
         ];
 
         this.numSegments = this.benefits.length;
@@ -1939,73 +2047,6 @@
         expandLoop();
       }
 
-      drawFacetedGem(ctx, x, y, size) {
-        ctx.save();
-        ctx.translate(x, y);
-        const w = size;
-        const h = size * 0.88;
-
-        // Gem Top Table & Facets
-        ctx.beginPath();
-        ctx.moveTo(-w * 0.45, -h * 0.2);
-        ctx.lineTo(-w * 0.25, -h * 0.48);
-        ctx.lineTo(w * 0.25, -h * 0.48);
-        ctx.lineTo(w * 0.45, -h * 0.2);
-        ctx.lineTo(0, h * 0.52);
-        ctx.closePath();
-        ctx.fillStyle = '#059669';
-        ctx.shadowColor = 'rgba(0,0,0,0.6)';
-        ctx.shadowBlur = 6;
-        ctx.fill();
-
-        // Main Front Facet
-        ctx.beginPath();
-        ctx.moveTo(-w * 0.25, -h * 0.48);
-        ctx.lineTo(w * 0.25, -h * 0.48);
-        ctx.lineTo(w * 0.2, -h * 0.1);
-        ctx.lineTo(-w * 0.2, -h * 0.1);
-        ctx.closePath();
-        ctx.fillStyle = '#6ee7b7';
-        ctx.fill();
-
-        // Left Facet
-        ctx.beginPath();
-        ctx.moveTo(-w * 0.45, -h * 0.2);
-        ctx.lineTo(-w * 0.25, -h * 0.48);
-        ctx.lineTo(-w * 0.2, -h * 0.1);
-        ctx.lineTo(0, h * 0.52);
-        ctx.closePath();
-        ctx.fillStyle = '#10b981';
-        ctx.fill();
-
-        // Right Facet
-        ctx.beginPath();
-        ctx.moveTo(w * 0.45, -h * 0.2);
-        ctx.lineTo(w * 0.25, -h * 0.48);
-        ctx.lineTo(w * 0.2, -h * 0.1);
-        ctx.lineTo(0, h * 0.52);
-        ctx.closePath();
-        ctx.fillStyle = '#047857';
-        ctx.fill();
-
-        // Center Triangle Facet
-        ctx.beginPath();
-        ctx.moveTo(-w * 0.2, -h * 0.1);
-        ctx.lineTo(w * 0.2, -h * 0.1);
-        ctx.lineTo(0, h * 0.52);
-        ctx.closePath();
-        ctx.fillStyle = '#34d399';
-        ctx.fill();
-
-        // White Specular Highlight
-        ctx.beginPath();
-        ctx.arc(-w * 0.15, -h * 0.28, 2.5, 0, 2 * Math.PI);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-
-        ctx.restore();
-      }
-
       drawLightningBolt(ctx, x, y, size) {
         ctx.save();
         ctx.translate(x, y);
@@ -2127,25 +2168,30 @@
           ctx.translate(cx, cy);
           ctx.rotate(textAngle);
 
-          if (item.isGem) {
-            // Faceted Emerald Gem at r * 0.70
-            this.drawFacetedGem(ctx, r * 0.69, 0, 24);
-
-            // Bold Number at r * 0.44
-            ctx.font = "900 20px 'Montserrat', 'Archivo Black', sans-serif";
+          if (item.isPoints) {
+            // Bold Clean Points Number (No Gems!)
+            ctx.font = "900 25px 'Montserrat', 'Archivo Black', sans-serif";
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.lineWidth = 4.5;
+            ctx.lineWidth = 5;
             ctx.strokeStyle = '#000000';
-            ctx.strokeText(item.amount, r * 0.44, 0);
+            ctx.strokeText(item.amount, r * 0.58, 0);
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(item.amount, r * 0.44, 0);
+            ctx.fillText(item.amount, r * 0.58, 0);
+
+            // Subtitle 'PTS' below points
+            ctx.font = "800 10px 'Montserrat', sans-serif";
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.strokeText("PTS", r * 0.36, 0);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.fillText("PTS", r * 0.36, 0);
           } else if (item.isBolt) {
             // Metallic Golden Lightning Bolt
-            this.drawLightningBolt(ctx, r * 0.58, 0, 32);
+            this.drawLightningBolt(ctx, r * 0.58, 0, 34);
           } else if (item.isJackpot) {
             // Mini Colorful Wheel on Radiant Sunburst
-            this.drawMiniJackpotWheel(ctx, r * 0.58, 0, 20);
+            this.drawMiniJackpotWheel(ctx, r * 0.58, 0, 22);
           }
 
           ctx.restore();
@@ -2236,8 +2282,15 @@
           closeBenefitsBtn: document.getElementById('close-benefits-wheel-btn'),
           spinBenefitsBtn: document.getElementById('btn-spin-benefits-wheel'),
           benefitsCanvas: document.getElementById('benefits-wheel-canvas'),
-          wowGemCount: document.getElementById('wow-gem-count'),
-          wowCoinCount: document.getElementById('wow-coin-count'),
+          wowPointsCount: document.getElementById('wow-points-count'),
+          triviaOverlay: document.getElementById('wow-trivia-overlay'),
+          triviaBadge: document.getElementById('wow-trivia-badge'),
+          triviaStake: document.getElementById('wow-trivia-stake'),
+          triviaCategory: document.getElementById('wow-trivia-category'),
+          triviaQuestion: document.getElementById('wow-trivia-question'),
+          triviaOptions: document.getElementById('wow-trivia-options'),
+          triviaFeedback: document.getElementById('wow-trivia-feedback'),
+          triviaContinueBtn: document.getElementById('btn-trivia-continue'),
           benefitAwardBox: document.getElementById('benefit-award-box'),
           benefitWonIcon: document.getElementById('benefit-won-icon'),
           benefitWonTitle: document.getElementById('benefit-won-title'),
@@ -2321,6 +2374,10 @@
         });
         this.dom.closeBenefitsBtn?.addEventListener('click', () => this.closeBenefitsModal());
         this.dom.claimBenefitBtn?.addEventListener('click', () => this.closeBenefitsModal());
+        this.dom.triviaContinueBtn?.addEventListener('click', () => {
+          if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
+          this.closeBenefitsModal();
+        });
 
         this.dom.spinBenefitsBtn?.addEventListener('click', () => {
           if (this.benefitsWheel && !this.benefitsWheel.isSpinning) {
@@ -2335,7 +2392,13 @@
         if (!this.benefitsWheel && this.dom.benefitsCanvas) {
           this.benefitsWheel = new VialWordsBenefitsWheel(
             'benefits-wheel-canvas',
-            (winner) => this.onBenefitWon(winner),
+            (winner) => {
+              if (winner && winner.isPoints) {
+                this.triggerRouletteTrivia(winner);
+              } else {
+                this.onBenefitWon(winner);
+              }
+            },
             this.audio
           );
         }
@@ -2344,17 +2407,14 @@
       openBenefitsModal() {
         if (!this.dom.benefitsModal) return;
         this.dom.benefitsModal.classList.add('active');
+        if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
         if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
         if (this.dom.spinBenefitsBtn) {
           this.dom.spinBenefitsBtn.disabled = false;
           this.dom.spinBenefitsBtn.style.display = 'flex';
         }
-        if (this.dom.wowGemCount) {
-          const displayGems = (this.coins + 52200).toLocaleString('es-AR').replace(',', ' ');
-          this.dom.wowGemCount.textContent = displayGems;
-        }
-        if (this.dom.wowCoinCount) {
-          this.dom.wowCoinCount.textContent = (this.currentLevelIndex + 266).toString();
+        if (this.dom.wowPointsCount) {
+          this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
         }
         this.audio.init();
 
@@ -2369,25 +2429,30 @@
       }
 
       closeBenefitsModal() {
+        if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
+        if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
         if (this.dom.benefitsModal) this.dom.benefitsModal.classList.remove('active');
       }
 
       onBenefitWon(benefit) {
         if (!benefit) return;
-        if (benefit.type === 'coins') {
+        if (benefit.type === 'points' || benefit.type === 'coins') {
           this.coins += benefit.value;
           this.saveProgress();
         } else if (benefit.type === 'hint') {
           this.freeHints += benefit.value;
           this.saveProgress();
+        } else if (benefit.type === 'jackpot') {
+          this.coins += benefit.value;
+          this.freeHints += 2;
+          this.saveProgress();
         }
 
-        if (this.dom.wowGemCount) {
-          const displayGems = (this.coins + 52200).toLocaleString('es-AR').replace(',', ' ');
-          this.dom.wowGemCount.textContent = displayGems;
+        if (this.dom.wowPointsCount) {
+          this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
         }
 
-        if (this.dom.benefitWonIcon) this.dom.benefitWonIcon.textContent = benefit.icon;
+        if (this.dom.benefitWonIcon) this.dom.benefitWonIcon.textContent = benefit.isJackpot ? '🎡' : (benefit.isBolt ? '⚡' : '🪙');
         if (this.dom.benefitWonTitle) this.dom.benefitWonTitle.textContent = benefit.name;
         if (this.dom.benefitWonDesc) this.dom.benefitWonDesc.textContent = benefit.desc;
         if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'flex';
@@ -2397,6 +2462,156 @@
         if (this.audio && this.audio.playCoinChime) {
           this.audio.playCoinChime();
         }
+      }
+
+      triggerRouletteTrivia(benefit) {
+        if (!benefit) return;
+        if (this.dom.spinBenefitsBtn) this.dom.spinBenefitsBtn.style.display = 'none';
+        if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
+
+        // Seleccionar pregunta de seguridad vial de questions.js o fallback
+        const pool = (typeof QUESTIONS !== 'undefined' && Array.isArray(QUESTIONS) && QUESTIONS.length > 0)
+          ? QUESTIONS
+          : this.getFallbackTriviaQuestions();
+        
+        const q = pool[Math.floor(Math.random() * pool.length)];
+        const categoryData = (typeof CATEGORIES !== 'undefined' && CATEGORIES[q.category])
+          ? CATEGORIES[q.category]
+          : { name: 'Seguridad Vial', icon: '🚦' };
+
+        if (this.dom.triviaStake) {
+          this.dom.triviaStake.textContent = `¡Respondé correctamente para ganar +${benefit.value} Puntos!`;
+        }
+        if (this.dom.triviaCategory) {
+          this.dom.triviaCategory.textContent = `${categoryData.icon || '🚦'} ${categoryData.name || 'Seguridad Vial'}`;
+        }
+        if (this.dom.triviaQuestion) {
+          this.dom.triviaQuestion.textContent = q.question;
+        }
+
+        if (this.dom.triviaFeedback) {
+          this.dom.triviaFeedback.className = 'wow-trivia-feedback';
+          this.dom.triviaFeedback.textContent = '';
+        }
+        if (this.dom.triviaContinueBtn) {
+          this.dom.triviaContinueBtn.style.display = 'none';
+        }
+
+        // Renderizar opciones interactivas
+        if (this.dom.triviaOptions) {
+          this.dom.triviaOptions.innerHTML = '';
+          let answered = false;
+
+          q.options.forEach((optText, optIdx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'wow-trivia-option-btn';
+            btn.textContent = optText;
+
+            btn.addEventListener('click', () => {
+              if (answered) return;
+              answered = true;
+
+              // Bloquear opciones
+              const allBtns = this.dom.triviaOptions.querySelectorAll('.wow-trivia-option-btn');
+              allBtns.forEach(b => b.classList.add('disabled'));
+
+              const isCorrect = (optIdx === q.correctAnswer);
+
+              if (isCorrect) {
+                btn.classList.add('correct');
+                this.coins += benefit.value;
+                this.saveProgress();
+                if (this.dom.wowPointsCount) {
+                  this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
+                }
+                this.confetti.burst(80);
+                if (this.audio && this.audio.playWordSuccess) {
+                  this.audio.playWordSuccess();
+                } else if (this.audio && this.audio.playCoinChime) {
+                  this.audio.playCoinChime();
+                }
+
+                if (this.dom.triviaFeedback) {
+                  this.dom.triviaFeedback.className = 'wow-trivia-feedback correct-feedback';
+                  this.dom.triviaFeedback.innerHTML = `<strong>🎉 ¡RESPUESTA CORRECTA!</strong> Ganaste <strong>+${benefit.value} Puntos</strong>.<br><span style="font-size:0.84rem;font-weight:500;opacity:0.95;margin-top:4px;display:block;">${q.explanation || ''}</span>`;
+                }
+                if (this.dom.triviaContinueBtn) {
+                  this.dom.triviaContinueBtn.querySelector('span').textContent = '¡RECLAMAR PUNTOS!';
+                  this.dom.triviaContinueBtn.style.display = 'flex';
+                }
+              } else {
+                btn.classList.add('incorrect');
+                if (allBtns[q.correctAnswer]) {
+                  allBtns[q.correctAnswer].classList.add('correct');
+                }
+                if (this.audio && this.audio.playInvalid) {
+                  this.audio.playInvalid();
+                }
+
+                if (this.dom.triviaFeedback) {
+                  this.dom.triviaFeedback.className = 'wow-trivia-feedback incorrect-feedback';
+                  this.dom.triviaFeedback.innerHTML = `<strong>❌ RESPUESTA INCORRECTA</strong> No sumás puntos en esta tirada.<br><span style="font-size:0.84rem;font-weight:500;opacity:0.95;margin-top:4px;display:block;">💡 <em>Regla vial:</em> ${q.explanation || 'Respetar las normas salva vidas.'}</span>`;
+                }
+                if (this.dom.triviaContinueBtn) {
+                  this.dom.triviaContinueBtn.querySelector('span').textContent = 'ENTENDIDO';
+                  this.dom.triviaContinueBtn.style.display = 'flex';
+                }
+              }
+            });
+
+            this.dom.triviaOptions.appendChild(btn);
+          });
+        }
+
+        if (this.dom.triviaOverlay) {
+          this.dom.triviaOverlay.style.display = 'flex';
+        }
+      }
+
+      getFallbackTriviaQuestions() {
+        return [
+          {
+            id: 'fb1',
+            category: 'peatones',
+            question: '¿Por dónde deben cruzar la calle siempre los peatones de manera segura?',
+            options: ['A. Por la mitad de la cuadra', 'B. Por la senda peatonal o esquina', 'C. Entre los autos estacionados'],
+            correctAnswer: 1,
+            explanation: 'La senda peatonal y las esquinas otorgan prioridad de paso y máxima visibilidad ante los conductores.'
+          },
+          {
+            id: 'fb2',
+            category: 'auto',
+            question: '¿Quiénes deben llevar colocado el cinturón de seguridad dentro de un automóvil en marcha?',
+            options: ['A. Solo el conductor', 'B. El conductor y el acompañante delantero', 'C. Todos los ocupantes del vehículo'],
+            correctAnswer: 2,
+            explanation: 'Por ley y seguridad, todos los ocupantes de las plazas delanteras y traseras deben llevar cinturón abrochado.'
+          },
+          {
+            id: 'fb3',
+            category: 'bicicleta',
+            question: '¿Cuál es el elemento de protección personal indispensable y obligatorio para circular en bicicleta?',
+            options: ['A. Casco protector abrochado', 'B. Auriculares con música', 'C. Rodilleras'],
+            correctAnswer: 0,
+            explanation: 'El casco homologado y debidamente ajustado previene traumatismos craneales graves ante caídas o impactos.'
+          },
+          {
+            id: 'fb4',
+            category: 'senales',
+            question: '¿Qué indica la luz amarilla fija del semáforo cuando te aproximás a una bocacalle?',
+            options: ['A. Acelerar para pasar antes de la roja', 'B. Detenerse antes de la línea de frenado si es seguro', 'C. Tocar bocina y avanzar'],
+            correctAnswer: 1,
+            explanation: 'La luz amarilla advierte el cese del paso. El conductor debe detener el vehículo antes de la línea o cruce.'
+          },
+          {
+            id: 'fb5',
+            category: 'auto',
+            question: '¿Cuál es la velocidad máxima permitida en calles urbanas comunes en la Ciudad de Buenos Aires?',
+            options: ['A. 30 km/h', 'B. 40 km/h', 'C. 60 km/h'],
+            correctAnswer: 1,
+            explanation: 'En calles convencionales la velocidad máxima es de 40 km/h, reduciéndose a 30 km/h en entornos escolares o de convivencia.'
+          }
+        ];
       }
 
       updateHintButtonUI() {
