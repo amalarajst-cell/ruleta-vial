@@ -44,7 +44,13 @@
       </div>
 
       <!-- Header Status Group -->
-      <div class="header-status-group">
+      <div class="header-status-group" style="display:flex;align-items:center;gap:8px;">
+        <!-- Ruleta de Beneficios Pill Button -->
+        <button type="button" class="header-benefits-btn" id="header-btn-benefits" title="Girar Ruleta de Beneficios" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(255,198,0,0.18),rgba(217,119,6,0.3));border:1.5px solid var(--secondary-container);border-radius:9999px;padding:6px 12px;color:var(--secondary-container);font-family:var(--font-display);font-size:12px;font-weight:800;letter-spacing:0.3px;cursor:pointer;box-shadow:0 0 12px rgba(255,198,0,0.25);transition:transform 0.15s ease;">
+          <span style="font-size:15px;">🎁</span>
+          <span>Beneficios</span>
+        </button>
+
         <!-- Player Avatar Pill -->
         <div class="header-player-pill" id="header-player-pill" title="Editar Perfil">
           <img src="assets/brand/icon_auto.png" alt="Rol" class="header-avatar-thumb" id="header-avatar-img" style="filter:brightness(0) invert(1);object-fit:contain;">
@@ -392,6 +398,17 @@
               <span>Words of Wonders Vial &bull; Rueda de letras y crucigramas tem&aacute;ticos</span>
             </div>
           </div>
+
+          <!-- 9. RULETA DE BENEFICIOS -->
+          <div class="game-card-wrapper">
+            <button class="btn-ruleta-menu" style="border-color:#F59E0B;box-shadow:0 10px 0 #B45309, 0 18px 36px rgba(245, 158, 11, 0.4);background:linear-gradient(180deg,#1c2125,#111518);" id="btn-hub-benefits-wheel" type="button">
+              <span style="font-size:46px;filter:drop-shadow(0 4px 10px rgba(255,198,0,0.6));">🎁</span>
+              <span style="color:#FBBF24;">RULETA DE BENEFICIOS</span>
+            </button>
+            <div class="btn-hub-subtitle" style="color:#FDE68A; border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08);">
+              <span>Comodines y Recompensas &bull; Girá para conseguir 50/50, +10s, Doble XP y Bonos</span>
+            </div>
+          </div>
       </div>
     </div>
   </main>
@@ -424,6 +441,20 @@
         <p style="font-size:14px;color:var(--on-surface-variant);margin-top:4px;">
           Descubre tu categoría práctica, responde 5 preguntas y superá tu mejor récord.
         </p>
+      </div>
+
+      <!-- Quick Access Banner: Ruleta de Beneficios -->
+      <div id="banner-open-benefits" style="background:linear-gradient(135deg, rgba(255,198,0,0.15), rgba(217,119,6,0.25));border:1.5px solid var(--secondary-container);border-radius:16px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 4px 18px rgba(255,198,0,0.18);transition:all 0.2s ease;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(255,198,0,0.6));">🎁</div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:13px;font-weight:800;color:var(--secondary-container);letter-spacing:0.5px;">RULETA DE BENEFICIOS</div>
+            <div style="font-size:11px;color:#cbd5e1;">Girá para conseguir comodines (50/50, +10s, 2x XP)</div>
+          </div>
+        </div>
+        <div style="background:var(--secondary-container);color:#0e1112;font-family:var(--font-display);font-size:11px;font-weight:900;padding:6px 12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.3);white-space:nowrap;">
+          GIRAR ➔
+        </div>
       </div>
 
       <!-- Quick Role Mode Switcher -->
@@ -1050,7 +1081,7 @@
   <!-- ================================================
        MODAL: RULETA DE BENEFICIOS VIALES
   ================================================ -->
-  <div id="modal-benefits-wheel" class="modal-backdrop" style="display:none;">
+  <div id="modal-benefits-wheel" class="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);backdrop-filter:blur(10px);z-index:9999;align-items:center;justify-content:center;padding:16px;">
     <div class="modal-benefits-card">
       <div class="modal-benefits-header">
         <div style="display:flex;align-items:center;gap:10px;">
