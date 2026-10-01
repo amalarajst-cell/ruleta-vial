@@ -914,6 +914,125 @@
       pointer-events: none;
       z-index: 200;
     }
+
+    /* Ruleta de Beneficios Modal in Vial Words */
+    .benefits-modal-card {
+      width: 100%;
+      max-width: 360px;
+      background: #131718;
+      border: 2px solid rgba(255, 198, 0, 0.45);
+      border-radius: 26px;
+      padding: 20px 18px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 198, 0, 0.2);
+      transform: scale(0.85) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modal-overlay.active .benefits-modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .benefits-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+
+    .benefits-wheel-wrap {
+      position: relative;
+      width: 270px;
+      height: 270px;
+      margin: 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .benefits-wheel-canvas {
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+    }
+
+    .benefits-pointer {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-top: 22px solid #ffca28;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+      z-index: 20;
+    }
+
+    .benefit-won-card {
+      background: linear-gradient(135deg, rgba(255, 198, 0, 0.15), rgba(6, 182, 212, 0.15));
+      border: 1.5px solid #ffca28;
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 10px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-benefits-spin {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b0f12;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 20px;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .btn-benefits-spin:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+    .btn-benefits-spin:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-benefits-badge {
+      position: relative;
+    }
+    .btn-benefits-badge::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background: #ffca28;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ffca28;
+      animation: pulse 1.5s infinite;
+    }
   </style>
 </head>
 <body>
@@ -959,7 +1078,7 @@
           <span class="material-symbols-outlined" style="font-size:20px;">menu_book</span>
         </button>
 
-        <button class="btn-frosted" id="benefits-link-btn" title="Ruleta de Beneficios VialPlay" aria-label="Beneficios" onclick="window.location.href='index.html#beneficios'" style="color:#ffca28;border-color:rgba(255,202,40,0.4);">
+        <button class="btn-frosted btn-benefits-badge" id="btn-open-benefits-wheel" title="Ruleta de Beneficios Vial Words" aria-label="Ruleta de Beneficios" style="color:#ffca28;border-color:rgba(255,202,40,0.5);background:rgba(255,202,40,0.12);">
           <span style="font-size:18px;">🎁</span>
         </button>
 
@@ -1035,6 +1154,53 @@
         <button class="modal-btn" id="next-level-btn">
           Siguiente Nivel ➔
         </button>
+        <button class="btn-benefits-spin" id="btn-victory-benefits" type="button" style="margin-top:10px;padding:11px 16px;font-size:0.86rem;">
+          <span>🎁 ¡GIRAR RULETA DE BENEFICIOS!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Ruleta de Beneficios Modal (Vial Words Lucky Prize Wheel) -->
+    <div class="modal-overlay" id="benefits-wheel-modal">
+      <div class="benefits-modal-card">
+        <div class="benefits-modal-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:24px;">🎁</span>
+            <div style="text-align:left;">
+              <h3 style="font-family:'Archivo Black',sans-serif;font-size:1.05rem;color:#ffca28;margin:0;line-height:1.2;">RULETA DE BENEFICIOS</h3>
+              <span style="font-size:0.75rem;color:#8c979a;">Premios y Monedas Vial Words</span>
+            </div>
+          </div>
+          <button class="btn-frosted" id="close-benefits-wheel-btn" style="width:34px;height:34px;" aria-label="Cerrar">
+            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+          </button>
+        </div>
+
+        <p style="font-size:0.8rem;color:#cbd5e1;margin:6px 0 10px;text-align:center;">
+          ¡Girá la ruleta para ganar monedas extras y pistas para tus crucigramas!
+        </p>
+
+        <!-- Roulette Arena with Pointer & Canvas -->
+        <div class="benefits-wheel-wrap">
+          <div class="benefits-pointer"></div>
+          <canvas id="benefits-wheel-canvas" width="280" height="280" class="benefits-wheel-canvas"></canvas>
+        </div>
+
+        <!-- Spin CTA Button -->
+        <button class="btn-benefits-spin" id="btn-spin-benefits-wheel" type="button">
+          <span class="material-symbols-outlined" style="font-size:22px;">cached</span>
+          <span>¡GIRAR RULETA AHORA!</span>
+        </button>
+
+        <!-- Won Award Card (Hidden until spin finishes) -->
+        <div id="benefit-award-box" class="benefit-won-card" style="display:none;">
+          <div id="benefit-won-icon" style="font-size:36px;filter:drop-shadow(0 2px 8px rgba(255,198,0,0.6));">🪙</div>
+          <div id="benefit-won-title" style="font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:#ffca28;">+100 Monedas</div>
+          <p id="benefit-won-desc" style="font-size:0.8rem;color:#e2e8f0;margin:2px 0 8px;">¡Monedas agregadas a tu saldo para pedir pistas!</p>
+          <button class="modal-btn" id="btn-claim-benefit" type="button" style="background:#00e58a;color:#0b0f12;box-shadow:0 4px 14px rgba(0,229,138,0.4);width:100%;">
+            ¡RECLAMAR BENEFICIO! ➔
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1225,6 +1391,235 @@
       }
     }
 
+    // --- RULETA DE BENEFICIOS VIAL WORDS (Words of Wonders Lucky Wheel) ---
+    class VialWordsBenefitsWheel {
+      constructor(canvasId, onSpinEnd, audio) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+        this.onSpinEnd = onSpinEnd;
+        this.audio = audio;
+
+        this.benefits = [
+          { id: 'coins_50',   name: '+50 Monedas',     short: '+50 🪙',    icon: '🪙', color: '#059669', darkColor: '#037050', type: 'coins', value: 50,  desc: '50 monedas sumadas a tu saldo para pistas' },
+          { id: 'free_hint_1',name: '1 Pista Gratis',  short: '1 Pista 💡', icon: '💡', color: '#0284C7', darkColor: '#0164A0', type: 'hint',  value: 1,  desc: '¡1 letra revelada gratis sin gastar monedas!' },
+          { id: 'coins_100',  name: '+100 Monedas',    short: '+100 🪙',   icon: '🪙', color: '#D97706', darkColor: '#B05E04', type: 'coins', value: 100, desc: '¡100 monedas para desbloquear pistas viales!' },
+          { id: 'bonus_150',  name: 'Bono +150 🪙',    short: '+150 🪙',   icon: '🌟', color: '#7C3AED', darkColor: '#5E24CC', type: 'coins', value: 150, desc: 'Bono especial de 150 monedas doradas' },
+          { id: 'free_hint_2',name: '2 Pistas Gratis', short: '2 Pistas 💡',icon: '💡💡',color: '#2563EB', darkColor: '#1D4ED8', type: 'hint',  value: 2,  desc: '¡2 pistas automáticas para palabras difíciles!' },
+          { id: 'coins_75',   name: '+75 Monedas',     short: '+75 🪙',    icon: '🪙', color: '#0D9488', darkColor: '#0F766E', type: 'coins', value: 75,  desc: '75 monedas de regalo para tu progreso' },
+          { id: 'hint_master',name: 'Pista Magistral', short: 'Pista Pro 🎯',icon: '🎯', color: '#EA580C', darkColor: '#C2410C', type: 'hint',  value: 2,  desc: 'Revela 2 letras clave en el tablero' },
+          { id: 'jackpot_250',name: 'Gran Premio +250',short: '+250 👑',   icon: '👑', color: '#EAB308', darkColor: '#CA8A04', type: 'coins', value: 250, desc: '¡Premio Mayor de 250 monedas!' }
+        ];
+
+        this.numSegments = this.benefits.length;
+        this.segmentAngle = (2 * Math.PI) / this.numSegments;
+        this.angle = 0;
+        this.speed = 0;
+        this.isSpinning = false;
+        this.friction = 0.985;
+        this.lastTickSegment = -1;
+        this.expandedIndex = -1;
+        this.expandedOffset = 0;
+        this.targetExpandedOffset = 18;
+
+        this.setupCanvas();
+        this.draw();
+      }
+
+      setupCanvas() {
+        if (!this.canvas) return;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = this.canvas.getBoundingClientRect();
+        const size = Math.min(rect.width || 280, rect.height || 280, 280);
+        this.canvas.width = size * dpr;
+        this.canvas.height = size * dpr;
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.scale(dpr, dpr);
+        this.size = size;
+        this.center = size / 2;
+        this.radius = (size / 2) - 10;
+      }
+
+      reset() {
+        this.speed = 0;
+        this.isSpinning = false;
+        this.expandedIndex = -1;
+        this.expandedOffset = 0;
+      }
+
+      spin() {
+        if (this.isSpinning) return;
+        this.isSpinning = true;
+        this.expandedIndex = -1;
+        this.expandedOffset = 0;
+        this.speed = 0.36 + Math.random() * 0.16;
+        this.animate();
+      }
+
+      animate() {
+        if (this.speed > 0.0012) {
+          this.angle += this.speed;
+          this.angle = this.angle % (2 * Math.PI);
+          this.speed *= this.friction;
+
+          const currentPointerAngle = (-Math.PI / 2 - this.angle + 4 * Math.PI) % (2 * Math.PI);
+          const currentSegment = Math.floor(currentPointerAngle / this.segmentAngle);
+          if (currentSegment !== this.lastTickSegment) {
+            this.lastTickSegment = currentSegment;
+            if (this.audio && this.audio.playNote) {
+              this.audio.playNote(700 + currentSegment * 35, 'triangle', 0.04, 0.12);
+            }
+          }
+
+          this.draw();
+          requestAnimationFrame(() => this.animate());
+        } else {
+          this.speed = 0;
+          this.isSpinning = false;
+
+          const pointerAngle = (-Math.PI / 2 - this.angle + 4 * Math.PI) % (2 * Math.PI);
+          const winningIdx = Math.floor(pointerAngle / this.segmentAngle) % this.numSegments;
+          this.expandedIndex = winningIdx;
+
+          if (this.audio && this.audio.playVictory) {
+            this.audio.playVictory();
+          }
+
+          this.animateExpansion(() => {
+            if (this.onSpinEnd) {
+              this.onSpinEnd(this.benefits[winningIdx]);
+            }
+          });
+        }
+      }
+
+      animateExpansion(done) {
+        let frame = 0;
+        const totalFrames = 22;
+        const expandLoop = () => {
+          frame++;
+          const progress = Math.min(1, frame / totalFrames);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          this.expandedOffset = eased * this.targetExpandedOffset;
+          this.draw();
+
+          if (frame < totalFrames) {
+            requestAnimationFrame(expandLoop);
+          } else {
+            if (done) done();
+          }
+        };
+        expandLoop();
+      }
+
+      draw() {
+        if (!this.ctx) return;
+        const ctx = this.ctx;
+        const cx = this.center;
+        const cy = this.center;
+        const r = this.radius;
+
+        ctx.clearRect(0, 0, this.size, this.size);
+
+        // Draw Outer rim
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r + 6, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1c2225';
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#ffca28';
+        ctx.stroke();
+        ctx.restore();
+
+        // Draw segments
+        for (let i = 0; i < this.numSegments; i++) {
+          const item = this.benefits[i];
+          const startAngle = this.angle + i * this.segmentAngle;
+          const endAngle = startAngle + this.segmentAngle;
+          const isExpanded = (this.expandedIndex === i);
+
+          ctx.save();
+          if (isExpanded && this.expandedOffset > 0) {
+            const mid = startAngle + this.segmentAngle / 2;
+            const ox = Math.cos(mid) * this.expandedOffset;
+            const oy = Math.sin(mid) * this.expandedOffset;
+            ctx.translate(ox, oy);
+            ctx.shadowColor = '#ffca28';
+            ctx.shadowBlur = 18;
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, startAngle, endAngle);
+          ctx.closePath();
+
+          const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, r);
+          grad.addColorStop(0, item.color);
+          grad.addColorStop(1, item.darkColor);
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          ctx.lineWidth = isExpanded ? 3.5 : 1.5;
+          ctx.strokeStyle = isExpanded ? '#ffffff' : 'rgba(255, 255, 255, 0.35)';
+          ctx.stroke();
+
+          // Text and Icon
+          ctx.save();
+          const textAngle = startAngle + this.segmentAngle / 2;
+          ctx.translate(cx, cy);
+          ctx.rotate(textAngle);
+
+          ctx.font = '19px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(item.icon, r * 0.72, 0);
+
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 4;
+          ctx.fillText(item.short, r * 0.42, 0);
+
+          ctx.restore();
+          ctx.restore();
+        }
+
+        // Draw Golden Pegs around perimeter
+        for (let i = 0; i < this.numSegments * 2; i++) {
+          const pegAngle = this.angle + (i * Math.PI / this.numSegments);
+          const px = cx + Math.cos(pegAngle) * (r + 1);
+          const py = cy + Math.sin(pegAngle) * (r + 1);
+          ctx.beginPath();
+          ctx.arc(px, py, 2.5, 0, 2 * Math.PI);
+          ctx.fillStyle = '#ffca28';
+          ctx.fill();
+        }
+
+        // Draw Center Hub
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
+        const hubGrad = ctx.createRadialGradient(cx - 5, cy - 5, 2, cx, cy, 26);
+        hubGrad.addColorStop(0, '#ffe082');
+        hubGrad.addColorStop(0.6, '#ffb300');
+        hubGrad.addColorStop(1, '#b27b00');
+        ctx.fillStyle = hubGrad;
+        ctx.fill();
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#ffffff';
+        ctx.stroke();
+
+        ctx.font = 'bold 9px sans-serif';
+        ctx.fillStyle = '#1e293b';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('VIAL', cx, cy - 4);
+        ctx.font = '8px sans-serif';
+        ctx.fillText('PREMIO', cx, cy + 6);
+        ctx.restore();
+      }
+    }
+
     // --- MAIN GAME APPLICATION ---
     class VialWordsGame {
       constructor() {
@@ -1232,7 +1627,9 @@
 
         this.currentLevelIndex = parseInt(localStorage.getItem('vialwords_level') || '0', 10);
         this.coins = parseInt(localStorage.getItem('vialwords_coins') || '200', 10);
+        this.freeHints = parseInt(localStorage.getItem('vialwords_free_hints') || '0', 10);
         this.unlockedTips = JSON.parse(localStorage.getItem('vialwords_tips') || '[]');
+        this.benefitsWheel = null;
 
         this.currentLetters = [];
         this.selection = [];
@@ -1246,6 +1643,7 @@
         this.cacheDOM();
         this.confetti = new ConfettiManager(this.dom.confettiCanvas);
         this.initEvents();
+        this.updateHintButtonUI();
         this.loadLevel(this.currentLevelIndex);
       }
 
@@ -1286,7 +1684,20 @@
           levelsModal: document.getElementById('levels-modal'),
           closeLevelsBtn: document.getElementById('close-levels-btn'),
           levelsGrid: document.getElementById('levels-grid'),
-          stageFilterBar: document.getElementById('stage-filter-bar')
+          stageFilterBar: document.getElementById('stage-filter-bar'),
+
+          // Ruleta de Beneficios DOM
+          openBenefitsBtn: document.getElementById('btn-open-benefits-wheel'),
+          victoryBenefitsBtn: document.getElementById('btn-victory-benefits'),
+          benefitsModal: document.getElementById('benefits-wheel-modal'),
+          closeBenefitsBtn: document.getElementById('close-benefits-wheel-btn'),
+          spinBenefitsBtn: document.getElementById('btn-spin-benefits-wheel'),
+          benefitsCanvas: document.getElementById('benefits-wheel-canvas'),
+          benefitAwardBox: document.getElementById('benefit-award-box'),
+          benefitWonIcon: document.getElementById('benefit-won-icon'),
+          benefitWonTitle: document.getElementById('benefit-won-title'),
+          benefitWonDesc: document.getElementById('benefit-won-desc'),
+          claimBenefitBtn: document.getElementById('btn-claim-benefit')
         };
       }
 
@@ -1356,13 +1767,99 @@
         window.addEventListener('pointerup', (e) => this.onPointerUp(e));
         window.addEventListener('pointercancel', (e) => this.onPointerUp(e));
         wheel.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Eventos Ruleta de Beneficios
+        this.dom.openBenefitsBtn?.addEventListener('click', () => this.openBenefitsModal());
+        this.dom.victoryBenefitsBtn?.addEventListener('click', () => {
+          this.dom.victoryModal.classList.remove('active');
+          this.openBenefitsModal();
+        });
+        this.dom.closeBenefitsBtn?.addEventListener('click', () => this.closeBenefitsModal());
+        this.dom.claimBenefitBtn?.addEventListener('click', () => this.closeBenefitsModal());
+
+        this.dom.spinBenefitsBtn?.addEventListener('click', () => {
+          if (this.benefitsWheel && !this.benefitsWheel.isSpinning) {
+            this.audio.init();
+            this.dom.spinBenefitsBtn.disabled = true;
+            this.benefitsWheel.spin();
+          }
+        });
+      }
+
+      initBenefitsWheel() {
+        if (!this.benefitsWheel && this.dom.benefitsCanvas) {
+          this.benefitsWheel = new VialWordsBenefitsWheel(
+            'benefits-wheel-canvas',
+            (winner) => this.onBenefitWon(winner),
+            this.audio
+          );
+        }
+      }
+
+      openBenefitsModal() {
+        if (!this.dom.benefitsModal) return;
+        this.dom.benefitsModal.classList.add('active');
+        if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
+        if (this.dom.spinBenefitsBtn) {
+          this.dom.spinBenefitsBtn.disabled = false;
+          this.dom.spinBenefitsBtn.style.display = 'flex';
+        }
+        this.audio.init();
+
+        setTimeout(() => {
+          this.initBenefitsWheel();
+          if (this.benefitsWheel) {
+            this.benefitsWheel.reset();
+            this.benefitsWheel.setupCanvas();
+            this.benefitsWheel.draw();
+          }
+        }, 50);
+      }
+
+      closeBenefitsModal() {
+        if (this.dom.benefitsModal) this.dom.benefitsModal.classList.remove('active');
+      }
+
+      onBenefitWon(benefit) {
+        if (!benefit) return;
+        if (benefit.type === 'coins') {
+          this.coins += benefit.value;
+          this.saveProgress();
+        } else if (benefit.type === 'hint') {
+          this.freeHints += benefit.value;
+          this.saveProgress();
+        }
+
+        if (this.dom.benefitWonIcon) this.dom.benefitWonIcon.textContent = benefit.icon;
+        if (this.dom.benefitWonTitle) this.dom.benefitWonTitle.textContent = benefit.name;
+        if (this.dom.benefitWonDesc) this.dom.benefitWonDesc.textContent = benefit.desc;
+        if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'flex';
+        if (this.dom.spinBenefitsBtn) this.dom.spinBenefitsBtn.style.display = 'none';
+
+        this.confetti.burst(65);
+      }
+
+      updateHintButtonUI() {
+        if (!this.dom.hintBtn) return;
+        const costEl = this.dom.hintBtn.querySelector('.tool-cost');
+        if (this.freeHints > 0) {
+          if (costEl) costEl.textContent = `${this.freeHints} 💡 Gratis`;
+          this.dom.hintBtn.style.borderColor = '#00e58a';
+          this.dom.hintBtn.style.boxShadow = '0 0 12px rgba(0,229,138,0.4)';
+        } else {
+          if (costEl) costEl.textContent = '50 🪙';
+          this.dom.hintBtn.style.borderColor = '';
+          this.dom.hintBtn.style.boxShadow = '';
+        }
       }
 
       saveProgress() {
         localStorage.setItem('vialwords_level', this.currentLevelIndex.toString());
         localStorage.setItem('vialwords_coins', this.coins.toString());
+        localStorage.setItem('vialwords_free_hints', this.freeHints.toString());
         localStorage.setItem('vialwords_tips', JSON.stringify(this.unlockedTips));
         this.dom.coinCount.textContent = this.coins;
+        this.updateHintButtonUI();
       }
 
       loadLevel(index) {
@@ -1739,8 +2236,8 @@
 
       useHint() {
         const cost = 50;
-        if (this.coins < cost) {
-          alert("¡Necesitás al menos 50 monedas para una pista! Descubrí palabras bonus para ganar monedas.");
+        if (this.freeHints <= 0 && this.coins < cost) {
+          alert("¡Necesitás al menos 50 monedas o girar la Ruleta de Beneficios 🎁 para conseguir pistas!");
           return;
         }
         const unsolvedList = [];
@@ -1749,7 +2246,11 @@
         }
         if (unsolvedList.length === 0) return;
 
-        this.coins -= cost;
+        if (this.freeHints > 0) {
+          this.freeHints--;
+        } else {
+          this.coins -= cost;
+        }
         this.saveProgress();
         this.audio.playHint();
 
@@ -1897,6 +2398,11 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       window.game = new VialWordsGame();
+      if (window.location.hash === '#beneficios' || window.location.hash === '#ruleta') {
+        setTimeout(() => {
+          window.game.openBenefitsModal();
+        }, 300);
+      }
     });
   </script>
 </body>

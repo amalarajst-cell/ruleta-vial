@@ -1468,24 +1468,6 @@ document.addEventListener('DOMContentLoaded', () => {
   btnCloseBenefits?.addEventListener('click', closeBenefitsModal);
   btnFinishBenefits?.addEventListener('click', closeBenefitsModal);
 
-  document.getElementById('header-btn-benefits')?.addEventListener('click', openBenefitsModal);
-  document.getElementById('btn-hub-benefits-wheel')?.addEventListener('click', openBenefitsModal);
-  document.getElementById('banner-open-benefits')?.addEventListener('click', openBenefitsModal);
-
-  window.openBenefitsModal = openBenefitsModal;
-  window.closeBenefitsModal = closeBenefitsModal;
-
-  if (window.location.hash === '#beneficios') {
-    setTimeout(() => {
-      openBenefitsModal();
-    }, 400);
-  }
-  window.addEventListener('hashchange', () => {
-    if (window.location.hash === '#beneficios') {
-      openBenefitsModal();
-    }
-  });
-
   btnSpinBenefits?.addEventListener('click', () => {
     if (benefitsRoulette && !benefitsRoulette.isSpinning) {
       audioSystem.init();
