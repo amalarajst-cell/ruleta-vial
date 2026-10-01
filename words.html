@@ -915,122 +915,352 @@
       z-index: 200;
     }
 
-    /* Ruleta de Beneficios Modal in Vial Words */
-    .benefits-modal-card {
-      width: 100%;
-      max-width: 360px;
-      background: #131718;
-      border: 2px solid rgba(255, 198, 0, 0.45);
-      border-radius: 26px;
-      padding: 20px 18px;
-      text-align: center;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 198, 0, 0.2);
-      transform: scale(0.85) translateY(20px);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* ============================================================
+       WORDS OF WONDERS (WoW) - AUTHENTIC LUCKY PRIZE WHEEL STYLES
+       ============================================================ */
+    .wow-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%, rgba(42, 22, 78, 0.96) 0%, rgba(13, 10, 26, 0.98) 100%);
+      backdrop-filter: blur(14px);
+      z-index: 250;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+    .wow-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Sunburst Rotating Golden Rays */
+    .wow-sunburst {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      top: 50%;
+      left: 50%;
+      margin-top: -400px;
+      margin-left: -400px;
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(255, 215, 0, 0.08) 0deg 15deg,
+        transparent 15deg 30deg
+      );
+      pointer-events: none;
+      z-index: 1;
+      animation: wowSpinRays 40s linear infinite;
+    }
+    @keyframes wowSpinRays {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Main Wheel Stage Card */
+    .wow-stage-card {
       position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 380px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      transform: scale(0.85) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
-    .modal-overlay.active .benefits-modal-card {
+    .wow-modal-overlay.active .wow-stage-card {
       transform: scale(1) translateY(0);
     }
 
-    .benefits-modal-header {
+    /* Close Button */
+    .wow-close-btn {
+      position: absolute;
+      top: -10px;
+      right: -2px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      margin-bottom: 6px;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      transition: all 0.2s ease;
+    }
+    .wow-close-btn:hover {
+      background: rgba(239, 68, 68, 0.85);
+      border-color: #ef4444;
+      transform: scale(1.1);
     }
 
-    .benefits-wheel-wrap {
+    /* Golden 3D Ribbon Banner (Words of Wonders Title) */
+    .wow-ribbon-banner {
       position: relative;
-      width: 270px;
-      height: 270px;
-      margin: 10px auto;
+      background: linear-gradient(180deg, #ffd54f 0%, #ffb300 45%, #ff8f00 55%, #f57c00 100%);
+      color: #3e2723;
+      padding: 10px 32px;
+      border-radius: 12px;
+      border: 2px solid #fff9c4;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.4);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .wow-ribbon-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 1px;
+      color: #2b1100;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+      margin: 0;
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .wow-ribbon-sub {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #5d4037;
+      margin-top: 2px;
+    }
+
+    /* Wheel Container with 3D Outer Ring & Pointer */
+    .wow-wheel-arena {
+      position: relative;
+      width: 310px;
+      height: 310px;
+      margin: 8px auto 14px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .benefits-wheel-canvas {
-      width: 270px;
-      height: 270px;
+    /* Golden 3D Beveled Outer Casing Ring */
+    .wow-outer-ring {
+      position: absolute;
+      inset: -14px;
       border-radius: 50%;
-      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+      background: radial-gradient(circle, #ffe082 0%, #ffa000 50%, #e65100 80%, #3e2723 100%);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), inset 0 3px 6px rgba(255, 255, 255, 0.6), inset 0 -4px 8px rgba(0,0,0,0.6), 0 0 35px rgba(255, 179, 0, 0.4);
+      pointer-events: none;
+      z-index: 2;
     }
 
-    .benefits-pointer {
+    /* Animated Carnival Light Bulbs on Ring */
+    .wow-bulb {
       position: absolute;
-      top: -8px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fff59d;
+      box-shadow: 0 0 8px #ffeb3b, 0 0 14px #ffc107;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+    .wow-bulb.phase-b {
+      background: #80deea;
+      box-shadow: 0 0 8px #00e5ff, 0 0 14px #00b0ff;
+    }
+
+    /* Canvas Wheel */
+    .wow-wheel-canvas {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      z-index: 3;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.6));
+    }
+
+    /* Words of Wonders 3D Golden Flapper Pointer at 12 O'Clock */
+    .wow-flapper-pointer {
+      position: absolute;
+      top: -24px;
       left: 50%;
       transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 13px solid transparent;
-      border-right: 13px solid transparent;
-      border-top: 22px solid #ffca28;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
-      z-index: 20;
+      width: 32px;
+      height: 44px;
+      z-index: 25;
+      transform-origin: top center;
+      transition: transform 0.08s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.7));
+      pointer-events: none;
+    }
+    .wow-flapper-pointer svg {
+      width: 100%;
+      height: 100%;
     }
 
-    .benefit-won-card {
-      background: linear-gradient(135deg, rgba(255, 198, 0, 0.15), rgba(6, 182, 212, 0.15));
-      border: 1.5px solid #ffca28;
-      border-radius: 18px;
-      padding: 14px;
-      margin-top: 10px;
-      width: 100%;
+    /* Interactive Center Spin Button (WoW Iconic Center Button) */
+    .wow-center-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ff5252 0%, #d50000 65%, #880e4f 100%);
+      border: 3.5px solid #ffe082;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -3px 6px rgba(0, 0, 0, 0.6), 0 0 18px rgba(255, 82, 82, 0.5);
+      color: #ffffff;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      user-select: none;
+    }
+    .wow-center-btn:hover {
+      transform: translate(-50%, -50%) scale(1.06);
+      filter: brightness(1.1);
+    }
+    .wow-center-btn:active {
+      transform: translate(-50%, -50%) scale(0.94);
+    }
+    .wow-center-btn span {
+      line-height: 1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+    .wow-center-btn small {
+      font-size: 0.58rem;
+      color: #ffeb3b;
+      margin-top: 2px;
+      letter-spacing: 0.8px;
     }
 
-    .btn-benefits-spin {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #0b0f12;
-      border: none;
-      border-radius: 14px;
-      padding: 13px 20px;
+    /* Big Tactile CTA Below the Wheel */
+    .wow-spin-cta {
+      background: linear-gradient(180deg, #00e676 0%, #00c853 50%, #009624 100%);
+      color: #0b1a0d;
+      border: 2px solid #b9f6ca;
+      border-radius: 18px;
+      padding: 14px 28px;
       font-family: 'Archivo Black', sans-serif;
-      font-size: 0.95rem;
-      letter-spacing: 0.5px;
+      font-size: 1.1rem;
+      letter-spacing: 0.6px;
       cursor: pointer;
       width: 100%;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      max-width: 320px;
+      box-shadow: 0 8px 24px rgba(0, 200, 83, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      margin-top: 10px;
-      transition: transform 0.15s ease, filter 0.15s ease;
+      gap: 10px;
+      transition: all 0.2s ease;
     }
-    .btn-benefits-spin:hover:not(:disabled) {
+    .wow-spin-cta:hover:not(:disabled) {
       transform: translateY(-2px);
       filter: brightness(1.1);
+      box-shadow: 0 12px 28px rgba(0, 200, 83, 0.6);
     }
-    .btn-benefits-spin:disabled {
-      opacity: 0.6;
+    .wow-spin-cta:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
     }
 
-    .btn-benefits-badge {
-      position: relative;
-    }
-    .btn-benefits-badge::after {
-      content: '';
+    /* Celebration Winner Overlay Popup */
+    .wow-winner-overlay {
       position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 8px;
-      height: 8px;
-      background: #ffca28;
+      inset: 0;
+      background: rgba(10, 6, 22, 0.94);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      z-index: 40;
+      animation: wowPopIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes wowPopIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .wow-winner-badge {
+      background: linear-gradient(90deg, #ffb300, #ff8f00);
+      color: #2b1100;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.8rem;
+      padding: 4px 14px;
+      border-radius: 999px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .wow-winner-icon {
+      font-size: 64px;
+      margin: 6px 0;
+      filter: drop-shadow(0 6px 18px rgba(255, 215, 0, 0.6));
+      animation: wowIconBounce 0.8s infinite alternate ease-in-out;
+    }
+    @keyframes wowIconBounce {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-8px) scale(1.08); }
+    }
+    .wow-winner-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.6rem;
+      color: #fff9c4;
+      text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+      margin: 0;
+      line-height: 1.2;
+    }
+    .wow-winner-desc {
+      font-size: 0.85rem;
+      color: #e0e7ff;
+      margin: 6px 0 18px;
+      text-align: center;
+    }
+
+    /* Top Bar WoW Lucky Wheel Icon Button */
+    .btn-wow-wheel {
+      position: relative;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      box-shadow: 0 0 8px #ffca28;
+      background: radial-gradient(circle, #2d1b54 0%, #170c32 100%);
+      border: 2px solid #ffd54f;
+      box-shadow: 0 0 14px rgba(255, 213, 79, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-wow-wheel:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 22px rgba(255, 213, 79, 0.7);
+    }
+    .btn-wow-wheel-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #ffffff;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.55rem;
+      padding: 1px 5px;
+      border-radius: 8px;
+      border: 1px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
       animation: pulse 1.5s infinite;
     }
   </style>
@@ -1078,8 +1308,9 @@
           <span class="material-symbols-outlined" style="font-size:20px;">menu_book</span>
         </button>
 
-        <button class="btn-frosted btn-benefits-badge" id="btn-open-benefits-wheel" title="Ruleta de Beneficios Vial Words" aria-label="Ruleta de Beneficios" style="color:#ffca28;border-color:rgba(255,202,40,0.5);background:rgba(255,202,40,0.12);">
-          <span style="font-size:18px;">🎁</span>
+        <button class="btn-wow-wheel" id="btn-open-benefits-wheel" title="Ruleta de la Fortuna (Words of Wonders)" aria-label="Ruleta de la Fortuna">
+          <span style="font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));">🎡</span>
+          <span class="btn-wow-wheel-badge">GRATIS</span>
         </button>
 
         <button class="btn-frosted" id="sound-btn" title="Activar/Silenciar sonido" aria-label="Sonido">
@@ -1154,51 +1385,82 @@
         <button class="modal-btn" id="next-level-btn">
           Siguiente Nivel ➔
         </button>
-        <button class="btn-benefits-spin" id="btn-victory-benefits" type="button" style="margin-top:10px;padding:11px 16px;font-size:0.86rem;">
-          <span>🎁 ¡GIRAR RULETA DE BENEFICIOS!</span>
+        <button class="wow-spin-cta" id="btn-victory-benefits" type="button" style="margin-top:12px;padding:12px 20px;font-size:0.95rem;max-width:100%;">
+          <span>🎡 ¡GIRAR RULETA DE LA FORTUNA!</span>
         </button>
       </div>
     </div>
 
-    <!-- Ruleta de Beneficios Modal (Vial Words Lucky Prize Wheel) -->
-    <div class="modal-overlay" id="benefits-wheel-modal">
-      <div class="benefits-modal-card">
-        <div class="benefits-modal-header">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:24px;">🎁</span>
-            <div style="text-align:left;">
-              <h3 style="font-family:'Archivo Black',sans-serif;font-size:1.05rem;color:#ffca28;margin:0;line-height:1.2;">RULETA DE BENEFICIOS</h3>
-              <span style="font-size:0.75rem;color:#8c979a;">Premios y Monedas Vial Words</span>
-            </div>
+    <!-- ============================================================
+         WORDS OF WONDERS (WoW) - AUTHENTIC LUCKY PRIZE WHEEL MODAL
+         ============================================================ -->
+    <div class="wow-modal-overlay" id="benefits-wheel-modal">
+      <!-- Rotating Sunburst Rays Background -->
+      <div class="wow-sunburst"></div>
+
+      <!-- Main Stage Card -->
+      <div class="wow-stage-card">
+        <!-- Close Button -->
+        <button class="wow-close-btn" id="close-benefits-wheel-btn" aria-label="Cerrar">
+          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+        </button>
+
+        <!-- Golden 3D Ribbon Banner Title -->
+        <div class="wow-ribbon-banner">
+          <h2 class="wow-ribbon-title">
+            <span>⭐</span>
+            <span>RULETA DE LA FORTUNA</span>
+            <span>⭐</span>
+          </h2>
+          <div class="wow-ribbon-sub">Giro Diario de Premios • Words of Wonders</div>
+        </div>
+
+        <!-- Wheel Arena with 3D Ring, Bulbs, Flapper, Canvas and Center Button -->
+        <div class="wow-wheel-arena">
+          <!-- 3D Gold Casing Ring with 16 Glowing Bulbs -->
+          <div class="wow-outer-ring" id="wow-outer-ring"></div>
+
+          <!-- 3D Golden Flapper Pointer at 12 o'clock -->
+          <div class="wow-flapper-pointer" id="wow-flapper">
+            <svg viewBox="0 0 32 44" fill="none">
+              <polygon points="16,42 4,4 28,4" fill="#8d5b00" />
+              <polygon points="16,39 6,6 26,6" fill="url(#flapperGrad)" />
+              <circle cx="16" cy="14" r="6" fill="#e11d48" stroke="#ffffff" stroke-width="1.5" />
+              <defs>
+                <linearGradient id="flapperGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fff9c4" />
+                  <stop offset="50%" stop-color="#ffb300" />
+                  <stop offset="100%" stop-color="#ff6f00" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
-          <button class="btn-frosted" id="close-benefits-wheel-btn" style="width:34px;height:34px;" aria-label="Cerrar">
-            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+
+          <!-- Canvas Wheel -->
+          <canvas id="benefits-wheel-canvas" width="300" height="300" class="wow-wheel-canvas"></canvas>
+
+          <!-- 3D Center Push Button ("¡GIRAR!") -->
+          <button class="wow-center-btn" id="wow-center-spin-btn" type="button" title="¡Toca para girar!">
+            <span>¡GIRAR!</span>
+            <small>GRATIS</small>
           </button>
         </div>
 
-        <p style="font-size:0.8rem;color:#cbd5e1;margin:6px 0 10px;text-align:center;">
-          ¡Girá la ruleta para ganar monedas extras y pistas para tus crucigramas!
-        </p>
-
-        <!-- Roulette Arena with Pointer & Canvas -->
-        <div class="benefits-wheel-wrap">
-          <div class="benefits-pointer"></div>
-          <canvas id="benefits-wheel-canvas" width="280" height="280" class="benefits-wheel-canvas"></canvas>
-        </div>
-
-        <!-- Spin CTA Button -->
-        <button class="btn-benefits-spin" id="btn-spin-benefits-wheel" type="button">
-          <span class="material-symbols-outlined" style="font-size:22px;">cached</span>
+        <!-- Big Green CTA Button Below the Wheel -->
+        <button class="wow-spin-cta" id="btn-spin-benefits-wheel" type="button">
+          <span class="material-symbols-outlined" style="font-size:24px;">autorenew</span>
           <span>¡GIRAR RULETA AHORA!</span>
         </button>
 
-        <!-- Won Award Card (Hidden until spin finishes) -->
-        <div id="benefit-award-box" class="benefit-won-card" style="display:none;">
-          <div id="benefit-won-icon" style="font-size:36px;filter:drop-shadow(0 2px 8px rgba(255,198,0,0.6));">🪙</div>
-          <div id="benefit-won-title" style="font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:#ffca28;">+100 Monedas</div>
-          <p id="benefit-won-desc" style="font-size:0.8rem;color:#e2e8f0;margin:2px 0 8px;">¡Monedas agregadas a tu saldo para pedir pistas!</p>
-          <button class="modal-btn" id="btn-claim-benefit" type="button" style="background:#00e58a;color:#0b0f12;box-shadow:0 4px 14px rgba(0,229,138,0.4);width:100%;">
-            ¡RECLAMAR BENEFICIO! ➔
+        <!-- Celebration Winner Popup (Appears on Win) -->
+        <div id="benefit-award-box" class="wow-winner-overlay" style="display:none;">
+          <div class="wow-winner-badge">¡HAS GANADO!</div>
+          <div id="benefit-won-icon" class="wow-winner-icon">🪙</div>
+          <h3 id="benefit-won-title" class="wow-winner-title">+100 Monedas</h3>
+          <p id="benefit-won-desc" class="wow-winner-desc">¡Monedas agregadas a tu saldo para pedir pistas!</p>
+          <button class="wow-spin-cta" id="btn-claim-benefit" type="button" style="max-width:260px;">
+            <span>¡RECLAMAR PREMIO!</span>
+            <span class="material-symbols-outlined">check_circle</span>
           </button>
         </div>
       </div>
@@ -1323,6 +1585,26 @@
         ];
         notes.forEach(n => setTimeout(() => this.playNote(n.f, 'triangle', 0.35, 0.3), n.t));
       }
+      playWheelTick(freq = 880) {
+        this.playNote(freq, 'triangle', 0.035, 0.14);
+      }
+      playCoinChime() {
+        [987.77, 1318.51, 1567.98, 2093.00].forEach((f, i) => {
+          setTimeout(() => this.playNote(f, 'sine', 0.16, 0.22), i * 55);
+        });
+      }
+      playBigWinFanfare() {
+        const fanfare = [
+          { f: 523.25, d: 0.14, g: 0.25, t: 0 },
+          { f: 659.25, d: 0.14, g: 0.25, t: 85 },
+          { f: 783.99, d: 0.16, g: 0.28, t: 170 },
+          { f: 1046.50, d: 0.35, g: 0.32, t: 260 },
+          { f: 1318.51, d: 0.45, g: 0.35, t: 390 }
+        ];
+        fanfare.forEach(item => {
+          setTimeout(() => this.playNote(item.f, 'triangle', item.d, item.g), item.t);
+        });
+      }
     }
 
     // --- CONFETTI & SPARKS ---
@@ -1398,16 +1680,20 @@
         this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
         this.onSpinEnd = onSpinEnd;
         this.audio = audio;
+        this.flapperEl = document.getElementById('wow-flapper');
+        this.outerRingEl = document.getElementById('wow-outer-ring');
+        this.bulbInterval = null;
 
+        // 8 Authentic Words of Wonders Prize Slices
         this.benefits = [
-          { id: 'coins_50',   name: '+50 Monedas',     short: '+50 🪙',    icon: '🪙', color: '#059669', darkColor: '#037050', type: 'coins', value: 50,  desc: '50 monedas sumadas a tu saldo para pistas' },
-          { id: 'free_hint_1',name: '1 Pista Gratis',  short: '1 Pista 💡', icon: '💡', color: '#0284C7', darkColor: '#0164A0', type: 'hint',  value: 1,  desc: '¡1 letra revelada gratis sin gastar monedas!' },
-          { id: 'coins_100',  name: '+100 Monedas',    short: '+100 🪙',   icon: '🪙', color: '#D97706', darkColor: '#B05E04', type: 'coins', value: 100, desc: '¡100 monedas para desbloquear pistas viales!' },
-          { id: 'bonus_150',  name: 'Bono +150 🪙',    short: '+150 🪙',   icon: '🌟', color: '#7C3AED', darkColor: '#5E24CC', type: 'coins', value: 150, desc: 'Bono especial de 150 monedas doradas' },
-          { id: 'free_hint_2',name: '2 Pistas Gratis', short: '2 Pistas 💡',icon: '💡💡',color: '#2563EB', darkColor: '#1D4ED8', type: 'hint',  value: 2,  desc: '¡2 pistas automáticas para palabras difíciles!' },
-          { id: 'coins_75',   name: '+75 Monedas',     short: '+75 🪙',    icon: '🪙', color: '#0D9488', darkColor: '#0F766E', type: 'coins', value: 75,  desc: '75 monedas de regalo para tu progreso' },
-          { id: 'hint_master',name: 'Pista Magistral', short: 'Pista Pro 🎯',icon: '🎯', color: '#EA580C', darkColor: '#C2410C', type: 'hint',  value: 2,  desc: 'Revela 2 letras clave en el tablero' },
-          { id: 'jackpot_250',name: 'Gran Premio +250',short: '+250 👑',   icon: '👑', color: '#EAB308', darkColor: '#CA8A04', type: 'coins', value: 250, desc: '¡Premio Mayor de 250 monedas!' }
+          { id: 'coins_100',   name: '+100 Monedas',     short: '100',      icon: '🪙', color: '#E11D48', darkColor: '#9F1239', type: 'coins', value: 100, desc: '¡100 Monedas de oro agregadas para tus pistas viales!' },
+          { id: 'free_hint_1', name: '1 Pista Bombilla', short: '1 PISTA',  icon: '💡', color: '#06B6D4', darkColor: '#0891B2', type: 'hint',  value: 1,   desc: '¡1 Letra revelada automáticamente en el tablero!' },
+          { id: 'coins_50',    name: '+50 Monedas',      short: '50',       icon: '🪙', color: '#8B5CF6', darkColor: '#6D28D9', type: 'coins', value: 50,  desc: '¡50 Monedas sumadas a tu progreso!' },
+          { id: 'hammer_hint', name: 'Martillo Casilla', short: 'MARTILLO', icon: '🔨', color: '#F97316', darkColor: '#C2410C', type: 'hint',  value: 1,   desc: '¡Martillo rompe-bloques: descubre 1 letra clave!' },
+          { id: 'jackpot_250', name: '👑 ¡JACKPOT 250!', short: 'JACKPOT',  icon: '👑', color: '#F59E0B', darkColor: '#B45309', type: 'coins', value: 250, desc: '¡PREMIO MAYOR! 250 Monedas de oro puro acumuladas' },
+          { id: 'free_hint_2', name: '2 Pistas Gratis',  short: '2 PISTAS', icon: '💡💡',color: '#10B981', darkColor: '#047857', type: 'hint',  value: 2,   desc: '¡2 Pistas gratuitas para descifrar palabras!' },
+          { id: 'target_hint', name: 'Diana Vial Pro',   short: 'DIANA',    icon: '🎯', color: '#3B82F6', darkColor: '#1D4ED8', type: 'hint',  value: 2,   desc: '¡Diana de Precisión: descubre 2 casillas estratégicas!' },
+          { id: 'coins_75',    name: '+75 Monedas',      short: '75',       icon: '🪙', color: '#D946EF', darkColor: '#A21CAF', type: 'coins', value: 75,  desc: '¡75 Monedas de bonificación instantánea!' }
         ];
 
         this.numSegments = this.benefits.length;
@@ -1415,28 +1701,56 @@
         this.angle = 0;
         this.speed = 0;
         this.isSpinning = false;
-        this.friction = 0.985;
+        this.friction = 0.986;
         this.lastTickSegment = -1;
         this.expandedIndex = -1;
         this.expandedOffset = 0;
-        this.targetExpandedOffset = 18;
+        this.targetExpandedOffset = 22;
 
+        this.setupBulbs();
         this.setupCanvas();
         this.draw();
+      }
+
+      setupBulbs() {
+        if (!this.outerRingEl) return;
+        this.outerRingEl.innerHTML = '';
+        const bulbCount = 16;
+        const radius = 160;
+        const center = 169;
+        for (let i = 0; i < bulbCount; i++) {
+          const theta = (i * 2 * Math.PI) / bulbCount;
+          const x = center + radius * Math.cos(theta);
+          const y = center + radius * Math.sin(theta);
+          const bulb = document.createElement('div');
+          bulb.className = 'wow-bulb' + (i % 2 === 1 ? ' phase-b' : '');
+          bulb.style.left = `${x}px`;
+          bulb.style.top = `${y}px`;
+          this.outerRingEl.appendChild(bulb);
+        }
+        this.startBulbFlash(350);
+      }
+
+      startBulbFlash(speed = 350) {
+        if (this.bulbInterval) clearInterval(this.bulbInterval);
+        this.bulbInterval = setInterval(() => {
+          if (!this.outerRingEl) return;
+          const bulbs = this.outerRingEl.querySelectorAll('.wow-bulb');
+          bulbs.forEach(b => b.classList.toggle('phase-b'));
+        }, speed);
       }
 
       setupCanvas() {
         if (!this.canvas) return;
         const dpr = window.devicePixelRatio || 1;
-        const rect = this.canvas.getBoundingClientRect();
-        const size = Math.min(rect.width || 280, rect.height || 280, 280);
+        const size = 300;
         this.canvas.width = size * dpr;
         this.canvas.height = size * dpr;
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.scale(dpr, dpr);
         this.size = size;
         this.center = size / 2;
-        this.radius = (size / 2) - 10;
+        this.radius = (size / 2) - 8;
       }
 
       reset() {
@@ -1444,6 +1758,7 @@
         this.isSpinning = false;
         this.expandedIndex = -1;
         this.expandedOffset = 0;
+        this.startBulbFlash(350);
       }
 
       spin() {
@@ -1451,22 +1766,31 @@
         this.isSpinning = true;
         this.expandedIndex = -1;
         this.expandedOffset = 0;
-        this.speed = 0.36 + Math.random() * 0.16;
+        this.speed = 0.42 + Math.random() * 0.16;
+        this.startBulbFlash(90);
         this.animate();
       }
 
       animate() {
-        if (this.speed > 0.0012) {
+        if (this.speed > 0.001) {
           this.angle += this.speed;
           this.angle = this.angle % (2 * Math.PI);
           this.speed *= this.friction;
 
+          // Pointer at 12 o'clock (-PI / 2)
           const currentPointerAngle = (-Math.PI / 2 - this.angle + 4 * Math.PI) % (2 * Math.PI);
           const currentSegment = Math.floor(currentPointerAngle / this.segmentAngle);
+
           if (currentSegment !== this.lastTickSegment) {
             this.lastTickSegment = currentSegment;
-            if (this.audio && this.audio.playNote) {
-              this.audio.playNote(700 + currentSegment * 35, 'triangle', 0.04, 0.12);
+            if (this.audio && this.audio.playWheelTick) {
+              this.audio.playWheelTick(820 + (currentSegment % 2) * 90);
+            }
+            if (this.flapperEl) {
+              this.flapperEl.style.transform = 'translateX(-50%) rotate(-16deg)';
+              setTimeout(() => {
+                if (this.flapperEl) this.flapperEl.style.transform = 'translateX(-50%) rotate(0deg)';
+              }, 45);
             }
           }
 
@@ -1475,13 +1799,14 @@
         } else {
           this.speed = 0;
           this.isSpinning = false;
+          this.startBulbFlash(350);
 
           const pointerAngle = (-Math.PI / 2 - this.angle + 4 * Math.PI) % (2 * Math.PI);
           const winningIdx = Math.floor(pointerAngle / this.segmentAngle) % this.numSegments;
           this.expandedIndex = winningIdx;
 
-          if (this.audio && this.audio.playVictory) {
-            this.audio.playVictory();
+          if (this.audio && this.audio.playBigWinFanfare) {
+            this.audio.playBigWinFanfare();
           }
 
           this.animateExpansion(() => {
@@ -1494,7 +1819,7 @@
 
       animateExpansion(done) {
         let frame = 0;
-        const totalFrames = 22;
+        const totalFrames = 26;
         const expandLoop = () => {
           frame++;
           const progress = Math.min(1, frame / totalFrames);
@@ -1520,18 +1845,18 @@
 
         ctx.clearRect(0, 0, this.size, this.size);
 
-        // Draw Outer rim
+        // Outer Dark Golden Ring Underlay
         ctx.save();
         ctx.beginPath();
-        ctx.arc(cx, cy, r + 6, 0, 2 * Math.PI);
-        ctx.fillStyle = '#1c2225';
+        ctx.arc(cx, cy, r + 4, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1e112a';
         ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#ffca28';
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#ffd54f';
         ctx.stroke();
         ctx.restore();
 
-        // Draw segments
+        // Draw Segments
         for (let i = 0; i < this.numSegments; i++) {
           const item = this.benefits[i];
           const startAngle = this.angle + i * this.segmentAngle;
@@ -1544,78 +1869,80 @@
             const ox = Math.cos(mid) * this.expandedOffset;
             const oy = Math.sin(mid) * this.expandedOffset;
             ctx.translate(ox, oy);
-            ctx.shadowColor = '#ffca28';
-            ctx.shadowBlur = 18;
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 24;
           }
 
+          // Wedge shape
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.arc(cx, cy, r, startAngle, endAngle);
           ctx.closePath();
 
-          const grad = ctx.createRadialGradient(cx, cy, 20, cx, cy, r);
+          // WoW Radial Gradient for slice
+          const grad = ctx.createRadialGradient(cx, cy, 30, cx, cy, r);
           grad.addColorStop(0, item.color);
           grad.addColorStop(1, item.darkColor);
           ctx.fillStyle = grad;
           ctx.fill();
 
-          ctx.lineWidth = isExpanded ? 3.5 : 1.5;
-          ctx.strokeStyle = isExpanded ? '#ffffff' : 'rgba(255, 255, 255, 0.35)';
+          // Golden divider stroke
+          ctx.lineWidth = isExpanded ? 4 : 2;
+          ctx.strokeStyle = isExpanded ? '#ffffff' : '#ffecb3';
           ctx.stroke();
 
-          // Text and Icon
+          // Icon & Label inside wedge
           ctx.save();
           const textAngle = startAngle + this.segmentAngle / 2;
           ctx.translate(cx, cy);
           ctx.rotate(textAngle);
 
-          ctx.font = '19px sans-serif';
+          // Big Emoji Icon
+          ctx.font = '22px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(item.icon, r * 0.72, 0);
 
-          ctx.font = 'bold 11px sans-serif';
+          // WoW Styled Reward Label
+          ctx.font = "900 12px 'Archivo Black', 'Montserrat', sans-serif";
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.75)';
+          ctx.lineWidth = 3;
+          ctx.strokeText(item.short, r * 0.44, 0);
           ctx.fillStyle = '#ffffff';
-          ctx.shadowColor = 'rgba(0,0,0,0.8)';
-          ctx.shadowBlur = 4;
-          ctx.fillText(item.short, r * 0.42, 0);
+          ctx.fillText(item.short, r * 0.44, 0);
 
           ctx.restore();
           ctx.restore();
         }
 
-        // Draw Golden Pegs around perimeter
+        // Golden Carnival Pegs around edge
         for (let i = 0; i < this.numSegments * 2; i++) {
           const pegAngle = this.angle + (i * Math.PI / this.numSegments);
-          const px = cx + Math.cos(pegAngle) * (r + 1);
-          const py = cy + Math.sin(pegAngle) * (r + 1);
+          const px = cx + Math.cos(pegAngle) * (r - 2);
+          const py = cy + Math.sin(pegAngle) * (r - 2);
           ctx.beginPath();
           ctx.arc(px, py, 2.5, 0, 2 * Math.PI);
-          ctx.fillStyle = '#ffca28';
+          ctx.fillStyle = '#fff9c4';
+          ctx.shadowColor = '#ffb300';
+          ctx.shadowBlur = 4;
           ctx.fill();
         }
 
-        // Draw Center Hub
+        // Inner Golden Bezel beneath center button
         ctx.save();
         ctx.beginPath();
-        ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
-        const hubGrad = ctx.createRadialGradient(cx - 5, cy - 5, 2, cx, cy, 26);
-        hubGrad.addColorStop(0, '#ffe082');
-        hubGrad.addColorStop(0.6, '#ffb300');
-        hubGrad.addColorStop(1, '#b27b00');
+        ctx.arc(cx, cy, 42, 0, 2 * Math.PI);
+        const hubGrad = ctx.createRadialGradient(cx - 6, cy - 6, 4, cx, cy, 42);
+        hubGrad.addColorStop(0, '#fff59d');
+        hubGrad.addColorStop(0.5, '#f59e0b');
+        hubGrad.addColorStop(1, '#78350f');
         ctx.fillStyle = hubGrad;
         ctx.fill();
-        ctx.lineWidth = 2.5;
-        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#ffe082';
         ctx.stroke();
-
-        ctx.font = 'bold 9px sans-serif';
-        ctx.fillStyle = '#1e293b';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('VIAL', cx, cy - 4);
-        ctx.font = '8px sans-serif';
-        ctx.fillText('PREMIO', cx, cy + 6);
         ctx.restore();
       }
     }
@@ -1686,11 +2013,12 @@
           levelsGrid: document.getElementById('levels-grid'),
           stageFilterBar: document.getElementById('stage-filter-bar'),
 
-          // Ruleta de Beneficios DOM
+          // Ruleta de Beneficios DOM (Words of Wonders)
           openBenefitsBtn: document.getElementById('btn-open-benefits-wheel'),
           victoryBenefitsBtn: document.getElementById('btn-victory-benefits'),
           benefitsModal: document.getElementById('benefits-wheel-modal'),
           closeBenefitsBtn: document.getElementById('close-benefits-wheel-btn'),
+          centerSpinBtn: document.getElementById('wow-center-spin-btn'),
           spinBenefitsBtn: document.getElementById('btn-spin-benefits-wheel'),
           benefitsCanvas: document.getElementById('benefits-wheel-canvas'),
           benefitAwardBox: document.getElementById('benefit-award-box'),
@@ -1768,7 +2096,7 @@
         window.addEventListener('pointercancel', (e) => this.onPointerUp(e));
         wheel.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Eventos Ruleta de Beneficios
+        // Eventos Ruleta de Beneficios (Words of Wonders)
         this.dom.openBenefitsBtn?.addEventListener('click', () => this.openBenefitsModal());
         this.dom.victoryBenefitsBtn?.addEventListener('click', () => {
           this.dom.victoryModal.classList.remove('active');
@@ -1777,13 +2105,21 @@
         this.dom.closeBenefitsBtn?.addEventListener('click', () => this.closeBenefitsModal());
         this.dom.claimBenefitBtn?.addEventListener('click', () => this.closeBenefitsModal());
 
-        this.dom.spinBenefitsBtn?.addEventListener('click', () => {
+        const triggerSpin = () => {
           if (this.benefitsWheel && !this.benefitsWheel.isSpinning) {
             this.audio.init();
-            this.dom.spinBenefitsBtn.disabled = true;
+            if (this.dom.spinBenefitsBtn) this.dom.spinBenefitsBtn.disabled = true;
+            if (this.dom.centerSpinBtn) {
+              this.dom.centerSpinBtn.disabled = true;
+              this.dom.centerSpinBtn.style.opacity = '0.75';
+              this.dom.centerSpinBtn.style.pointerEvents = 'none';
+            }
             this.benefitsWheel.spin();
           }
-        });
+        };
+
+        this.dom.spinBenefitsBtn?.addEventListener('click', triggerSpin);
+        this.dom.centerSpinBtn?.addEventListener('click', triggerSpin);
       }
 
       initBenefitsWheel() {
@@ -1803,6 +2139,12 @@
         if (this.dom.spinBenefitsBtn) {
           this.dom.spinBenefitsBtn.disabled = false;
           this.dom.spinBenefitsBtn.style.display = 'flex';
+        }
+        if (this.dom.centerSpinBtn) {
+          this.dom.centerSpinBtn.disabled = false;
+          this.dom.centerSpinBtn.style.display = 'flex';
+          this.dom.centerSpinBtn.style.opacity = '1';
+          this.dom.centerSpinBtn.style.pointerEvents = 'auto';
         }
         this.audio.init();
 
@@ -1835,8 +2177,12 @@
         if (this.dom.benefitWonDesc) this.dom.benefitWonDesc.textContent = benefit.desc;
         if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'flex';
         if (this.dom.spinBenefitsBtn) this.dom.spinBenefitsBtn.style.display = 'none';
+        if (this.dom.centerSpinBtn) this.dom.centerSpinBtn.style.display = 'none';
 
-        this.confetti.burst(65);
+        this.confetti.burst(80);
+        if (this.audio && this.audio.playCoinChime) {
+          this.audio.playCoinChime();
+        }
       }
 
       updateHintButtonUI() {
