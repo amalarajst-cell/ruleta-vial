@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
@@ -507,6 +507,34 @@
         <span style="font-size:11px;color:var(--on-surface-variant);font-weight:600;">+Velocidad = +Puntos XP</span>
       </div>
 
+      <!-- Guantera de Comodines / Perks Bar -->
+      <div class="quiz-perks-bar" id="quiz-perks-bar" style="margin-bottom:10px;">
+        <div class="quiz-perks-label">
+          <span class="material-symbols-outlined text-[16px]" style="color:var(--secondary-container)">build</span>
+          <span>Comodines:</span>
+        </div>
+        <div class="quiz-perks-buttons">
+          <button type="button" class="btn-perk" id="btn-perk-fifty" title="Elimina 2 opciones incorrectas" disabled>
+            <span class="perk-icon">🛡️</span>
+            <span class="perk-name">50/50</span>
+            <span class="perk-badge" id="perk-count-fifty">0</span>
+          </button>
+          <button type="button" class="btn-perk" id="btn-perk-time" title="Suma 10 segundos al cronómetro" disabled>
+            <span class="perk-icon">⏱️</span>
+            <span class="perk-name">+10s</span>
+            <span class="perk-badge" id="perk-count-time">0</span>
+          </button>
+          <button type="button" class="btn-perk" id="btn-perk-skip" title="Cambia la pregunta por otra" disabled>
+            <span class="perk-icon">🔄</span>
+            <span class="perk-name">Saltear</span>
+            <span class="perk-badge" id="perk-count-skip">0</span>
+          </button>
+          <div class="perk-chip-active" id="perk-chip-2x" style="display:none;">
+            <span>⚡ 2x XP</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Question Card -->
       <div class="question-card">
         <p class="question-text" id="quiz-question-text">
@@ -604,6 +632,24 @@
         <div class="breakdown-box" id="res-breakdown-list">
           <!-- Injected dynamically -->
         </div>
+      </div>
+
+      <!-- Banner de Ruleta de Beneficios (Desafío Superado / Victoria) -->
+      <div id="res-benefits-card" class="benefits-reward-card" style="display:none;margin-bottom:16px;">
+        <div class="benefits-reward-header">
+          <span class="material-symbols-outlined text-[30px]" style="color:var(--secondary-container)">workspace_premium</span>
+          <div>
+            <div class="benefits-reward-tag">RECOMPENSA DE VICTORIA</div>
+            <h3 class="benefits-reward-title">¡Ruleta de Beneficios Desbloqueada!</h3>
+          </div>
+        </div>
+        <p class="benefits-reward-desc">
+          ¡Felicitaciones por superar el desafío vial! Ganaste <strong>1 tiro gratis</strong> en la Ruleta de Beneficios para obtener comodines y ventajas.
+        </p>
+        <button class="btn-tactile-primary btn-benefits-claim" id="btn-claim-benefit-wheel" type="button">
+          <span class="material-symbols-outlined text-[24px]">casino</span>
+          <span>¡GIRAR RULETA DE BENEFICIOS!</span>
+        </button>
       </div>
 
       <!-- Action Buttons -->
@@ -999,6 +1045,61 @@
 
     </div>
   </main>
+
+
+  <!-- ================================================
+       MODAL: RULETA DE BENEFICIOS VIALES
+  ================================================ -->
+  <div id="modal-benefits-wheel" class="modal-backdrop" style="display:none;">
+    <div class="modal-benefits-card">
+      <div class="modal-benefits-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="material-symbols-outlined text-[30px]" style="color:var(--secondary-container)">workspace_premium</span>
+          <div>
+            <h2 style="font-family:var(--font-display);font-size:18px;color:#fff;margin:0;letter-spacing:0.5px;">RULETA DE BENEFICIOS</h2>
+            <span style="font-size:12px;color:var(--tertiary);">Giro de Recompensa Vial</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btn-close-benefits-modal" type="button" aria-label="Cerrar" style="background:transparent;border:none;color:var(--on-surface-variant);cursor:pointer;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-benefits-body">
+        <p style="font-size:13px;color:var(--on-surface-variant);text-align:center;margin-bottom:8px;">
+          ¡Girá la ruleta para conseguir comodines y ventajas para tu próximo desafío!
+        </p>
+
+        <!-- Arena de Ruleta de Beneficios -->
+        <div class="roulette-arena" style="padding:4px 0;">
+          <div class="neon-aura" style="background:radial-gradient(circle, rgba(255,198,0,0.3) 0%, rgba(141,226,214,0.15) 50%, transparent 70%);"></div>
+          <div class="canvas-wrapper" style="width:280px;height:280px;max-width:280px;max-height:280px;">
+            <canvas id="benefits-roulette-canvas" width="280" height="280" aria-label="Ruleta de Beneficios"></canvas>
+          </div>
+        </div>
+
+        <!-- Botón de Giro -->
+        <button class="btn-tactile-primary btn-benefits-claim" id="btn-spin-benefits" type="button" style="margin-top:12px;width:100%;">
+          <span class="material-symbols-outlined text-[26px]">cached</span>
+          <span>¡GIRAR BENEFICIO AHORA!</span>
+        </button>
+
+        <!-- Tarjeta de Resultado de Beneficio (Oculta al inicio) -->
+        <div id="benefit-awarded-card" class="benefit-awarded-box" style="display:none;">
+          <div class="benefit-awarded-icon" id="benefit-awarded-icon">🛡️</div>
+          <div class="benefit-awarded-info">
+            <span class="benefit-awarded-subtitle">¡BENEFICIO CONSEGUIDO!</span>
+            <h4 class="benefit-awarded-title" id="benefit-awarded-title">Paso Seguro (50/50)</h4>
+            <p class="benefit-awarded-desc" id="benefit-awarded-desc">Descarta 2 respuestas incorrectas en tu próximo desafío.</p>
+          </div>
+          <button class="btn-tactile-primary" id="btn-finish-benefits" type="button" style="background:var(--tertiary);color:var(--on-tertiary);box-shadow:0 4px 0 #009E8C;width:100%;margin-top:10px;">
+            <span>GUARDAR EN MI GUANTERA Y SALIR</span>
+            <span class="material-symbols-outlined">check_circle</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
   <!-- ================================================

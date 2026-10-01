@@ -155,6 +155,42 @@ class SoundSystem {
     this.playWrong();
   }
 
+  playWheelWin() {
+    this.vibrate([40, 60, 120]);
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      // Arpeggio triunfal brillante: Do5, Mi5, Sol5, Do6, Mi6 con armónicos
+      const notes = [
+        { f: 523.25, t: 0.00, d: 0.35, g: 0.18, type: 'triangle' },
+        { f: 659.25, t: 0.06, d: 0.35, g: 0.20, type: 'triangle' },
+        { f: 783.99, t: 0.12, d: 0.40, g: 0.22, type: 'triangle' },
+        { f: 1046.50, t: 0.18, d: 0.65, g: 0.26, type: 'triangle' },
+        { f: 1318.51, t: 0.24, d: 0.70, g: 0.15, type: 'sine' }
+      ];
+
+      notes.forEach(n => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = n.type;
+        osc.frequency.setValueAtTime(n.f, now + n.t);
+
+        gain.gain.setValueAtTime(n.g, now + n.t);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(now + n.t);
+        osc.stop(now + n.t + n.d);
+      });
+    } catch (e) {}
+  }
+
   playFanfare() {
     if (!this.enabled) return;
     this.init();

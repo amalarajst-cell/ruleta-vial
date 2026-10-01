@@ -876,6 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const q = questions[currentIndex];
     const qNum = currentIndex + 1;
     isAnswered = false;
+    updateQuizPerksUI();
 
     // Header updates
     if (quizCategoryBadge) {
@@ -963,6 +964,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleOptionSelection(selectedIdx, q) {
     if (isAnswered) return;
     isAnswered = true;
+    updateQuizPerksUI();
 
     clearInterval(timerInterval);
     const finalTime = parseFloat(((performance.now() - questionStartTime) / 1000).toFixed(2));
@@ -971,8 +973,12 @@ document.addEventListener('DOMContentLoaded', () => {
     activeRound.times.push(finalTime);
     activeRound.perQuestion.push({ correct: isCorrect, time: finalTime, question: q.question });
 
-    // Calculate score
-    const pointsGained = isCorrect ? (100 + Math.max(0, Math.round((10 - finalTime) * 8))) : 0;
+    // Calculate score (aplica multiplicador 2x si está activo)
+    const perks = getPlayerPerks();
+    let pointsGained = isCorrect ? (100 + Math.max(0, Math.round((10 - finalTime) * 8))) : 0;
+    if (isCorrect && perks.double_xp) {
+      pointsGained *= 2;
+    }
 
     // Log answer to history
     const responsePayload = {
@@ -1166,6 +1172,23 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
+    // Mostrar u ocultar la Ruleta de Beneficios según el rendimiento (victoria / superado >= 3 de 5)
+    const benefitsCard = document.getElementById('res-benefits-card');
+    if (benefitsCard) {
+      if (correctCount >= 3) {
+        benefitsCard.style.display = 'block';
+      } else {
+        benefitsCard.style.display = 'none';
+      }
+    }
+
+    // Consumir multiplicador 2x si estaba activo
+    const currentPerks = getPlayerPerks();
+    if (currentPerks.double_xp) {
+      currentPerks.double_xp = false;
+      savePlayerPerks(currentPerks);
+    }
+
     showScreen('results');
   }
 
@@ -1217,6 +1240,237 @@ document.addEventListener('DOMContentLoaded', () => {
     if (regNameInput) regNameInput.value = '';
     if (regEmailInput) regEmailInput.value = '';
     showScreen('register');
+  });
+
+  // ── INVENTARIO DE COMODINES / PERKS VIALES ─────────────────
+  function getPlayerPerks() {
+    try {
+      const raw = localStorage.getItem('vialplay_player_perks');
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return { fifty: 0, time: 0, skip: 0, double_xp: false };
+  }
+
+  function savePlayerPerks(perks) {
+    localStorage.setItem('vialplay_player_perks', JSON.stringify(perks));
+    updateQuizPerksUI();
+  }
+
+  function updateQuizPerksUI() {
+    const perks = getPlayerPerks();
+    const btnFifty = document.getElementById('btn-perk-fifty');
+    const btnTime  = document.getElementById('btn-perk-time');
+    const btnSkip  = document.getElementById('btn-perk-skip');
+    const chip2x   = document.getElementById('perk-chip-2x');
+
+    const countFifty = document.getElementById('perk-count-fifty');
+    const countTime  = document.getElementById('perk-count-time');
+    const countSkip  = document.getElementById('perk-count-skip');
+
+    if (countFifty) countFifty.textContent = perks.fifty || 0;
+    if (countTime) countTime.textContent = perks.time || 0;
+    if (countSkip) countSkip.textContent = perks.skip || 0;
+
+    if (btnFifty) {
+      btnFifty.disabled = (perks.fifty || 0) <= 0 || isAnswered;
+      btnFifty.classList.toggle('has-stock', (perks.fifty || 0) > 0);
+    }
+    if (btnTime) {
+      btnTime.disabled = (perks.time || 0) <= 0 || isAnswered;
+      btnTime.classList.toggle('has-stock', (perks.time || 0) > 0);
+    }
+    if (btnSkip) {
+      btnSkip.disabled = (perks.skip || 0) <= 0 || isAnswered;
+      btnSkip.classList.toggle('has-stock', (perks.skip || 0) > 0);
+    }
+    if (chip2x) {
+      chip2x.style.display = perks.double_xp ? 'inline-flex' : 'none';
+    }
+  }
+
+  // Comodín 1: Paso Seguro (50/50)
+  function useFiftyFiftyPerk() {
+    const perks = getPlayerPerks();
+    if ((perks.fifty || 0) <= 0 || isAnswered || !activeRound) return;
+    const { questions, currentIndex } = activeRound;
+    const q = questions[currentIndex];
+    const optionBtns = Array.from(quizOptionsStack.querySelectorAll('.option-btn'));
+    if (optionBtns.length <= 2) return;
+
+    const incorrectIndices = optionBtns
+      .map((_, idx) => idx)
+      .filter(idx => idx !== q.correctAnswer && !optionBtns[idx].disabled);
+
+    if (incorrectIndices.length === 0) return;
+
+    shuffleArray(incorrectIndices);
+    const toDisable = incorrectIndices.slice(0, 2);
+    toDisable.forEach(idx => {
+      const btn = optionBtns[idx];
+      btn.style.opacity = '0.22';
+      btn.style.pointerEvents = 'none';
+      btn.style.filter = 'grayscale(1)';
+      btn.disabled = true;
+    });
+
+    perks.fifty--;
+    savePlayerPerks(perks);
+    if (typeof audioSystem !== 'undefined' && audioSystem.playCorrect) audioSystem.playCorrect();
+  }
+
+  // Comodín 2: Freno de Emergencia (+10 Segundos)
+  function useTimePerk() {
+    const perks = getPlayerPerks();
+    if ((perks.time || 0) <= 0 || isAnswered || !activeRound) return;
+    questionStartTime += 10000;
+    perks.time--;
+    savePlayerPerks(perks);
+
+    if (quizTimerText) {
+      const prevText = quizTimerText.textContent;
+      quizTimerText.textContent = '+10s';
+      quizTimerText.style.color = 'var(--success)';
+      setTimeout(() => {
+        quizTimerText.textContent = prevText;
+        quizTimerText.style.color = '';
+      }, 750);
+    }
+    if (typeof audioSystem !== 'undefined' && audioSystem.playCorrect) audioSystem.playCorrect();
+  }
+
+  // Comodín 3: Cambio de Carril (Saltear Pregunta)
+  function useSkipPerk() {
+    const perks = getPlayerPerks();
+    if ((perks.skip || 0) <= 0 || isAnswered || !activeRound) return;
+    perks.skip--;
+    savePlayerPerks(perks);
+
+    const { questions, currentIndex } = activeRound;
+    const q = questions[currentIndex];
+    activeRound.times.push(1.0);
+    activeRound.perQuestion.push({ correct: true, time: 1.0, question: `${q.question} (Salteada con Comodín)` });
+    activeRound.correctCount++;
+    sessionScore += 100;
+    sessionStreak++;
+    sessionCorrect++;
+    if (typeof audioSystem !== 'undefined' && audioSystem.playCorrect) audioSystem.playCorrect();
+    advanceQuiz();
+  }
+
+  document.getElementById('btn-perk-fifty')?.addEventListener('click', useFiftyFiftyPerk);
+  document.getElementById('btn-perk-time')?.addEventListener('click', useTimePerk);
+  document.getElementById('btn-perk-skip')?.addEventListener('click', useSkipPerk);
+
+  // ── RULETA DE BENEFICIOS POST-DESAFÍO (OPCIÓN 3) ───────────
+  const BENEFIT_CATEGORIES = [
+    { id: 'fifty_fifty',   label: '50 / 50',        color: '#059669', darkColor: '#037050', name: 'Paso Seguro (50/50)', desc: 'Descarta 2 respuestas incorrectas en tu próximo desafío.', icon: '🛡️' },
+    { id: 'extra_time',    label: '+10 SEGUNDOS',   color: '#0284C7', darkColor: '#0164A0', name: 'Freno de Emergencia', desc: '+10 segundos adicionales en el cronómetro.', icon: '⏱️' },
+    { id: 'double_xp',     label: 'DOBLE XP (x2)',  color: '#D97706', darkColor: '#B05E04', name: 'Doble Tracción XP', desc: 'Duplica los puntos que ganes en tu próxima partida.', icon: '⚡' },
+    { id: 'skip_question', label: 'SALTEAR',        color: '#7C3AED', darkColor: '#5E24CC', name: 'Cambio de Carril', desc: 'Saltea una pregunta difícil sin perder puntos.', icon: '🔄' },
+    { id: 'bonus_xp',      label: '+100 XP',        color: '#DC2626', darkColor: '#B01010', name: 'Super Bono Vial', desc: '+100 puntos extra sumados a tu récord del ranking.', icon: '🌟' },
+    { id: 'fifty_extra',   label: '50 / 50 EXTRA',  color: '#BE185D', darkColor: '#961047', name: 'Paso Seguro Extra', desc: 'Comodín 50/50 adicional para tu guantera.', icon: '🛡️' }
+  ];
+
+  let benefitsRoulette = null;
+  const modalBenefitsWheel   = document.getElementById('modal-benefits-wheel');
+  const btnClaimBenefitWheel = document.getElementById('btn-claim-benefit-wheel');
+  const btnCloseBenefits     = document.getElementById('btn-close-benefits-modal');
+  const btnSpinBenefits      = document.getElementById('btn-spin-benefits');
+  const benefitAwardedCard   = document.getElementById('benefit-awarded-card');
+  const btnFinishBenefits    = document.getElementById('btn-finish-benefits');
+
+  function initBenefitsRoulette() {
+    const canvas = document.getElementById('benefits-roulette-canvas');
+    if (!canvas || typeof RouletteWheel === 'undefined') return;
+
+    benefitsRoulette = new RouletteWheel('benefits-roulette-canvas', {
+      onSpinEnd: (benefit) => {
+        onBenefitWon(benefit);
+      }
+    });
+
+    benefitsRoulette.categories = BENEFIT_CATEGORIES;
+    benefitsRoulette.numSegments = BENEFIT_CATEGORIES.length;
+    benefitsRoulette.segmentAngle = (2 * Math.PI) / benefitsRoulette.numSegments;
+    benefitsRoulette.centerText = { top: 'PREMIO', bottom: 'VIAL' };
+    benefitsRoulette.setupCanvas();
+    benefitsRoulette.draw();
+  }
+
+  function openBenefitsModal() {
+    if (!modalBenefitsWheel) return;
+    modalBenefitsWheel.style.display = 'flex';
+    if (benefitAwardedCard) benefitAwardedCard.style.display = 'none';
+    if (btnSpinBenefits) {
+      btnSpinBenefits.disabled = false;
+      btnSpinBenefits.style.display = 'flex';
+    }
+
+    if (!benefitsRoulette) {
+      initBenefitsRoulette();
+    } else {
+      benefitsRoulette.reset();
+      benefitsRoulette.setupCanvas();
+      benefitsRoulette.draw();
+    }
+  }
+
+  function closeBenefitsModal() {
+    if (modalBenefitsWheel) modalBenefitsWheel.style.display = 'none';
+    const card = document.getElementById('res-benefits-card');
+    if (card) card.style.display = 'none';
+    updateQuizPerksUI();
+  }
+
+  function onBenefitWon(benefit) {
+    const perks = getPlayerPerks();
+    let title = benefit.name;
+    let desc = benefit.desc;
+    let icon = benefit.icon;
+
+    if (benefit.id === 'fifty_fifty' || benefit.id === 'fifty_extra') {
+      perks.fifty = (perks.fifty || 0) + 1;
+    } else if (benefit.id === 'extra_time') {
+      perks.time = (perks.time || 0) + 1;
+    } else if (benefit.id === 'skip_question') {
+      perks.skip = (perks.skip || 0) + 1;
+    } else if (benefit.id === 'double_xp') {
+      perks.double_xp = true;
+    } else if (benefit.id === 'bonus_xp') {
+      sessionScore += 100;
+      updateHeaderDisplay();
+      if (typeof saveToLeaderboard === 'function' && activeRound) {
+        saveToLeaderboard(sessionScore, activeRound.category.label || activeRound.category.name, 2.0);
+      }
+    }
+
+    savePlayerPerks(perks);
+
+    if (benefitAwardedCard) {
+      const iconEl  = document.getElementById('benefit-awarded-icon');
+      const titleEl = document.getElementById('benefit-awarded-title');
+      const descEl  = document.getElementById('benefit-awarded-desc');
+      if (iconEl)  iconEl.textContent = icon;
+      if (titleEl) titleEl.textContent = title;
+      if (descEl)  descEl.textContent = desc;
+
+      benefitAwardedCard.style.display = 'flex';
+    }
+
+    if (btnSpinBenefits) btnSpinBenefits.style.display = 'none';
+    if (typeof launchConfetti === 'function') launchConfetti();
+  }
+
+  btnClaimBenefitWheel?.addEventListener('click', openBenefitsModal);
+  btnCloseBenefits?.addEventListener('click', closeBenefitsModal);
+  btnFinishBenefits?.addEventListener('click', closeBenefitsModal);
+
+  btnSpinBenefits?.addEventListener('click', () => {
+    if (benefitsRoulette && !benefitsRoulette.isSpinning) {
+      audioSystem.init();
+      btnSpinBenefits.disabled = true;
+      benefitsRoulette.spin();
+    }
   });
 
   // ── RENDER LEADERBOARD UI ─────────────────────────────────

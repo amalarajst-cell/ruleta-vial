@@ -61,6 +61,8 @@ class RouletteWheel {
     this.segmentAngle = (2 * Math.PI) / this.numSegments;
     this.currentAngle = -Math.PI / 2; // Start so first segment is at top pointer
     this.isSpinning = false;
+    this.winningIndex = -1;
+    this.winningPop = 0;
     this.onSpinEnd = options.onSpinEnd || null;
     this.lastTickSegment = -1;
 
@@ -153,7 +155,13 @@ class RouletteWheel {
 
     // ── Segments ─────────────────────────────────────────
     for (let i = 0; i < this.numSegments; i++) {
-      this._drawSegment(i);
+      if (i !== this.winningIndex) {
+        this._drawSegment(i);
+      }
+    }
+    // Draw winning segment on top of others if active
+    if (this.winningIndex >= 0 && this.winningIndex < this.numSegments) {
+      this._drawSegment(this.winningIndex);
     }
 
     // ── Decorative Outer Pins ─────────────────────────────
@@ -174,28 +182,41 @@ class RouletteWheel {
     const endAngle   = startAngle + this.segmentAngle;
     const midAngle   = (startAngle + endAngle) / 2;
 
+    const isWinning = (i === this.winningIndex && this.winningPop > 0);
+    const popDist   = isWinning ? (22 * this.winningPop) : 0;
+    const segCenterX = centerX + Math.cos(midAngle) * popDist;
+    const segCenterY = centerY + Math.sin(midAngle) * popDist;
+    const segRadius  = isWinning ? (radius + 7 * this.winningPop) : radius;
+
     ctx.save();
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.moveTo(segCenterX, segCenterY);
+    ctx.arc(segCenterX, segCenterY, segRadius, startAngle, endAngle);
     ctx.closePath();
 
-    const r0 = Math.max(0.1, radius * 0.15);
-    const grad = ctx.createRadialGradient(centerX, centerY, r0, centerX, centerY, radius);
+    const r0 = Math.max(0.1, segRadius * 0.15);
+    const grad = ctx.createRadialGradient(segCenterX, segCenterY, r0, segCenterX, segCenterY, segRadius);
     grad.addColorStop(0.25, cat.color);
     grad.addColorStop(1,    cat.darkColor);
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Segment divider lines with clean styling
-    ctx.lineWidth = 2.5;
-    ctx.strokeStyle = 'rgba(18, 20, 20, 0.85)';
+    // Segment divider lines & winning golden highlight
+    if (isWinning) {
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 24 * this.winningPop;
+      ctx.lineWidth = 4.5;
+      ctx.strokeStyle = '#FFE033';
+    } else {
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = 'rgba(18, 20, 20, 0.85)';
+    }
     ctx.stroke();
     ctx.restore();
 
     // ── Segment Text (SIN ICONOS, FORMATO CONDENSADO Y ADAPTABLE) ──
     ctx.save();
-    ctx.translate(centerX, centerY);
+    ctx.translate(segCenterX, segCenterY);
     ctx.rotate(midAngle);
 
     let norm = (midAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
@@ -203,15 +224,15 @@ class RouletteWheel {
     if (flipped) ctx.rotate(Math.PI);
 
     const hubR = Math.max(22, radius * 0.20);
-    const maxTextLength = (radius - 10) - (hubR + 8);
-    const midR = hubR + (radius - 10 - hubR) * 0.52;
+    const maxTextLength = (segRadius - 10) - (hubR + 8);
+    const midR = hubR + (segRadius - 10 - hubR) * 0.52;
     const textR = flipped ? -midR : midR;
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
     // Auto-scale font size to ensure every word fits with margins
-    let fontSize = Math.max(12, Math.round(radius * 0.125));
+    let fontSize = Math.max(12, Math.round(segRadius * (isWinning ? 0.135 : 0.125)));
     ctx.font = `900 ${fontSize}px 'Barlow Condensed', 'Archivo', system-ui, sans-serif`;
     let measured = ctx.measureText(cat.label).width;
     while (measured > maxTextLength && fontSize > 8.5) {
@@ -221,11 +242,11 @@ class RouletteWheel {
     }
     
     // Label with drop outline for high readability
-    ctx.lineWidth = Math.max(3, fontSize * 0.26);
-    ctx.strokeStyle = 'rgba(12, 16, 20, 0.95)';
+    ctx.lineWidth = Math.max(3, fontSize * 0.28);
+    ctx.strokeStyle = isWinning ? 'rgba(0, 0, 0, 0.95)' : 'rgba(12, 16, 20, 0.95)';
     ctx.lineJoin = 'round';
     ctx.strokeText(cat.label, textR, 0);
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = isWinning ? '#FFF7C2' : '#FFFFFF';
     ctx.fillText(cat.label, textR, 0);
 
     ctx.restore();
@@ -329,6 +350,8 @@ class RouletteWheel {
   spin(forcedIndex = null) {
     if (this.isSpinning) return;
     this.isSpinning = true;
+    this.winningIndex = -1;
+    this.winningPop = 0;
 
     // Haptic feedback al tocar para girar
     try {
@@ -382,12 +405,47 @@ class RouletteWheel {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        this.isSpinning = false;
-        const selected = this.categories[targetIndex];
-        if (this.onSpinEnd) this.onSpinEnd(selected);
+        // Spin finished: activate winning segment pop-out and victory sound!
+        this.winningIndex = targetIndex;
+        if (typeof audioSystem !== 'undefined' && audioSystem.playWheelWin) {
+          audioSystem.playWheelWin();
+        } else if (typeof audioSystem !== 'undefined' && audioSystem.playFanfare) {
+          audioSystem.playFanfare();
+        }
+
+        const popDuration = 480;
+        const popStart = performance.now();
+        const animatePop = (popNow) => {
+          const popElapsed = popNow - popStart;
+          const popProgress = Math.min(popElapsed / popDuration, 1);
+          // Elastic spring bounce: overshoot to ~1.28 and settle to 1.0
+          const easePop = Math.sin(popProgress * Math.PI * 0.5) * (1 + 0.28 * Math.sin(popProgress * Math.PI));
+          this.winningPop = easePop;
+          this.draw();
+
+          if (popProgress < 1) {
+            requestAnimationFrame(animatePop);
+          } else {
+            this.winningPop = 1.0;
+            this.draw();
+            setTimeout(() => {
+              this.isSpinning = false;
+              const selected = this.categories[targetIndex];
+              if (this.onSpinEnd) this.onSpinEnd(selected);
+            }, 1400);
+          }
+        };
+        requestAnimationFrame(animatePop);
       }
     };
 
     requestAnimationFrame(animate);
+  }
+
+  reset() {
+    this.winningIndex = -1;
+    this.winningPop = 0;
+    this.isSpinning = false;
+    this.draw();
   }
 }
