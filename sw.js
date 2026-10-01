@@ -1,11 +1,12 @@
-// Service Worker — Ruleta Vial PWA v8
-const CACHE_NAME = 'ruleta-vial-v8';
+// Service Worker — Ruleta Vial PWA v9
+const CACHE_NAME = 'ruleta-vial-v9';
 
 // Archivos esenciales para cachear en la instalación (Offline completo)
 const CORE_FILES = [
   './',
   './index.html',
   './juegos.html',
+  './words.html',
   './prioridad.html',
   './peligros.html',
   './crucigrama.html',
@@ -25,6 +26,8 @@ const CORE_FILES = [
   './js/colectivo_questions.js',
   './js/senales-data.js',
   './js/realtime-live.js',
+  './js/vialwords_levels.js',
+  './js/vialwords_dictionary.js',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/logo.png',
