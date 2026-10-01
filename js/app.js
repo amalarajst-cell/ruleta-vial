@@ -1172,14 +1172,10 @@ document.addEventListener('DOMContentLoaded', () => {
       `).join('');
     }
 
-    // Mostrar u ocultar la Ruleta de Beneficios según el rendimiento (victoria / superado >= 3 de 5)
+    // Mostrar tarjeta de Ruleta de Beneficios en resultados
     const benefitsCard = document.getElementById('res-benefits-card');
     if (benefitsCard) {
-      if (correctCount >= 3) {
-        benefitsCard.style.display = 'block';
-      } else {
-        benefitsCard.style.display = 'none';
-      }
+      benefitsCard.style.display = 'block';
     }
 
     // Consumir multiplicador 2x si estaba activo
@@ -1190,6 +1186,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     showScreen('results');
+
+    // Apertura automática directa de la Ruleta de Beneficios al terminar la 5ta pregunta
+    setTimeout(() => {
+      openBenefitsModal();
+    }, 800);
   }
 
   // ── SAVE TO LEADERBOARD ───────────────────────────────────
@@ -1406,13 +1407,15 @@ document.addEventListener('DOMContentLoaded', () => {
       btnSpinBenefits.style.display = 'flex';
     }
 
-    if (!benefitsRoulette) {
-      initBenefitsRoulette();
-    } else {
-      benefitsRoulette.reset();
-      benefitsRoulette.setupCanvas();
-      benefitsRoulette.draw();
-    }
+    requestAnimationFrame(() => {
+      if (!benefitsRoulette) {
+        initBenefitsRoulette();
+      } else {
+        benefitsRoulette.reset();
+        benefitsRoulette.setupCanvas();
+        benefitsRoulette.draw();
+      }
+    });
   }
 
   function closeBenefitsModal() {
