@@ -3050,7 +3050,6 @@
               this.updatePreview('');
               this.setTrafficLight('green');
             }, 550);
-          } else {
             // SUCCESS!
             this.setTrafficLight('green');
             this.solvedWords.add(word);
@@ -3058,7 +3057,18 @@
             this.revealWordOnBoard(word);
             setTimeout(() => this.updatePreview(''), 400);
 
-            if (this.solvedWords.size === level.words.length) {
+            // Verificar si alguna otra palabra del nivel quedó cubierta por completo en el tablero
+            level.words.forEach(w => {
+              if (!this.solvedWords.has(w.word)) {
+                const wordCells = Array.from(this.gridCells.values()).filter(c => c.words.includes(w.word));
+                if (wordCells.length > 0 && wordCells.every(c => c.solved)) {
+                  this.solvedWords.add(w.word);
+                }
+              }
+            });
+
+            const allTilesSolved = this.gridCells.size > 0 && Array.from(this.gridCells.values()).every(c => c.solved);
+            if (this.solvedWords.size >= level.words.length || allTilesSolved) {
               setTimeout(() => this.triggerLevelVictory(), 700);
             }
           }
