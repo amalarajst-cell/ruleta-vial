@@ -1480,6 +1480,261 @@
       color: #fee2e2;
     }
 
+    /* Trivia Exam Image Container */
+    .wow-trivia-img-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 4px 0 10px;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 14px;
+      padding: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .wow-trivia-img {
+      max-width: 100%;
+      max-height: 120px;
+      object-fit: contain;
+      border-radius: 8px;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+    }
+
+    /* ============================================================
+       ANIMATED REWARD MYSTERY BOX OVERLAY (OBTENER PUNTOS)
+       ============================================================ */
+    .wow-box-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 11, 14, 0.96);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 20px 16px;
+      border-radius: 28px;
+      overflow: hidden;
+      animation: wowFadeIn 0.3s ease both;
+    }
+
+    .box-sunburst {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(255, 198, 0, 0.3) 0%, rgba(255, 122, 0, 0.12) 40%, transparent 70%);
+      animation: rotateSunburst 18s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes rotateSunburst {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .mystery-gift-stage {
+      position: relative;
+      width: 220px;
+      height: 190px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      z-index: 2;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+
+    /* La Caja de Regalo */
+    .gift-box-wrapper {
+      position: relative;
+      width: 110px;
+      height: 95px;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .gift-box-wrapper.opening .box-lid {
+      transform: translateY(-44px) rotate(-14deg) scale(0.95);
+      opacity: 0.9;
+    }
+
+    .gift-box-wrapper.opening .gift-box-glow {
+      opacity: 1;
+      transform: scale(1.4);
+    }
+
+    .gift-box-body {
+      width: 110px;
+      height: 72px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .gift-box-ribbon-v {
+      position: absolute;
+      width: 22px;
+      height: 100%;
+      background: linear-gradient(180deg, #fde047, #f59e0b);
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .gift-box-ribbon-h {
+      position: absolute;
+      height: 18px;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #fde047, #f59e0b);
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .box-lid {
+      position: absolute;
+      top: 10px;
+      left: -5px;
+      width: 120px;
+      height: 26px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      z-index: 5;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+    }
+
+    .box-lid-ribbon {
+      position: absolute;
+      width: 22px;
+      height: 100%;
+      background: linear-gradient(180deg, #fde047, #f59e0b);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .box-bow {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+    }
+
+    .gift-box-glow {
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(circle, rgba(255, 234, 0, 0.7) 0%, rgba(56, 189, 248, 0.3) 50%, transparent 75%);
+      border-radius: 50%;
+      opacity: 0;
+      transition: all 0.6s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* El Beneficio que Emerge y Sale de la Caja */
+    .emerging-reward-card {
+      position: absolute;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      transform: translateY(70px) scale(0.3);
+      opacity: 0;
+      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+      pointer-events: none;
+    }
+
+    .emerging-reward-card.popped {
+      transform: translateY(-20px) scale(1.04);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .reward-coin-badge {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fef08a, #f59e0b 70%, #b45309 100%);
+      border: 3px solid #ffffff;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      animation: pulseCoin 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseCoin {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.8)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 18px rgba(251, 191, 36, 1)); }
+    }
+
+    .reward-amount-tag {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.45rem;
+      color: #fde047;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(253, 224, 71, 0.6);
+      margin-top: 6px;
+      line-height: 1.1;
+    }
+
+    .reward-desc-tag {
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      font-weight: 700;
+      text-align: center;
+      max-width: 240px;
+      margin-top: 2px;
+    }
+
+    /* Botón OBTENER PUNTOS */
+    .btn-obtain-points {
+      position: relative;
+      z-index: 10;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: 2px solid #34d399;
+      border-radius: 999px;
+      color: #ffffff;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: 0.8px;
+      padding: 13px 32px;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      animation: pulseObtainBtn 1.8s infinite ease-in-out;
+    }
+
+    .btn-obtain-points:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 14px 34px rgba(16, 185, 129, 0.7);
+    }
+
+    .btn-obtain-points:active {
+      transform: scale(0.96);
+    }
+
+    @keyframes pulseObtainBtn {
+      0%, 100% { box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5); }
+      50% { box-shadow: 0 12px 36px rgba(16, 185, 129, 0.85); transform: scale(1.02); }
+    }
+
     /* Top Bar WoW Lucky Wheel Icon Button */
     .btn-wow-wheel {
       position: relative;
@@ -1720,10 +1975,15 @@
           <div class="wow-trivia-header">
             <div class="wow-trivia-badge" id="wow-trivia-badge">
               <span>🎯</span>
-              <span>DESAFÍO TRIVIA VIAL</span>
+              <span>EXAMEN DE CONDUCIR CLASE B</span>
             </div>
-            <div class="wow-trivia-stake" id="wow-trivia-stake">¡Respondé bien para ganar +25 Puntos!</div>
-            <div class="wow-trivia-cat-pill" id="wow-trivia-category">🚗 Normas de Tránsito</div>
+            <div class="wow-trivia-stake" id="wow-trivia-stake">¡Respondé bien para ganar +50 Puntos!</div>
+            <div class="wow-trivia-cat-pill" id="wow-trivia-category">🚗 Señales y Prioridades</div>
+          </div>
+
+          <!-- Imagen de Señal o Situación Vial de Examen -->
+          <div class="wow-trivia-img-container" id="wow-trivia-img-container" style="display:none;">
+            <img id="wow-trivia-img" src="" alt="Pregunta de Examen Vial" class="wow-trivia-img">
           </div>
 
           <div class="wow-trivia-question-box">
@@ -1734,8 +1994,37 @@
 
           <div class="wow-trivia-feedback" id="wow-trivia-feedback"></div>
 
-          <button class="wow-btn-girar" id="btn-trivia-continue" type="button" style="display:none;margin-top:auto;padding:12px 20px;font-size:1.15rem;">
-            <span>¡CONTINUAR!</span>
+          <button class="wow-btn-girar" id="btn-trivia-continue" type="button" style="display:none;margin-top:auto;padding:12px 20px;font-size:1.05rem;">
+            <span>CONTINUAR AL SIGUIENTE NIVEL ➔</span>
+          </button>
+        </div>
+
+        <!-- Animated Mystery Gift Box Overlay (Active when answering correctly) -->
+        <div id="wow-box-overlay" class="wow-box-overlay" style="display:none;">
+          <div class="box-sunburst"></div>
+          <div class="wow-winner-badge" style="margin-bottom:6px; z-index:2;">¡RESPUESTA CORRECTA!</div>
+          <div class="mystery-gift-stage">
+            <div class="emerging-reward-card" id="emerging-reward-card">
+              <div class="reward-coin-badge" id="box-reward-icon">🪙</div>
+              <div class="reward-amount-tag" id="box-reward-amount">+50 PUNTOS</div>
+              <div class="reward-desc-tag" id="box-reward-desc">¡Premio por acertar la trivia de examen!</div>
+            </div>
+
+            <div class="gift-box-wrapper" id="mystery-gift-box">
+              <div class="gift-box-glow"></div>
+              <div class="box-lid" id="box-lid">
+                <div class="box-lid-ribbon"></div>
+                <div class="box-bow">🎀</div>
+              </div>
+              <div class="gift-box-body">
+                <div class="gift-box-ribbon-v"></div>
+                <div class="gift-box-ribbon-h"></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-obtain-points" id="btn-obtain-points" type="button">
+            <span>🎁 OBTENER PUNTOS</span>
           </button>
         </div>
 
@@ -2322,7 +2611,8 @@
           triviaBadge: document.getElementById('wow-trivia-badge'),
           triviaStake: document.getElementById('wow-trivia-stake'),
           triviaCategory: document.getElementById('wow-trivia-category'),
-          triviaQuestion: document.getElementById('wow-trivia-question'),
+          triviaImgContainer: document.getElementById('wow-trivia-img-container'),
+          triviaImg: document.getElementById('wow-trivia-img'),
           triviaOptions: document.getElementById('wow-trivia-options'),
           triviaFeedback: document.getElementById('wow-trivia-feedback'),
           triviaContinueBtn: document.getElementById('btn-trivia-continue'),
@@ -2330,7 +2620,14 @@
           benefitWonIcon: document.getElementById('benefit-won-icon'),
           benefitWonTitle: document.getElementById('benefit-won-title'),
           benefitWonDesc: document.getElementById('benefit-won-desc'),
-          claimBenefitBtn: document.getElementById('btn-claim-benefit')
+          claimBenefitBtn: document.getElementById('btn-claim-benefit'),
+          boxOverlay: document.getElementById('wow-box-overlay'),
+          mysteryGiftBox: document.getElementById('mystery-gift-box'),
+          emergingRewardCard: document.getElementById('emerging-reward-card'),
+          boxRewardIcon: document.getElementById('box-reward-icon'),
+          boxRewardAmount: document.getElementById('box-reward-amount'),
+          boxRewardDesc: document.getElementById('box-reward-desc'),
+          btnObtainPoints: document.getElementById('btn-obtain-points')
         };
       }
 
@@ -2416,18 +2713,14 @@
         });
         this.dom.claimBenefitBtn?.addEventListener('click', () => {
           this.closeBenefitsModal();
-          if (this.isMilestoneRoulette) {
-            this.isMilestoneRoulette = false;
-            this.advanceToNextLevel();
-          }
+          this.isMilestoneRoulette = false;
+          this.advanceToNextLevel();
         });
         this.dom.triviaContinueBtn?.addEventListener('click', () => {
           if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
           this.closeBenefitsModal();
-          if (this.isMilestoneRoulette) {
-            this.isMilestoneRoulette = false;
-            this.advanceToNextLevel();
-          }
+          this.isMilestoneRoulette = false;
+          this.advanceToNextLevel();
         });
 
         this.dom.spinBenefitsBtn?.addEventListener('click', () => {
@@ -2437,12 +2730,61 @@
             this.benefitsWheel.spin();
           }
         });
+
+        this.dom.btnObtainPoints?.addEventListener('click', () => this.claimRewardAndAdvance());
       }
 
       advanceToNextLevel() {
         this.currentLevelIndex = (this.currentLevelIndex + 1) % GAME_LEVELS.length;
         this.saveProgress();
         this.loadLevel(this.currentLevelIndex);
+      }
+
+      showRewardMysteryBox(benefit) {
+        if (!this.dom.boxOverlay) return;
+        this.pendingBenefit = benefit;
+        if (this.dom.boxRewardIcon) this.dom.boxRewardIcon.textContent = benefit.isJackpot ? '👑' : '🪙';
+        if (this.dom.boxRewardAmount) this.dom.boxRewardAmount.textContent = `+${benefit.value} PUNTOS`;
+        if (this.dom.boxRewardDesc) this.dom.boxRewardDesc.textContent = benefit.name;
+
+        // Reset visual state of the mystery gift box
+        this.dom.mysteryGiftBox?.classList.remove('opening');
+        this.dom.emergingRewardCard?.classList.remove('popped');
+        this.dom.boxOverlay.style.display = 'flex';
+
+        // Animate box opening and reward pop-out
+        setTimeout(() => {
+          this.dom.mysteryGiftBox?.classList.add('opening');
+          this.dom.emergingRewardCard?.classList.add('popped');
+          this.confetti.burst(90);
+          if (this.audio && this.audio.playWordSuccess) {
+            this.audio.playWordSuccess();
+          }
+        }, 300);
+      }
+
+      claimRewardAndAdvance() {
+        if (this.pendingBenefit) {
+          this.coins += this.pendingBenefit.value;
+          if (this.pendingBenefit.isJackpot) {
+            this.freeHints += 2;
+          }
+          this.saveProgress();
+          this.pendingBenefit = null;
+        }
+        if (this.dom.wowPointsCount) {
+          this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
+        }
+        if (this.dom.wowHintsCount) {
+          this.dom.wowHintsCount.textContent = this.freeHints;
+        }
+        if (this.audio && this.audio.playCoinChime) {
+          this.audio.playCoinChime();
+        }
+        this.confetti.burst(80);
+        if (this.dom.boxOverlay) this.dom.boxOverlay.style.display = 'none';
+        this.closeBenefitsModal();
+        this.advanceToNextLevel();
       }
 
       initBenefitsWheel() {
@@ -2469,6 +2811,7 @@
         }
         if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
         if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
+        if (this.dom.boxOverlay) this.dom.boxOverlay.style.display = 'none';
         if (this.dom.spinBenefitsBtn) {
           this.dom.spinBenefitsBtn.disabled = false;
           this.dom.spinBenefitsBtn.style.display = 'flex';
@@ -2494,70 +2837,58 @@
       closeBenefitsModal() {
         if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
         if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
+        if (this.dom.boxOverlay) this.dom.boxOverlay.style.display = 'none';
         if (this.dom.benefitsModal) this.dom.benefitsModal.classList.remove('active');
       }
 
       onBenefitWon(benefit) {
         if (!benefit) return;
-        if (benefit.type === 'points' || benefit.type === 'coins') {
-          this.coins += benefit.value;
-          this.saveProgress();
-        } else if (benefit.type === 'hint') {
-          this.freeHints += benefit.value;
-          this.saveProgress();
-        } else if (benefit.type === 'jackpot') {
-          this.coins += benefit.value;
-          this.freeHints += 2;
-          this.saveProgress();
-        }
-
-        if (this.dom.wowPointsCount) {
-          this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
-        }
-        if (this.dom.wowHintsCount) {
-          this.dom.wowHintsCount.textContent = this.freeHints;
-        }
-
-        if (this.dom.benefitWonIcon) this.dom.benefitWonIcon.textContent = benefit.isJackpot ? '👑' : '🪙';
-        if (this.dom.benefitWonTitle) this.dom.benefitWonTitle.textContent = benefit.name;
-        if (this.dom.benefitWonDesc) this.dom.benefitWonDesc.textContent = benefit.desc;
-        if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'flex';
         if (this.dom.spinBenefitsBtn) this.dom.spinBenefitsBtn.style.display = 'none';
-
-        this.confetti.burst(80);
-        if (this.audio && this.audio.playCoinChime) {
-          this.audio.playCoinChime();
-        }
+        // Mostrar la caja de regalo directamente con el super premio
+        this.showRewardMysteryBox(benefit);
       }
 
       triggerRouletteTrivia(benefit) {
         if (!benefit) return;
         if (this.dom.spinBenefitsBtn) this.dom.spinBenefitsBtn.style.display = 'none';
         if (this.dom.benefitAwardBox) this.dom.benefitAwardBox.style.display = 'none';
+        if (this.dom.boxOverlay) this.dom.boxOverlay.style.display = 'none';
 
-        // Seleccionar pregunta de seguridad vial de questions.js o fallback
-        const pool = (typeof QUESTIONS !== 'undefined' && Array.isArray(QUESTIONS) && QUESTIONS.length > 0)
-          ? QUESTIONS
-          : this.getFallbackTriviaQuestions();
+        // Filtrar preguntas del examen oficial que tienen imágenes
+        const examQuestionsWithImg = (typeof QUESTIONS !== 'undefined' && Array.isArray(QUESTIONS))
+          ? QUESTIONS.filter(q => q.imageSrc && q.imageSrc.trim() !== '')
+          : [];
+        const pool = examQuestionsWithImg.length > 0 ? examQuestionsWithImg : (QUESTIONS || this.getFallbackTriviaQuestions());
         
         const q = pool[Math.floor(Math.random() * pool.length)];
         const categoryData = (typeof CATEGORIES !== 'undefined' && CATEGORIES[q.category])
           ? CATEGORIES[q.category]
-          : { name: 'Seguridad Vial', icon: '🚦' };
+          : { name: 'Examen de Conducir', icon: '🚦' };
 
         if (this.dom.triviaStake) {
-          this.dom.triviaStake.textContent = `¡Respondé correctamente para ganar +${benefit.value} Puntos!`;
+          this.dom.triviaStake.textContent = `¡Respondé bien para ganar +${benefit.value} Puntos!`;
         }
         if (this.dom.triviaCategory) {
-          this.dom.triviaCategory.textContent = `${categoryData.icon || '🚦'} ${categoryData.name || 'Seguridad Vial'}`;
+          this.dom.triviaCategory.textContent = `${categoryData.icon || '🚦'} ${categoryData.name || 'Examen Vial'}`;
         }
         if (this.dom.triviaQuestion) {
           this.dom.triviaQuestion.textContent = q.question;
         }
 
+        // Mostrar imagen oficial de la pregunta de examen
+        if (this.dom.triviaImg && this.dom.triviaImgContainer) {
+          if (q.imageSrc) {
+            this.dom.triviaImg.src = q.imageSrc;
+            this.dom.triviaImgContainer.style.display = 'flex';
+          } else {
+            this.dom.triviaImgContainer.style.display = 'none';
+          }
+        }
+
         if (this.dom.triviaFeedback) {
           this.dom.triviaFeedback.className = 'wow-trivia-feedback';
           this.dom.triviaFeedback.textContent = '';
+          this.dom.triviaFeedback.style.display = 'none';
         }
         if (this.dom.triviaContinueBtn) {
           this.dom.triviaContinueBtn.style.display = 'none';
@@ -2586,28 +2917,17 @@
 
               if (isCorrect) {
                 btn.classList.add('correct');
-                this.coins += benefit.value;
-                this.saveProgress();
-                if (this.dom.wowPointsCount) {
-                  this.dom.wowPointsCount.textContent = this.coins.toLocaleString('es-AR');
-                }
-                this.confetti.burst(80);
                 if (this.audio && this.audio.playWordSuccess) {
                   this.audio.playWordSuccess();
-                } else if (this.audio && this.audio.playCoinChime) {
-                  this.audio.playCoinChime();
                 }
 
-                if (this.dom.triviaFeedback) {
-                  this.dom.triviaFeedback.className = 'wow-trivia-feedback correct-feedback';
-                  this.dom.triviaFeedback.innerHTML = `<strong>🎉 ¡RESPUESTA CORRECTA!</strong> Ganaste <strong>+${benefit.value} Puntos</strong>.<br><span style="font-size:0.84rem;font-weight:500;opacity:0.95;margin-top:4px;display:block;">${q.explanation || ''}</span>`;
-                }
-                if (this.dom.triviaContinueBtn) {
-                  this.dom.triviaContinueBtn.querySelector('span').textContent = '¡RECLAMAR PUNTOS!';
-                  this.dom.triviaContinueBtn.style.display = 'flex';
-                }
+                // SI ACIERTA: ocultar pregunta y mostrar la Caja Misteriosa de Recompensas
+                setTimeout(() => {
+                  if (this.dom.triviaOverlay) this.dom.triviaOverlay.style.display = 'none';
+                  this.showRewardMysteryBox(benefit);
+                }, 650);
               } else {
-                btn.classList.add('incorrect');
+                btn.classList.add('wrong');
                 if (allBtns[q.correctAnswer]) {
                   allBtns[q.correctAnswer].classList.add('correct');
                 }
@@ -2615,12 +2935,14 @@
                   this.audio.playInvalid();
                 }
 
+                // SI CONTESTA MAL: NO SE LLEVA EL PUNTAJE POR EL CUAL JUGABA
                 if (this.dom.triviaFeedback) {
-                  this.dom.triviaFeedback.className = 'wow-trivia-feedback incorrect-feedback';
-                  this.dom.triviaFeedback.innerHTML = `<strong>❌ RESPUESTA INCORRECTA</strong> No sumás puntos en esta tirada.<br><span style="font-size:0.84rem;font-weight:500;opacity:0.95;margin-top:4px;display:block;">💡 <em>Regla vial:</em> ${q.explanation || 'Respetar las normas salva vidas.'}</span>`;
+                  this.dom.triviaFeedback.className = 'wow-trivia-feedback wrong';
+                  this.dom.triviaFeedback.style.display = 'block';
+                  this.dom.triviaFeedback.innerHTML = `<strong>❌ RESPUESTA INCORRECTA</strong> No sumás los +${benefit.value} Puntos de esta tirada.<br><span style="font-size:0.84rem;font-weight:500;opacity:0.95;margin-top:4px;display:block;">💡 <em>Regla de examen:</em> ${q.explanation || 'Respetar las normas salva vidas.'}</span>`;
                 }
                 if (this.dom.triviaContinueBtn) {
-                  this.dom.triviaContinueBtn.querySelector('span').textContent = 'ENTENDIDO';
+                  this.dom.triviaContinueBtn.querySelector('span').textContent = 'CONTINUAR AL SIGUIENTE NIVEL ➔';
                   this.dom.triviaContinueBtn.style.display = 'flex';
                 }
               }
@@ -3173,20 +3495,15 @@
 
         const level = this.currentLevel;
         const isGameComplete = level.id >= GAME_LEVELS.length;
-        const isMilestone = (level.id % 5 === 0);
 
         if (isGameComplete) {
           this.dom.victoryLevelTitle.textContent = `¡Maestro Vial Supremo!`;
           this.dom.nextLevelBtn.textContent = 'Elegir Nivel o Repetir ➔';
           this.isMilestonePending = false;
-        } else if (isMilestone) {
-          this.dom.victoryLevelTitle.textContent = `¡Nivel ${level.id} Completado!`;
-          this.dom.nextLevelBtn.innerHTML = `<span>🎡 ¡GIRAR RULETA DE PREMIOS! ➔</span>`;
-          this.isMilestonePending = true;
         } else {
           this.dom.victoryLevelTitle.textContent = `¡${level.title} Completado!`;
-          this.dom.nextLevelBtn.textContent = 'Siguiente Nivel ➔';
-          this.isMilestonePending = false;
+          this.dom.nextLevelBtn.innerHTML = `<span>🎡 ¡GIRAR RULETA DE PREMIOS! ➔</span>`;
+          this.isMilestonePending = true;
         }
 
         this.dom.pillIcon.textContent = level.tipIcon;
