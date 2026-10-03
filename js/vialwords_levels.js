@@ -1115,28 +1115,28 @@
                     ],
         "words":  [
                       {
-                          "row":  0,
                           "word":  "CORDON",
-                          "dir":  "H",
-                          "col":  0
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "H"
                       },
                       {
-                          "row":  0,
                           "word":  "CON",
-                          "dir":  "V",
-                          "col":  0
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
                       },
                       {
-                          "row":  0,
-                          "word":  "RON",
-                          "dir":  "V",
-                          "col":  2
-                      },
-                      {
-                          "row":  0,
                           "word":  "DON",
-                          "dir":  "V",
-                          "col":  3
+                          "row":  0,
+                          "col":  3,
+                          "dir":  "V"
+                      },
+                      {
+                          "word":  "RON",
+                          "row":  -2,
+                          "col":  5,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -1165,28 +1165,28 @@
                     ],
         "words":  [
                       {
-                          "row":  0,
                           "word":  "CARRIL",
-                          "dir":  "H",
-                          "col":  0
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "H"
                       },
                       {
-                          "row":  -2,
                           "word":  "RIAL",
-                          "dir":  "V",
-                          "col":  1
-                      },
-                      {
                           "row":  -2,
-                          "word":  "RICA",
-                          "dir":  "H",
-                          "col":  1
+                          "col":  1,
+                          "dir":  "V"
                       },
                       {
-                          "row":  -1,
+                          "word":  "RICA",
+                          "row":  0,
+                          "col":  3,
+                          "dir":  "V"
+                      },
+                      {
                           "word":  "CRIA",
-                          "dir":  "V",
-                          "col":  3
+                          "row":  -2,
+                          "col":  0,
+                          "dir":  "H"
                       }
                   ],
         "bonusWords":  [
@@ -1759,28 +1759,28 @@
                     ],
         "words":  [
                       {
-                          "row":  0,
                           "word":  "LOMADA",
-                          "dir":  "H",
-                          "col":  0
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "H"
                       },
                       {
-                          "row":  0,
                           "word":  "LOMA",
-                          "dir":  "V",
-                          "col":  0
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "V"
                       },
                       {
-                          "row":  0,
                           "word":  "OLA",
-                          "dir":  "V",
-                          "col":  1
+                          "row":  -2,
+                          "col":  3,
+                          "dir":  "V"
                       },
                       {
-                          "row":  0,
                           "word":  "AMO",
-                          "dir":  "V",
-                          "col":  3
+                          "row":  -2,
+                          "col":  1,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -2589,28 +2589,28 @@
                     ],
         "words":  [
                       {
-                          "row":  0,
                           "word":  "CINTURON",
-                          "dir":  "H",
-                          "col":  0
+                          "row":  0,
+                          "col":  0,
+                          "dir":  "H"
                       },
                       {
-                          "row":  -3,
                           "word":  "TURNO",
-                          "dir":  "V",
-                          "col":  2
+                          "row":  -3,
+                          "col":  2,
+                          "dir":  "V"
                       },
                       {
-                          "row":  0,
                           "word":  "RON",
-                          "dir":  "V",
-                          "col":  5
+                          "row":  0,
+                          "col":  5,
+                          "dir":  "V"
                       },
                       {
-                          "row":  0,
                           "word":  "UNO",
-                          "dir":  "V",
-                          "col":  4
+                          "row":  -2,
+                          "col":  6,
+                          "dir":  "V"
                       }
                   ],
         "bonusWords":  [
@@ -2627,5 +2627,4 @@
         "tipDetail":  "En un choque a 50 km/h, una persona de 70 kg sin cinturÃ³n sale despedida con una fuerza equivalente a caer de un 4to piso."
     }
 ];
-
-if (typeof module !== 'undefined' && module.exports) { module.exports = { GAME_LEVELS }; }
+if (typeof module !== 'undefined') module.exports = { GAME_LEVELS };
