@@ -1,4 +1,4 @@
-﻿const GAME_LEVELS = [
+const GAME_LEVELS = [
     {
         "id":  1,
         "title":  "Cruce Seguro",
@@ -36,14 +36,14 @@
                            "PAO",
                            "SOA"
                        ],
-        "tipIcon":  "ðŸš¶â€â™‚ï¸",
+        "tipIcon":  "🚶‍♂️",
         "tipTitle":  "Prioridad Peatonal",
-        "tip":  "En esquinas y sendas peatonales, el peatÃ³n siempre tiene prioridad absoluta de paso.",
-        "tipDetail":  "Al aproximarte a una esquina o cruce, reducÃ­ la marcha y detenete si una persona va a cruzar."
+        "tip":  "En esquinas y sendas peatonales, el peatón siempre tiene prioridad absoluta de paso.",
+        "tipDetail":  "Al aproximarte a una esquina o cruce, reducí la marcha y detenete si una persona va a cruzar."
     },
     {
         "id":  2,
-        "title":  "ProtecciÃ³n Vital",
+        "title":  "Protección Vital",
         "category":  "Motos y Bicicletas",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
@@ -86,14 +86,14 @@
                            "OCA",
                            "ASO"
                        ],
-        "tipIcon":  "â›‘ï¸",
+        "tipIcon":  "⛑️",
         "tipTitle":  "Casco Homologado y Abrochado",
         "tip":  "El casco reduce un 70% el riesgo de lesiones cerebrales graves en motos y bicis.",
-        "tipDetail":  "Un casco sin abrochar sale despedido ante el primer impacto. ElegÃ­ siempre cascos certificados y de tu talle."
+        "tipDetail":  "Un casco sin abrochar sale despedido ante el primer impacto. Elegí siempre cascos certificados y de tu talle."
     },
     {
         "id":  3,
-        "title":  "DetenciÃ³n y Distancia",
+        "title":  "Detención y Distancia",
         "category":  "Frenado Seguro",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -137,15 +137,15 @@
                            "SEA",
                            "PAR"
                        ],
-        "tipIcon":  "ðŸ›‘",
-        "tipTitle":  "SeÃ±al de PARE",
-        "tip":  "El cartel de PARE exige detener el vehÃ­culo por completo, no solo aminorar la marcha.",
-        "tipDetail":  "Es una seÃ±al reglamentaria absoluta: frenÃ¡ a cero, observÃ¡ ambos sentidos y sÃ³lo avanzÃ¡ cuando estÃ© 100% despejado."
+        "tipIcon":  "🛑",
+        "tipTitle":  "Señal de PARE",
+        "tip":  "El cartel de PARE exige detener el vehículo por completo, no solo aminorar la marcha.",
+        "tipDetail":  "Es una señal reglamentaria absoluta: frená a cero, observá ambos sentidos y sólo avanzá cuando esté 100% despejado."
     },
     {
         "id":  4,
-        "title":  "AtenciÃ³n al Camino",
-        "category":  "VisiÃ³n y ConcentraciÃ³n",
+        "title":  "Atención al Camino",
+        "category":  "Visión y Concentración",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "M",
@@ -186,15 +186,15 @@
                            "MIA",
                            "RIA"
                        ],
-        "tipIcon":  "ðŸ‘€",
+        "tipIcon":  "👀",
         "tipTitle":  "Cero Distracciones al Volante",
-        "tip":  "Mirar el celular 3 segundos a 40 km/h equivale a manejar mÃ¡s de 33 metros a ciegas.",
-        "tipDetail":  "La vista debe estar siempre en el camino y los espejos. Ni llamadas en manos libres ni mensajes mientras manejÃ¡s."
+        "tip":  "Mirar el celular 3 segundos a 40 km/h equivale a manejar más de 33 metros a ciegas.",
+        "tipDetail":  "La vista debe estar siempre en el camino y los espejos. Ni llamadas en manos libres ni mensajes mientras manejás."
     },
     {
         "id":  5,
         "title":  "Luz y Visibilidad",
-        "category":  "SeÃ±alizaciÃ³n Ã“ptica",
+        "category":  "Señalización Óptica",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
                         "V",
@@ -240,15 +240,15 @@
                            "IVA",
                            "AVE"
                        ],
-        "tipIcon":  "ðŸ’¡",
+        "tipIcon":  "💡",
         "tipTitle":  "Luces Bajas Siempre Encendidas",
-        "tip":  "Las luces bajas permiten que los demÃ¡s vehÃ­culos te vean a mÃ¡s de 1.000 metros de distancia.",
+        "tip":  "Las luces bajas permiten que los demás vehículos te vean a más de 1.000 metros de distancia.",
         "tipDetail":  "En rutas y autopistas es obligatorio circular con luces bajas las 24 horas. En ciudad, te hacen visible ante cualquier reflejo."
     },
     {
         "id":  6,
-        "title":  "ConducciÃ³n Segura",
-        "category":  "LÃ­mites y Prudencia",
+        "title":  "Conducción Segura",
+        "category":  "Límites y Prudencia",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "M",
@@ -293,15 +293,15 @@
                            "NOA",
                            "AMO"
                        ],
-        "tipIcon":  "ðŸš—",
+        "tipIcon":  "🚗",
         "tipTitle":  "Distancia de Seguridad",
-        "tip":  "MantenÃ© siempre al menos 2 segundos de distancia con el auto de adelante; con lluvia, aumentala a 4 segundos.",
-        "tipDetail":  "La regla de los 2 segundos te da el tiempo de reacciÃ³n necesario ante una frenada intempestiva y previene choques por alcance."
+        "tip":  "Mantené siempre al menos 2 segundos de distancia con el auto de adelante; con lluvia, aumentala a 4 segundos.",
+        "tipDetail":  "La regla de los 2 segundos te da el tiempo de reacción necesario ante una frenada intempestiva y previene choques por alcance."
     },
     {
         "id":  7,
-        "title":  "FricciÃ³n y Frenado",
-        "category":  "FÃ­sica y CinemÃ¡tica",
+        "title":  "Fricción y Frenado",
+        "category":  "Física y Cinemática",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "F",
@@ -338,7 +338,7 @@
                       }
                   ],
         "bonusWords":  [
-                           "ROSE",
+                           "SER",
                            "NOS",
                            "ERO",
                            "REO",
@@ -347,10 +347,10 @@
                            "REOS",
                            "SENO"
                        ],
-        "tipIcon":  "ðŸŒ§ï¸",
-        "tipTitle":  "Distancia de DetenciÃ³n",
+        "tipIcon":  "🌧️",
+        "tipTitle":  "Distancia de Detención",
         "tip":  "La distancia de frenado crece con el cuadrado de la velocidad: duplicar la velocidad cuadruplica la distancia para frenar.",
-        "tipDetail":  "A 40 km/h frenÃ¡s en ~18 metros; a 80 km/h necesitÃ¡s mÃ¡s de 55 metros. La energÃ­a cinÃ©tica no se reduce linealmente."
+        "tipDetail":  "A 40 km/h frenás en ~18 metros; a 80 km/h necesitás más de 55 metros. La energía cinética no se reduce linealmente."
     },
     {
         "id":  8,
@@ -397,10 +397,10 @@
                            "SIC",
                            "OLI"
                        ],
-        "tipIcon":  "ðŸš²",
-        "tipTitle":  "Metro y Medio de SeparaciÃ³n",
+        "tipIcon":  "🚲",
+        "tipTitle":  "Metro y Medio de Separación",
         "tip":  "Al sobrepasar a un ciclista, es obligatorio dejar al menos 1,5 metros de distancia lateral.",
-        "tipDetail":  "La turbulencia de aire de un vehÃ­culo o un bache imprevisto pueden desestabilizar la bicicleta si no dejÃ¡s margen lateral seguro."
+        "tipDetail":  "La turbulencia de aire de un vehículo o un bache imprevisto pueden desestabilizar la bicicleta si no dejás margen lateral seguro."
     },
     {
         "id":  9,
@@ -448,14 +448,14 @@
                            "DARE",
                            "RAE"
                        ],
-        "tipIcon":  "ðŸ”„",
+        "tipIcon":  "🔄",
         "tipTitle":  "Prioridad en Rotonda",
-        "tip":  "En una rotonda, la prioridad absoluta de paso la tiene siempre el que ya estÃ¡ circulando por ella.",
-        "tipDetail":  "Quien intenta entrar debe frenar y ceder el paso a los vehÃ­culos que giran, facilitando la fluidez del nudo vial."
+        "tip":  "En una rotonda, la prioridad absoluta de paso la tiene siempre el que ya está circulando por ella.",
+        "tipDetail":  "Quien intenta entrar debe frenar y ceder el paso a los vehículos que giran, facilitando la fluidez del nudo vial."
     },
     {
         "id":  10,
-        "title":  "PresiÃ³n y Contacto",
+        "title":  "Presión y Contacto",
         "category":  "Seguridad Activa",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -500,10 +500,10 @@
                            "IRSE",
                            "IRA"
                        ],
-        "tipIcon":  "ðŸ›ž",
-        "tipTitle":  "PresiÃ³n de NeumÃ¡ticos",
-        "tip":  "RevisÃ¡ la presiÃ³n en frÃ­o cada 15 dÃ­as: circular con baja presiÃ³n incrementa hasta 4 metros la frenada.",
-        "tipDetail":  "El neumÃ¡tico es el Ãºnico punto de contacto con el suelo; una presiÃ³n deficiente recalienta la banda de rodamiento y causa desprendimientos."
+        "tipIcon":  "🛞",
+        "tipTitle":  "Presión de Neumáticos",
+        "tip":  "Revisá la presión en frío cada 15 días: circular con baja presión incrementa hasta 4 metros la frenada.",
+        "tipDetail":  "El neumático es el único punto de contacto con el suelo; una presión deficiente recalienta la banda de rodamiento y causa desprendimientos."
     },
     {
         "id":  11,
@@ -554,8 +554,8 @@
                            "ATE",
                            "REA"
                        ],
-        "tipIcon":  "âš ï¸",
-        "tipTitle":  "Tiempo de ReacciÃ³n",
+        "tipIcon":  "⚠️",
+        "tipTitle":  "Tiempo de Reacción",
         "tip":  "El cerebro humano tarda entre 1 y 1,5 segundos en percibir un peligro y pisar el pedal de freno.",
         "tipDetail":  "A 60 km/h, ese segundo y medio significa recorrer 25 metros antes de que los frenos empiecen a actuar. El cansancio duplica ese tiempo."
     },
@@ -612,10 +612,10 @@
                            "RUA",
                            "DURE"
                        ],
-        "tipIcon":  "ðŸ”§",
+        "tipIcon":  "🔧",
         "tipTitle":  "Profundidad del Dibujo",
         "tip":  "El dibujo de las cubiertas debe tener al menos 1,6 mm de profundidad para evacuar agua eficientemente.",
-        "tipDetail":  "Los canales del neumÃ¡tico expulsan litros de agua por segundo. Con cubiertas desgastadas o lisas, el riesgo de aquaplaning es inminente."
+        "tipDetail":  "Los canales del neumático expulsan litros de agua por segundo. Con cubiertas desgastadas o lisas, el riesgo de aquaplaning es inminente."
     },
     {
         "id":  13,
@@ -660,19 +660,17 @@
                            "DAS",
                            "DEN",
                            "SAN",
-                           "SED",
-                           "SANE",
-                           "ESA"
+                           "SED"
                        ],
-        "tipIcon":  "ðŸš¸",
+        "tipIcon":  "🚸",
         "tipTitle":  "Sendas Peatonales",
-        "tip":  "Las franjas blancas en esquinas delimitan el espacio sagrado del peatÃ³n; nunca invadas la senda al detenerte.",
-        "tipDetail":  "Detener el vehÃ­culo sobre la senda peatonal obliga a los peatones a esquivarte por la calzada, exponiÃ©ndolos a choques."
+        "tip":  "Las franjas blancas en esquinas delimitan el espacio sagrado del peatón; nunca invadas la senda al detenerte.",
+        "tipDetail":  "Detener el vehículo sobre la senda peatonal obliga a los peatones a esquivarte por la calzada, exponiéndolos a choques."
     },
     {
         "id":  14,
-        "title":  "Normas de TrÃ¡nsito",
-        "category":  "LegislaciÃ³n Vial",
+        "title":  "Normas de Tránsito",
+        "category":  "Legislación Vial",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -719,10 +717,10 @@
                            "ORA",
                            "RON"
                        ],
-        "tipIcon":  "ðŸ“œ",
-        "tipTitle":  "JerarquÃ­a de Normas",
-        "tip":  "Las indicaciones del Agente de TrÃ¡nsito prevalecen sobre semÃ¡foros, seÃ±ales verticales y normas generales.",
-        "tipDetail":  "El orden jerÃ¡rquico es: 1Â° Agentes de TrÃ¡nsito, 2Â° SeÃ±alizaciÃ³n Transitoria, 3Â° SemÃ¡foros, 4Â° SeÃ±ales verticales/horizontales, 5Â° Normas generales."
+        "tipIcon":  "📜",
+        "tipTitle":  "Jerarquía de Normas",
+        "tip":  "Las indicaciones del Agente de Tránsito prevalecen sobre semáforos, señales verticales y normas generales.",
+        "tipDetail":  "El orden jerárquico es: 1° Agentes de Tránsito, 2° Señalización Transitoria, 3° Semáforos, 4° Señales verticales/horizontales, 5° Normas generales."
     },
     {
         "id":  15,
@@ -759,14 +757,14 @@
         "bonusWords":  [
                            "ALE"
                        ],
-        "tipIcon":  "ðŸ™ï¸",
-        "tipTitle":  "LÃ­mite en Calles: 40 km/h",
-        "tip":  "La velocidad mÃ¡xima en calles comunes es de 40 km/h; en zonas escolares y hospitales se reduce a 20-30 km/h.",
-        "tipDetail":  "A 40 km/h el riesgo de muerte de un peatÃ³n atropellado es del 30%; a 60 km/h ese riesgo se dispara a mÃ¡s del 85%."
+        "tipIcon":  "🏙️",
+        "tipTitle":  "Límite en Calles: 40 km/h",
+        "tip":  "La velocidad máxima en calles comunes es de 40 km/h; en zonas escolares y hospitales se reduce a 20-30 km/h.",
+        "tipDetail":  "A 40 km/h el riesgo de muerte de un peatón atropellado es del 30%; a 60 km/h ese riesgo se dispara a más del 85%."
     },
     {
         "id":  16,
-        "title":  "FÃ­sica del Frenado",
+        "title":  "Física del Frenado",
         "category":  "Seguridad Activa",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -805,15 +803,12 @@
         "bonusWords":  [
                            "FEO",
                            "REO",
-                           "RON",
-                           "FREN",
-                           "FOR",
-                           "NEO"
+                           "RON"
                        ],
-        "tipIcon":  "ðŸ›‘",
+        "tipIcon":  "🛑",
         "tipTitle":  "Sistema de Frenos ABS",
-        "tip":  "El sistema ABS evita que las ruedas se bloqueen, permitiendo mantener el control de direcciÃ³n mientras frenÃ¡s a fondo.",
-        "tipDetail":  "Con ABS, pisÃ¡ el pedal con firmeza mÃ¡xima sin soltar. La vibraciÃ³n en el pedal es normal y confirma que estÃ¡ modulando la presiÃ³n."
+        "tip":  "El sistema ABS evita que las ruedas se bloqueen, permitiendo mantener el control de dirección mientras frenás a fondo.",
+        "tipDetail":  "Con ABS, pisá el pedal con firmeza máxima sin soltar. La vibración en el pedal es normal y confirma que está modulando la presión."
     },
     {
         "id":  17,
@@ -842,19 +837,17 @@
                       }
                   ],
         "bonusWords":  [
-                           "DAN",
-                           "BEA",
-                           "BEDA"
+
                        ],
-        "tipIcon":  "ã€°ï¸",
+        "tipIcon":  "〰️",
         "tipTitle":  "Cruce de Badenes y Desniveles",
-        "tip":  "CruzÃ¡ los badenes a paso de hombre y sin el pie en el freno justo al momento de entrar al desnivel.",
-        "tipDetail":  "Frenar enÃ©rgicamente dentro del badÃ©n comprime los amortiguadores delanteros y provoca roces severos contra el cÃ¡rter."
+        "tip":  "Cruzá los badenes a paso de hombre y sin el pie en el freno justo al momento de entrar al desnivel.",
+        "tipDetail":  "Frenar enérgicamente dentro del badén comprime los amortiguadores delanteros y provoca roces severos contra el cárter."
     },
     {
         "id":  18,
         "title":  "Accesibilidad Universal",
-        "category":  "InclusiÃ³n y Convivencia",
+        "category":  "Inclusión y Convivencia",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -898,10 +891,10 @@
         "bonusWords":  [
 
                        ],
-        "tipIcon":  "â™¿",
+        "tipIcon":  "♿",
         "tipTitle":  "Rampas para Discapacidad",
         "tip":  "Queda terminantemente prohibido detenerse o estacionar tapando rampas de esquinas, incluso por un minuto.",
-        "tipDetail":  "Obstruir una rampa atrapa a personas en silla de ruedas, cochecitos de bebÃ©s y adultos mayores, obligÃ¡ndolos a bajar a la calzada vehicular."
+        "tipDetail":  "Obstruir una rampa atrapa a personas en silla de ruedas, cochecitos de bebés y adultos mayores, obligándolos a bajar a la calzada vehicular."
     },
     {
         "id":  19,
@@ -939,21 +932,17 @@
                            "ARO",
                            "DAR",
                            "IRA",
-                           "ORA",
-                           "RAD",
-                           "ROD",
-                           "OIR",
-                           "IDA"
+                           "ORA"
                        ],
-        "tipIcon":  "ðŸ§­",
+        "tipIcon":  "🧭",
         "tipTitle":  "Maniobras de Viraje",
-        "tip":  "Para doblar en esquinas, seÃ±alizÃ¡ con luz de giro al menos 30 metros antes y reducÃ­ la marcha gradualmente.",
-        "tipDetail":  "Un giro a velocidad excesiva desplaza el centro de gravedad del vehÃ­culo hacia el exterior, reduciendo el agarre de las cubiertas internas."
+        "tip":  "Para doblar en esquinas, señalizá con luz de giro al menos 30 metros antes y reducí la marcha gradualmente.",
+        "tipDetail":  "Un giro a velocidad excesiva desplaza el centro de gravedad del vehículo hacia el exterior, reduciendo el agarre de las cubiertas internas."
     },
     {
         "id":  20,
         "title":  "Luces de Advertencia",
-        "category":  "SeÃ±alizaciÃ³n Ã“ptica",
+        "category":  "Señalización Óptica",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -992,10 +981,10 @@
         "bonusWords":  [
 
                        ],
-        "tipIcon":  "ðŸš¨",
+        "tipIcon":  "🚨",
         "tipTitle":  "Uso Correcto de Balizas",
-        "tip":  "Las balizas intermitentes indican detenciÃ³n obligada de emergencia; no habilitan a estacionar en doble fila.",
-        "tipDetail":  "EncendÃ© las balizas ante una averÃ­a, frenada imprevista en autopista o maniobra de estacionamiento para avisar con anticipaciÃ³n a los demÃ¡s."
+        "tip":  "Las balizas intermitentes indican detención obligada de emergencia; no habilitan a estacionar en doble fila.",
+        "tipDetail":  "Encendé las balizas ante una avería, frenada imprevista en autopista o maniobra de estacionamiento para avisar con anticipación a los demás."
     },
     {
         "id":  21,
@@ -1045,15 +1034,15 @@
         "bonusWords":  [
                            "AMO"
                        ],
-        "tipIcon":  "ðŸ›£ï¸",
+        "tipIcon":  "🛣️",
         "tipTitle":  "Lectura del Camino",
-        "tip":  "MirÃ¡ hacia adelante a la distancia de 15 segundos para anticipar deformaciones, baches o cambios de superficie.",
-        "tipDetail":  "FrenÃ¡ con suavidad antes del pozo o desnivel; soltÃ¡ el freno inmediatamente antes de pasarlo para no daÃ±ar tren delantero ni cubiertas."
+        "tip":  "Mirá hacia adelante a la distancia de 15 segundos para anticipar deformaciones, baches o cambios de superficie.",
+        "tipDetail":  "Frená con suavidad antes del pozo o desnivel; soltá el freno inmediatamente antes de pasarlo para no dañar tren delantero ni cubiertas."
     },
     {
         "id":  22,
-        "title":  "Espacio del PeatÃ³n",
-        "category":  "Espacio PÃºblico",
+        "title":  "Espacio del Peatón",
+        "category":  "Espacio Público",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -1092,13 +1081,12 @@
         "bonusWords":  [
                            "DAR",
                            "ERA",
-                           "RAD",
-                           "VER"
+                           "RAD"
                        ],
-        "tipIcon":  "ðŸš¶â€â™€ï¸",
-        "tipTitle":  "Veredas Libres de VehÃ­culos",
-        "tip":  "Motos, bicicletas y monopatines elÃ©ctricos tienen prohibido circular o estacionar sobre las aceras peatonales.",
-        "tipDetail":  "La vereda es el Ãºnico refugio seguro de peatones y niÃ±os. Para entrar o salir de garajes, cruzala a paso de hombre prestando mÃ¡xima atenciÃ³n."
+        "tipIcon":  "🚶‍♀️",
+        "tipTitle":  "Veredas Libres de Vehículos",
+        "tip":  "Motos, bicicletas y monopatines eléctricos tienen prohibido circular o estacionar sobre las aceras peatonales.",
+        "tipDetail":  "La vereda es el único refugio seguro de peatones y niños. Para entrar o salir de garajes, cruzala a paso de hombre prestando máxima atención."
     },
     {
         "id":  23,
@@ -1140,20 +1128,17 @@
                       }
                   ],
         "bonusWords":  [
-                           "ROD",
-                           "CORO",
-                           "ROCO",
-                           "ORO"
+                           "CON"
                        ],
-        "tipIcon":  "ðŸ…¿ï¸",
-        "tipTitle":  "Distancia al CordÃ³n",
-        "tip":  "El vehÃ­culo debe quedar estacionado en forma paralela al cordÃ³n, a una distancia no mayor de 20 a 30 centÃ­metros.",
-        "tipDetail":  "DejÃ¡ al menos 50 cm libres respecto de los autos delantero y trasero para permitir maniobras de egreso sin toques involuntarios."
+        "tipIcon":  "🅿️",
+        "tipTitle":  "Distancia al Cordón",
+        "tip":  "El vehículo debe quedar estacionado en forma paralela al cordón, a una distancia no mayor de 20 a 30 centímetros.",
+        "tipDetail":  "Dejá al menos 50 cm libres respecto de los autos delantero y trasero para permitir maniobras de egreso sin toques involuntarios."
     },
     {
         "id":  24,
-        "title":  "ConservaciÃ³n de Carril",
-        "category":  "TrÃ¡nsito Fluido",
+        "title":  "Conservación de Carril",
+        "category":  "Tránsito Fluido",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -1194,18 +1179,17 @@
                            "CAR",
                            "IRA",
                            "LIA",
-                           "RIA",
-                           "LIRA"
+                           "RIA"
                        ],
-        "tipIcon":  "â†”ï¸",
-        "tipTitle":  "Carriles en Avenidas y AutovÃ­as",
-        "tip":  "En vÃ­as de varios carriles, circulÃ¡ siempre por la derecha; el carril izquierdo es exclusivo para sobrepasos.",
-        "tipDetail":  "Mantenete centrado dentro de las lÃ­neas de demarcaciÃ³n y utilizÃ¡ siempre la luz de giro antes de cambiar de carril."
+        "tipIcon":  "↔️",
+        "tipTitle":  "Carriles en Avenidas y Autovías",
+        "tip":  "En vías de varios carriles, circulá siempre por la derecha; el carril izquierdo es exclusivo para sobrepasos.",
+        "tipDetail":  "Mantenete centrado dentro de las líneas de demarcación y utilizá siempre la luz de giro antes de cambiar de carril."
     },
     {
         "id":  25,
         "title":  "Zonas de Obras",
-        "category":  "SeÃ±ales Transitorias",
+        "category":  "Señales Transitorias",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
                         "D",
@@ -1242,19 +1226,16 @@
                       }
                   ],
         "bonusWords":  [
-                           "DES",
-                           "SIO",
-                           "VED",
-                           "DEO"
+
                        ],
-        "tipIcon":  "ðŸš§",
-        "tipTitle":  "SeÃ±alizaciÃ³n Naranja de Obra",
-        "tip":  "La cartelerÃ­a y balizas de color naranja indican modificaciones temporales en la traza y presencia de trabajadores.",
-        "tipDetail":  "DisminuÃ­ de inmediato la velocidad y aumentÃ¡ la distancia con los demÃ¡s vehÃ­culos ante el primer aviso de obra vial."
+        "tipIcon":  "🚧",
+        "tipTitle":  "Señalización Naranja de Obra",
+        "tip":  "La cartelería y balizas de color naranja indican modificaciones temporales en la traza y presencia de trabajadores.",
+        "tipDetail":  "Disminuí de inmediato la velocidad y aumentá la distancia con los demás vehículos ante el primer aviso de obra vial."
     },
     {
         "id":  26,
-        "title":  "PercepciÃ³n del Riesgo",
+        "title":  "Percepción del Riesgo",
         "category":  "Factores Humanos",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -1295,19 +1276,17 @@
                            "GIR",
                            "REO",
                            "ROE",
-                           "SER",
-                           "GIRO",
-                           "OIR"
+                           "SER"
                        ],
-        "tipIcon":  "âš¡",
+        "tipIcon":  "⚡",
         "tipTitle":  "Manejo Defensivo",
         "tip":  "Conducir a la defensiva significa esperar siempre el error ajeno y mantener margen para corregir a tiempo.",
-        "tipDetail":  "Nunca asumas que el otro vehÃ­culo va a frenar o poner la luz de giro. Anticipar la maniobra previene el 90% de los siniestros."
+        "tipDetail":  "Nunca asumas que el otro vehículo va a frenar o poner la luz de giro. Anticipar la maniobra previene el 90% de los siniestros."
     },
     {
         "id":  27,
         "title":  "Accesos y Enlaces",
-        "category":  "AutovÃ­as y AceleraciÃ³n",
+        "category":  "Autovías y Aceleración",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
                         "A",
@@ -1346,15 +1325,15 @@
         "bonusWords":  [
 
                        ],
-        "tipIcon":  "â†—ï¸",
-        "tipTitle":  "Carril de AceleraciÃ³n",
-        "tip":  "Al ingresar a una autopista, usÃ¡ el carril de aceleraciÃ³n para igualar la velocidad del flujo vehicular antes de incorporarte.",
+        "tipIcon":  "↗️",
+        "tipTitle":  "Carril de Aceleración",
+        "tip":  "Al ingresar a una autopista, usá el carril de aceleración para igualar la velocidad del flujo vehicular antes de incorporarte.",
         "tipDetail":  "No te detengas al final del enlace salvo que sea imposible entrar. Quien ya circula por la autopista tiene prioridad de paso."
     },
     {
         "id":  28,
         "title":  "Visibilidad en Esquinas",
-        "category":  "DiseÃ±o Urbano",
+        "category":  "Diseño Urbano",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -1393,9 +1372,9 @@
         "bonusWords":  [
 
                        ],
-        "tipIcon":  "ðŸ“",
+        "tipIcon":  "📐",
         "tipTitle":  "Prohibido en las Ochavas",
-        "tip":  "EstÃ¡ estrictamente prohibido detenerse o estacionar dentro del Ã¡rea de la ochava en todas las intersecciones.",
+        "tip":  "Está estrictamente prohibido detenerse o estacionar dentro del área de la ochava en todas las intersecciones.",
         "tipDetail":  "Estacionar en la ochava le quita toda visibilidad a los autos que cruzan y tapa a los peatones que bajan de la vereda."
     },
     {
@@ -1438,21 +1417,17 @@
                       }
                   ],
         "bonusWords":  [
-                           "LAS",
-                           "LEA",
-                           "TILA",
-                           "SETA",
-                           "TELA"
+                           "LAS"
                        ],
-        "tipIcon":  "ðŸš",
-        "tipTitle":  "Isletas de TrÃ¡nsito",
+        "tipIcon":  "🚏",
+        "tipTitle":  "Isletas de Tránsito",
         "tip":  "Las isletas encauzan las corrientes vehiculares y funcionan como refugio seguro para peatones en avenidas anchas.",
         "tipDetail":  "Nunca pises ni circules sobre las marcas diagonales rayadas (cebreado) que preceden a una isleta divisoria."
     },
     {
         "id":  30,
         "title":  "Sonido y Alerta",
-        "category":  "ContaminaciÃ³n Sonora",
+        "category":  "Contaminación Sonora",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -1497,10 +1472,10 @@
         "bonusWords":  [
                            "CON"
                        ],
-        "tipIcon":  "ðŸ“¢",
+        "tipIcon":  "📢",
         "tipTitle":  "Uso Reglamentario de Bocina",
-        "tip":  "La bocina solo estÃ¡ autorizada para advertir sobre un peligro inminente de siniestro; no para apurar o reclamar.",
-        "tipDetail":  "El uso indebido de bocina genera estrÃ©s, sobresaltos en peatones y ciclistas y estÃ¡ penado como falta en el CÃ³digo de TrÃ¡nsito."
+        "tip":  "La bocina solo está autorizada para advertir sobre un peligro inminente de siniestro; no para apurar o reclamar.",
+        "tipDetail":  "El uso indebido de bocina genera estrés, sobresaltos en peatones y ciclistas y está penado como falta en el Código de Tránsito."
     },
     {
         "id":  31,
@@ -1538,15 +1513,15 @@
         "bonusWords":  [
 
                        ],
-        "tipIcon":  "ðŸªž",
-        "tipTitle":  "RegulaciÃ³n de Espejos",
-        "tip":  "AjustÃ¡ los espejos laterales de modo que apenas se vea el filo de la carrocerÃ­a de tu vehÃ­culo y el mÃ¡ximo de calzada.",
-        "tipDetail":  "Para cambiar de carril: mirÃ¡ el espejo central, luego el lateral, y hacÃ© un rÃ¡pido vistazo con el rabillo del ojo para cubrir el punto ciego."
+        "tipIcon":  "🪞",
+        "tipTitle":  "Regulación de Espejos",
+        "tip":  "Ajustá los espejos laterales de modo que apenas se vea el filo de la carrocería de tu vehículo y el máximo de calzada.",
+        "tipDetail":  "Para cambiar de carril: mirá el espejo central, luego el lateral, y hacé un rápido vistazo con el rabillo del ojo para cubrir el punto ciego."
     },
     {
         "id":  32,
-        "title":  "IluminaciÃ³n Vehicular",
-        "category":  "Seguridad Ã“ptica",
+        "title":  "Iluminación Vehicular",
+        "category":  "Seguridad Óptica",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -1591,14 +1566,14 @@
         "bonusWords":  [
                            "ATO"
                        ],
-        "tipIcon":  "ðŸ”¦",
-        "tipTitle":  "AlineaciÃ³n de Faros",
-        "tip":  "Faros desalineados pueden encandilar a quien viene de frente o dejarte sin visiÃ³n en curvas cerradas.",
-        "tipDetail":  "MantenÃ© las Ã³pticas limpias de barro y verificÃ¡ periÃ³dicamente que funcionen todas las lÃ¡mparas de freno y posiciÃ³n trasera."
+        "tipIcon":  "🔦",
+        "tipTitle":  "Alineación de Faros",
+        "tip":  "Faros desalineados pueden encandilar a quien viene de frente o dejarte sin visión en curvas cerradas.",
+        "tipDetail":  "Mantené las ópticas limpias de barro y verificá periódicamente que funcionen todas las lámparas de freno y posición trasera."
     },
     {
         "id":  33,
-        "title":  "VehÃ­culos Pesados",
+        "title":  "Vehículos Pesados",
         "category":  "Convivencia Vial",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
@@ -1644,10 +1619,10 @@
         "bonusWords":  [
                            "AMO"
                        ],
-        "tipIcon":  "ðŸš›",
+        "tipIcon":  "🚛",
         "tipTitle":  "Puntos Ciegos de Camiones",
-        "tip":  "Si vos no podÃ©s ver los espejos del camiÃ³n, el conductor del camiÃ³n NO puede verte a vos. Nunca te pegues detrÃ¡s.",
-        "tipDetail":  "Los camiones necesitan abrirse hacia la izquierda para doblar a la derecha: jamÃ¡s intentes sobrepasarlos por la derecha en esquinas."
+        "tip":  "Si vos no podés ver los espejos del camión, el conductor del camión NO puede verte a vos. Nunca te pegues detrás.",
+        "tipDetail":  "Los camiones necesitan abrirse hacia la izquierda para doblar a la derecha: jamás intentes sobrepasarlos por la derecha en esquinas."
     },
     {
         "id":  34,
@@ -1698,14 +1673,14 @@
         "bonusWords":  [
                            "COL"
                        ],
-        "tipIcon":  "ðŸš«",
+        "tipIcon":  "🚫",
         "tipTitle":  "Alcohol Cero en CABA",
-        "tip":  "En la Ciudad de Buenos Aires el lÃ­mite de alcohol en sangre es 0,0 g/l para todo tipo de conductores.",
-        "tipDetail":  "Incluso una copa disminuye la agudeza visual, alarga el tiempo de reacciÃ³n e infunde una falsa sensaciÃ³n de seguridad sumamente peligrosa."
+        "tip":  "En la Ciudad de Buenos Aires el límite de alcohol en sangre es 0,0 g/l para todo tipo de conductores.",
+        "tipDetail":  "Incluso una copa disminuye la agudeza visual, alarga el tiempo de reacción e infunde una falsa sensación de seguridad sumamente peligrosa."
     },
     {
         "id":  35,
-        "title":  "AtenciÃ³n Plena",
+        "title":  "Atención Plena",
         "category":  "Factores de Riesgo",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
@@ -1739,14 +1714,14 @@
         "bonusWords":  [
 
                        ],
-        "tipIcon":  "ðŸ§ ",
+        "tipIcon":  "🧠",
         "tipTitle":  "Cero Pantallas al Volante",
-        "tip":  "Usar el celular al manejar multiplica por 4 el riesgo de choque, igualando los efectos de la intoxicaciÃ³n alcohÃ³lica.",
-        "tipDetail":  "Ni llamadas con manos libres: la distracciÃ³n cognitiva que genera una conversaciÃ³n telefÃ³nica reduce en un 50% la informaciÃ³n visual percibida."
+        "tip":  "Usar el celular al manejar multiplica por 4 el riesgo de choque, igualando los efectos de la intoxicación alcohólica.",
+        "tipDetail":  "Ni llamadas con manos libres: la distracción cognitiva que genera una conversación telefónica reduce en un 50% la información visual percibida."
     },
     {
         "id":  36,
-        "title":  "Calmado de TrÃ¡nsito",
+        "title":  "Calmado de Tránsito",
         "category":  "Infraestructura Vial",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -1784,20 +1759,16 @@
                       }
                   ],
         "bonusWords":  [
-                           "ALA",
-                           "LADO",
-                           "MODA",
-                           "DOMA",
-                           "MALA"
+                           "ALA"
                        ],
-        "tipIcon":  "âš ï¸",
+        "tipIcon":  "⚠️",
         "tipTitle":  "Reductores y Lomadas",
         "tip":  "Las lomadas se instalan para forzar una velocidad no mayor a 20 km/h en sectores de alto cruce de personas.",
-        "tipDetail":  "Pasalas con ambas ruedas al mismo tiempo a marcha reducida para no desalinear amortiguadores ni resortes de suspensiÃ³n."
+        "tipDetail":  "Pasalas con ambas ruedas al mismo tiempo a marcha reducida para no desalinear amortiguadores ni resortes de suspensión."
     },
     {
         "id":  37,
-        "title":  "TracciÃ³n y 2 Ruedas",
+        "title":  "Tracción y 2 Ruedas",
         "category":  "Mantenimiento Preventivo",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
@@ -1835,19 +1806,16 @@
                       }
                   ],
         "bonusWords":  [
-                           "DAN",
-                           "CENA",
-                           "NADA",
-                           "CANA"
+
                        ],
-        "tipIcon":  "â›“ï¸",
+        "tipIcon":  "⛓️",
         "tipTitle":  "Mantenimiento de Cadena",
-        "tip":  "En motos y bicicletas, la tensiÃ³n y lubricaciÃ³n de la cadena previene que se corte o trabe la rueda trasera en movimiento.",
-        "tipDetail":  "Una cadena suelta puede salirse de la corona y bloquear instantÃ¡neamente el rodado, provocando una caÃ­da inevitable a alta velocidad."
+        "tip":  "En motos y bicicletas, la tensión y lubricación de la cadena previene que se corte o trabe la rueda trasera en movimiento.",
+        "tipDetail":  "Una cadena suelta puede salirse de la corona y bloquear instantáneamente el rodado, provocando una caída inevitable a alta velocidad."
     },
     {
         "id":  38,
-        "title":  "DocumentaciÃ³n Obligatoria",
+        "title":  "Documentación Obligatoria",
         "category":  "Normativa y Controles",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -1895,10 +1863,10 @@
                            "CAL",
                            "DEL"
                        ],
-        "tipIcon":  "ðŸªª",
-        "tipTitle":  "CÃ©dula de IdentificaciÃ³n",
-        "tip":  "La cÃ©dula verde no vence para el titular registral; los terceros autorizados deben circular con la correspondiente cÃ©dula azul o digital.",
-        "tipDetail":  "Llevar la documentaciÃ³n en la app Mi Argentina es legal y vÃ¡lido en todos los puestos de control del paÃ­s."
+        "tipIcon":  "🪪",
+        "tipTitle":  "Cédula de Identificación",
+        "tip":  "La cédula verde no vence para el titular registral; los terceros autorizados deben circular con la correspondiente cédula azul o digital.",
+        "tipDetail":  "Llevar la documentación en la app Mi Argentina es legal y válido en todos los puestos de control del país."
     },
     {
         "id":  39,
@@ -1948,7 +1916,7 @@
         "bonusWords":  [
                            "CAR"
                        ],
-        "tipIcon":  "ðŸ’³",
+        "tipIcon":  "💳",
         "tipTitle":  "Sistema de Scoring",
         "tip":  "Cada conductor inicia con 20 puntos; las infracciones graves descuentan puntaje hasta inhabilitar la licencia.",
         "tipDetail":  "Correr picadas resta 20 puntos directo; alcoholemia positiva resta 10 puntos; conducir sin casco o cruzando en rojo resta 5 puntos."
@@ -1956,7 +1924,7 @@
     {
         "id":  40,
         "title":  "Cobertura y Ley",
-        "category":  "ProtecciÃ³n Legal",
+        "category":  "Protección Legal",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "E",
@@ -1993,20 +1961,16 @@
                       }
                   ],
         "bonusWords":  [
-                           "ROE",
-                           "SER",
-                           "RUEGO",
-                           "GRUESO",
-                           "EURO"
+                           "ROE"
                        ],
-        "tipIcon":  "ðŸ›¡ï¸",
-        "tipTitle":  "Seguro Obligatorio de TrÃ¡nsito",
-        "tip":  "Es obligatorio portar comprobante vigente de la pÃ³liza de Responsabilidad Civil hacia Terceros (Ley Nacional 24.449).",
-        "tipDetail":  "No es necesario llevar el recibo de pago impreso; la pÃ³liza digital o tarjeta de circulaciÃ³n es constancia suficiente."
+        "tipIcon":  "🛡️",
+        "tipTitle":  "Seguro Obligatorio de Tránsito",
+        "tip":  "Es obligatorio portar comprobante vigente de la póliza de Responsabilidad Civil hacia Terceros (Ley Nacional 24.449).",
+        "tipDetail":  "No es necesario llevar el recibo de pago impreso; la póliza digital o tarjeta de circulación es constancia suficiente."
     },
     {
         "id":  41,
-        "title":  "DÃ¡rsenas de Maniobra",
+        "title":  "Dársenas de Maniobra",
         "category":  "Infraestructura Vial",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
@@ -2066,10 +2030,10 @@
                            "SED",
                            "SER"
                        ],
-        "tipIcon":  "â†©ï¸",
-        "tipTitle":  "DÃ¡rsenas de Giro y Retorno",
-        "tip":  "En avenidas semaforizadas de doble mano, girar a la izquierda solo estÃ¡ permitido si existe dÃ¡rsena especÃ­fica habilitada.",
-        "tipDetail":  "IngresÃ¡ a la dÃ¡rsena con la luz de giro colocada y aguardÃ¡ la flecha semafÃ³rica verde antes de iniciar la maniobra."
+        "tipIcon":  "↩️",
+        "tipTitle":  "Dársenas de Giro y Retorno",
+        "tip":  "En avenidas semaforizadas de doble mano, girar a la izquierda solo está permitido si existe dársena específica habilitada.",
+        "tipDetail":  "Ingresá a la dársena con la luz de giro colocada y aguardá la flecha semafórica verde antes de iniciar la maniobra."
     },
     {
         "id":  42,
@@ -2125,16 +2089,12 @@
                            "REO",
                            "ROE",
                            "RON",
-                           "RTO",
-                           "CANTER",
-                           "CANTO",
-                           "NORTE",
-                           "TERCO"
+                           "RTO"
                        ],
-        "tipIcon":  "ðŸŒ³",
+        "tipIcon":  "🌳",
         "tipTitle":  "Boulevards y Canteros",
-        "tip":  "Los canteros centrales separan sentidos de circulaciÃ³n para eliminar el riesgo de choque frontal.",
-        "tipDetail":  "Nunca intentes girar en \u0027U\u0027 sobre canteros o pastos divisorios; hacelo Ãºnicamente en los retornos oficiales seÃ±alizados."
+        "tip":  "Los canteros centrales separan sentidos de circulación para eliminar el riesgo de choque frontal.",
+        "tipDetail":  "Nunca intentes girar en \u0027U\u0027 sobre canteros o pastos divisorios; hacelo únicamente en los retornos oficiales señalizados."
     },
     {
         "id":  43,
@@ -2183,21 +2143,17 @@
                            "DAR",
                            "ORA",
                            "RON",
-                           "RTO",
-                           "RODA",
-                           "ROD",
-                           "TORNADO",
-                           "RATON"
+                           "RTO"
                        ],
-        "tipIcon":  "ðŸ”„",
+        "tipIcon":  "🔄",
         "tipTitle":  "Prioridad en Rotondas",
-        "tip":  "Tiene prioridad absoluta quien ya estÃ¡ dentro de la rotonda. Quien va a entrar debe frenar y ceder el paso.",
-        "tipDetail":  "Para salir de la rotonda, pasÃ¡ al carril externo antes de la salida y seÃ±alizÃ¡ con la luz de giro derecha."
+        "tip":  "Tiene prioridad absoluta quien ya está dentro de la rotonda. Quien va a entrar debe frenar y ceder el paso.",
+        "tipDetail":  "Para salir de la rotonda, pasá al carril externo antes de la salida y señalizá con la luz de giro derecha."
     },
     {
         "id":  44,
         "title":  "Calzada y Pavimento",
-        "category":  "VÃ­as de CirculaciÃ³n",
+        "category":  "Vías de Circulación",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -2230,21 +2186,17 @@
                   ],
         "bonusWords":  [
                            "ACA",
-                           "ALA",
-                           "ALZA",
-                           "CAL",
-                           "LACA",
-                           "AZADA"
+                           "ALA"
                        ],
-        "tipIcon":  "ðŸ›¤ï¸",
+        "tipIcon":  "🛤️",
         "tipTitle":  "Adherencia en Calzadas",
-        "tip":  "La calzada es la zona de la vÃ­a destinada exclusivamente a la circulaciÃ³n de vehÃ­culos automotores y tracciÃ³n.",
-        "tipDetail":  "Las marcas de pintura termoplÃ¡stica vial mojadas tienen menor coeficiente de fricciÃ³n; no frenes bruscamente sobre las lÃ­neas."
+        "tip":  "La calzada es la zona de la vía destinada exclusivamente a la circulación de vehículos automotores y tracción.",
+        "tipDetail":  "Las marcas de pintura termoplástica vial mojadas tienen menor coeficiente de fricción; no frenes bruscamente sobre las líneas."
     },
     {
         "id":  45,
         "title":  "Lluvia y Pavimento",
-        "category":  "FÃ­sica y CinemÃ¡tica",
+        "category":  "Física y Cinemática",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
                         "A",
@@ -2298,10 +2250,10 @@
                            "SOL",
                            "TOL"
                        ],
-        "tipIcon":  "ðŸŒ§ï¸",
+        "tipIcon":  "🌧️",
         "tipTitle":  "Efecto Aquaplaning",
-        "tip":  "Con lluvia intensa, se forma una pelÃ­cula de agua entre el neumÃ¡tico y el asfalto que hace flotar al vehÃ­culo sin direcciÃ³n.",
-        "tipDetail":  "Si sentÃ­s la direcciÃ³n liviana por aquaplaning: no frenes ni des volantazos; soltÃ¡ el acelerador suavemente con volante firme."
+        "tip":  "Con lluvia intensa, se forma una película de agua entre el neumático y el asfalto que hace flotar al vehículo sin dirección.",
+        "tipDetail":  "Si sentís la dirección liviana por aquaplaning: no frenes ni des volantazos; soltá el acelerador suavemente con volante firme."
     },
     {
         "id":  46,
@@ -2344,18 +2296,16 @@
                       }
                   ],
         "bonusWords":  [
-                           "BAR",
-                           "ARAR",
-                           "RARA"
+
                        ],
-        "tipIcon":  "ðŸš‚",
+        "tipIcon":  "🚂",
         "tipTitle":  "Paso a Nivel y Barrera",
         "tip":  "Prohibido cruzar con barrera baja, en movimiento o cuando suene la alarma fonoluminosa roja.",
-        "tipDetail":  "Un tren de pasajeros tarda mÃ¡s de 500 metros en detenerse; nunca intentes ganarle el paso a una formaciÃ³n en aproximaciÃ³n."
+        "tipDetail":  "Un tren de pasajeros tarda más de 500 metros en detenerse; nunca intentes ganarle el paso a una formación en aproximación."
     },
     {
         "id":  47,
-        "title":  "Paradas y MetrobÃºs",
+        "title":  "Paradas y Metrobús",
         "category":  "Transporte Colectivo",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
@@ -2397,20 +2347,17 @@
                            "FEO",
                            "GIR",
                            "REO",
-                           "ROE",
-                           "FREO",
-                           "FUEGO",
-                           "FIGURO"
+                           "ROE"
                        ],
-        "tipIcon":  "ðŸšŒ",
-        "tipTitle":  "Carriles Exclusivos MetrobÃºs",
-        "tip":  "Los carriles centrales de MetrobÃºs estÃ¡n reservados exclusivamente para transporte pÃºblico y vehÃ­culos de emergencia.",
-        "tipDetail":  "Al descender de un colectivo en un refugio, cruzÃ¡ siempre por la senda peatonal semaforizada y nunca por delante del Ã³mnibus."
+        "tipIcon":  "🚌",
+        "tipTitle":  "Carriles Exclusivos Metrobús",
+        "tip":  "Los carriles centrales de Metrobús están reservados exclusivamente para transporte público y vehículos de emergencia.",
+        "tipDetail":  "Al descender de un colectivo en un refugio, cruzá siempre por la senda peatonal semaforizada y nunca por delante del ómnibus."
     },
     {
         "id":  48,
-        "title":  "PosiciÃ³n de ConducciÃ³n",
-        "category":  "ErgonomÃ­a y Control",
+        "title":  "Posición de Conducción",
+        "category":  "Ergonomía y Control",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
                         "A",
@@ -2482,15 +2429,15 @@
                            "VANO",
                            "VASO"
                        ],
-        "tipIcon":  "ðŸŽ¯",
+        "tipIcon":  "🎯",
         "tipTitle":  "Manos a las \u00279 y 15\u0027",
-        "tip":  "TomÃ¡ el volante como las agujas del reloj a las \u00279 y 15\u0027 con ambos pulgares apoyados sin trabar.",
-        "tipDetail":  "Esta posiciÃ³n permite el mÃ¡ximo rango de giro sin cruzar los brazos y evita lesiones graves si se activa el airbag del volante."
+        "tip":  "Tomá el volante como las agujas del reloj a las \u00279 y 15\u0027 con ambos pulgares apoyados sin trabar.",
+        "tipDetail":  "Esta posición permite el máximo rango de giro sin cruzar los brazos y evita lesiones graves si se activa el airbag del volante."
     },
     {
         "id":  49,
         "title":  "Distancias y Velocidad",
-        "category":  "CinemÃ¡tica Vial",
+        "category":  "Cinemática Vial",
         "bg":  "assets/bg_city.jpg",
         "letters":  [
                         "A",
@@ -2562,19 +2509,16 @@
                            "RENO",
                            "RODA",
                            "SANE",
-                           "SEDA",
-                           "FRENO",
-                           "FONDA",
-                           "FARDON"
+                           "SEDA"
                        ],
-        "tipIcon":  "ðŸ“",
-        "tipTitle":  "Aumento CuadrÃ¡tico de la Frenada",
-        "tip":  "Si aumentÃ¡s tu velocidad de 50 a 100 km/h (el doble), tu distancia de frenado se multiplica por 4.",
-        "tipDetail":  "A 100 km/h recorrÃ©s 28 metros por segundo; la distancia total de detenciÃ³n en asfalto seco supera los 80 metros."
+        "tipIcon":  "📏",
+        "tipTitle":  "Aumento Cuadrático de la Frenada",
+        "tip":  "Si aumentás tu velocidad de 50 a 100 km/h (el doble), tu distancia de frenado se multiplica por 4.",
+        "tipDetail":  "A 100 km/h recorrés 28 metros por segundo; la distancia total de detención en asfalto seco supera los 80 metros."
     },
     {
         "id":  50,
-        "title":  "CinturÃ³n de Seguridad",
+        "title":  "Cinturón de Seguridad",
         "category":  "Seguridad Pasiva",
         "bg":  "assets/bg_route.jpg",
         "letters":  [
@@ -2615,16 +2559,12 @@
                   ],
         "bonusWords":  [
                            "CON",
-                           "RIN",
-                           "RTO",
-                           "RICO",
-                           "CORO",
-                           "TINTO"
+                           "RIN"
                        ],
-        "tipIcon":  "ðŸ’º",
-        "tipTitle":  "CinturÃ³n de Tres Puntos",
-        "tip":  "El uso del cinturÃ³n es obligatorio para todos los ocupantes del vehÃ­culo, tanto en asientos delanteros como traseros.",
-        "tipDetail":  "En un choque a 50 km/h, una persona de 70 kg sin cinturÃ³n sale despedida con una fuerza equivalente a caer de un 4to piso."
+        "tipIcon":  "💺",
+        "tipTitle":  "Cinturón de Tres Puntos",
+        "tip":  "El uso del cinturón es obligatorio para todos los ocupantes del vehículo, tanto en asientos delanteros como traseros.",
+        "tipDetail":  "En un choque a 50 km/h, una persona de 70 kg sin cinturón sale despedida con una fuerza equivalente a caer de un 4to piso."
     }
 ];
 if (typeof module !== 'undefined') module.exports = { GAME_LEVELS };

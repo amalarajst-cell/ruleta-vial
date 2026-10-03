@@ -1553,21 +1553,21 @@
       justify-content: center;
       align-items: center;
       margin: 4px 0 8px;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(15, 23, 42, 0.75);
       border-radius: 14px;
-      padding: 4px;
-      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      padding: 6px;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
       box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.4);
-      height: 120px;
-      min-height: 120px;
+      height: 125px;
+      min-height: 125px;
       flex-shrink: 0;
       overflow: hidden;
     }
     .wow-trivia-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
     }
 
@@ -2045,10 +2045,6 @@
         <!-- Trivia Vial Question Overlay (Active when landing on points) -->
         <div id="wow-trivia-overlay" class="wow-trivia-overlay" style="display:none;">
           <div class="wow-trivia-header">
-            <div class="wow-trivia-badge" id="wow-trivia-badge">
-              <span>🎯</span>
-              <span>EXAMEN DE CONDUCIR CLASE B</span>
-            </div>
             <div class="wow-trivia-stake" id="wow-trivia-stake">¡Respondé bien para ganar +50 Puntos!</div>
             <div class="wow-trivia-cat-pill" id="wow-trivia-category">🚗 Señales y Prioridades</div>
           </div>
@@ -2162,8 +2158,8 @@
 
   <script src="js/cloud-sync.js?v=23"></script>
   <script src="js/questions.js"></script>
-  <script src="js/vialwords_levels.js?v=50"></script>
-  <script src="js/vialwords_dictionary.js?v=1"></script>
+  <script src="js/vialwords_levels.js?v=52" charset="UTF-8"></script>
+  <script src="js/vialwords_dictionary.js?v=2" charset="UTF-8"></script>
 
   <script>
 
@@ -2563,23 +2559,15 @@
           ctx.rotate(textAngle);
 
           if (item.isPoints) {
-            // Bold Clean Points Number (No Gems!)
-            ctx.font = "900 25px 'Montserrat', 'Archivo Black', sans-serif";
+            // Bold Clean Points Number (Solo números, sin PTS)
+            ctx.font = "900 27px 'Montserrat', 'Archivo Black', sans-serif";
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.lineWidth = 5;
             ctx.strokeStyle = '#000000';
-            ctx.strokeText(item.amount, r * 0.58, 0);
+            ctx.strokeText(item.amount, r * 0.55, 0);
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(item.amount, r * 0.58, 0);
-
-            // Subtitle 'PTS' below points
-            ctx.font = "800 10px 'Montserrat', sans-serif";
-            ctx.lineWidth = 2.5;
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.strokeText("PTS", r * 0.36, 0);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.fillText("PTS", r * 0.36, 0);
+            ctx.fillText(item.amount, r * 0.55, 0);
           } else if (item.isJackpot) {
             // Mini Colorful Wheel on Radiant Sunburst
             this.drawMiniJackpotWheel(ctx, r * 0.58, 0, 22);
@@ -2951,8 +2939,17 @@
         // Mostrar imagen oficial de la pregunta de examen
         if (this.dom.triviaImg && this.dom.triviaImgContainer) {
           if (q.imageSrc) {
+            this.dom.triviaImg.onerror = () => {
+              if (this.dom.triviaImgContainer) {
+                this.dom.triviaImgContainer.style.display = 'none';
+              }
+            };
+            this.dom.triviaImg.onload = () => {
+              if (this.dom.triviaImgContainer) {
+                this.dom.triviaImgContainer.style.display = 'flex';
+              }
+            };
             this.dom.triviaImg.src = q.imageSrc;
-            this.dom.triviaImgContainer.style.display = 'flex';
           } else {
             this.dom.triviaImgContainer.style.display = 'none';
           }

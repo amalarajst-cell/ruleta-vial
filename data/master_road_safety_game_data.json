@@ -1,4 +1,4 @@
-﻿{
+{
     "total_vocabulary_terms":  1075,
     "vocabulary_by_length":  {
                                  "3":  [
@@ -535,7 +535,7 @@
                                            "CUIDAR",
                                            "CUNETA",
                                            "CURVAS",
-                                           "DAÃ‘OS",
+                                           "DAÑOS",
                                            "DELITO",
                                            "DESVIO",
                                            "DISCOB",
@@ -554,7 +554,7 @@
                                            "FRENOS",
                                            "FRENTE",
                                            "FURGON",
-                                           "GUIÃ‘O",
+                                           "GUIÑO",
                                            "GUIADO",
                                            "HURTOS",
                                            "INFLAD",
@@ -591,7 +591,7 @@
                                            "PEAJES",
                                            "PEDALE",
                                            "PERITO",
-                                           "PIÃ‘ON",
+                                           "PIÑON",
                                            "PILOTO",
                                            "PISTAS",
                                            "PISTON",
@@ -616,7 +616,7 @@
                                            "RUEDAS",
                                            "RURALB",
                                            "SANCIO",
-                                           "SEÃ‘AL",
+                                           "SEÑAL",
                                            "SECADO",
                                            "SECTOR",
                                            "SEGUIR",
@@ -752,13 +752,13 @@
                                            "PEATOON",
                                            "PEDALES",
                                            "PERMISO",
-                                           "PIÃ‘ONB",
+                                           "PIÑONB",
                                            "PILOTOS",
                                            "PINTURA",
                                            "POLICIA",
                                            "PRACTIC",
                                            "PSICOFB",
-                                           "PUÃ‘OSB",
+                                           "PUÑOSB",
                                            "PUENTES",
                                            "PUESTOS",
                                            "RADARES",
@@ -894,7 +894,7 @@
                                            "PATENTES",
                                            "PEATONES",
                                            "PERMISOS",
-                                           "PIÃ‘ONES",
+                                           "PIÑONES",
                                            "PINTURAS",
                                            "PISTONES",
                                            "POLIZASB",
@@ -913,7 +913,7 @@
                                            "RODAMENT",
                                            "ROTONDAS",
                                            "SCORINGB",
-                                           "SEÃ‘ALES",
+                                           "SEÑALES",
                                            "SECUESTR",
                                            "SENTIDOS",
                                            "SILENCIA",
@@ -961,7 +961,7 @@
                                            "CAUTELOSO",
                                            "CELULARES",
                                            "CICLISTAS",
-                                           "CIGUEÃ‘AL",
+                                           "CIGÜEÑAL",
                                            "CINTURONE",
                                            "COLECTIVO",
                                            "COLISIONB",
@@ -1017,7 +1017,7 @@
                                            "RETROFLEX",
                                            "REVENTONE",
                                            "SANCIONES",
-                                           "SEÃ‘ALIZO",
+                                           "SEÑALIZO",
                                            "SEGURIDAD",
                                            "SEPARADOR",
                                            "SINIESTRO",
@@ -1049,7 +1049,7 @@
                                             "PROTECCION",
                                             "REGLAMENTO",
                                             "RETROVISOR",
-                                            "SEÃ‘ALIZAR",
+                                            "SEÑALIZAR",
                                             "SOBREPASOS",
                                             "SUSPENSION"
                                         ],
@@ -1086,7 +1086,7 @@
                                             "DESLIZAMIENTO",
                                             "MICROCONDUCTA",
                                             "REGLAMENTARIA",
-                                            "SEÃ‘ALIZACION",
+                                            "SEÑALIZACIÓN",
                                             "TERMOPLASTICA"
                                         ],
                                  "14":  [
@@ -5089,8 +5089,8 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "SEÃ‘AL",
-                                               "circle_letters":  "A E L S Ã ‘",
+                                               "base_word":  "SEÑAL",
+                                               "circle_letters":  "A E L S Ñ",
                                                "total_formed":  5,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
@@ -5099,7 +5099,7 @@
                                                                                            "LEA",
                                                                                            "LES"
                                                                                        ],
-                                                                          "6_letras":  "SEÃ‘AL"
+                                                                          "6_letras":  "SEÑAL"
                                                                       }
                                            },
                                            {
@@ -5338,8 +5338,8 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "DAÃ‘OS",
-                                               "circle_letters":  "A D O S Ã ‘",
+                                               "base_word":  "DAÑOS",
+                                               "circle_letters":  "A D O S Ñ",
                                                "total_formed":  4,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
@@ -5347,7 +5347,7 @@
                                                                                            "DAS",
                                                                                            "DOS"
                                                                                        ],
-                                                                          "6_letras":  "DAÃ‘OS"
+                                                                          "6_letras":  "DAÑOS"
                                                                       }
                                            },
                                            {
@@ -8549,15 +8549,15 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "PUÃ‘OSB",
-                                               "circle_letters":  "B O P S U Ã ‘",
+                                               "base_word":  "PUÑOSB",
+                                               "circle_letters":  "B O P S U Ñ",
                                                "total_formed":  3,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
                                                                                            "BUS",
                                                                                            "USO"
                                                                                        ],
-                                                                          "7_letras":  "PUÃ‘OSB"
+                                                                          "7_letras":  "PUÑOSB"
                                                                       }
                                            },
                                            {
@@ -11606,8 +11606,8 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "PIÃ‘ONES",
-                                               "circle_letters":  "E I N O P S Ã ‘",
+                                               "base_word":  "PIÑONES",
+                                               "circle_letters":  "E I N O P S Ñ",
                                                "total_formed":  9,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
@@ -11621,8 +11621,8 @@
                                                                                            "PISO"
                                                                                        ],
                                                                           "5_letras":  "PINOS",
-                                                                          "6_letras":  "PIÃ‘ON",
-                                                                          "8_letras":  "PIÃ‘ONES"
+                                                                          "6_letras":  "PIÑON",
+                                                                          "8_letras":  "PIÑONES"
                                                                       }
                                            },
                                            {
@@ -11884,8 +11884,8 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "SEÃ‘ALES",
-                                               "circle_letters":  "A E E L S S Ã ‘",
+                                               "base_word":  "SEÑALES",
+                                               "circle_letters":  "A E E L S S Ñ",
                                                "total_formed":  6,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
@@ -11894,8 +11894,8 @@
                                                                                            "LEA",
                                                                                            "LES"
                                                                                        ],
-                                                                          "6_letras":  "SEÃ‘AL",
-                                                                          "8_letras":  "SEÃ‘ALES"
+                                                                          "6_letras":  "SEÑAL",
+                                                                          "8_letras":  "SEÑALES"
                                                                       }
                                            },
                                            {
@@ -14199,8 +14199,8 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "SEÃ‘ALIZO",
-                                               "circle_letters":  "A E I L O S Z Ã ‘",
+                                               "base_word":  "SEÑALIZO",
+                                               "circle_letters":  "A E I L O S Z Ñ",
                                                "total_formed":  12,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
@@ -14215,8 +14215,8 @@
                                                                                            "SOL"
                                                                                        ],
                                                                           "4_letras":  "LISO",
-                                                                          "6_letras":  "SEÃ‘AL",
-                                                                          "9_letras":  "SEÃ‘ALIZO"
+                                                                          "6_letras":  "SEÑAL",
+                                                                          "9_letras":  "SEÑALIZO"
                                                                       }
                                            },
                                            {
@@ -14578,8 +14578,8 @@
                                                                       }
                                            },
                                            {
-                                               "base_word":  "CIGUEÃ‘AL",
-                                               "circle_letters":  "A C E G I L U Ã ‘",
+                                               "base_word":  "CIGÜEÑAL",
+                                               "circle_letters":  "A C E G I L U Ñ",
                                                "total_formed":  6,
                                                "subwords_by_length":  {
                                                                           "3_letras":  [
@@ -14589,7 +14589,7 @@
                                                                                            "LIA"
                                                                                        ],
                                                                           "4_letras":  "GUIA",
-                                                                          "9_letras":  "CIGUEÃ‘AL"
+                                                                          "9_letras":  "CIGÜEÑAL"
                                                                       }
                                            },
                                            {
@@ -15372,11 +15372,11 @@
                                                                        }
                                             },
                                             {
-                                                "base_word":  "SEÃ‘ALIZAR",
-                                                "circle_letters":  "A A E I L R S Z Ã ‘",
+                                                "base_word":  "SEÑALIZAR",
+                                                "circle_letters":  "A A E I L R S Z Ñ",
                                                 "total_formed":  18,
                                                 "subwords_by_length":  {
-                                                                           "10_letras":  "SEÃ‘ALIZAR",
+                                                                           "10_letras":  "SEÑALIZAR",
                                                                            "3_letras":  [
                                                                                             "ALA",
                                                                                             "ALE",
@@ -15397,7 +15397,7 @@
                                                                                             "RIAL",
                                                                                             "RIEL"
                                                                                         ],
-                                                                           "6_letras":  "SEÃ‘AL"
+                                                                           "6_letras":  "SEÑAL"
                                                                        }
                                             },
                                             {

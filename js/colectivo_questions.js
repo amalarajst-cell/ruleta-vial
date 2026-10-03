@@ -1,7 +1,7 @@
 // ============================================================
 // BANCO DE PREGUNTAS OFICIAL: TRANSPORTE DE PASAJEROS (COLECTIVO D1)
-// 218 Preguntas clasificadas por las 7 categorÃ­as de la Ruleta Colectivo
-// Incluye 113 imÃ¡genes reales asociadas
+// 218 Preguntas clasificadas por las 7 categorías de la Ruleta Colectivo
+// Incluye 113 imágenes reales asociadas
 // ============================================================
 
 const COLECTIVO_QUESTIONS = [
@@ -16,7 +16,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  2,
@@ -29,7 +29,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  3,
@@ -42,7 +42,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  4,
@@ -54,7 +54,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  5,
@@ -66,7 +66,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  6,
@@ -79,7 +79,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  7,
@@ -92,7 +92,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  8,
@@ -105,7 +105,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  9,
@@ -118,7 +118,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  10,
@@ -131,7 +131,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/10.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  11,
@@ -143,7 +143,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/11.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  12,
@@ -155,7 +155,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/12.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  13,
@@ -168,7 +168,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/13.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  14,
@@ -181,7 +181,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/14.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  15,
@@ -194,7 +194,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/15.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  16,
@@ -207,7 +207,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/16.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  17,
@@ -220,7 +220,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/17.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  18,
@@ -233,7 +233,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/18.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  19,
@@ -246,7 +246,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/19.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  20,
@@ -259,7 +259,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/20.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  21,
@@ -272,7 +272,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  22,
@@ -285,7 +285,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/22.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  23,
@@ -298,7 +298,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/23.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  24,
@@ -310,7 +310,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/24.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  25,
@@ -323,7 +323,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/25.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  26,
@@ -336,7 +336,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/26.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  27,
@@ -349,7 +349,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/27.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  28,
@@ -362,7 +362,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/28.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  29,
@@ -374,7 +374,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/29.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  30,
@@ -387,7 +387,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/30.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  31,
@@ -399,7 +399,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/31.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  32,
@@ -411,7 +411,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/32.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  33,
@@ -424,7 +424,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  34,
@@ -437,7 +437,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/34.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  35,
@@ -450,7 +450,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  36,
@@ -463,7 +463,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/36.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  37,
@@ -476,7 +476,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  38,
@@ -489,7 +489,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  39,
@@ -502,7 +502,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/39.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  40,
@@ -515,7 +515,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  41,
@@ -528,7 +528,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/41.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  42,
@@ -541,7 +541,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  43,
@@ -554,7 +554,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  44,
@@ -566,7 +566,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  45,
@@ -579,7 +579,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/45.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  46,
@@ -591,7 +591,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/46.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  47,
@@ -604,7 +604,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/47.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  48,
@@ -617,7 +617,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/48.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  49,
@@ -630,7 +630,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/49.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  50,
@@ -643,7 +643,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  51,
@@ -656,7 +656,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/51.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  52,
@@ -669,7 +669,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/52.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  53,
@@ -682,7 +682,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  54,
@@ -695,7 +695,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/54.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  55,
@@ -708,7 +708,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/55.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  56,
@@ -720,7 +720,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/56.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  57,
@@ -733,7 +733,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  58,
@@ -746,7 +746,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  59,
@@ -759,7 +759,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  60,
@@ -772,7 +772,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  61,
@@ -785,7 +785,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  62,
@@ -798,7 +798,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  63,
@@ -811,7 +811,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/63.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  64,
@@ -824,7 +824,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  65,
@@ -837,7 +837,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  66,
@@ -850,7 +850,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  67,
@@ -863,7 +863,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  68,
@@ -876,7 +876,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  69,
@@ -889,7 +889,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  70,
@@ -902,7 +902,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/70.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  71,
@@ -915,7 +915,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  72,
@@ -928,7 +928,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  73,
@@ -940,7 +940,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  74,
@@ -953,7 +953,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  75,
@@ -966,7 +966,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  76,
@@ -978,7 +978,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  77,
@@ -990,7 +990,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  78,
@@ -1003,7 +1003,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/78.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  79,
@@ -1016,7 +1016,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  80,
@@ -1029,7 +1029,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  81,
@@ -1042,7 +1042,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  82,
@@ -1055,7 +1055,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  83,
@@ -1068,7 +1068,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  84,
@@ -1081,7 +1081,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  85,
@@ -1094,7 +1094,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  86,
@@ -1107,7 +1107,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/86.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  87,
@@ -1119,7 +1119,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/87.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  88,
@@ -1132,7 +1132,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/88.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  89,
@@ -1145,7 +1145,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  90,
@@ -1158,7 +1158,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/90.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  91,
@@ -1171,7 +1171,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/91.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  92,
@@ -1184,7 +1184,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/92.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  93,
@@ -1197,7 +1197,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  94,
@@ -1210,7 +1210,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/94.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  95,
@@ -1223,7 +1223,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  96,
@@ -1235,7 +1235,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  97,
@@ -1248,7 +1248,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  98,
@@ -1261,7 +1261,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  99,
@@ -1274,7 +1274,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/99.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  100,
@@ -1287,7 +1287,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  101,
@@ -1300,7 +1300,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  102,
@@ -1313,7 +1313,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  103,
@@ -1326,7 +1326,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/103.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  104,
@@ -1339,7 +1339,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/104.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  105,
@@ -1351,7 +1351,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/105.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  106,
@@ -1364,7 +1364,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/106.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  107,
@@ -1377,7 +1377,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/107.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  108,
@@ -1389,7 +1389,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/108.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  109,
@@ -1402,7 +1402,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/109.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  110,
@@ -1415,7 +1415,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/110.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  111,
@@ -1428,7 +1428,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/111.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  112,
@@ -1441,7 +1441,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/112.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  113,
@@ -1454,7 +1454,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/113.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  114,
@@ -1467,7 +1467,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/114.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  115,
@@ -1480,7 +1480,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  116,
@@ -1493,7 +1493,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/116.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  117,
@@ -1505,7 +1505,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/117.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  118,
@@ -1518,7 +1518,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  119,
@@ -1530,7 +1530,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/119.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  120,
@@ -1543,7 +1543,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/120.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  121,
@@ -1556,7 +1556,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  122,
@@ -1568,7 +1568,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/122.jpg",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  123,
@@ -1581,7 +1581,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/123.jpg",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  124,
@@ -1593,7 +1593,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/124.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  125,
@@ -1605,7 +1605,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/125.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  126,
@@ -1617,7 +1617,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  127,
@@ -1629,7 +1629,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  128,
@@ -1642,7 +1642,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  129,
@@ -1655,7 +1655,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  130,
@@ -1668,7 +1668,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  131,
@@ -1681,7 +1681,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/131.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  132,
@@ -1694,7 +1694,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/132.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  133,
@@ -1707,7 +1707,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  134,
@@ -1720,7 +1720,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  135,
@@ -1733,7 +1733,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  136,
@@ -1746,7 +1746,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/136.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  137,
@@ -1759,7 +1759,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  138,
@@ -1772,7 +1772,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  139,
@@ -1785,7 +1785,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/139.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  140,
@@ -1798,7 +1798,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/140.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  141,
@@ -1810,7 +1810,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  142,
@@ -1823,7 +1823,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/142.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  143,
@@ -1836,7 +1836,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  144,
@@ -1849,7 +1849,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/144.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  145,
@@ -1862,7 +1862,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  146,
@@ -1875,7 +1875,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  147,
@@ -1888,7 +1888,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  148,
@@ -1901,7 +1901,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  149,
@@ -1914,7 +1914,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/149.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  150,
@@ -1926,7 +1926,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  151,
@@ -1939,7 +1939,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/151.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  152,
@@ -1952,7 +1952,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  153,
@@ -1964,7 +1964,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  154,
@@ -1977,7 +1977,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  155,
@@ -1990,7 +1990,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  156,
@@ -2003,7 +2003,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  157,
@@ -2016,7 +2016,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  158,
@@ -2029,7 +2029,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  159,
@@ -2042,7 +2042,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  160,
@@ -2055,7 +2055,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  161,
@@ -2068,7 +2068,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  162,
@@ -2081,7 +2081,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  163,
@@ -2094,7 +2094,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  164,
@@ -2106,7 +2106,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  165,
@@ -2119,7 +2119,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  166,
@@ -2132,7 +2132,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  167,
@@ -2145,7 +2145,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  168,
@@ -2158,7 +2158,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  169,
@@ -2170,7 +2170,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  170,
@@ -2183,7 +2183,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  171,
@@ -2196,7 +2196,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  172,
@@ -2209,7 +2209,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  173,
@@ -2221,7 +2221,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  174,
@@ -2234,7 +2234,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/174.jpg",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  175,
@@ -2247,7 +2247,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/175.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  176,
@@ -2260,7 +2260,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/176.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  177,
@@ -2273,7 +2273,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/177.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  178,
@@ -2286,7 +2286,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/178.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  179,
@@ -2298,7 +2298,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  180,
@@ -2311,7 +2311,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/180.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  181,
@@ -2324,7 +2324,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/181.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  182,
@@ -2337,7 +2337,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/182.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  183,
@@ -2350,7 +2350,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/183.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  184,
@@ -2363,7 +2363,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/184.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  185,
@@ -2376,7 +2376,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/185.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  186,
@@ -2388,7 +2388,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/186.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  187,
@@ -2401,7 +2401,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/187.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  188,
@@ -2414,7 +2414,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/188.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  189,
@@ -2427,7 +2427,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/189.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  190,
@@ -2440,7 +2440,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/190.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  191,
@@ -2453,7 +2453,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/191.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  192,
@@ -2466,7 +2466,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/192.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  193,
@@ -2479,7 +2479,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/193.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  194,
@@ -2492,7 +2492,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/194.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  195,
@@ -2505,7 +2505,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/195.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  196,
@@ -2518,7 +2518,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/196.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  197,
@@ -2531,7 +2531,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  198,
@@ -2544,7 +2544,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/198.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  199,
@@ -2556,7 +2556,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  200,
@@ -2569,7 +2569,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/200.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  201,
@@ -2582,7 +2582,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/201.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  202,
@@ -2595,7 +2595,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/202.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  203,
@@ -2608,7 +2608,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/203.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  204,
@@ -2621,7 +2621,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/204.jpg",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  205,
@@ -2634,7 +2634,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/205.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  206,
@@ -2647,7 +2647,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/206.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  207,
@@ -2660,7 +2660,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/207.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  208,
@@ -2673,7 +2673,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  "img/colectivo/208.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  209,
@@ -2686,7 +2686,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/209.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  210,
@@ -2699,7 +2699,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  "img/colectivo/210.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  211,
@@ -2712,7 +2712,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/211.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  212,
@@ -2724,7 +2724,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/212.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  213,
@@ -2736,7 +2736,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  "img/colectivo/213.png",
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  214,
@@ -2748,7 +2748,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  0,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  215,
@@ -2761,7 +2761,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  216,
@@ -2774,7 +2774,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  217,
@@ -2787,7 +2787,7 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  1,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     },
     {
         "id":  218,
@@ -2800,6 +2800,6 @@ const COLECTIVO_QUESTIONS = [
                     ],
         "correctAnswer":  2,
         "imageSrc":  null,
-        "explanation":  "EvaluaciÃ³n oficial para conductores de Transporte de Pasajeros (Clase D1)."
+        "explanation":  "Evaluación oficial para conductores de Transporte de Pasajeros (Clase D1)."
     }
 ];

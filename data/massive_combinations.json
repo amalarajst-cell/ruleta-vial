@@ -1,4 +1,4 @@
-﻿{
+{
     "7":  [
               {
                   "total_formed":  30,
@@ -3384,11 +3384,11 @@
                                                            "OLA",
                                                            "SOL"
                                                        ],
-                                          "9_letras":  "SEÃ‘ALIZO",
-                                          "6_letras":  "SEÃ‘AL"
+                                          "9_letras":  "SEÑALIZO",
+                                          "6_letras":  "SEÑAL"
                                       },
-                  "circle_letters":  "A E I L O S Z Ã ‘",
-                  "base":  "SEÃ‘ALIZO"
+                  "circle_letters":  "A E I L O S Z Ñ",
+                  "base":  "SEÑALIZO"
               },
               {
                   "total_formed":  10,
@@ -6274,16 +6274,16 @@
               {
                   "total_formed":  5,
                   "words_by_length":  {
-                                          "5_letras":  "DAÃ‘O",
+                                          "5_letras":  "DAÑO",
                                           "3_letras":  [
                                                            "ASO",
                                                            "DAS",
                                                            "DOS"
                                                        ],
-                                          "6_letras":  "DAÃ‘OS"
+                                          "6_letras":  "DAÑOS"
                                       },
-                  "circle_letters":  "A D O S Ã ‘",
-                  "base":  "DAÃ‘OS"
+                  "circle_letters":  "A D O S Ñ",
+                  "base":  "DAÑOS"
               },
               {
                   "total_formed":  5,
@@ -6346,7 +6346,7 @@
               {
                   "total_formed":  5,
                   "words_by_length":  {
-                                          "6_letras":  "SEÃ‘AL",
+                                          "6_letras":  "SEÑAL",
                                           "3_letras":  [
                                                            "ALE",
                                                            "LAS",
@@ -6354,8 +6354,8 @@
                                                            "LES"
                                                        ]
                                       },
-                  "circle_letters":  "A E L S Ã ‘",
-                  "base":  "SEÃ‘AL"
+                  "circle_letters":  "A E L S Ñ",
+                  "base":  "SEÑAL"
               },
               {
                   "total_formed":  5,
@@ -7231,7 +7231,7 @@
                {
                    "total_formed":  19,
                    "words_by_length":  {
-                                           "6_letras":  "SEÃ‘AL",
+                                           "6_letras":  "SEÑAL",
                                            "4_letras":  [
                                                             "AIRE",
                                                             "ALZA",
@@ -7241,7 +7241,7 @@
                                                             "RIAL",
                                                             "RIEL"
                                                         ],
-                                           "10_letras":  "SEÃ‘ALIZAR",
+                                           "10_letras":  "SEÑALIZAR",
                                            "3_letras":  [
                                                             "ALA",
                                                             "ALE",
@@ -7255,8 +7255,8 @@
                                                             "SER"
                                                         ]
                                        },
-                   "circle_letters":  "A A E I L R S Z Ã ‘",
-                   "base":  "SEÃ‘ALIZAR"
+                   "circle_letters":  "A A E I L R S Z Ñ",
+                   "base":  "SEÑALIZAR"
                },
                {
                    "total_formed":  18,
@@ -9104,8 +9104,8 @@
               {
                   "total_formed":  8,
                   "words_by_length":  {
-                                          "6_letras":  "PIÃ‘ON",
-                                          "8_letras":  "PIÃ‘ONES",
+                                          "6_letras":  "PIÑON",
+                                          "8_letras":  "PIÑONES",
                                           "4_letras":  [
                                                            "PESO",
                                                            "PISO"
@@ -9117,8 +9117,8 @@
                                                            "SON"
                                                        ]
                                       },
-                  "circle_letters":  "E I N O P S Ã ‘",
-                  "base":  "PIÃ‘ONES"
+                  "circle_letters":  "E I N O P S Ñ",
+                  "base":  "PIÑONES"
               },
               {
                   "total_formed":  8,
@@ -9264,17 +9264,17 @@
               {
                   "total_formed":  6,
                   "words_by_length":  {
-                                          "8_letras":  "SEÃ‘ALES",
+                                          "8_letras":  "SEÑALES",
                                           "3_letras":  [
                                                            "ALE",
                                                            "LAS",
                                                            "LEA",
                                                            "LES"
                                                        ],
-                                          "6_letras":  "SEÃ‘AL"
+                                          "6_letras":  "SEÑAL"
                                       },
-                  "circle_letters":  "A E E L S S Ã ‘",
-                  "base":  "SEÃ‘ALES"
+                  "circle_letters":  "A E E L S S Ñ",
+                  "base":  "SEÑALES"
               },
               {
                   "total_formed":  6,
