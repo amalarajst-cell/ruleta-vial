@@ -148,8 +148,9 @@
     .stat-moves { color: #b0bec5; }
     .stat-timer { color: var(--accent-green); }
     .stat-streak { color: var(--accent-orange); }
+    .stat-reaction { color: var(--accent-green); }
 
-    .btn-config-switch {
+    .btn-mode-switch {
       display: inline-flex;
       align-items: center;
       gap: 5px;
@@ -163,7 +164,7 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .btn-config-switch:hover {
+    .btn-mode-switch:hover {
       background: rgba(255, 122, 0, 0.25);
       transform: translateY(-1px);
     }
@@ -228,7 +229,9 @@
       box-shadow: 0 0 10px rgba(255, 122, 0, 0.5);
     }
 
-    /* ── TABLERO DE MEMORIA (CARTAS BOCA ABAJO) ── */
+    /* ======================================================== */
+    /* ── MODO 1: MEMOTEST CLÁSICO (CARTAS BOCA ABAJO) ── */
+    /* ======================================================== */
     .memo-board-container {
       display: flex;
       flex-direction: column;
@@ -390,7 +393,7 @@
       white-space: nowrap;
     }
 
-    /* Tarjeta de texto/definición (si se juega en modo mixto) */
+    /* Tarjeta de solo texto/definición (si se juega en modo mixto) */
     .memo-card-back.card-text-mode {
       background: linear-gradient(145deg, #1e262a, #161c1e);
       padding: 8px;
@@ -450,6 +453,304 @@
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-5px); }
       40%, 80% { transform: translateX(5px); }
+    }
+
+    /* ======================================================== */
+    /* ── MODO 2: REFLEJO Y REACCIÓN (ESTÍMULO RÁPIDO) ── */
+    /* ======================================================== */
+    .target-card-wrapper {
+      background: linear-gradient(180deg, #1d2326 0%, #171b1d 100%);
+      border: 2.5px solid var(--accent-orange);
+      border-radius: var(--card-radius);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 8px 28px rgba(255, 122, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.25s ease;
+      min-height: 220px;
+    }
+
+    .target-card-wrapper.ready-to-start {
+      border-color: #FF9100;
+      box-shadow: 0 0 32px rgba(255, 145, 0, 0.4);
+    }
+
+    .target-card-wrapper.waiting {
+      border-color: #526066;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .target-card-wrapper.ready-stimulus {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 32px rgba(255, 198, 0, 0.5);
+      animation: pulseGlow 0.5s ease;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(0.96); box-shadow: 0 0 40px rgba(255, 198, 0, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 24px rgba(255, 198, 0, 0.4); }
+    }
+
+    .target-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: rgba(255, 122, 0, 0.15);
+      color: #FFB366;
+      border: 1px solid rgba(255, 122, 0, 0.3);
+      margin-bottom: 8px;
+    }
+
+    .target-badge.waiting-badge {
+      background: rgba(140, 151, 154, 0.15);
+      color: #b0bac0;
+      border-color: rgba(140, 151, 154, 0.3);
+    }
+
+    .target-image-container {
+      width: 130px;
+      height: 130px;
+      max-width: 36vw;
+      max-height: 36vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .target-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-big-start {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #FF9100 0%, #FF5500 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255, 85, 0, 0.5);
+      animation: pulseBigBtn 1.2s infinite alternate;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 10px;
+    }
+    .btn-big-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.7);
+    }
+    .btn-big-start:active {
+      transform: scale(0.95);
+    }
+    .btn-big-start .lbl-play {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+    .btn-big-start .lbl-click-hint {
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFE0B2;
+    }
+
+    @keyframes pulseBigBtn {
+      0% { transform: scale(0.98); box-shadow: 0 4px 14px rgba(255, 85, 0, 0.35); }
+      100% { transform: scale(1.02); box-shadow: 0 8px 26px rgba(255, 145, 0, 0.65); }
+    }
+
+    .waiting-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--accent-yellow);
+    }
+    .waiting-radar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3.5px solid rgba(255, 198, 0, 0.2);
+      border-top-color: var(--accent-yellow);
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .waiting-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #e0e6ea;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      animation: blinkText 0.75s ease infinite alternate;
+    }
+    @keyframes blinkText {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    .target-info {
+      margin-top: 8px;
+      text-align: center;
+      min-height: 38px;
+    }
+    .target-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 16px;
+      color: #ffffff;
+      line-height: 1.2;
+      letter-spacing: 0.3px;
+    }
+    .target-category {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: capitalize;
+      margin-top: 2px;
+    }
+
+    .options-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #c2cbd0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .options-section-header span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+    }
+
+    .options-grid {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .options-grid.grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .options-grid.grid-6 { grid-template-columns: repeat(3, 1fr); }
+    .options-grid.grid-8 { grid-template-columns: repeat(4, 1fr); }
+    .options-grid.grid-12 { grid-template-columns: repeat(4, 1fr); }
+
+    .option-card {
+      background: #191f21;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--card-radius);
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .options-grid.grid-8 .option-card, .options-grid.grid-12 .option-card {
+      height: 95px;
+      padding: 6px;
+    }
+
+    .option-card:hover {
+      background: #21282b;
+      border-color: rgba(255, 198, 0, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+    .option-card:active {
+      transform: scale(0.96);
+    }
+
+    .option-card img {
+      width: 75px;
+      height: 75px;
+      max-width: 85%;
+      max-height: 85%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+      pointer-events: none;
+      transition: transform 0.2s ease;
+    }
+    .options-grid.grid-8 .option-card img, .options-grid.grid-12 .option-card img {
+      width: 58px;
+      height: 58px;
+    }
+
+    .option-card.disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .option-card.correct-flash {
+      background: rgba(0, 230, 118, 0.25) !important;
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 24px rgba(0, 230, 118, 0.7) !important;
+      transform: scale(1.05) !important;
+    }
+
+    .option-card.wrong-flash {
+      background: rgba(255, 68, 68, 0.25) !important;
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 0 24px rgba(255, 68, 68, 0.7) !important;
+      animation: shake 0.4s ease;
+    }
+
+    .card-enter {
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    .card-exit {
+      animation: popOut 0.25s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.6) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes popOut {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.4); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
     }
 
     /* ── BANNER EDUCATIVO FLOTANTE ── */
@@ -518,6 +819,14 @@
       color: #fff;
       line-height: 1.2;
     }
+    .feedback-time-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-yellow);
+      background: rgba(255, 198, 0, 0.15);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
     .feedback-desc {
       font-size: 12px;
       color: #d0d8dc;
@@ -549,10 +858,10 @@
       border: 2px solid rgba(255, 255, 255, 0.12);
       border-radius: 26px;
       width: 100%;
-      max-width: 520px;
+      max-width: 560px;
       max-height: 94vh;
       overflow-y: auto;
-      padding: 26px 22px;
+      padding: 24px 22px;
       text-align: center;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
       animation: popIn 0.3s ease;
@@ -562,20 +871,15 @@
       gap: 16px;
     }
 
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.85); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
     .modal-hero-icon {
       width: 76px;
       height: 76px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #00E676, #00B0FF);
+      background: linear-gradient(135deg, #FF7A00, #FFC600);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 24px rgba(0, 230, 118, 0.35);
+      box-shadow: 0 10px 24px rgba(255, 122, 0, 0.4);
       color: #000;
       font-size: 38px;
     }
@@ -592,6 +896,53 @@
       font-size: 13px;
       line-height: 1.5;
       color: #b0bac0;
+    }
+
+    /* Selector de modo dual en el modal */
+    .mode-select-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      margin-top: 4px;
+    }
+    .mode-tab-btn {
+      background: #202628;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 14px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .mode-tab-btn:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: #262e30;
+      transform: translateY(-2px);
+    }
+    .mode-tab-btn.active {
+      border-color: var(--accent-orange);
+      background: rgba(255, 122, 0, 0.15);
+      box-shadow: 0 0 20px rgba(255, 122, 0, 0.3);
+    }
+    .mode-tab-icon {
+      font-size: 28px;
+      color: var(--accent-orange);
+    }
+    .mode-tab-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+    .mode-tab-sub {
+      font-size: 10.5px;
+      color: #a0acb2;
+      line-height: 1.25;
     }
 
     .settings-group {
@@ -819,13 +1170,16 @@
 
     @media (max-width: 480px) {
       .mode-chips { grid-template-columns: repeat(2, 1fr); }
+      .mode-select-tabs { grid-template-columns: 1fr; }
       .memo-grid.grid-8, .memo-grid.grid-12, .memo-grid.grid-16 {
         grid-template-columns: repeat(3, 1fr);
       }
       .memo-grid.grid-20 {
         grid-template-columns: repeat(4, 1fr);
       }
+      .options-grid.grid-8, .options-grid.grid-12 { grid-template-columns: repeat(3, 1fr); }
       .header-main-title { font-size: 15px; }
+      .btn-mode-switch span:not(.material-symbols-outlined) { display: none; }
     }
   </style>
 </head>
@@ -839,33 +1193,42 @@
           <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <div class="header-titles">
-          <h1 class="header-main-title">Memotest Vial</h1>
-          <span class="header-sub">Juego de Memoria • Señales de Tránsito</span>
+          <h1 class="header-main-title" id="app-title-text">Memotest Vial</h1>
+          <span class="header-sub" id="app-sub-text">Señales de Tránsito</span>
         </div>
       </div>
       
       <div class="header-right">
         <div id="vialplay-header-user-badge"></div>
 
-        <!-- Botón de ajustes de dificultad -->
-        <button class="btn-config-switch" onclick="openStartModal()" title="Elegir Dificultad">
+        <!-- Botón para alternar modo / configuración rápida -->
+        <button class="btn-mode-switch" onclick="openStartModal()" title="Elegir Modo de Juego">
           <span class="material-symbols-outlined" style="font-size:16px;">tune</span>
-          <span>Dificultad</span>
+          <span id="txt-current-mode-btn">Modo Clásico</span>
         </button>
 
-        <!-- Métricas: Pares, Movimientos, Tiempo, Racha, Puntos -->
+        <!-- Métricas dinámicas según el modo -->
+        <!-- MODO CLÁSICO: Pares, Movimientos, Tiempo, Racha, Puntos -->
         <div class="stat-badge stat-pairs" id="badge-pairs" title="Pares Encontrados">
           <span class="material-symbols-outlined stat-icon">style</span>
-          <span id="txt-pairs">0 / 6</span>
+          <span id="txt-pairs">0 / 0</span>
         </div>
-        <div class="stat-badge stat-moves" id="badge-moves" title="Movimientos realizados">
+        <div class="stat-badge stat-moves" id="badge-moves" title="Movimientos">
           <span class="material-symbols-outlined stat-icon">touch_app</span>
           <span id="txt-moves">0</span>
         </div>
-        <div class="stat-badge stat-timer" id="badge-timer" title="Tiempo de juego">
+        <div class="stat-badge stat-timer" id="badge-timer" title="Tiempo">
           <span class="material-symbols-outlined stat-icon">timer</span>
           <span id="txt-timer">00:00</span>
         </div>
+
+        <!-- MODO REFLEJO: Última reacción -->
+        <div class="stat-badge stat-reaction" id="badge-reaction" style="display:none;" title="Último tiempo de reacción">
+          <span class="material-symbols-outlined stat-icon">bolt</span>
+          <span id="txt-last-reaction">-- ms</span>
+        </div>
+
+        <!-- Puntos y Racha (compartidos) -->
         <div class="stat-badge stat-score" title="Puntos de Experiencia (XP)">
           <span class="material-symbols-outlined stat-icon">military_tech</span>
           <span id="txt-score">0</span>
@@ -885,28 +1248,23 @@
   <!-- ── CONTENEDOR DE JUEGO ── -->
   <main class="game-container">
     
-    <!-- Barra superior de estado -->
+    <!-- Barra superior de estado (barra de progreso limpia sin textos encimados) -->
     <div class="status-row">
-      <div class="mode-tag-pill">
-        <span class="material-symbols-outlined" style="font-size:15px;">style</span>
-        <span>Cartas de Memoria</span>
-      </div>
-      <div class="round-indicator" id="top-round-indicator">
-        Pares Encontrados: <span id="txt-round-desc">0 / 6</span>
-      </div>
-      <div class="progress-track">
+      <div class="progress-track" style="width:100%;">
         <div class="progress-fill" id="bar-progress"></div>
       </div>
     </div>
 
-    <!-- TABLERO: MEMOTEST (CARTAS BOCA ABAJO) -->
+    <!-- ======================================================== -->
+    <!-- TABLERO A: MODO MEMOTEST CLÁSICO (CARTAS BOCA ABAJO)     -->
+    <!-- ======================================================== -->
     <section class="memo-board-container" id="board-classic">
       <div class="memo-hint-banner">
         <div class="hint-text">
           <span class="material-symbols-outlined">lightbulb</span>
           <span id="memo-instruction-text">Da vuelta 2 cartas y encontrá las señales de tránsito iguales.</span>
         </div>
-        <button class="btn-icon" style="width:30px;height:30px;border-radius:8px;" onclick="restartGame()" title="Reiniciar tablero">
+        <button class="btn-icon" style="width:30px;height:30px;border-radius:8px;" onclick="restartCurrentGame()" title="Reiniciar tablero">
           <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span>
         </button>
       </div>
@@ -915,6 +1273,53 @@
       <div class="memo-grid grid-12" id="classic-memo-grid">
         <!-- Renderizado dinámicamente con las tarjetas -->
       </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TABLERO B: MODO REFLEJO / REACCIÓN                       -->
+    <!-- ======================================================== -->
+    <section id="board-reflex" style="display:none; flex-direction:column; gap:14px;">
+      
+      <!-- Señal objetivo -->
+      <section class="target-card-wrapper ready-to-start" id="target-wrapper">
+        <div class="target-badge" id="target-badge">
+          <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
+          <span id="target-badge-text">Preparado para jugar</span>
+        </div>
+
+        <div class="target-image-container" id="target-box">
+          <button class="btn-big-start" id="btn-play-trigger" onclick="handleParticipantClickStart()">
+            <span class="material-symbols-outlined" style="font-size:36px;">play_circle</span>
+            <span class="lbl-play">COMENZAR</span>
+            <span class="lbl-click-hint">Tocá para empezar</span>
+          </button>
+
+          <div class="waiting-indicator" id="waiting-box" style="display:none;">
+            <div class="waiting-radar"></div>
+            <span class="waiting-text">PREPARATE...</span>
+          </div>
+
+          <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
+        </div>
+
+        <div class="target-info">
+          <div class="target-title" id="target-name">Tocá COMENZAR cuando estés listo</div>
+          <div class="target-category" id="target-cat">Al tocar, aguardá 1-2s y reaccioná tan pronto aparezca la señal</div>
+        </div>
+      </section>
+
+      <!-- Opciones por debajo -->
+      <section style="display:flex;flex-direction:column;gap:8px;">
+        <div class="options-section-header">
+          <span><span class="material-symbols-outlined" style="font-size:16px;">touch_app</span> Tocá la señal que corresponda</span>
+          <span id="txt-diff-badge" style="font-size:11px;color:var(--text-muted);">Dificultad: 4 Opciones</span>
+        </div>
+
+        <div class="options-grid grid-4" id="options-grid">
+          <!-- Generado dinámicamente -->
+        </div>
+      </section>
+
     </section>
 
   </main>
@@ -927,60 +1332,101 @@
     <div class="feedback-text">
       <div class="feedback-title-row">
         <div class="feedback-title" id="feedback-title">¡Correcto!</div>
+        <div class="feedback-time-tag" id="feedback-time">420 ms</div>
       </div>
       <div class="feedback-desc" id="feedback-desc">Descripción oficial de la norma vial.</div>
     </div>
   </div>
 
-  <!-- ── MODAL DE CONFIGURACIÓN INICIAL ── -->
+  <!-- ── MODAL DE CONFIGURACIÓN INICIAL (HERO MODAL DUAL) ── -->
   <div class="overlay-screen" id="modal-start">
     <div class="modal-card">
-      <div class="modal-hero-icon">
-        <span class="material-symbols-outlined">style</span>
+      <div class="modal-hero-icon" id="modal-hero-badge">
+        <span class="material-symbols-outlined" id="modal-hero-icon-name">style</span>
       </div>
 
       <div>
         <h2 class="modal-title">MEMOTEST VIAL</h2>
         <p class="modal-desc" style="margin-top:4px;">
-          Poné a prueba tu memoria visual y aprendé las señales de tránsito encontrando los pares de cartas.
+          Elegí la modalidad de juego para entrenar tu memoria y reflejos con las señales oficiales de tránsito.
         </p>
       </div>
 
-      <div style="width:100%; display:flex; flex-direction:column; gap:12px;">
+      <!-- SELECTOR DE MODALIDAD DUAL -->
+      <div class="mode-select-tabs">
+        <div class="mode-tab-btn active" id="tab-mode-classic" onclick="selectGameMode('classic')">
+          <span class="material-symbols-outlined mode-tab-icon">style</span>
+          <div class="mode-tab-title">Memotest Clásico</div>
+          <div class="mode-tab-sub">Dar vuelta cartas boca abajo y encontrar los pares de señales</div>
+        </div>
+
+        <div class="mode-tab-btn" id="tab-mode-reflex" onclick="selectGameMode('reflex')">
+          <span class="material-symbols-outlined mode-tab-icon">speed</span>
+          <div class="mode-tab-title">Reflejo y Reacción</div>
+          <div class="mode-tab-sub">Identificar la señal objetivo con la mayor velocidad posible</div>
+        </div>
+      </div>
+
+      <!-- ================= CONFIGURACIÓN MODO CLÁSICO ================= -->
+      <div id="config-classic-group" style="width:100%; display:flex; flex-direction:column; gap:12px;">
         <!-- Dificultad (pares) -->
         <div class="settings-group">
           <div class="settings-label">Cantidad de Cartas / Dificultad</div>
           <div class="mode-chips">
-            <div class="mode-chip" id="chip-memo-8" onclick="setDifficulty(8, this)">8 Cartas (4 Pares)</div>
-            <div class="mode-chip active" id="chip-memo-12" onclick="setDifficulty(12, this)">12 Cartas (6 Pares)</div>
-            <div class="mode-chip" id="chip-memo-16" onclick="setDifficulty(16, this)">16 Cartas (8 Pares)</div>
-            <div class="mode-chip" id="chip-memo-20" onclick="setDifficulty(20, this)">20 Cartas (10 Pares)</div>
+            <div class="mode-chip" id="chip-memo-8" onclick="setClassicDifficulty(8, this)">8 Cartas (4 Pares)</div>
+            <div class="mode-chip active" id="chip-memo-12" onclick="setClassicDifficulty(12, this)">12 Cartas (6 Pares)</div>
+            <div class="mode-chip" id="chip-memo-16" onclick="setClassicDifficulty(16, this)">16 Cartas (8 Pares)</div>
+            <div class="mode-chip" id="chip-memo-20" onclick="setClassicDifficulty(20, this)">20 Cartas (10 Pares)</div>
           </div>
         </div>
 
         <!-- Tipo de emparejamiento -->
         <div class="settings-group">
-          <div class="settings-label">Modo de Emparejamiento</div>
+          <div class="settings-label">Tipo de Emparejamiento</div>
           <div class="mode-chips" style="grid-template-columns: 1fr 1fr;">
             <div class="mode-chip active" id="chip-pair-images" onclick="setPairingMode('images', this)">🖼️ Señal con Señal</div>
             <div class="mode-chip" id="chip-pair-mixed" onclick="setPairingMode('mixed', this)">📖 Señal + Significado</div>
           </div>
         </div>
+      </div>
 
-        <!-- Categoría de Señales -->
+      <!-- ================= CONFIGURACIÓN MODO REFLEJO ================= -->
+      <div id="config-reflex-group" style="width:100%; display:none; flex-direction:column; gap:12px;">
+        <!-- Dificultad (opciones abajo) -->
         <div class="settings-group">
-          <div class="settings-label">Categoría de Señales Viales</div>
-          <select class="category-select" id="select-category" onchange="updateCategoryFilter(this.value)">
-            <option value="all">Todas las señales viales (60 oficiales)</option>
-            <option value="reglamentarias">Reglamentarias (Prohibición / Obligación)</option>
-            <option value="preventivas">Preventivas (Advertencia de peligro)</option>
-            <option value="informativas">Informativas (Servicios y orientación)</option>
-            <option value="transitorias">Transitorias y Horizontales (Obras y demarcación)</option>
-          </select>
+          <div class="settings-label">Dificultad (Opciones por debajo)</div>
+          <div class="mode-chips">
+            <div class="mode-chip active" id="chip-diff-4" onclick="setOptionsCount(4, this)">Fácil (4)</div>
+            <div class="mode-chip" id="chip-diff-6" onclick="setOptionsCount(6, this)">Medio (6)</div>
+            <div class="mode-chip" id="chip-diff-8" onclick="setOptionsCount(8, this)">Difícil (8)</div>
+            <div class="mode-chip" id="chip-diff-12" onclick="setOptionsCount(12, this)">Extremo (12)</div>
+          </div>
+        </div>
+
+        <!-- Rondas -->
+        <div class="settings-group">
+          <div class="settings-label">Cantidad de Rondas</div>
+          <div class="mode-chips" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="mode-chip active" id="chip-round-10" onclick="setRoundsCount(10, this)">10 Rondas</div>
+            <div class="mode-chip" id="chip-round-15" onclick="setRoundsCount(15, this)">15 Rondas</div>
+            <div class="mode-chip" id="chip-round-20" onclick="setRoundsCount(20, this)">20 Rondas</div>
+          </div>
         </div>
       </div>
 
-      <button class="btn-action-primary" onclick="startGame()">
+      <!-- Categoría de Señales (Compartida) -->
+      <div class="settings-group">
+        <div class="settings-label">Categoría de Señales Viales</div>
+        <select class="category-select" id="select-category" onchange="updateCategoryFilter(this.value)">
+          <option value="all">Todas las señales viales (60 oficiales)</option>
+          <option value="reglamentarias">Reglamentarias (Prohibición / Obligación)</option>
+          <option value="preventivas">Preventivas (Advertencia de peligro)</option>
+          <option value="informativas">Informativas (Servicios y orientación)</option>
+          <option value="transitorias">Transitorias y Horizontales (Obras y demarcación)</option>
+        </select>
+      </div>
+
+      <button class="btn-action-primary" onclick="startSelectedGame()">
         <span class="material-symbols-outlined">play_arrow</span>
         COMENZAR PARTIDA
       </button>
@@ -994,7 +1440,7 @@
   <!-- ── MODAL DE RESULTADOS / VICTORIA ── -->
   <div class="overlay-screen" id="modal-results" style="display:none;">
     <div class="modal-card">
-      <div class="modal-hero-icon" id="results-icon">
+      <div class="modal-hero-icon" id="results-icon" style="background:linear-gradient(135deg, #00E676, #00B0FF);">
         <span class="material-symbols-outlined" id="results-medal">military_tech</span>
       </div>
 
@@ -1006,7 +1452,7 @@
 
       <div>
         <h2 class="modal-title" id="results-title">¡MEMORIA VIAL BRILLANTE!</h2>
-        <p class="modal-desc" id="results-subtitle">Completaste el Memotest y encontraste todas las señales.</p>
+        <p class="modal-desc" id="results-subtitle">Completaste el Memotest y reconociste todas las señales.</p>
       </div>
 
       <div class="admin-sync-tag">
@@ -1021,15 +1467,15 @@
         </div>
         <div class="res-stat-card">
           <div class="res-stat-val" id="res-main-stat">00:00</div>
-          <div class="res-stat-lbl">Tiempo Total</div>
+          <div class="res-stat-lbl" id="res-main-lbl">Tiempo Total</div>
         </div>
         <div class="res-stat-card">
           <div class="res-stat-val" id="res-moves-stat">0</div>
-          <div class="res-stat-lbl">Movimientos / Precisión</div>
+          <div class="res-stat-lbl" id="res-moves-lbl">Movimientos / Precisión</div>
         </div>
         <div class="res-stat-card">
           <div class="res-stat-val" id="res-streak-stat">0</div>
-          <div class="res-stat-lbl">Racha Máxima</div>
+          <div class="res-stat-lbl" id="res-streak-lbl">Racha Máxima</div>
         </div>
       </div>
 
@@ -1044,13 +1490,13 @@
         </div>
       </div>
 
-      <button class="btn-action-primary" onclick="restartGame()">
+      <button class="btn-action-primary" onclick="restartCurrentGame()">
         <span class="material-symbols-outlined">replay</span>
         JUGAR OTRA VEZ
       </button>
 
       <button class="btn-action-secondary" onclick="openStartModal()">
-        Cambiar Dificultad o Señales
+        Cambiar Modo o Dificultad
       </button>
 
       <button class="btn-action-secondary" onclick="window.location.href='juegos.html'">
@@ -1059,7 +1505,7 @@
     </div>
   </div>
 
-  <!-- ── SCRIPT DE LÓGICA DEL MEMOTEST ── -->
+  <!-- ── SCRIPT DE LÓGICA DEL JUEGO DUAL ── -->
   <script>
     const soundSys = new SoundSystem();
 
@@ -1068,46 +1514,115 @@
       document.getElementById('sound-icon').textContent = isEnabled ? 'volume_up' : 'volume_off';
     }
 
+    // Modalidad activa: 'classic' (Memotest de cartas boca abajo) o 'reflex' (Reflejo y reacción)
+    let selectedGameMode = 'classic';
     let currentCategory = 'all';
-    let totalCards = 12; // 8, 12, 16 o 20 cartas
-    let pairingMode = 'images'; // 'images' o 'mixed'
-    let cards = [];
+
+    // ── CONFIGURACIÓN MODO CLÁSICO ──
+    let classicTotalCards = 12; // 8, 12, 16 o 20 cartas
+    let classicPairingMode = 'images'; // 'images' (señal con señal) o 'mixed' (señal con texto)
+    let classicCards = [];
     let flippedCards = [];
     let matchedPairsCount = 0;
     let totalPairsNeeded = 6;
-    let moves = 0;
-    let timerInterval = null;
-    let secondsElapsed = 0;
+    let classicMoves = 0;
+    let classicTimerInterval = null;
+    let classicSecondsElapsed = 0;
     let isBoardLocked = false;
     let discoveredSignalsList = [];
-    let roundDetails = [];
 
+    // ── CONFIGURACIÓN MODO REFLEJO ──
+    let optionsCount = 4;
+    let maxRounds = 10;
+    let activeSignalsPool = [];
+    let currentRound = 0;
+    let reactionTimesMs = [];
+    let roundDetails = [];
+    let currentTarget = null;
+    let currentOptions = [];
+    let isTargetVisible = false;
+    let isProcessing = false;
+    let delayTimer = null;
+    let reflexGameHasStarted = false;
+    let targetAppearedTime = 0;
+
+    // ── MÉTRICAS COMPARTIDAS ──
     let score = 0;
     let streak = 0;
     let maxStreak = 0;
+    let totalHits = 0;
+    let totalMisses = 0;
     let feedbackTimeout = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       const soundEnabled = soundSys.enabled;
       document.getElementById('sound-icon').textContent = soundEnabled ? 'volume_up' : 'volume_off';
-      initGame();
+
+      // Revisar si viene parámetro en URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlMode = urlParams.get('mode');
+      if (urlMode === 'reflex') {
+        selectGameMode('reflex');
+      } else {
+        selectGameMode('classic');
+      }
     });
 
     function openStartModal() {
-      if (timerInterval) clearInterval(timerInterval);
+      if (classicTimerInterval) clearInterval(classicTimerInterval);
+      if (delayTimer) clearTimeout(delayTimer);
       document.getElementById('modal-results').style.display = 'none';
       document.getElementById('modal-start').style.display = 'flex';
     }
 
-    function setDifficulty(count, chipEl) {
-      totalCards = count;
-      document.querySelectorAll('#modal-start .mode-chips:first-of-type .mode-chip').forEach(c => c.classList.remove('active'));
+    function selectGameMode(mode) {
+      selectedGameMode = mode;
+      
+      const tabClassic = document.getElementById('tab-mode-classic');
+      const tabReflex = document.getElementById('tab-mode-reflex');
+      const configClassic = document.getElementById('config-classic-group');
+      const configReflex = document.getElementById('config-reflex-group');
+      const modalBadge = document.getElementById('modal-hero-badge');
+      const modalIcon = document.getElementById('modal-hero-icon-name');
+
+      if (mode === 'classic') {
+        tabClassic.classList.add('active');
+        tabReflex.classList.remove('active');
+        configClassic.style.display = 'flex';
+        configReflex.style.display = 'none';
+        modalBadge.style.background = 'linear-gradient(135deg, #00E676, #00B0FF)';
+        modalIcon.textContent = 'style';
+      } else {
+        tabClassic.classList.remove('active');
+        tabReflex.classList.add('active');
+        configClassic.style.display = 'none';
+        configReflex.style.display = 'flex';
+        modalBadge.style.background = 'linear-gradient(135deg, #FF7A00, #FFC600)';
+        modalIcon.textContent = 'speed';
+      }
+    }
+
+    function setClassicDifficulty(count, chipEl) {
+      classicTotalCards = count;
+      document.querySelectorAll('#config-classic-group .mode-chips:first-of-type .mode-chip').forEach(c => c.classList.remove('active'));
       chipEl.classList.add('active');
     }
 
     function setPairingMode(mode, chipEl) {
-      pairingMode = mode;
-      document.querySelectorAll('#modal-start .mode-chips:nth-of-type(2) .mode-chip').forEach(c => c.classList.remove('active'));
+      classicPairingMode = mode;
+      document.querySelectorAll('#config-classic-group .mode-chips:nth-of-type(2) .mode-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+    }
+
+    function setOptionsCount(count, chipEl) {
+      optionsCount = count;
+      document.querySelectorAll('#config-reflex-group .mode-chips:first-of-type .mode-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+    }
+
+    function setRoundsCount(rounds, chipEl) {
+      maxRounds = rounds;
+      document.querySelectorAll('#config-reflex-group .mode-chips:nth-of-type(2) .mode-chip').forEach(c => c.classList.remove('active'));
       chipEl.classList.add('active');
     }
 
@@ -1127,74 +1642,97 @@
       return filtered.length > 4 ? filtered : SENALES_DATA;
     }
 
-    function startGame() {
+    function startSelectedGame() {
       document.getElementById('modal-start').style.display = 'none';
       document.getElementById('modal-results').style.display = 'none';
-      initGame();
+
+      if (selectedGameMode === 'classic') {
+        initClassicMemotestGame();
+      } else {
+        initReflexGame();
+      }
     }
 
-    function restartGame() {
-      document.getElementById('modal-results').style.display = 'none';
-      document.getElementById('modal-start').style.display = 'none';
-      initGame();
+    function restartCurrentGame() {
+      if (selectedGameMode === 'classic') {
+        initClassicMemotestGame();
+      } else {
+        initReflexGame();
+      }
     }
 
-    function initGame() {
+    // =========================================================================
+    //  MODO 1: LÓGICA DEL MEMOTEST CLÁSICO (CARTAS BOCA ABAJO)
+    // =========================================================================
+    function initClassicMemotestGame() {
+      // Configurar vista para clásico
+      document.getElementById('board-classic').style.display = 'flex';
+      document.getElementById('board-reflex').style.display = 'none';
+      document.getElementById('badge-reaction').style.display = 'none';
+      document.getElementById('badge-pairs').style.display = 'flex';
+      document.getElementById('badge-moves').style.display = 'flex';
+      document.getElementById('badge-timer').style.display = 'flex';
+
+      document.getElementById('app-title-text').textContent = 'Memotest Vial';
+      document.getElementById('app-sub-text').textContent = 'Señales de Tránsito';
+      document.getElementById('txt-current-mode-btn').textContent = 'Modo Clásico';
+
+      // Reiniciar métricas
       score = 0;
       streak = 0;
       maxStreak = 0;
-      moves = 0;
+      classicMoves = 0;
       matchedPairsCount = 0;
-      totalPairsNeeded = totalCards / 2;
+      totalPairsNeeded = classicTotalCards / 2;
       flippedCards = [];
       isBoardLocked = false;
       discoveredSignalsList = [];
       roundDetails = [];
 
       // Cronómetro
-      if (timerInterval) clearInterval(timerInterval);
-      secondsElapsed = 0;
+      if (classicTimerInterval) clearInterval(classicTimerInterval);
+      classicSecondsElapsed = 0;
       document.getElementById('txt-timer').textContent = '00:00';
-      timerInterval = setInterval(() => {
-        secondsElapsed++;
-        const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-        const secs = String(secondsElapsed % 60).padStart(2, '0');
+      classicTimerInterval = setInterval(() => {
+        classicSecondsElapsed++;
+        const mins = String(Math.floor(classicSecondsElapsed / 60)).padStart(2, '0');
+        const secs = String(classicSecondsElapsed % 60).padStart(2, '0');
         document.getElementById('txt-timer').textContent = `${mins}:${secs}`;
       }, 1000);
 
-      updateStatsUI();
+      updateClassicStatsUI();
 
-      // Seleccionar señales aleatorias para los pares
+      // Preparar pool de señales
       const pool = shuffleArray([...getFilteredSignalsPool()]);
       const chosenSignals = pool.slice(0, totalPairsNeeded);
 
-      // Crear las cartas
-      cards = [];
+      // Crear cartas
+      classicCards = [];
       chosenSignals.forEach((signal, idx) => {
-        if (pairingMode === 'mixed') {
+        if (classicPairingMode === 'mixed') {
           // Carta A: Imagen de la señal
-          cards.push({
+          classicCards.push({
             id: `card_${idx}_img`,
             pairId: signal.id,
             signal: signal,
             type: 'image'
           });
           // Carta B: Texto y definición de la señal
-          cards.push({
+          classicCards.push({
             id: `card_${idx}_text`,
             pairId: signal.id,
             signal: signal,
             type: 'text'
           });
         } else {
-          // Señal con Señal (ambas con imagen oficial)
-          cards.push({
+          // Señal con Señal (Ambas imágenes)
+          classicCards.push({
             id: `card_${idx}_a`,
             pairId: signal.id,
             signal: signal,
             type: 'image'
           });
-          cards.push({
+          classicCards.push({
             id: `card_${idx}_b`,
             pairId: signal.id,
             signal: signal,
@@ -1203,15 +1741,15 @@
         }
       });
 
-      // Mezclar las cartas
-      cards = shuffleArray(cards);
+      // Mezclar las cartas en el tablero
+      classicCards = shuffleArray(classicCards);
 
-      // Renderizar tablero de memoria
+      // Renderizar tablero
       const grid = document.getElementById('classic-memo-grid');
-      grid.className = `memo-grid grid-${totalCards}`;
+      grid.className = `memo-grid grid-${classicTotalCards}`;
       grid.innerHTML = '';
 
-      cards.forEach((cardData, index) => {
+      classicCards.forEach((cardData, index) => {
         const cardEl = document.createElement('div');
         cardEl.className = 'memo-card';
         cardEl.id = `memo-card-${index}`;
@@ -1222,7 +1760,7 @@
         const innerEl = document.createElement('div');
         innerEl.className = 'memo-card-inner';
 
-        // Dorso (boca abajo)
+        // 1. Dorso (boca abajo)
         const frontEl = document.createElement('div');
         frontEl.className = 'memo-card-front';
         frontEl.innerHTML = `
@@ -1230,7 +1768,7 @@
           <span class="card-front-brand">VIAL</span>
         `;
 
-        // Cara descubierta (boca arriba)
+        // 2. Cara (boca arriba)
         const backEl = document.createElement('div');
         backEl.className = 'memo-card-back';
 
@@ -1252,17 +1790,17 @@
         innerEl.appendChild(backEl);
         cardEl.appendChild(innerEl);
 
-        cardEl.onclick = () => handleCardFlip(index);
+        cardEl.onclick = () => handleClassicCardFlip(index);
         grid.appendChild(cardEl);
       });
 
       document.getElementById('memo-instruction-text').textContent = 
-        pairingMode === 'mixed' 
+        classicPairingMode === 'mixed' 
           ? 'Da vuelta 2 cartas y emparejá la señal gráfica con su significado vial.' 
           : 'Da vuelta 2 cartas y encontrá las parejas de señales iguales.';
     }
 
-    function handleCardFlip(cardIndex) {
+    function handleClassicCardFlip(cardIndex) {
       if (isBoardLocked) return;
 
       const cardEl = document.getElementById(`memo-card-${cardIndex}`);
@@ -1273,26 +1811,28 @@
       // Voltear carta
       soundSys.playTick();
       cardEl.classList.add('flipped');
-      flippedCards.push({ index: cardIndex, data: cards[cardIndex] });
+      flippedCards.push({ index: cardIndex, data: classicCards[cardIndex] });
 
-      // Si hay 2 cartas dadas vuelta
+      // Si se dieron vuelta 2 cartas: evaluar coincidencia
       if (flippedCards.length === 2) {
-        moves++;
+        classicMoves++;
         isBoardLocked = true;
-        updateStatsUI();
+        updateClassicStatsUI();
 
         const [first, second] = flippedCards;
         const isMatch = first.data.pairId === second.data.pairId;
 
         if (isMatch) {
-          handleMatch(first, second);
+          // ¡Pareja encontrada!
+          handleClassicMatch(first, second);
         } else {
-          handleMismatch(first, second);
+          // No coinciden
+          handleClassicMismatch(first, second);
         }
       }
     }
 
-    function handleMatch(first, second) {
+    function handleClassicMatch(first, second) {
       soundSys.playCorrect();
       streak++;
       if (streak > maxStreak) maxStreak = streak;
@@ -1307,38 +1847,39 @@
       const matchedSignal = first.data.signal;
       discoveredSignalsList.push(matchedSignal);
 
-      // Puntos
-      const timeBonus = Math.max(0, 100 - secondsElapsed);
+      // Puntos: base 150 + bonus racha + bonus velocidad
+      const timeBonus = Math.max(0, 100 - classicSecondsElapsed);
       const pairPoints = 150 + (streak * 30) + timeBonus;
       score += pairPoints;
 
+      // Registrar detalle
       roundDetails.push({
         pair: matchedSignal.name,
         category: matchedSignal.category,
-        moves: moves,
-        timeSeconds: secondsElapsed,
+        moves: classicMoves,
+        timeSeconds: classicSecondsElapsed,
         points: pairPoints
       });
 
-      showFeedback(true, `¡Pareja! ${matchedSignal.name}`, matchedSignal.description);
-      updateStatsUI();
+      showFeedback(true, `¡Pareja! ${matchedSignal.name}`, matchedSignal.description, 0);
+      updateClassicStatsUI();
 
       flippedCards = [];
       isBoardLocked = false;
 
-      // Victoria
+      // ¿Completó todo el tablero?
       if (matchedPairsCount >= totalPairsNeeded) {
-        if (timerInterval) clearInterval(timerInterval);
+        if (classicTimerInterval) clearInterval(classicTimerInterval);
         setTimeout(() => {
-          endGame();
+          endClassicGame();
         }, 600);
       }
     }
 
-    function handleMismatch(first, second) {
+    function handleClassicMismatch(first, second) {
       soundSys.playIncorrect();
       streak = 0;
-      updateStatsUI();
+      updateClassicStatsUI();
 
       const cardEl1 = document.getElementById(`memo-card-${first.index}`);
       const cardEl2 = document.getElementById(`memo-card-${second.index}`);
@@ -1354,33 +1895,34 @@
       }, 900);
     }
 
-    function updateStatsUI() {
+    function updateClassicStatsUI() {
       document.getElementById('txt-pairs').textContent = `${matchedPairsCount} / ${totalPairsNeeded}`;
-      document.getElementById('txt-moves').textContent = moves;
+      document.getElementById('txt-moves').textContent = classicMoves;
       document.getElementById('txt-score').textContent = score;
       document.getElementById('txt-streak').textContent = streak;
 
-      document.getElementById('txt-round-desc').textContent = `${matchedPairsCount} / ${totalPairsNeeded}`;
       const pct = Math.round((matchedPairsCount / totalPairsNeeded) * 100);
       document.getElementById('bar-progress').style.width = `${pct}%`;
     }
 
-    function endGame() {
+    function endClassicGame() {
       soundSys.playFanfare();
 
-      const accuracy = moves > 0 ? Math.round((totalPairsNeeded / moves) * 100) : 100;
-      const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-      const secs = String(secondsElapsed % 60).padStart(2, '0');
+      const accuracy = classicMoves > 0 ? Math.round((totalPairsNeeded / classicMoves) * 100) : 100;
+      const mins = String(Math.floor(classicSecondsElapsed / 60)).padStart(2, '0');
+      const secs = String(classicSecondsElapsed % 60).padStart(2, '0');
       const timeFormatted = `${mins}:${secs}`;
 
+      // Cálculo de estrellas (1 a 3)
       let stars = 3;
       const idealMoves = totalPairsNeeded * 1.5;
-      if (moves > idealMoves * 1.6 || secondsElapsed > totalPairsNeeded * 15) {
+      if (classicMoves > idealMoves * 1.6 || classicSecondsElapsed > totalPairsNeeded * 15) {
         stars = 1;
-      } else if (moves > idealMoves * 1.2 || secondsElapsed > totalPairsNeeded * 10) {
+      } else if (classicMoves > idealMoves * 1.2 || classicSecondsElapsed > totalPairsNeeded * 10) {
         stars = 2;
       }
 
+      // Renderizar estrellas
       const starsContainer = document.getElementById('results-stars-container');
       starsContainer.innerHTML = '';
       for (let i = 1; i <= 3; i++) {
@@ -1390,27 +1932,42 @@
         starsContainer.appendChild(star);
       }
 
+      // Título y feedback
       const titleEl = document.getElementById('results-title');
       const subEl = document.getElementById('results-subtitle');
       if (stars === 3) {
         titleEl.textContent = '¡MEMORIA VIAL BRILLANTE!';
-        subEl.textContent = `¡Excelente! Encontraste todos los pares en apenas ${moves} movimientos y ${timeFormatted}.`;
+        subEl.textContent = `¡Excelente! Encontraste todos los pares en apenas ${classicMoves} movimientos y ${timeFormatted}.`;
       } else if (stars === 2) {
         titleEl.textContent = '¡MUY BUEN DESEMPEÑO!';
-        subEl.textContent = `Buen trabajo visualizando las señales en ${moves} movimientos.`;
+        subEl.textContent = `Buen trabajo visualizando las señales en ${classicMoves} movimientos.`;
       } else {
         titleEl.textContent = '¡COMPLETASTE EL TABLERO!';
         subEl.textContent = `¡Bien completado! Seguí entrenando para resolverlo en menos intentos.`;
       }
 
+      // Estadísticas
       document.getElementById('res-score').textContent = score;
       document.getElementById('res-main-stat').textContent = timeFormatted;
-      document.getElementById('res-moves-stat').textContent = `${moves} mov. (${accuracy}%)`;
+      document.getElementById('res-main-lbl').textContent = 'Tiempo Total';
+      document.getElementById('res-moves-stat').textContent = `${classicMoves} mov. (${accuracy}%)`;
+      document.getElementById('res-moves-lbl').textContent = 'Movimientos / Precisión';
       document.getElementById('res-streak-stat').textContent = `${maxStreak} seguidos`;
+      document.getElementById('res-streak-lbl').textContent = 'Racha Máxima';
 
-      // Lista de señales aprendidas
+      // Lista de señales descubiertas
+      renderDiscoveredSignsList();
+
+      // Sincronizar con Cloud Sync y Leaderboard
+      syncSessionWithCloud('Memotest Vial (Clásico)', classicSecondsElapsed, `${matchedPairsCount}/${classicMoves} (${accuracy}%)`);
+
+      document.getElementById('modal-results').style.display = 'flex';
+    }
+
+    function renderDiscoveredSignsList() {
       const listContainer = document.getElementById('discovered-signs-list');
       listContainer.innerHTML = '';
+
       discoveredSignalsList.forEach(sig => {
         const item = document.createElement('div');
         item.className = 'discovered-sign-item';
@@ -1423,41 +1980,439 @@
         `;
         listContainer.appendChild(item);
       });
+    }
 
-      // Sincronizar con Cloud Sync y Leaderboard
-      try {
-        if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
-          window.VialCloudSync.syncGameSession({
-            game: 'memotest',
-            category: 'Memotest Vial',
-            score: score,
-            time: secondsElapsed,
-            accuracy: `${matchedPairsCount}/${moves} (${accuracy}%)`,
-            details: roundDetails
-          });
-        }
-      } catch (err) {
-        console.warn('Error al sincronizar con cloud sync:', err);
+    // =========================================================================
+    //  MODO 2: LÓGICA DEL REFLEJO Y REACCIÓN (ESTÍMULO RÁPIDO)
+    // =========================================================================
+    function initReflexGame() {
+      document.getElementById('board-classic').style.display = 'none';
+      document.getElementById('board-reflex').style.display = 'flex';
+      document.getElementById('badge-pairs').style.display = 'none';
+      document.getElementById('badge-moves').style.display = 'none';
+      document.getElementById('badge-timer').style.display = 'none';
+      document.getElementById('badge-reaction').style.display = 'flex';
+
+      document.getElementById('app-title-text').textContent = 'Memotest Vial';
+      document.getElementById('app-sub-text').textContent = 'Señales de Tránsito';
+      document.getElementById('txt-current-mode-btn').textContent = 'Modo Reflejo';
+
+      // Filtrar señales
+      let filtered = getFilteredSignalsPool();
+      if (filtered.length < optionsCount + 2) {
+        filtered = SENALES_DATA;
       }
+      activeSignalsPool = shuffleArray([...filtered]);
+
+      // Reiniciar métricas
+      currentRound = 0;
+      score = 0;
+      streak = 0;
+      maxStreak = 0;
+      totalHits = 0;
+      totalMisses = 0;
+      reactionTimesMs = [];
+      roundDetails = [];
+      discoveredSignalsList = [];
+      isProcessing = false;
+      isTargetVisible = false;
+      reflexGameHasStarted = false;
+
+      // Configurar grilla de opciones según dificultad
+      setupOptionsGridUI(optionsCount);
+
+      // Cargar N opciones iniciales
+      currentOptions = [];
+      for (let i = 0; i < optionsCount; i++) {
+        if (activeSignalsPool.length > 0) {
+          currentOptions.push(activeSignalsPool.shift());
+        } else {
+          currentOptions.push(filtered[Math.floor(Math.random() * filtered.length)]);
+        }
+      }
+
+      renderAllOptionCards();
+      updateReflexStatsUI();
+
+      // Mostrar botón de comenzar en tablero
+      showParticipantStartButton();
+    }
+
+    function showParticipantStartButton() {
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const btnStart = document.getElementById('btn-play-trigger');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+
+      wrapper.className = 'target-card-wrapper ready-to-start';
+      badge.className = 'target-badge';
+      badgeIcon.textContent = 'touch_app';
+      badgeText.textContent = `Preparado para jugar (${maxRounds} Rondas)`;
+
+      btnStart.style.display = 'flex';
+      waitingBox.style.display = 'none';
+      targetImg.style.display = 'none';
+
+      targetName.textContent = 'Tocá COMENZAR cuando estés listo';
+      targetCat.textContent = 'Al tocar, aguardá 1-2s y reaccioná tan pronto aparezca la señal';
+
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) card.className = 'option-card disabled';
+      }
+    }
+
+    function handleParticipantClickStart() {
+      if (reflexGameHasStarted) return;
+      reflexGameHasStarted = true;
+      soundSys.playTick();
+
+      document.getElementById('btn-play-trigger').style.display = 'none';
+      startAutoRound();
+    }
+
+    function setupOptionsGridUI(count) {
+      const grid = document.getElementById('options-grid');
+      grid.className = `options-grid grid-${count}`;
+      grid.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const card = document.createElement('div');
+        card.className = 'option-card disabled';
+        card.id = `card-${i}`;
+        card.onclick = () => handleCardClick(i);
+
+        const img = document.createElement('img');
+        img.id = `opt-img-${i}`;
+        img.alt = `Opción ${i + 1}`;
+
+        card.appendChild(img);
+        grid.appendChild(card);
+      }
+
+      document.getElementById('txt-diff-badge').textContent = `Dificultad: ${count} Opciones`;
+    }
+
+    function renderAllOptionCards() {
+      for (let i = 0; i < optionsCount; i++) {
+        renderCard(i);
+      }
+    }
+
+    function renderCard(index) {
+      const cardEl = document.getElementById(`card-${index}`);
+      const imgEl = document.getElementById(`opt-img-${index}`);
+      const signal = currentOptions[index];
+
+      if (cardEl && imgEl && signal) {
+        imgEl.src = signal.image;
+        imgEl.alt = signal.name;
+        cardEl.className = isTargetVisible ? 'option-card card-enter' : 'option-card disabled card-enter';
+      }
+    }
+
+    function startAutoRound() {
+      currentRound++;
+      if (currentRound > maxRounds) {
+        endReflexGame();
+        return;
+      }
+
+      updateReflexStatsUI();
+      isTargetVisible = false;
+      isProcessing = false;
+
+      const targetIndex = Math.floor(Math.random() * optionsCount);
+      currentTarget = currentOptions[targetIndex];
+
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const btnStart = document.getElementById('btn-play-trigger');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+
+      wrapper.className = 'target-card-wrapper waiting';
+      badge.className = 'target-badge waiting-badge';
+      badgeIcon.textContent = 'hourglass_top';
+      badgeText.textContent = `Ronda ${currentRound} de ${maxRounds}`;
+
+      btnStart.style.display = 'none';
+      waitingBox.style.display = 'flex';
+      targetImg.style.display = 'none';
+
+      targetName.textContent = 'Preparando estímulo...';
+      targetCat.textContent = 'Esperá a que aparezca la señal para reaccionar';
+
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) card.className = 'option-card disabled';
+      }
+
+      const delayMs = 1000 + Math.floor(Math.random() * 1000);
+
+      if (delayTimer) clearTimeout(delayTimer);
+      delayTimer = setTimeout(() => {
+        showTargetStimulus();
+      }, delayMs);
+    }
+
+    function showTargetStimulus() {
+      const wrapper = document.getElementById('target-wrapper');
+      const badge = document.getElementById('target-badge');
+      const badgeIcon = document.getElementById('target-badge-icon');
+      const badgeText = document.getElementById('target-badge-text');
+      const waitingBox = document.getElementById('waiting-box');
+      const targetImg = document.getElementById('target-img');
+      const targetName = document.getElementById('target-name');
+      const targetCat = document.getElementById('target-cat');
+
+      soundSys.playTick();
+
+      waitingBox.style.display = 'none';
+      targetImg.src = currentTarget.image;
+      targetImg.style.display = 'block';
+      targetName.textContent = currentTarget.name;
+      targetCat.textContent = `Señal ${currentTarget.category}`;
+
+      wrapper.className = 'target-card-wrapper ready-stimulus';
+      badge.className = 'target-badge';
+      badgeIcon.textContent = 'bolt';
+      badgeText.textContent = '¡ENCONTRALA AHORA!';
+
+      for (let i = 0; i < optionsCount; i++) {
+        const card = document.getElementById(`card-${i}`);
+        if (card) {
+          card.className = 'option-card';
+        }
+      }
+
+      targetAppearedTime = performance.now();
+      isTargetVisible = true;
+    }
+
+    function handleCardClick(clickedIndex) {
+      if (!isTargetVisible || isProcessing) {
+        if (!isTargetVisible) {
+          soundSys.playTick();
+          showFeedback(false, '¡Esperá la señal!', 'Aguardá a que aparezca la imagen antes de tocar.', 0);
+        }
+        return;
+      }
+      isProcessing = true;
+
+      const reactionMs = Math.round(performance.now() - targetAppearedTime);
+      const reactionSec = Number((reactionMs / 1000).toFixed(3));
+      reactionTimesMs.push(reactionMs);
+
+      document.getElementById('txt-last-reaction').textContent = `${reactionMs} ms`;
+
+      const clickedSignal = currentOptions[clickedIndex];
+      const clickedCard = document.getElementById(`card-${clickedIndex}`);
+      const isCorrect = (clickedSignal && currentTarget && clickedSignal.id === currentTarget.id);
+
+      roundDetails.push({
+        round: currentRound,
+        title: currentTarget.name,
+        category: currentTarget.category,
+        selected: clickedSignal ? clickedSignal.name : '',
+        expected: currentTarget.name,
+        isCorrect: isCorrect,
+        timeSeconds: reactionSec,
+        timeMs: reactionMs,
+        points: isCorrect ? Math.round(100 + Math.max(0, 1500 - reactionMs) / 10) : 0
+      });
+
+      if (isCorrect) {
+        soundSys.playCorrect();
+        clickedCard.classList.add('correct-flash');
+
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+
+        const speedBonus = Math.max(0, Math.round((2000 - reactionMs) / 8));
+        const diffMultiplier = optionsCount === 12 ? 1.8 : (optionsCount === 8 ? 1.5 : (optionsCount === 6 ? 1.2 : 1.0));
+        const roundScore = Math.round((100 + (streak * 20) + speedBonus) * diffMultiplier);
+        score += roundScore;
+        totalHits++;
+
+        if (!discoveredSignalsList.some(s => s.id === currentTarget.id)) {
+          discoveredSignalsList.push(currentTarget);
+        }
+
+        showFeedback(true, `¡Excelente! ${clickedSignal.name}`, clickedSignal.description, reactionMs);
+
+        setTimeout(() => {
+          replaceCardWithNew(clickedIndex);
+          setTimeout(() => {
+            startAutoRound();
+          }, 200);
+        }, 300);
+
+      } else {
+        soundSys.playIncorrect();
+        clickedCard.classList.add('wrong-flash');
+
+        streak = 0;
+        totalMisses++;
+
+        showFeedback(false, `Era: ${currentTarget.name}`, currentTarget.description, reactionMs);
+
+        setTimeout(() => {
+          replaceCardWithNew(clickedIndex);
+          setTimeout(() => {
+            startAutoRound();
+          }, 200);
+        }, 300);
+      }
+
+      updateReflexStatsUI();
+    }
+
+    function replaceCardWithNew(index) {
+      const cardEl = document.getElementById(`card-${index}`);
+      if (cardEl) {
+        cardEl.classList.add('card-exit');
+      }
+
+      setTimeout(() => {
+        let newSignal = getNextAvailableSignal();
+        currentOptions[index] = newSignal;
+        renderCard(index);
+      }, 200);
+    }
+
+    function getNextAvailableSignal() {
+      if (activeSignalsPool.length === 0) {
+        let poolSource = getFilteredSignalsPool();
+        activeSignalsPool = shuffleArray([...poolSource]);
+      }
+
+      for (let i = 0; i < activeSignalsPool.length; i++) {
+        const candidate = activeSignalsPool[i];
+        const isAlreadyVisible = currentOptions.some(opt => opt && opt.id === candidate.id);
+        if (!isAlreadyVisible) {
+          activeSignalsPool.splice(i, 1);
+          return candidate;
+        }
+      }
+
+      return activeSignalsPool.shift() || SENALES_DATA[0];
+    }
+
+    function updateReflexStatsUI() {
+      document.getElementById('txt-score').textContent = score;
+      document.getElementById('txt-streak').textContent = streak;
+
+      const pct = Math.min(100, Math.round(((currentRound - 1) / maxRounds) * 100));
+      document.getElementById('bar-progress').style.width = `${pct}%`;
+    }
+
+    function endReflexGame() {
+      soundSys.playFanfare();
+
+      const totalAttempts = totalHits + totalMisses;
+      const accuracy = totalAttempts > 0 ? Math.round((totalHits / totalAttempts) * 100) : 0;
+      const avgReactionMs = reactionTimesMs.length > 0 
+        ? Math.round(reactionTimesMs.reduce((a, b) => a + b, 0) / reactionTimesMs.length) 
+        : 0;
+      const bestReactionMs = reactionTimesMs.length > 0 ? Math.min(...reactionTimesMs) : 0;
+      const avgReactionSec = Number((avgReactionMs / 1000).toFixed(3));
+
+      // Estrellas según tiempo de reacción y precisión
+      let stars = 3;
+      if (avgReactionMs > 900 || accuracy < 60) stars = 1;
+      else if (avgReactionMs > 650 || accuracy < 80) stars = 2;
+
+      const starsContainer = document.getElementById('results-stars-container');
+      starsContainer.innerHTML = '';
+      for (let i = 1; i <= 3; i++) {
+        const star = document.createElement('span');
+        star.className = `material-symbols-outlined star-icon ${i <= stars ? '' : 'empty'}`;
+        star.textContent = 'star';
+        starsContainer.appendChild(star);
+      }
+
+      const titleEl = document.getElementById('results-title');
+      const subtitleEl = document.getElementById('results-subtitle');
+
+      if (avgReactionMs < 550 && accuracy >= 80) {
+        titleEl.textContent = '¡REFLEJOS DE PILOTO!';
+        subtitleEl.textContent = 'Impresionante tiempo de reacción y precisión en señales de tránsito.';
+      } else if (avgReactionMs < 850 && accuracy >= 60) {
+        titleEl.textContent = '¡MUY BUEN DESEMPEÑO!';
+        subtitleEl.textContent = 'Buen tiempo de respuesta ante los estímulos viales.';
+      } else {
+        titleEl.textContent = '¡A SEGUIR ENTRENANDO!';
+        subtitleEl.textContent = 'Practicá más para reducir tu tiempo de reacción y reconocer las señales más rápido.';
+      }
+
+      document.getElementById('res-score').textContent = score;
+      document.getElementById('res-main-stat').textContent = `${avgReactionMs} ms`;
+      document.getElementById('res-main-lbl').textContent = 'Reacción Promedio';
+      document.getElementById('res-moves-stat').textContent = `${totalHits}/${totalAttempts} (${accuracy}%)`;
+      document.getElementById('res-moves-lbl').textContent = 'Aciertos / Precisión';
+      document.getElementById('res-streak-stat').textContent = `${bestReactionMs} ms`;
+      document.getElementById('res-streak-lbl').textContent = 'Mejor Reflejo';
+
+      renderDiscoveredSignsList();
+
+      syncSessionWithCloud('Memotest Vial (Reacción)', avgReactionSec, `${totalHits}/${totalAttempts} (${accuracy}%)`);
 
       document.getElementById('modal-results').style.display = 'flex';
     }
 
-    function showFeedback(isSuccess, title, desc) {
+    // =========================================================================
+    //  FEEDBACK Y SINCRONIZACIÓN GENERAL
+    // =========================================================================
+    function showFeedback(isSuccess, title, desc, reactionMs) {
       const banner = document.getElementById('feedback-banner');
       const icon = document.getElementById('feedback-icon');
       const titleEl = document.getElementById('feedback-title');
       const descEl = document.getElementById('feedback-desc');
+      const timeEl = document.getElementById('feedback-time');
 
       banner.className = `feedback-banner show ${isSuccess ? 'success' : 'error'}`;
       icon.textContent = isSuccess ? 'check_circle' : 'cancel';
       titleEl.textContent = title;
       descEl.textContent = desc || 'Conocé y respetá siempre las señales de tránsito.';
 
+      if (reactionMs > 0) {
+        timeEl.style.display = 'block';
+        timeEl.textContent = `⚡ ${reactionMs} ms`;
+      } else {
+        timeEl.style.display = 'none';
+      }
+
       if (feedbackTimeout) clearTimeout(feedbackTimeout);
       feedbackTimeout = setTimeout(() => {
         banner.className = 'feedback-banner';
       }, 2200);
+    }
+
+    function syncSessionWithCloud(categoryName, timeVal, accuracyVal) {
+      try {
+        if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
+          window.VialCloudSync.syncGameSession({
+            game: 'memotest',
+            category: categoryName,
+            score: score,
+            time: timeVal,
+            accuracy: accuracyVal,
+            details: roundDetails
+          });
+        }
+      } catch (err) {
+        console.warn('Error al sincronizar con cloud sync:', err);
+      }
     }
 
     function shuffleArray(array) {
