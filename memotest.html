@@ -462,15 +462,16 @@
       background: linear-gradient(180deg, #1d2326 0%, #171b1d 100%);
       border: 2.5px solid var(--accent-orange);
       border-radius: var(--card-radius);
-      padding: 14px 18px;
+      padding: 10px 14px;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      gap: 14px;
       position: relative;
       box-shadow: 0 8px 28px rgba(255, 122, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       transition: all 0.25s ease;
-      min-height: 220px;
+      min-height: auto;
     }
 
     .target-card-wrapper.ready-to-start {
@@ -494,20 +495,31 @@
       100% { transform: scale(1); box-shadow: 0 0 24px rgba(255, 198, 0, 0.4); }
     }
 
+    .target-details-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 5px;
+      text-align: left;
+    }
+
     .target-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.7px;
       background: rgba(255, 122, 0, 0.15);
       color: #FFB366;
       border: 1px solid rgba(255, 122, 0, 0.3);
-      margin-bottom: 8px;
+      margin-bottom: 0;
     }
 
     .target-badge.waiting-badge {
@@ -517,19 +529,20 @@
     }
 
     .target-image-container {
-      width: 130px;
-      height: 130px;
-      max-width: 36vw;
-      max-height: 36vw;
+      width: 95px;
+      height: 95px;
+      min-width: 95px;
+      min-height: 95px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       border-radius: 16px;
-      padding: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
       position: relative;
+      flex-shrink: 0;
     }
 
     .target-image {
@@ -545,35 +558,35 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 3px;
       background: linear-gradient(135deg, #FF9100 0%, #FF5500 100%);
       color: #ffffff;
       border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       width: 100%;
       height: 100%;
       cursor: pointer;
       box-shadow: 0 6px 18px rgba(255, 85, 0, 0.5);
       animation: pulseBigBtn 1.2s infinite alternate;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
-      padding: 10px;
+      padding: 6px;
     }
     .btn-big-start:hover {
-      transform: scale(1.05);
+      transform: scale(1.04);
       box-shadow: 0 8px 24px rgba(255, 85, 0, 0.7);
     }
     .btn-big-start:active {
-      transform: scale(0.95);
+      transform: scale(0.96);
     }
     .btn-big-start .lbl-play {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 15px;
+      font-size: 13.5px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       line-height: 1.1;
     }
     .btn-big-start .lbl-click-hint {
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 700;
       color: #FFE0B2;
     }
@@ -588,12 +601,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       color: var(--accent-yellow);
     }
     .waiting-radar {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       border: 3.5px solid rgba(255, 198, 0, 0.2);
       border-top-color: var(--accent-yellow);
@@ -603,7 +616,7 @@
       100% { transform: rotate(360deg); }
     }
     .waiting-text {
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 800;
       color: #e0e6ea;
       text-transform: uppercase;
@@ -616,22 +629,22 @@
     }
 
     .target-info {
-      margin-top: 8px;
-      text-align: center;
-      min-height: 38px;
+      margin-top: 0;
+      text-align: left;
+      min-height: auto;
     }
     .target-title {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 16px;
+      font-size: 14.5px;
       color: #ffffff;
       line-height: 1.2;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
     .target-category {
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 600;
       color: var(--text-muted);
-      text-transform: capitalize;
+      line-height: 1.3;
       margin-top: 2px;
     }
 
@@ -1166,6 +1179,13 @@
       .memo-grid.grid-20 {
         grid-template-columns: repeat(4, 1fr);
       }
+      .game-container {
+        padding: 10px 12px 18px;
+        gap: 10px;
+      }
+      #board-reflex {
+        gap: 10px !important;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1177,7 +1197,34 @@
       .memo-grid.grid-20 {
         grid-template-columns: repeat(4, 1fr);
       }
-      .options-grid.grid-8, .options-grid.grid-12 { grid-template-columns: repeat(3, 1fr); }
+      .options-grid.grid-8, .options-grid.grid-12 {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .options-grid.grid-8 .option-card, .options-grid.grid-12 .option-card {
+        height: 90px;
+        padding: 6px;
+      }
+      .options-grid.grid-8 .option-card img, .options-grid.grid-12 .option-card img {
+        width: 56px;
+        height: 56px;
+      }
+      .target-card-wrapper {
+        padding: 9px 12px;
+        gap: 12px;
+      }
+      .target-image-container {
+        width: 88px;
+        height: 88px;
+        min-width: 88px;
+        min-height: 88px;
+      }
+      .target-title {
+        font-size: 13.5px;
+      }
+      .target-category {
+        font-size: 10.5px;
+      }
       .header-main-title { font-size: 15px; }
       .btn-mode-switch span:not(.material-symbols-outlined) { display: none; }
     }
@@ -1280,16 +1327,11 @@
     <!-- ======================================================== -->
     <section id="board-reflex" style="display:none; flex-direction:column; gap:14px;">
       
-      <!-- Señal objetivo -->
+      <!-- Señal objetivo (diseño horizontal equilibrado) -->
       <section class="target-card-wrapper ready-to-start" id="target-wrapper">
-        <div class="target-badge" id="target-badge">
-          <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
-          <span id="target-badge-text">Preparado para jugar</span>
-        </div>
-
         <div class="target-image-container" id="target-box">
           <button class="btn-big-start" id="btn-play-trigger" onclick="handleParticipantClickStart()">
-            <span class="material-symbols-outlined" style="font-size:36px;">play_circle</span>
+            <span class="material-symbols-outlined" style="font-size:32px;">play_circle</span>
             <span class="lbl-play">COMENZAR</span>
             <span class="lbl-click-hint">Tocá para empezar</span>
           </button>
@@ -1302,9 +1344,16 @@
           <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
         </div>
 
-        <div class="target-info">
-          <div class="target-title" id="target-name">Tocá COMENZAR cuando estés listo</div>
-          <div class="target-category" id="target-cat">Al tocar, aguardá 1-2s y reaccioná tan pronto aparezca la señal</div>
+        <div class="target-details-col">
+          <div class="target-badge" id="target-badge">
+            <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
+            <span id="target-badge-text">Preparado para jugar</span>
+          </div>
+
+          <div class="target-info">
+            <div class="target-title" id="target-name">Tocá COMENZAR cuando estés listo</div>
+            <div class="target-category" id="target-cat">Al tocar, aguardá 1-2s y reaccioná tan pronto aparezca la señal</div>
+          </div>
         </div>
       </section>
 
