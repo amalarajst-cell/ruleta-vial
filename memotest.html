@@ -462,12 +462,10 @@
       background: linear-gradient(180deg, #1d2326 0%, #171b1d 100%);
       border: 2.5px solid var(--accent-orange);
       border-radius: var(--card-radius);
-      padding: 10px 14px;
+      padding: 12px;
       display: flex;
-      flex-direction: row;
       align-items: center;
-      justify-content: flex-start;
-      gap: 14px;
+      justify-content: center;
       position: relative;
       box-shadow: 0 8px 28px rgba(255, 122, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       transition: all 0.25s ease;
@@ -496,14 +494,7 @@
     }
 
     .target-details-col {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 5px;
-      text-align: left;
+      display: none !important;
     }
 
     .target-badge {
@@ -529,10 +520,8 @@
     }
 
     .target-image-container {
-      width: 95px;
-      height: 95px;
-      min-width: 95px;
-      min-height: 95px;
+      width: 105px;
+      height: 105px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -542,7 +531,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
       position: relative;
-      flex-shrink: 0;
+      margin: 0 auto;
     }
 
     .target-image {
@@ -1210,20 +1199,16 @@
         height: 56px;
       }
       .target-card-wrapper {
-        padding: 9px 12px;
-        gap: 12px;
+        padding: 8px;
+        justify-content: center;
+        align-items: center;
       }
       .target-image-container {
-        width: 88px;
-        height: 88px;
-        min-width: 88px;
-        min-height: 88px;
-      }
-      .target-title {
-        font-size: 13.5px;
-      }
-      .target-category {
-        font-size: 10.5px;
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        min-height: 100px;
+        margin: 0 auto;
       }
       .header-main-title { font-size: 15px; }
       .btn-mode-switch span:not(.material-symbols-outlined) { display: none; }
@@ -1327,11 +1312,11 @@
     <!-- ======================================================== -->
     <section id="board-reflex" style="display:none; flex-direction:column; gap:14px;">
       
-      <!-- Señal objetivo (diseño horizontal equilibrado) -->
+      <!-- Señal objetivo (centrado y sin texto secundario) -->
       <section class="target-card-wrapper ready-to-start" id="target-wrapper">
         <div class="target-image-container" id="target-box">
           <button class="btn-big-start" id="btn-play-trigger" onclick="handleParticipantClickStart()">
-            <span class="material-symbols-outlined" style="font-size:32px;">play_circle</span>
+            <span class="material-symbols-outlined" style="font-size:36px;">play_circle</span>
             <span class="lbl-play">COMENZAR</span>
             <span class="lbl-click-hint">Tocá para empezar</span>
           </button>
@@ -1344,7 +1329,7 @@
           <img src="" alt="Señal Objetivo" id="target-img" class="target-image" style="display:none;">
         </div>
 
-        <div class="target-details-col">
+        <div class="target-details-col" style="display:none;">
           <div class="target-badge" id="target-badge">
             <span class="material-symbols-outlined" style="font-size:14px;" id="target-badge-icon">touch_app</span>
             <span id="target-badge-text">Preparado para jugar</span>
