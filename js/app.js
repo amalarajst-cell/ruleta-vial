@@ -162,13 +162,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function compareParticipants(a, b) {
+    const gA = getEntryGame(a);
+    const gB = getEntryGame(b);
+
     const accA = parseEntryAciertos(a);
     const accB = parseEntryAciertos(b);
 
-    // 1° El que más aciertos tiene (prioridad número 1)
+    // 1° El que más aciertos tiene (prioridad número 1 según ratio)
     if (Math.abs(accB.ratio - accA.ratio) > 0.0001) {
       return accB.ratio - accA.ratio;
     }
+
+    // SI ES JUEGO DE TIEMPO DE REACCIÓN:
+    // A igualdad de ratio de aciertos, el menor tiempo de reacción promedio gana siempre
+    // (permite que los nuevos niveles de 5 y 6 estímulos compitan justamente contra los antiguos de 8)
+    if (gA === 'reaccion' || gB === 'reaccion') {
+      const timeA = Number(a.time) > 0 ? Number(a.time) : 9999;
+      const timeB = Number(b.time) > 0 ? Number(b.time) : 9999;
+      if (Math.abs(timeA - timeB) > 0.0001) {
+        return timeA - timeB;
+      }
+      const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
+      if (scoreDiff !== 0) return scoreDiff;
+      return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
+    }
+
     if (accB.correct !== accA.correct) {
       return accB.correct - accA.correct;
     }
@@ -217,6 +235,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function fetchCloudState(isForAdmin = false) {
+    const applyCloudPayload = (parsed, sha) => {
+      if (sha) cloudSha = sha;
+      if (parsed && Array.isArray(parsed.leaderboard)) {
+        leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
+        localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
+        renderLeaderboardUI();
+        if (isForAdmin || document.body.classList.contains('admin-mode') || window.location.search.includes('screen=admin')) {
+          renderAdminDashboard(false);
+        }
+      }
+      if (parsed && Array.isArray(parsed.completed)) {
+        completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
+        localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+      }
+      if (parsed && Array.isArray(parsed.logins)) {
+        loginsHistory = parsed.logins;
+        localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
+      }
+    };
+
     return fetch(GH_API_URL, {
       headers: {
         'Authorization': `token ${GH_TOKEN}`,
@@ -224,28 +262,36 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       cache: 'no-store'
     })
-    .then(res => res.ok ? res.json() : null)
+    .then(res => {
+      if (res.ok) return res.json();
+      // Si el token fue revocado (401), intentar lectura pública sin token
+      return fetch(GH_API_URL, {
+        headers: { 'Accept': 'application/vnd.github.v3+json' },
+        cache: 'no-store'
+      }).then(r2 => r2.ok ? r2.json() : null);
+    })
     .then(data => {
       if (data && data.content) {
-        cloudSha = data.sha;
         try {
           const parsed = JSON.parse(utf8B64Decode(data.content));
-          if (parsed && Array.isArray(parsed.leaderboard)) {
-            leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
-            localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
-            renderLeaderboardUI();
-            if (isForAdmin || document.body.classList.contains('admin-mode') || window.location.search.includes('screen=admin')) {
-              renderAdminDashboard(false);
-            }
-          }
-          if (parsed && Array.isArray(parsed.completed)) {
-            completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
-            localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
-          }
+          applyCloudPayload(parsed, data.sha);
+          return;
         } catch (e) {}
       }
+      // Fallback a data.json local o GitHub Pages
+      return fetch('data.json', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null)
+        .then(parsed => {
+          if (parsed) applyCloudPayload(parsed, null);
+        });
     })
-    .catch(() => {});
+    .catch(() => {
+      return fetch('data.json', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : null)
+        .then(parsed => {
+          if (parsed) applyCloudPayload(parsed, null);
+        }).catch(() => {});
+    });
   }
 
   let adminPollTimer = null;
@@ -1769,8 +1815,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalUsers = gameFiltered.length;
     const perfectCount = gameFiltered.filter(e => {
       const g = getEntryGame(e);
-      if (g === 'reaccion' || g === 'alcoholemia') {
-        return (e.accuracy && e.accuracy.includes('8/8')) || (Number(e.score) || 0) >= 800;
+      if (g === 'reaccion') {
+        return (e.accuracy && (e.accuracy.includes('5/5') || e.accuracy.includes('6/6') || e.accuracy.includes('8/8') || e.accuracy.includes('100%'))) || (Number(e.score) || 0) >= 500;
+      }
+      if (g === 'alcoholemia') {
+        return (e.accuracy && (e.accuracy.includes('8/8') || e.accuracy.includes('100%'))) || (Number(e.score) || 0) >= 800;
       }
       if (g === 'memotest') {
         return (e.accuracy && (e.accuracy.includes('10/10') || e.accuracy.includes('15/15') || e.accuracy.includes('20/20'))) || (Number(e.score) || 0) >= 1000;

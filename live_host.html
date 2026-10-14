@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
   <!-- QRCode.js para generación nativa sin fallos -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/cloud-sync.js?v=25"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -557,6 +558,35 @@
             </tr>
           `;
         }).join('');
+
+        // Sincronizar automáticamente con el Panel de Administración
+        if (window.VialCloudSync && typeof window.VialCloudSync.syncGameSession === 'function') {
+          responses.forEach(r => {
+            const p = players[r.playerId] || { name: 'Participante' };
+            const isCorrect = r.action === stim.action;
+            const reactionSec = +(r.reactionMs / 1000).toFixed(2);
+            const xpGained = isCorrect ? Math.max(100, Math.round(1000 - r.reactionMs)) : 50;
+
+            window.VialCloudSync.syncGameSession({
+              name: p.name,
+              role: p.role || 'Auto (Cat B)',
+              avatar: p.avatar,
+              game: 'reaccion',
+              category: 'Sala En Vivo (Tiempo de Reacción)',
+              score: xpGained,
+              time: reactionSec,
+              accuracy: isCorrect ? '1/1' : '0/1',
+              details: [{
+                question: stim.title || 'Estímulo En Vivo',
+                selected: r.action,
+                expected: stim.action,
+                isCorrect: isCorrect,
+                timeSeconds: reactionSec,
+                points: xpGained
+              }]
+            }).catch(() => {});
+          });
+        }
       }
 
       btnStartGame.addEventListener('click', triggerRound);

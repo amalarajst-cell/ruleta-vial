@@ -106,12 +106,31 @@
   }
 
   function compareParticipants(a, b) {
+    const gA = getEntryGame(a);
+    const gB = getEntryGame(b);
+
     const accA = parseEntryAciertos(a);
     const accB = parseEntryAciertos(b);
 
+    // 1° El que más aciertos tiene según ratio/porcentaje (prioridad número 1)
     if (Math.abs(accB.ratio - accA.ratio) > 0.0001) {
       return accB.ratio - accA.ratio;
     }
+
+    // SI ES JUEGO DE TIEMPO DE REACCIÓN:
+    // A igualdad de aciertos, el MENOR tiempo de reacción gana siempre
+    // (no castigar si el nivel actual tiene 5 o 6 rondas frente a partidas viejas de 8 rondas).
+    if (gA === 'reaccion' || gB === 'reaccion') {
+      const timeA = Number(a.time) > 0 ? Number(a.time) : 9999;
+      const timeB = Number(b.time) > 0 ? Number(b.time) : 9999;
+      if (Math.abs(timeA - timeB) > 0.0001) {
+        return timeA - timeB;
+      }
+      const scoreDiff = (Number(b.score) || 0) - (Number(a.score) || 0);
+      if (scoreDiff !== 0) return scoreDiff;
+      return (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0);
+    }
+
     if (accB.correct !== accA.correct) {
       return accB.correct - accA.correct;
     }

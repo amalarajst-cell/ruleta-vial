@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <script src="js/cloud-sync.js?v=22"></script>
+  <script src="js/cloud-sync.js?v=25"></script>
 
   <style>
     :root {
@@ -1831,6 +1831,19 @@
       }
 
       function startRoundWaiting() {
+        if (window.VialCloudSync && typeof window.VialCloudSync.isPlayerRegistered === 'function' && !window.VialCloudSync.isPlayerRegistered()) {
+          if (typeof window.VialCloudSync.ensurePlayerRegistered === 'function') {
+            window.VialCloudSync.ensurePlayerRegistered(() => {
+              refreshPlayerUI();
+              _execStartRoundWaiting();
+            });
+            return;
+          }
+        }
+        _execStartRoundWaiting();
+      }
+
+      function _execStartRoundWaiting() {
         state = 'waiting';
         updateDots();
         roundStateText.textContent = '¡Atento al estímulo!...';
