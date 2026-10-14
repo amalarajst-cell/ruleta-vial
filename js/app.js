@@ -237,8 +237,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function fetchCloudState(isForAdmin = false) {
     const applyCloudPayload = (parsed, sha) => {
       if (sha) cloudSha = sha;
+      const resetAllTime = Number(localStorage.getItem('vex_reset_all_time')) || 0;
+
       if (parsed && Array.isArray(parsed.leaderboard)) {
-        leaderboard = mergeLeaderboards(leaderboard, parsed.leaderboard);
+        let validIncoming = parsed.leaderboard.filter(e => {
+          const entryTime = Number(e.timestamp) || 0;
+          if (resetAllTime && entryTime && entryTime <= resetAllTime) return false;
+          const g = getEntryGame(e);
+          const gameResetTime = Number(localStorage.getItem(`vex_reset_${g}_time`)) || 0;
+          if (gameResetTime && entryTime && entryTime <= gameResetTime) return false;
+          return true;
+        });
+
+        if (resetAllTime && validIncoming.length === 0 && (!leaderboard || leaderboard.length === 0)) {
+          leaderboard = [];
+        } else {
+          leaderboard = mergeLeaderboards(leaderboard, validIncoming);
+        }
         localStorage.setItem('vex_leaderboard', JSON.stringify(leaderboard));
         renderLeaderboardUI();
         if (isForAdmin || document.body.classList.contains('admin-mode') || window.location.search.includes('screen=admin')) {
@@ -246,11 +261,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       if (parsed && Array.isArray(parsed.completed)) {
-        completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
-        localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+        if (!resetAllTime) {
+          completedPlayers = Array.from(new Set([...completedPlayers, ...parsed.completed]));
+          localStorage.setItem('vex_completed_players', JSON.stringify(completedPlayers));
+        }
       }
       if (parsed && Array.isArray(parsed.logins)) {
-        loginsHistory = parsed.logins;
+        loginsHistory = resetAllTime ? [] : parsed.logins;
         localStorage.setItem('vex_logins_history', JSON.stringify(loginsHistory));
       }
     };
@@ -2124,9 +2141,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function executeAdminReset(targetGame = 'all') {
-    if (btnConfirmResetAllText) btnConfirmResetAllText.textContent = 'BORRANDO Y SINCRONIZANDO...';
+    if (btnConfirmResetAllText) btnConfirmResetAllText.textContent = 'BORRANDO...';
 
+    const resetNow = Date.now();
     if (targetGame === 'all') {
+      localStorage.setItem('vex_reset_all_time', resetNow);
       leaderboard = [];
       loginsHistory = [];
       responsesHistory = [];
@@ -2136,6 +2155,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('vex_responses_history', JSON.stringify([]));
       localStorage.setItem('vex_completed_players', JSON.stringify([]));
     } else {
+      localStorage.setItem(`vex_reset_${targetGame}_time`, resetNow);
       leaderboard = leaderboard.filter(e => getEntryGame(e) !== targetGame);
       responsesHistory = responsesHistory.filter(r => {
         const g = r.game || getEntryGame(r);
@@ -2148,8 +2168,13 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdminDashboard(false);
     renderLeaderboardUI();
 
-    // Sincronizar reinicio con GitHub en segundo plano
-    await pushCloudReset(targetGame);
+    // Intentar sincronizar con GitHub en segundo plano con límite de tiempo de 2s
+    try {
+      await Promise.race([
+        pushCloudReset(targetGame),
+        new Promise(resolve => setTimeout(resolve, 2000))
+      ]);
+    } catch(e) {}
 
     if (btnConfirmResetAllText) btnConfirmResetAllText.textContent = 'REINICIAR TODO (TODOS LOS JUEGOS Y NUBE)';
     closeAdminResetModal();
