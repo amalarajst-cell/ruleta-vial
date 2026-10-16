@@ -32,7 +32,13 @@
       --text: #f0f4f5;
       --text-muted: #8c979a;
       --font-main: 'Outfit', 'Archivo', sans-serif;
-      --font-bubble: 'Fredoka', cursive, sans-serif;
+      --font-bubble: 'Fredoka', 'Outfit', sans-serif;
+
+      /* Dynamic Words of Wonders (WoW) Theme Palette (changes per stage) */
+      --wow-theme: #0ea5e9;
+      --wow-theme-light: #38bdf8;
+      --wow-theme-dark: #0369a1;
+      --wow-theme-glow: rgba(14, 165, 233, 0.55);
     }
 
     * {
@@ -49,7 +55,7 @@
       width: 100%;
       height: 100dvh;
       overflow: hidden;
-      background-color: var(--bg);
+      background-color: #1e293b;
       font-family: var(--font-main);
       color: var(--text);
       touch-action: none;
@@ -57,43 +63,43 @@
       position: fixed;
     }
 
-    /* FULLSCREEN GAME VIEWPORT */
+    /* FULLSCREEN GAME VIEWPORT — BRIGHT ILLUSTRATED SCENERY LIKE WORDS OF WONDERS */
     .app-viewport {
       width: 100vw;
       height: 100dvh;
       display: flex;
       flex-direction: column;
       background-size: cover;
-      background-position: center bottom;
+      background-position: center center;
       background-repeat: no-repeat;
       position: relative;
       overflow: hidden;
-      transition: background-image 0.8s ease;
+      transition: background-image 0.6s ease;
     }
 
-    /* Vignette & Ambient Darkness */
+    /* Soft Natural Vignette (Keeps background bright and colorful like WoW) */
     .app-viewport::before {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(11, 14, 15, 0.72) 0%,
-        rgba(11, 14, 15, 0.22) 35%,
-        rgba(11, 14, 15, 0.56) 72%,
-        rgba(11, 14, 15, 0.95) 100%
+        rgba(10, 18, 32, 0.42) 0%,
+        rgba(10, 18, 32, 0.06) 22%,
+        rgba(10, 18, 32, 0.08) 62%,
+        rgba(10, 18, 32, 0.48) 100%
       );
       pointer-events: none;
       z-index: 1;
     }
 
-    /* FLOATING TOP BAR (MOBILE ERGONOMIC & NO OVERFLOW) */
+    /* FLOATING TOP BAR — AUTHENTIC WORDS OF WONDERS HUD */
     .floating-top-bar {
       position: absolute;
       top: max(10px, env(safe-area-inset-top));
       left: 0;
       right: 0;
-      padding: 0 10px;
+      padding: 0 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -105,35 +111,33 @@
     .top-action-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       pointer-events: auto;
       flex-shrink: 0;
     }
 
-    /* Floating Frosted Glass Buttons */
+    /* WoW 3D Circular Top Buttons */
     .btn-frosted {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: rgba(14, 18, 20, 0.68);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: #ffffff;
+      background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+      border: 2.5px solid #ffffff;
+      color: #1e293b;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-      transition: transform 0.15s ease, background 0.15s ease, border-color 0.2s ease;
+      box-shadow: 0 4px 0 #94a3b8, 0 6px 14px rgba(0, 0, 0, 0.32);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
       pointer-events: auto;
       flex-shrink: 0;
     }
 
     .btn-frosted:active {
-      transform: scale(0.92);
-      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(3px) scale(0.95);
+      box-shadow: 0 1px 0 #94a3b8, 0 3px 8px rgba(0, 0, 0, 0.25);
     }
 
     /* INTERACTIVE TRAFFIC LIGHT (SEMÁFORO DE RACHA / ONDA VERDE) */
@@ -141,13 +145,13 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 4px 8px;
-      border-radius: 20px;
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       pointer-events: auto;
       cursor: pointer;
       position: relative;
@@ -155,8 +159,8 @@
     }
 
     .traffic-light-badge.onda-verde {
-      border-color: #10b981;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.55);
+      border-color: #34d399;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
     }
 
     .combo-streak-tag {
@@ -175,8 +179,8 @@
     }
 
     .light-lens {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: #334155;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -215,64 +219,59 @@
       100% { transform: scale(1.1); filter: brightness(1.2); }
     }
 
-    /* Level Pill (Centered Float Interactive with Mini Progress Bar) */
+    /* WoW Center Level Banner ("NIVEL 1") */
     .level-pill-float {
-      background: rgba(14, 18, 20, 0.78);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(141, 226, 214, 0.4);
-      border-radius: 18px;
-      padding: 4px 11px 5px;
+      background: linear-gradient(180deg, var(--wow-theme-light) 0%, var(--wow-theme) 100%);
+      border: 2.5px solid #ffffff;
+      border-radius: 22px;
+      padding: 4px 14px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 4px 0 var(--wow-theme-dark), 0 6px 16px rgba(0, 0, 0, 0.35);
       pointer-events: auto;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
       font-family: inherit;
       outline: none;
-      min-width: 96px;
-      max-width: 145px;
-    }
-
-    .level-pill-float:hover {
-      background: rgba(20, 32, 36, 0.9);
-      border-color: rgba(141, 226, 214, 0.85);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(141, 226, 214, 0.25);
+      min-width: 108px;
+      max-width: 155px;
     }
 
     .level-pill-float:active {
-      transform: scale(0.95);
+      transform: translateY(3px) scale(0.96);
+      box-shadow: 0 1px 0 var(--wow-theme-dark), 0 3px 8px rgba(0, 0, 0, 0.3);
     }
 
     .level-pill-number {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 12px;
+      font-family: var(--font-bubble);
+      font-weight: 900;
+      font-size: 13.5px;
       color: #ffffff;
-      letter-spacing: 0.4px;
-      line-height: 1.1;
+      letter-spacing: 0.6px;
+      line-height: 1.05;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
     }
 
     .level-pill-category {
       font-size: 8.5px;
-      color: var(--accent-cyan);
-      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.4px;
-      max-width: 122px;
+      max-width: 128px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
     }
 
     .level-mini-progress {
       width: 100%;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.14);
-      border-radius: 3px;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 4px;
       margin-top: 3px;
       overflow: hidden;
     }
@@ -280,46 +279,63 @@
     .level-mini-progress-bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #10b981);
-      border-radius: 3px;
+      background: linear-gradient(90deg, #fde047, #ffffff);
+      border-radius: 4px;
       transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Coin Badge Pill */
+    /* WoW Coin Capsule Pill (Top Right) */
     .coin-pill-float {
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(14, 18, 20, 0.78);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding: 5px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(251, 191, 36, 0.45);
-      color: #fde047;
-      font-weight: 800;
-      font-size: 12.5px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      gap: 5px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 4px 10px 4px 6px;
+      border-radius: 999px;
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      font-family: var(--font-bubble);
+      font-weight: 900;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
       pointer-events: auto;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .coin-icon-3d {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fef08a 0%, #f59e0b 65%, #b45309 100%);
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 1px 2px #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #78350f;
+      font-weight: 900;
     }
 
     .coin-pill-float.coin-bump {
       transform: scale(1.14);
       border-color: #fde047;
-      box-shadow: 0 0 16px rgba(251, 191, 36, 0.6);
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.8);
     }
 
-    /* Floating counter badge directly over the lightbulb button */
+    /* Floating counter badge directly over power-up buttons */
     .hint-badge-counter {
       position: absolute;
-      top: -6px;
-      right: -6px;
+      top: -5px;
+      right: -5px;
       min-width: 22px;
       height: 22px;
       padding: 0 5px;
       border-radius: 11px;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
       color: #ffffff;
       font-size: 0.72rem;
       font-weight: 900;
@@ -328,7 +344,7 @@
       align-items: center;
       justify-content: center;
       border: 2px solid #ffffff;
-      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
       animation: badgePulse 2s infinite ease-in-out;
       z-index: 15;
       pointer-events: none;
@@ -336,10 +352,12 @@
 
     @keyframes badgePulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); box-shadow: 0 0 14px rgba(16, 185, 129, 0.9); }
+      50% { transform: scale(1.14); }
     }
 
-    /* CROSSWORD BOARD AREA */
+    /* ============================================================
+       CROSSWORD BOARD AREA — AUTHENTIC WORDS OF WONDERS 3D TILES
+       ============================================================ */
     .board-container {
       position: relative;
       z-index: 10;
@@ -347,7 +365,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: max(62px, calc(env(safe-area-inset-top) + 52px)) 10px 4px 10px;
+      padding: max(64px, calc(env(safe-area-inset-top) + 54px)) 10px 2px 10px;
       min-height: 0;
       width: 100%;
       max-width: 500px;
@@ -357,7 +375,12 @@
     .crossword-grid {
       display: grid;
       gap: var(--grid-gap, 6px);
-      padding: 6px;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.18);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
       max-width: 100%;
       max-height: 100%;
       justify-content: center;
@@ -370,11 +393,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: calc(var(--tile-size, 46px) * 0.58);
-      font-weight: 800;
+      font-size: calc(var(--tile-size, 46px) * 0.62);
+      font-weight: 900;
       font-family: var(--font-bubble);
-      border-radius: clamp(7px, calc(var(--tile-size, 46px) * 0.24), 12px);
-      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, box-shadow 0.25s ease;
+      border-radius: clamp(7px, calc(var(--tile-size, 46px) * 0.22), 12px);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, box-shadow 0.25s ease;
       position: relative;
     }
 
@@ -383,44 +406,67 @@
       pointer-events: none;
     }
 
+    /* WoW Unsolved Tile: Crisp Cream-White 3D Tile with Solid Bottom Bevel */
     .grid-tile.unsolved {
-      background: rgba(255, 255, 255, 0.94);
-      border: 2px solid rgba(255, 255, 255, 0.85);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+      border: 2px solid #ffffff;
+      box-shadow:
+        0 4px 0 #cbd5e1,
+        0 6px 10px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 #ffffff;
       color: transparent;
       cursor: pointer;
     }
 
     .grid-tile.unsolved:active {
-      transform: scale(0.92);
+      transform: translateY(2px) scale(0.95);
     }
 
-    /* Targeted Hint Mode: highlight unsolved tiles so player can tap any cell to reveal it */
+    /* WoW Bonus Coin Marker on Unsolved Tile (Like WoW Butterfly / Gold Coin Tile) */
+    .grid-tile.unsolved.bonus-coin-tile::before {
+      content: '🪙';
+      font-size: calc(var(--tile-size, 46px) * 0.42);
+      opacity: 0.88;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+      animation: coinTileFloat 1.6s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes coinTileFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-2px) scale(1.1); }
+    }
+
+    /* Hammer / Targeted Hint Mode: highlight unsolved tiles */
     body.target-hint-mode .grid-tile.unsolved {
       border-color: #f59e0b;
-      background: rgba(254, 243, 199, 0.96);
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.75), inset 0 -2px 0 rgba(217, 119, 6, 0.3);
-      animation: targetTilePulse 0.9s infinite alternate ease-in-out;
+      background: linear-gradient(180deg, #fef9c3 0%, #fde047 100%);
+      box-shadow: 0 4px 0 #d97706, 0 0 14px rgba(245, 158, 11, 0.85);
+      animation: targetTilePulse 0.85s infinite alternate ease-in-out;
     }
 
     .grid-tile.unsolved.word-highlight {
-      border-color: #38bdf8;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.75);
-      transform: scale(1.06);
+      border-color: var(--wow-theme-light);
+      box-shadow: 0 4px 0 var(--wow-theme), 0 0 14px var(--wow-theme-glow);
+      transform: translateY(-2px) scale(1.05);
     }
 
     @keyframes targetTilePulse {
-      from { transform: scale(0.96); }
-      to { transform: scale(1.04); }
+      from { transform: scale(0.95); }
+      to { transform: scale(1.05); }
     }
 
+    /* WoW Solved Tile: Vibrant Stage Theme Color with 3D Bevel */
     .grid-tile.solved {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      background: linear-gradient(180deg, var(--wow-theme-light) 0%, var(--wow-theme) 100%);
       color: #ffffff;
-      border: 2px solid #38bdf8;
-      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.45), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-      animation: tilePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow:
+        0 4px 0 var(--wow-theme-dark),
+        0 6px 14px rgba(0, 0, 0, 0.35),
+        inset 0 2px 2px rgba(255, 255, 255, 0.45);
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+      animation: tilePop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* Glowing light shimmer swipe on newly revealed word */
@@ -429,39 +475,43 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.7) 50%, transparent 80%);
+      background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.75) 50%, transparent 80%);
       opacity: 0;
       pointer-events: none;
     }
 
     .grid-tile.solved.newly-solved::after {
-      animation: shineSwipe 0.6s ease forwards;
+      animation: shineSwipe 0.55s ease forwards;
     }
 
+    /* Hinted Tile: Crisp White Tile with Bold Theme-Colored Letter (Authentic WoW Hint Style) */
     .grid-tile.revealed-hint {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #fff;
-      border: 2px solid #fde047;
-      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.6);
-      animation: hintSparkle 0.5s ease;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+      color: var(--wow-theme-dark);
+      border: 2px solid #ffffff;
+      box-shadow:
+        0 4px 0 #cbd5e1,
+        0 6px 12px rgba(0, 0, 0, 0.28);
+      text-shadow: none;
+      animation: hintSparkle 0.45s ease;
     }
 
     @keyframes tilePop {
-      0% { transform: scale(0.3) rotate(-8deg); opacity: 0.3; }
-      60% { transform: scale(1.18) rotate(3deg); }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      0% { transform: scale(0.3) rotateY(90deg); opacity: 0.3; }
+      65% { transform: scale(1.15) rotateY(0deg); }
+      100% { transform: scale(1) rotateY(0deg); opacity: 1; }
     }
 
     @keyframes shineSwipe {
       0% { transform: translateX(-100%); opacity: 0; }
-      50% { opacity: 0.8; }
+      50% { opacity: 0.85; }
       100% { transform: translateX(100%); opacity: 0; }
     }
 
     @keyframes hintSparkle {
-      0% { transform: scale(0.6); filter: brightness(2); }
-      50% { transform: scale(1.2); filter: brightness(1.5); }
-      100% { transform: scale(1); filter: brightness(1); }
+      0% { transform: scale(0.5); filter: brightness(1.8); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
     }
 
     /* FLOATING SCORE / COMBO POPUP */
@@ -469,14 +519,15 @@
       position: absolute;
       z-index: 120;
       pointer-events: none;
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 0.92rem;
-      padding: 5px 14px;
+      font-family: var(--font-bubble);
+      font-weight: 900;
+      font-size: 0.95rem;
+      padding: 5px 15px;
       border-radius: 999px;
       color: #ffffff;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
-      border: 1.5px solid #a7f3d0;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.5);
+      background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 0 #15803d, 0 8px 20px rgba(0, 0, 0, 0.45);
       transform: translate(-50%, -50%);
       white-space: nowrap;
       animation: floatUpFade 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -489,22 +540,22 @@
       100% { opacity: 0; transform: translate(-50%, -52px) scale(0.9); }
     }
 
-    /* IN-GAME TOAST NOTIFICATION (Replaces browser alert) */
+    /* IN-GAME TOAST NOTIFICATION */
     .game-toast {
       position: fixed;
       top: max(68px, calc(env(safe-area-inset-top) + 56px));
       left: 50%;
       transform: translateX(-50%) translateY(-20px) scale(0.92);
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1.5px solid rgba(56, 189, 248, 0.55);
-      color: #f8fafc;
-      font-weight: 700;
-      font-size: 0.84rem;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
       padding: 9px 18px;
       border-radius: 999px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
       z-index: 300;
       opacity: 0;
       pointer-events: none;
@@ -518,41 +569,42 @@
       transform: translateX(-50%) translateY(0) scale(1);
     }
 
-    /* WORD PREVIEW PILL (Glowing & Responsive) */
+    /* ============================================================
+       WORD PREVIEW PILL — EXACT WORDS OF WONDERS SOLID THEME PILL
+       ============================================================ */
     .preview-container {
       position: relative;
-      z-index: 10;
+      z-index: 15;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 38px;
+      min-height: 42px;
       margin-bottom: 4px;
       padding: 0 12px;
     }
 
     .word-preview-pill {
-      min-width: 120px;
+      min-width: 90px;
       max-width: 92vw;
-      height: 36px;
-      padding: 0 18px;
-      background: rgba(14, 18, 20, 0.9);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 2px solid rgba(141, 226, 214, 0.5);
-      border-radius: 20px;
+      height: 38px;
+      padding: 0 20px;
+      background: linear-gradient(180deg, var(--wow-theme-light) 0%, var(--wow-theme) 100%);
+      border: 2.5px solid #ffffff;
+      border-radius: 999px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
       color: #ffffff;
       font-family: var(--font-bubble);
-      font-size: 1.15rem;
-      letter-spacing: 2.5px;
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(141, 226, 214, 0.3);
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 0 var(--wow-theme-dark), 0 8px 20px rgba(0, 0, 0, 0.35);
       opacity: 0;
-      transform: translateY(10px) scale(0.9);
-      transition: opacity 0.15s ease, transform 0.15s ease;
+      transform: translateY(8px) scale(0.88);
+      transition: opacity 0.14s ease, transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
       pointer-events: none;
       white-space: nowrap;
       overflow: hidden;
@@ -566,23 +618,22 @@
 
     .word-preview-pill.shake {
       animation: shakePill 0.4s ease;
-      border-color: #ef4444;
-      background: rgba(239, 68, 68, 0.35);
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+      background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
+      box-shadow: 0 4px 0 #b91c1c, 0 8px 20px rgba(239, 68, 68, 0.45);
     }
 
     .word-preview-pill.already-found {
       animation: pulseAmber 0.4s ease;
-      border-color: #f59e0b;
-      background: rgba(245, 158, 11, 0.35);
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+      background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+      box-shadow: 0 4px 0 #b45309, 0 8px 20px rgba(245, 158, 11, 0.45);
+      letter-spacing: 1px;
+      font-size: 1rem;
     }
 
     .word-preview-pill.bonus {
       animation: pulseBonus 0.5s ease;
-      border-color: #10b981;
-      background: rgba(16, 185, 129, 0.35);
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+      background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+      box-shadow: 0 4px 0 #047857, 0 8px 20px rgba(16, 185, 129, 0.5);
       letter-spacing: 1px;
       font-size: 0.98rem;
     }
@@ -595,109 +646,147 @@
 
     @keyframes pulseAmber {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
+      50% { transform: scale(1.08); }
     }
 
     @keyframes pulseBonus {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.12) translateY(-4px); }
+      50% { transform: scale(1.1) translateY(-3px); }
     }
 
-    /* WHEEL SECTION (FLEXBOX WITH PROPER BUTTON SEPARATION & SIDE STACKS) */
+    /* ============================================================
+       WHEEL SECTION — EXACT WORDS OF WONDERS TRANSLUCENT WHEEL
+       WITH CENTER SHUFFLE & CORNER POWER-UPS (HAMMER, BULB, BONUS)
+       ============================================================ */
     .wheel-section {
       position: relative;
       z-index: 10;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 10px;
       width: 100%;
       max-width: 440px;
       margin: 0 auto;
-      padding: 0 12px max(18px, env(safe-area-inset-bottom)) 12px;
+      padding: 0 10px max(16px, env(safe-area-inset-bottom)) 10px;
     }
 
     .wheel-side-column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      justify-content: space-between;
+      height: 210px;
+      padding: 6px 0;
       z-index: 12;
     }
 
+    /* WoW 3D Circular Corner Power-Up Buttons */
     .side-tool-btn {
       position: relative;
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       flex-shrink: 0;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.95);
-      border: 3px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+      background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+      border: 3px solid #ffffff;
+      box-shadow:
+        0 5px 0 #94a3b8,
+        0 8px 18px rgba(0, 0, 0, 0.38),
+        inset 0 2px 2px #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: #0f172a;
+      color: #1e293b;
       cursor: pointer;
       z-index: 12;
-      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease;
+      transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease, background 0.2s ease;
     }
 
     .side-tool-btn.active-mode {
-      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 100%);
+      background: linear-gradient(180deg, #fef08a 0%, #f59e0b 100%);
       border-color: #ffffff;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.9);
-      transform: scale(1.08);
+      box-shadow: 0 4px 0 #b45309, 0 0 22px rgba(245, 158, 11, 0.95);
+      transform: scale(1.1);
     }
 
     .side-tool-btn:active {
-      transform: scale(0.9);
-    }
-
-    .side-tool-btn:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.6);
+      transform: translateY(3px) scale(0.94);
+      box-shadow: 0 2px 0 #94a3b8, 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .tool-cost {
       position: absolute;
       bottom: -8px;
-      background: #f59e0b;
-      color: #fff;
-      font-size: 0.62rem;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 10px;
-      border: 1px solid #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      font-family: var(--font-bubble);
+      font-size: 0.64rem;
+      font-weight: 900;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
       white-space: nowrap;
     }
 
-    /* Wheel Container (216px diameter, glow ring) */
+    /* Authentic Words of Wonders Translucent White Letter Wheel */
     .wheel-container {
       position: relative;
-      width: 216px;
-      height: 216px;
+      width: 232px;
+      height: 232px;
       flex-shrink: 0;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0%, rgba(241, 245, 249, 0.9) 100%);
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 3px solid rgba(255, 255, 255, 0.92);
       box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.5),
-        0 0 0 6px rgba(255, 255, 255, 0.4),
-        0 0 24px rgba(34, 211, 238, 0.25),
-        inset 0 4px 8px rgba(255, 255, 255, 0.85),
-        inset 0 -6px 12px rgba(148, 163, 184, 0.4);
+        0 14px 34px rgba(0, 0, 0, 0.32),
+        inset 0 3px 8px rgba(255, 255, 255, 0.95),
+        inset 0 -4px 10px rgba(148, 163, 184, 0.28);
       touch-action: none;
-      transition: box-shadow 0.3s ease;
+      transition: box-shadow 0.25s ease, background 0.25s ease;
     }
 
     .wheel-container.dragging {
+      background: rgba(255, 255, 255, 0.86);
       box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.5),
-        0 0 0 6px rgba(34, 211, 238, 0.6),
-        0 0 35px rgba(34, 211, 238, 0.5),
-        inset 0 4px 8px rgba(255, 255, 255, 0.85),
-        inset 0 -6px 12px rgba(148, 163, 184, 0.4);
+        0 16px 38px rgba(0, 0, 0, 0.38),
+        0 0 0 4px rgba(255, 255, 255, 0.5),
+        inset 0 3px 8px rgba(255, 255, 255, 0.95);
+    }
+
+    /* Center Shuffle Button inside the Wheel (100% Words of Wonders Signature) */
+    .wheel-center-shuffle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.65);
+      border: 2px solid rgba(148, 163, 184, 0.35);
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 6;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease;
+    }
+
+    .wheel-center-shuffle:hover {
+      background: #ffffff;
+      color: var(--wow-theme);
+    }
+
+    .wheel-center-shuffle:active {
+      transform: translate(-50%, -50%) scale(0.86) rotate(90deg);
+      background: #ffffff;
     }
 
     .wheel-svg {
@@ -706,55 +795,59 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 2;
+      z-index: 3;
     }
 
     .wheel-path {
       fill: none;
-      stroke: #0284c7;
-      stroke-width: 12px;
+      stroke: var(--wow-theme);
+      stroke-width: 13px;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 8px rgba(2, 132, 199, 0.85)) drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
+      filter: drop-shadow(0 2px 6px var(--wow-theme-glow));
     }
 
     .wheel-path-current {
       fill: none;
-      stroke: rgba(2, 132, 199, 0.7);
-      stroke-width: 10px;
+      stroke: var(--wow-theme);
+      stroke-width: 11px;
       stroke-linecap: round;
       stroke-linejoin: round;
+      opacity: 0.85;
     }
 
-    /* Letter Chips with Ripple & Glow */
+    /* Words of Wonders Letter Chips: Clean Bold Dark Letters -> Solid Theme Circle on Select */
     .letter-chip {
       position: absolute;
-      width: 52px;
-      height: 52px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
-      background: #ffffff;
-      border: 3px solid #e2e8f0;
-      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2), inset 0 -3px 0 rgba(0, 0, 0, 0.12);
+      background: transparent;
+      border: none;
+      box-shadow: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.55rem;
-      font-weight: 800;
+      font-size: 1.85rem;
+      font-weight: 900;
       font-family: var(--font-bubble);
-      color: #0369a1;
+      color: #1e293b;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
       transform: translate(-50%, -50%);
       cursor: pointer;
       z-index: 5;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease;
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
       user-select: none;
     }
 
     .letter-chip.active {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      background: linear-gradient(180deg, var(--wow-theme-light) 0%, var(--wow-theme) 100%);
       color: #ffffff;
-      border-color: #7dd3fc;
-      transform: translate(-50%, -50%) scale(1.18);
-      box-shadow: 0 0 22px rgba(2, 132, 199, 0.9), 0 6px 14px rgba(0, 0, 0, 0.25);
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.22);
+      transform: translate(-50%, -50%) scale(1.14);
+      box-shadow:
+        0 4px 0 var(--wow-theme-dark),
+        0 6px 14px var(--wow-theme-glow);
     }
 
     /* VICTORY MODAL */
@@ -1982,12 +2075,12 @@
     <!-- In-Game Toast Notification -->
     <div id="game-toast" class="game-toast" role="status" aria-live="polite"></div>
 
-    <!-- FLOATING TOP BAR (ERGONOMIC MOBILE LAYOUT) -->
+    <!-- FLOATING TOP BAR — AUTHENTIC WORDS OF WONDERS HUD -->
     <header class="floating-top-bar">
       <!-- Left: Back Button & Traffic Light Onda Verde Indicator -->
       <div class="top-action-group">
         <a href="juegos.html" class="btn-frosted" title="Volver a Juegos" aria-label="Volver">
-          <span class="material-symbols-outlined" style="font-size:21px;">arrow_back</span>
+          <span class="material-symbols-outlined" style="font-size:22px; font-weight:800;">arrow_back</span>
         </a>
 
         <!-- Interactive Traffic Light (Semáforo de Racha / Onda Verde) -->
@@ -1999,11 +2092,11 @@
         </div>
       </div>
 
-      <!-- Center: Clean Floating Level Badge (Interactive Level Selector + Progress Bar) -->
+      <!-- Center: Words of Wonders Level Banner (Interactive Level Selector + Progress Bar) -->
       <button class="level-pill-float" id="level-pill-btn" title="Seleccionar Nivel (1 a 50)" aria-label="Elegir Nivel">
-        <div style="display:flex; align-items:center; gap:2px;">
+        <div style="display:flex; align-items:center; gap:3px;">
           <span class="level-pill-number" id="header-level-tag">NIVEL 1</span>
-          <span class="material-symbols-outlined" style="font-size:14px; color:var(--accent-cyan); line-height:1;">expand_more</span>
+          <span class="material-symbols-outlined" style="font-size:15px; color:#ffffff; line-height:1;">expand_more</span>
         </div>
         <span class="level-pill-category" id="header-level-category">Peatones</span>
         <div class="level-mini-progress">
@@ -2011,19 +2104,15 @@
         </div>
       </button>
 
-      <!-- Right: Compact Action Pills (Fits 360px phones without overflow) -->
+      <!-- Right: 3D Coin Capsule & Sound Toggle -->
       <div class="top-action-group">
-        <div class="coin-pill-float" id="coin-pill" title="Monedas acumuladas">
-          <span class="material-symbols-outlined" style="font-size:17px;color:#fde047;">monetization_on</span>
+        <div class="coin-pill-float" id="coin-pill" title="Monedas acumuladas (Tocá para girar Ruleta)">
+          <span class="coin-icon-3d">🪙</span>
           <span id="coin-count">200</span>
         </div>
 
-        <button class="btn-frosted" id="guide-btn" title="Manual de Consejos Viales" aria-label="Consejos">
-          <span class="material-symbols-outlined" style="font-size:19px;">menu_book</span>
-        </button>
-
         <button class="btn-frosted" id="sound-btn" title="Activar/Silenciar sonido" aria-label="Sonido">
-          <span class="material-symbols-outlined" style="font-size:19px;" id="sound-icon">volume_up</span>
+          <span class="material-symbols-outlined" style="font-size:20px;" id="sound-icon">volume_up</span>
         </button>
       </div>
     </header>
@@ -2033,45 +2122,49 @@
       <div class="crossword-grid" id="crossword-grid"></div>
     </main>
 
-    <!-- Word Preview Pill -->
+    <!-- Word Preview Pill (Words of Wonders Solid Theme Pill) -->
     <div class="preview-container">
       <div class="word-preview-pill" id="preview-pill">
         <span id="word-preview"></span>
       </div>
     </div>
 
-    <!-- Wheel Controls & Letter Disc (With Left/Right Tool Columns) -->
+    <!-- Words of Wonders Wheel & Corner Power-Up Controls -->
     <section class="wheel-section">
-      <!-- Left Column: Bonus Words Jar & Shuffle -->
+      <!-- Left Column: Guide Manual & Bonus Words Star-Book -->
       <div class="wheel-side-column">
-        <button class="side-tool-btn" id="bonus-jar-btn" title="Palabras Extra Descubiertas (Cada 5 ganás +1 Pista Gratis)" aria-label="Palabras Extra">
-          <span style="font-size:20px; line-height:1;">✨</span>
-          <span class="tool-cost" id="bonus-jar-badge" style="background:#0284c7;">0/5</span>
+        <button class="side-tool-btn" id="guide-btn" title="Manual de Consejos Viales Desbloqueados" aria-label="Consejos">
+          <span class="material-symbols-outlined" style="font-size:25px;color:#0284c7;">menu_book</span>
+          <span class="tool-cost" style="background:linear-gradient(180deg,#38bdf8,#0284c7);">VIAL</span>
         </button>
 
-        <button class="side-tool-btn shuffle-btn" id="shuffle-btn" title="Mezclar letras (Espacio)" aria-label="Mezclar">
-          <span class="material-symbols-outlined" style="font-size:24px;color:#0284c7;">shuffle</span>
+        <button class="side-tool-btn" id="bonus-jar-btn" title="Palabras Extra RAE (Cada 5 ganás +1 Pista Gratis)" aria-label="Palabras Extra">
+          <span class="material-symbols-outlined" style="font-size:26px;color:#8b5cf6;">stars</span>
+          <span class="tool-cost" id="bonus-jar-badge" style="background:linear-gradient(180deg,#a855f7,#7e22ce);">0/5</span>
         </button>
       </div>
 
-      <!-- Letter Wheel Container -->
+      <!-- Letter Wheel Container with Center Shuffle Button (100% Words of Wonders) -->
       <div class="wheel-container" id="wheel-container">
+        <button class="wheel-center-shuffle" id="shuffle-btn" type="button" title="Mezclar letras (Espacio)" aria-label="Mezclar">
+          <span class="material-symbols-outlined" style="font-size:28px;">cached</span>
+        </button>
         <svg class="wheel-svg" id="wheel-svg">
           <path class="wheel-path" id="wheel-path" d=""></path>
           <path class="wheel-path-current" id="wheel-path-current" d=""></path>
         </svg>
       </div>
 
-      <!-- Right Column: Targeted Tile Hint & Random Hint -->
+      <!-- Right Column: WoW Hammer (Target Tile Hint) & WoW Lightbulb (Random Hint) -->
       <div class="wheel-side-column">
-        <button class="side-tool-btn" id="target-hint-btn" title="Elegir casilla específica para revelar" aria-label="Elegir Casilla">
-          <span class="material-symbols-outlined" style="font-size:22px;color:#0ea5e9;">ads_click</span>
-          <span class="tool-cost" style="background:#0ea5e9;">ELEGIR</span>
+        <button class="side-tool-btn" id="target-hint-btn" title="Martillo: Tocá cualquier casilla del tablero para revelarla" aria-label="Martillo">
+          <span class="material-symbols-outlined" style="font-size:25px;color:#ea580c;">gavel</span>
+          <span class="tool-cost" id="hammer-tool-cost" style="background:linear-gradient(180deg,#fb923c,#ea580c);">50 🪙</span>
         </button>
 
         <!-- Hint Button (Bombilla / Pista) con Insignia de Pistas Gratis -->
-        <button class="side-tool-btn hint-btn" id="hint-btn" title="Pedir Pista" aria-label="Pista">
-          <span class="material-symbols-outlined" style="font-size:24px;color:#f59e0b;">lightbulb</span>
+        <button class="side-tool-btn hint-btn" id="hint-btn" title="Bombilla: Revelar una letra al azar" aria-label="Pista">
+          <span class="material-symbols-outlined" style="font-size:26px;color:#f59e0b;">lightbulb</span>
           <span class="hint-badge-counter" id="hint-badge-counter" style="display:none;">0</span>
           <span class="tool-cost" id="hint-tool-cost">50 🪙</span>
         </button>
@@ -3049,7 +3142,15 @@
           }
         });
 
-        this.dom.shuffleBtn.addEventListener('click', () => this.shuffleLetters());
+        this.dom.coinPill?.addEventListener('click', () => {
+          Haptics.tap();
+          this.openBenefitsModal(false);
+        });
+
+        this.dom.shuffleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.shuffleLetters();
+        });
         this.dom.hintBtn.addEventListener('click', () => this.useHint());
         this.dom.targetHintBtn?.addEventListener('click', () => this.toggleTargetHintMode());
 
@@ -3568,25 +3669,52 @@
         }
 
         const costEl = this.dom.hintToolCost || (this.dom.hintBtn ? this.dom.hintBtn.querySelector('.tool-cost') : null);
+        const hammerCostEl = document.getElementById('hammer-tool-cost');
         if (this.dom.hintBtn) {
           if (this.freeHints > 0) {
             if (costEl) {
               costEl.textContent = 'GRATIS';
-              costEl.style.background = '#10b981';
+              costEl.style.background = 'linear-gradient(180deg, #22c55e, #16a34a)';
             }
-            this.dom.hintBtn.style.borderColor = '#10b981';
-            this.dom.hintBtn.style.boxShadow = '0 0 16px rgba(16,185,129,0.55)';
+            if (hammerCostEl) {
+              hammerCostEl.textContent = 'GRATIS';
+              hammerCostEl.style.background = 'linear-gradient(180deg, #22c55e, #16a34a)';
+            }
             this.dom.hintBtn.title = `Usar Pista Gratis (${this.freeHints} disponibles)`;
           } else {
             if (costEl) {
               costEl.textContent = '50 🪙';
-              costEl.style.background = '#f59e0b';
+              costEl.style.background = 'linear-gradient(180deg, #f59e0b, #d97706)';
             }
-            this.dom.hintBtn.style.borderColor = '';
-            this.dom.hintBtn.style.boxShadow = '';
-            this.dom.hintBtn.title = 'Pedir Pista (50 monedas)';
+            if (hammerCostEl) {
+              hammerCostEl.textContent = '50 🪙';
+              hammerCostEl.style.background = 'linear-gradient(180deg, #fb923c, #ea580c)';
+            }
+            this.dom.hintBtn.title = 'Bombilla: Revelar una letra al azar (50 monedas)';
           }
         }
+      }
+
+      applyWowStageTheme(level) {
+        const themes = [
+          // Stage 1: WoW Sky Blue
+          { main: '#0ea5e9', light: '#38bdf8', dark: '#0369a1', glow: 'rgba(14, 165, 233, 0.55)' },
+          // Stage 2: WoW Emerald Green
+          { main: '#10b981', light: '#34d399', dark: '#047857', glow: 'rgba(16, 185, 129, 0.55)' },
+          // Stage 3: WoW Royal Purple
+          { main: '#8b5cf6', light: '#a78bfa', dark: '#5b21b6', glow: 'rgba(139, 92, 246, 0.55)' },
+          // Stage 4: WoW Sunset Orange
+          { main: '#f97316', light: '#fb923c', dark: '#c2410c', glow: 'rgba(249, 115, 22, 0.55)' },
+          // Stage 5: WoW Ruby Rose
+          { main: '#f43f5e', light: '#fb7185', dark: '#be123c', glow: 'rgba(244, 63, 94, 0.55)' }
+        ];
+        const stageIdx = Math.floor(((level.id || 1) - 1) / 3) % themes.length;
+        const t = themes[stageIdx];
+        const root = document.documentElement;
+        root.style.setProperty('--wow-theme', t.main);
+        root.style.setProperty('--wow-theme-light', t.light);
+        root.style.setProperty('--wow-theme-dark', t.dark);
+        root.style.setProperty('--wow-theme-glow', t.glow);
       }
 
       saveMidLevelState() {
@@ -3624,6 +3752,7 @@
         this.currentLevel = level;
         this.levelStartTime = Date.now();
         this.setTargetHintMode(false);
+        this.applyWowStageTheme(level);
 
         if (!this.unlockedTips.find(t => t.id === level.id)) {
           this.unlockedTips.push({
@@ -3665,7 +3794,7 @@
               const cell = this.gridCells.get(key);
               if (cell) {
                 cell.solved = true;
-                cell.element.classList.remove('unsolved');
+                cell.element.classList.remove('unsolved', 'bonus-coin-tile');
                 cell.element.classList.add('solved', 'revealed-hint');
                 cell.element.textContent = cell.letter;
                 this.revealedCells.add(key);
@@ -3702,13 +3831,13 @@
         const boardContainer = this.dom.boardContainer;
         if (!gridEl || !boardContainer) return;
 
-        const availW = Math.min((boardContainer.clientWidth || window.innerWidth) - 20, 480);
-        const availH = Math.min((boardContainer.clientHeight || 320) - 16, 420);
+        const availW = Math.min((boardContainer.clientWidth || window.innerWidth) - 24, 480);
+        const availH = Math.min((boardContainer.clientHeight || 310) - 20, 410);
 
-        const gap = cols >= 8 || rows >= 7 ? 5 : 7;
-        const maxTileW = Math.floor((availW - (cols - 1) * gap - 12) / cols);
-        const maxTileH = Math.floor((availH - (rows - 1) * gap - 12) / rows);
-        const tileSize = Math.min(Math.max(Math.min(maxTileW, maxTileH), 28), 56);
+        const gap = cols >= 8 || rows >= 7 ? 5 : 6;
+        const maxTileW = Math.floor((availW - (cols - 1) * gap - 20) / cols);
+        const maxTileH = Math.floor((availH - (rows - 1) * gap - 20) / rows);
+        const tileSize = Math.min(Math.max(Math.min(maxTileW, maxTileH), 28), 54);
 
         gridEl.style.setProperty('--grid-gap', `${gap}px`);
         gridEl.style.setProperty('--tile-size', `${tileSize}px`);
@@ -3777,6 +3906,7 @@
                 key,
                 letter: info.letter,
                 solved: false,
+                hasBonusCoin: false,
                 element: tile,
                 words: info.words
               });
@@ -3785,6 +3915,14 @@
             }
             gridEl.appendChild(tile);
           }
+        }
+
+        // Place a Words of Wonders Bonus Coin on one non-intersection cell per level
+        const allCells = Array.from(this.gridCells.values());
+        if (allCells.length > 0) {
+          const bonusCell = allCells[(level.id * 3) % allCells.length];
+          bonusCell.hasBonusCoin = true;
+          bonusCell.element.classList.add('bonus-coin-tile');
         }
       }
 
@@ -3813,7 +3951,7 @@
         this.setTargetHintMode(!this.targetHintMode);
         if (this.targetHintMode) {
           Haptics.tap();
-          this.showToast('🎯 Tocá cualquier casilla vacía del crucigrama para revelar esa letra.');
+          this.showToast('🔨 Martillo activo: Tocá cualquier casilla vacía del crucigrama para revelarla.');
         }
       }
 
@@ -3828,14 +3966,14 @@
         container.querySelectorAll('.letter-chip').forEach(el => el.remove());
 
         const count = this.currentLetters.length;
-        // Dynamic geometry for 4-8 letters so 7 & 8 letter levels never overlap
-        const radius = count >= 8 ? 76 : (count === 7 ? 73 : 70);
-        const chipSize = count >= 8 ? 42 : (count >= 6 ? 46 : 52);
-        const fontSize = count >= 8 ? '1.3rem' : (count >= 6 ? '1.42rem' : '1.55rem');
-        const centerX = 108;
-        const centerY = 108;
+        // Authentic 232px Words of Wonders wheel geometry with center shuffle button
+        const radius = count >= 8 ? 82 : (count === 7 ? 79 : 75);
+        const chipSize = count >= 8 ? 44 : (count >= 6 ? 48 : 54);
+        const fontSize = count >= 8 ? '1.5rem' : (count >= 6 ? '1.68rem' : '1.88rem');
+        const centerX = 116;
+        const centerY = 116;
 
-        this.chipHitRadius = count >= 8 ? 23 : (count >= 6 ? 26 : 30);
+        this.chipHitRadius = count >= 8 ? 24 : (count >= 6 ? 27 : 31);
         this.chipCoords = [];
 
         this.currentLetters.forEach((letter, i) => {
@@ -3882,6 +4020,7 @@
       }
 
       onPointerDown(e) {
+        if (e.target.closest('#shuffle-btn')) return;
         this.audio.init();
         if (this.targetHintMode) this.setTargetHintMode(false);
         this.isDragging = true;
@@ -4160,7 +4299,8 @@
 
         if (!animateCascade) {
           orderedCells.forEach(cell => {
-            cell.element.classList.remove('unsolved');
+            cell.hasBonusCoin = false;
+            cell.element.classList.remove('unsolved', 'revealed-hint', 'bonus-coin-tile');
             cell.element.classList.add('solved');
             cell.element.textContent = cell.letter;
           });
@@ -4171,7 +4311,9 @@
         const stepDelay = 65;
         orderedCells.forEach((cell, idx) => {
           setTimeout(() => {
-            cell.element.classList.remove('unsolved');
+            const wonCoinTile = cell.hasBonusCoin;
+            cell.hasBonusCoin = false;
+            cell.element.classList.remove('unsolved', 'revealed-hint', 'bonus-coin-tile');
             cell.element.classList.add('solved', 'newly-solved');
             cell.element.textContent = cell.letter;
             this.audio.playTileReveal(idx);
@@ -4179,7 +4321,16 @@
             const rect = cell.element.getBoundingClientRect();
             this.confetti.sparkAt(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
 
-            if (idx === Math.floor(orderedCells.length / 2) && this.comboStreak >= 2) {
+            if (wonCoinTile) {
+              this.addCoins(15);
+              this.saveProgress();
+              this.spawnFloatingPopup(
+                `🪙 ¡CASILLA DORADA! +15 🪙`,
+                rect.left + rect.width / 2,
+                rect.top - 10,
+                'linear-gradient(180deg, #f59e0b 0%, #d97706 100%)'
+              );
+            } else if (idx === Math.floor(orderedCells.length / 2) && this.comboStreak >= 2) {
               const comboBonus = Math.min(this.comboStreak * 5, 25);
               this.spawnFloatingPopup(
                 `🚦 ¡ONDA VERDE x${this.comboStreak}! +${comboBonus} 🪙`,
@@ -4228,8 +4379,9 @@
         Haptics.tap();
 
         picked.solved = true;
+        picked.hasBonusCoin = false;
         this.revealedCells.add(picked.key);
-        picked.element.classList.remove('unsolved');
+        picked.element.classList.remove('unsolved', 'bonus-coin-tile');
         picked.element.classList.add('solved', 'revealed-hint');
         picked.element.textContent = picked.letter;
 

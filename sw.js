@@ -1,5 +1,5 @@
-// Service Worker — Ruleta Vial PWA v15
-const CACHE_NAME = 'ruleta-vial-v15';
+// Service Worker — Ruleta Vial PWA v16
+const CACHE_NAME = 'ruleta-vial-v16';
 
 // Archivos esenciales para cachear en la instalación (Offline completo)
 const CORE_FILES = [
