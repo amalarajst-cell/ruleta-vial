@@ -4546,7 +4546,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       window.game = new VialWordsGame();
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js?v=16').then(r => r.update()).catch(() => {});
       }
     });
   </script>
